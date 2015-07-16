@@ -138,7 +138,7 @@ class Boat < ActiveRecord::Base
 
   def display_price(currency = nil)
     if self.poa?
-      return I18n.t('P.O.A.').html_safe
+      return I18n.t('poa').html_safe
     else
       currency ||= (self.currency || Currency.default)
       price = Currency.convert(self.price, self.currency, currency)

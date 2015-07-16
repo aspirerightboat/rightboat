@@ -68,8 +68,7 @@ module DBBackedClockwork
       self.id = event.id
       self.updated_at = event.updated_at
 
-      # super(DBBackedClockwork.manager, event.frequency, "import-#{event.import_type}[#{event.id}]", handler, at: event.at)
-      super(DBBackedClockwork.manager, 5.seconds, "import-#{event.import_type}[#{event.id}]", handler)
+      super(DBBackedClockwork.manager, event.frequency, "import-#{event.import_type}[#{event.id}]", handler, at: event.at)
     end
 
     # find the job in the database and update or remove it if necessary

@@ -1,8 +1,4 @@
 ActiveAdmin.register Import do
-  permit_params :import_type, :active, :use_proxy,
-                :frequency_unit, :frequency_quantity, :at,
-                param: []
-
   menu priority: 3
 
   filter :user, collection: -> { User.companies }
@@ -11,6 +7,17 @@ ActiveAdmin.register Import do
 
   controller do
     before_filter :check_running_job, only: [:edit, :update, :destroy]
+
+    def import_params
+      permitted_param_names = [
+        :import_type, :active, :use_proxy, :user_id,
+        :frequency_unit, :frequency_quantity, :at
+      ]
+
+      params.require(:import).permit(permitted_param_names).tap do |w|
+        w[:param] = params[:import][:param]
+      end
+    end
 
     private
 

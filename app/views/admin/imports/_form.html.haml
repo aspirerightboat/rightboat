@@ -1,11 +1,13 @@
 = semantic_form_for [:admin, @import] do |f|
   = f.inputs "Import" do
-    = f.input :user, as: :select, collection: User.companies, label_method: :name, value_method: :id
-    = f.input :import_type, collection: Rightboat::Imports::Base.source_types
+    = f.input :user, as: :select, collection: User.companies, label_method: :name, value_method: :id, include_blank: false
+    = f.input :import_type, collection: Rightboat::Imports::Base.source_types, include_blank: false
     = f.input :threads
     = f.input :active
     = f.input :use_proxy, as: :boolean
-  = f.inputs "Parameters", id: 'import-params'
+  = f.inputs "Parameters", id: 'import-params' do
+    = f.semantic_errors :param
+
   = f.inputs "Scheduling", id: 'import-scheduling' do
     %span Every
     = f.input :frequency_quantity, label: false
@@ -21,16 +23,16 @@
 - j_params = Rightboat::Imports::Base.source_types.inject({}) { |h, import_type| h[import_type] = Import.source_class(import_type).params.map{|x| [x, x.to_s.titleize]}; h}
 :javascript
   $(document).ready(function() {
-    var current_param = #{@import.param.to_json},
+    var current_param = #{resource.param.to_json},
       job_params = #{j_params.to_json};
 
     $('#import_import_type').change(function(){
       var type = $(this).val();
-      $('#import-params').hide().find('li').remove()
+      $('#import-params').hide().find('ol > li').remove()
       if (params = job_params[type]) {
         $.each(params, function() {
           var key = this[0], label = this[1],
-          $input = $('<input>').attr('name', 'import[param][_' + key + ']')
+          $input = $('<input>').attr('name', 'import[param][' + key + ']')
           .attr('id', 'import_param_' + key).attr('type', 'text')
           .val(current_param[key] || ''),
           $label = $('<label>').attr('for', 'import_param_' + key)

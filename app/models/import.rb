@@ -27,6 +27,7 @@ class Import < ActiveRecord::Base
         self.errors.add :at, 'is invalid'
       end
     end
+    validate_params
   end
 
   before_destroy :stop!
@@ -88,13 +89,14 @@ class Import < ActiveRecord::Base
     source_class.validate_param_option.each do |key, validators|
       validators = [validators] unless validators.is_a?(Array)
       validators.each do |validator|
+        value = symbolized_param[key.to_sym]
         if validator.to_s == 'presence'
-          if symbolized_param[key.to_sym].blank?
-            errors.add "param_#{key}".to_sym, "[#{key}] can't be blank."
+          if value.blank?
+            errors.add :param, "[#{key}] can't be blank"
           end
         elsif validator.is_a?(Regexp)
-          unless symbolized_param[key.to_sym].to_s =~ validator
-            errors.add "param_#{key}".to_sym, "[#{key}] is invalid."
+          unless value.blank? || value.to_s =~ validator
+            errors.add :param, "[#{key}] is invalid"
           end
         elsif validator.to_s == 'optional'
           # this is optional param for later use case

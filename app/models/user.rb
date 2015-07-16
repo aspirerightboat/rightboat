@@ -31,10 +31,13 @@ class User < ActiveRecord::Base
 
   accepts_nested_attributes_for :address, allow_destroy: true
 
-  validates_presence_of :username, :first_name, :last_name
+  validates_presence_of :username
   validates_uniqueness_of :username, allow_blank: true
   validates_format_of :username, with: /\A[a-zA-Z][\w\d\-]+\z/, allow_blank: true
   validates_inclusion_of :title, within: TITLES, allow_blank: true
+
+  validates_presence_of :first_name, :last_name, unless: :organization?
+  validates_presence_of :company_name, if: :organization?
 
   after_create :create_subscriptions!
 
@@ -67,12 +70,14 @@ class User < ActiveRecord::Base
   end
   alias_method :to_s, :name
 
-  def admin?
-    self.role.to_i == ROLES['ADMIN']
+  ROLES.each do |role_name, _|
+    define_method "#{role_name.to_s.underscore}?" do
+      self.role.to_i == ROLES[role_name.to_s]
+    end
   end
 
-  def company?
-    self.role.to_i == ROLES['COMPANY']
+  def organization?
+    self.company? || self.manufacturer?
   end
 
   private

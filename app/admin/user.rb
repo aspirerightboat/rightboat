@@ -28,8 +28,10 @@ ActiveAdmin.register User do
   form do |f|
     f.inputs "User Details" do
       f.input :username
+      f.input :title, as: :select, collection: User::TITLES
       f.input :first_name
       f.input :last_name
+      f.input :company_name
       f.input :role, as: :select, collection: User::ROLES, include_blank: false
       f.input :email
       f.input :password

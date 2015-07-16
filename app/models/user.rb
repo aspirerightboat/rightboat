@@ -41,7 +41,17 @@ class User < ActiveRecord::Base
   delegate :country, to: :address
 
   def role=(r)
-    (r.is_a?(String) && r =~ /^\w+$/) ? write_attribute(:role, ROLES[r].to_i) : super(r)
+    if r.is_a?(String)
+      if r =~ /^\d+$/
+        write_attribute(:role, r.to_i)
+      elsif r =~ /^\w+$/
+        write_attribute(:role, ROLES[r].to_i)
+      else
+        super
+      end
+    else
+      super
+    end
   end
 
   def role_name

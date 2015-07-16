@@ -4,6 +4,17 @@ ActiveAdmin.register User do
   config.sort_order = 'role_asc'
   menu priority: 8
 
+  controller do
+    def update
+      if params[:user][:password].blank?
+        params[:user].delete("password")
+        params[:user].delete("password_confirmation")
+      end
+      super
+    end
+
+  end
+
   index do
     selectable_column
     id_column

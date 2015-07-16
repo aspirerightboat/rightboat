@@ -1,5 +1,5 @@
 ActiveAdmin.register User do
-  permit_params :email, :password, :password_confirmation, :first_name, :last_name, :company_name
+  permit_params :username, :email, :password, :password_confirmation, :first_name, :last_name, :company_name, :role
 
   config.sort_order = 'role_asc'
   menu priority: 8
@@ -26,7 +26,11 @@ ActiveAdmin.register User do
   filter :created_at
 
   form do |f|
-    f.inputs "Admin Details" do
+    f.inputs "User Details" do
+      f.input :username
+      f.input :first_name
+      f.input :last_name
+      f.input :role, as: :select, collection: User::ROLES, include_blank: false
       f.input :email
       f.input :password
       f.input :password_confirmation

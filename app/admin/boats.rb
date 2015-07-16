@@ -9,6 +9,10 @@ ActiveAdmin.register Boat do
   filter :country
   filter :manufacturer
   filter :model, collection: []
+  filter :featured
+  filter :recently_reduced
+  filter :under_offer
+  filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
 
   index do
     column :id

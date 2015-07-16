@@ -17,6 +17,7 @@
         .bordered-wrapper
           .left-border-wrapper
             .left-border
+          .bottom-border-wrapper
           #boat-types.form-group.pull-right
             = radio_button_tag :boat_type, '', params[:boat_type].blank?, id: 'boat_type_all'
             = label_tag :boat_type_all, 'All', for: 'boat_type_all'

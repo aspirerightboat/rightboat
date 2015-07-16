@@ -1,0 +1,48 @@
+- content_for :header_text do
+  %h1 My <strong>Rightboat</strong>
+
+.member-content
+  %h1 My Details
+  %hr
+  - if user_signed_in?
+    = form_for current_user, url: user_profile_path, method: :put, html: { class: 'profile-form' } do |f|
+      .row
+        .col-sm-6.col-xs-12
+          .form-group
+            = f.label :title, 'Title*:'
+            %br
+            = f.select :title, options_for_select(User::TITLES), {}, class: 'select-sm'
+          .form-group.row
+            .col-sm-6.col-xs-12
+              = f.label :first_name, 'First Name*:'
+              = f.text_field :first_name, class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-6.col-xs-12
+              = f.label :last_name, 'Surename*:'
+              = f.text_field :last_name, class: 'form-control', 'data-validetta' => 'required'
+          .form-group
+            = f.label :email, 'Email*:'
+            = f.email_field :email, class: 'form-control', 'data-validetta' => 'required,email'
+          .form-group
+            = f.label :phone, 'Tel/Mobile:'
+            = f.text_field :phone, class: 'form-control'
+        .col-sm-6.col-xs-12.member-ref-links
+          %strong More Info:
+          %ul
+            %li= link_to 'I require finance', '#'
+            %li= link_to 'Would you like to list your boat for sale?', '#'
+            %li= link_to 'I am looking to buy this season', '#'
+            %li= link_to 'I am looking for a berth', '#'
+
+      .row
+        .col-sm-6.col-xs-12.form-actions
+          = button_tag "Save Changes", type: 'submit', class: 'btn-flat btn-full'
+  - else
+    .alert.alert-info(role="alert")
+      You need to #{link_to 'sign in', '#', class: 'user-login'} to continue.
+
+:javascript
+  $(document).ready(function() {
+    $('.member-content select').select2({
+      minimumResultsForSearch: Infinity
+    });
+  });

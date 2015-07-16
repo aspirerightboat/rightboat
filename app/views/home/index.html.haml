@@ -1,0 +1,64 @@
+- content_for :header do
+  = render 'navbar'
+
+.container
+  .page-gap
+    .embed-responsive.embed-responsive-home-page
+
+#main-content
+  - if @featured_boats.any?
+    #featured-boats.nabvar-tools
+      %h3.toolbar-title Featured Boats
+    .container
+      .row(data-view-layout="gallery")
+        = render @featured_boats
+
+  - if @recent_boats.any?
+    #recent-boats.nabvar-tools
+      %h3.toolbar-title.toolbar-title-white Most Recent Boats
+      .container
+        .row
+          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat
+
+  .rb-brief.text-center.container
+    %h2 About Us
+    %p.first-sentence Rightboat.com was launched in 2005 with the aim of being the quickest, easiest place to buy and sell boats on the internet.
+    %p If you want to have unlimited access to a global marine marketplace, then you have come to the right place! With over 20,000 boats and yachts for sale, reaching 500 international boat brokers, our growing inventory offers the latest search and mobile technology to ensure your boat search is as easy as 1, 2, 3!
+    %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer.
+
+  - if @recent_tweets.any?
+    .nabvar-tools.twitter-feed-slider
+      .container
+        .flexslider
+          %ul.slides
+            - @recent_tweets.each do |tweet|
+              %li
+                .tweet-feed
+                  %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
+                  %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
+
+:javascript
+  $(function() {
+    //function formatCurrency (currency) {
+    //  console.log(currency);
+    //  if (!currency.id) { return currency.text; }
+    //  var $currency = $(
+    //    '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+    //  );
+    //  return $currency;
+    //};
+
+    $(".navbar select").select2({
+      minimumResultsForSearch: Infinity
+    });
+
+    $('.flexslider').flexslider({
+      controlNav: false,
+      prevText: '',
+      nextText: ''
+    });
+
+    if (#{params[:popup_login].to_json}) {
+      $('.user-login').trigger('click');
+    }
+  });

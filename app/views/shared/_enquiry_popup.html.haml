@@ -1,0 +1,85 @@
+#enquiry-popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+        %h1 Request Details
+      .modal-body
+        *Required
+        %h4.text-center Complete your enquiry details. Full specifications will be available for download and copy sent to your email.
+        = form_tag '#', class: 'enquiry-form' do
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                .rb-control-group
+                  .rb-control-group-addon
+                    = label_tag :title, 'Title*:'
+                    %br
+                    = select_tag :title, options_for_select(User::TITLES), class: 'select-white select-sm'
+                  .rb-control
+                    = label_tag :title, 'First Name*:'
+                    = text_field_tag :first_name, '', class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :surname, 'Surname*:'
+                = text_field_tag :surname, '', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :email, 'Email*:'
+                = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :phone, 'Tel/Mobile:'
+                = text_field_tag :phone, '', class: 'form-control'
+          .form-group
+            = label_tag :message, 'Message:'
+            = text_area_tag :message, '', class: 'form-control'
+          .row
+            .col-xs-12
+              = label_tag :captcha, 'Prove you are human*:'
+            .col-xs-12.col-sm-6
+              .form-group
+                = text_field_tag :captcha, '', class: 'form-control'
+            .col-xs-12.col-sm-6
+              = button_tag 'Send', type: 'submit', class: 'btn-flat btn-full'
+          .clearfix
+
+#enquiry-result-popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+        %h1 Message Sent
+      .modal-body
+        %h1.text-center Thank you for your enquiry
+        %h4.text-center
+          The brokers details are: (<span id='broker-name'></span><span id='broker-phone'></span>)
+          and they will be in touch.
+          %br
+          The PDF is downloadalbe <a href="" id="boat-pdf" target="blank">here</a> and has also been sent to your mail.
+        .signup-form-container.row
+          %h3.text-center Sign up to MyRightboat for free
+          .col-sm-offset-1.col-sm-10.col-xs-12
+            %p.text-center
+              Would you like rightboat.com to remember your details so you don't have to enter them again?
+              It's FREE and you will also gain access to <a href='#'>premium features</a>.
+            %p.text-center
+              Simply fill out your details below to get started:
+
+          .col-sm-offset-3.col-sm-6.col-xs-12
+            = render 'shared/signup_form'
+        .row
+          %h4= link_to "Similar Boats (click for more details)", '#'
+          .similar-boats.row
+
+:javascript
+  $(function() {
+    $(document).ready(function() {
+      $('#enquiry-popup select').select2({
+        minimumResultsForSearch: Infinity
+      })
+    });
+  });

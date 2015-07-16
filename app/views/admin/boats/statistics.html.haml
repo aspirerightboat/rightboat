@@ -1,0 +1,66 @@
+%h1 Monthly Statistics
+
+#monthly(style="min-width: 400px; height: 400px; margin: 0 auto")
+
+:javascript
+  $(function() {
+    chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'monthly',
+        type: 'area',
+        marginRight: 130,
+        marginBottom: 25
+      },
+      credits: {
+        enabled: false
+      },
+      title: {
+        text: 'Monthly Impressions',
+        x: -20 //center
+      },
+      xAxis: {
+        categories: #{@monthly.map{|k,v| v[:label]}.to_json}
+      },
+      yAxis: {
+        title: {
+          text: 'Number'
+        },
+        min: 0,
+        allowDecimals: false,
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      tooltip: {
+        formatter: function() {
+          return '<b>'+ this.series.name +'</b><br/>'+
+          this.x +': '+ this.y;
+        }
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'top',
+          x: -10,
+          y: 100,
+          borderWidth: 0
+      },
+      series: [
+        {
+          name: 'Views',
+          data: #{@monthly.map{|k,v| v[:views]}.to_json}
+        },
+        {
+          name: 'Contact Details',
+          data: #{@monthly.map{|k,v| v[:contacts]}.to_json}
+        },
+        {
+          name: 'Questions',
+          data: #{@monthly.map{|k,v| v[:questions]}.to_json}
+        }
+      ]
+    });
+  });
+

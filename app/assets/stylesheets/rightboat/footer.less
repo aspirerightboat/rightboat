@@ -1,0 +1,71 @@
+#footer {
+  background: #13022c;
+  z-index: 100;
+  position: relative;
+  padding-bottom: 20px;
+  h1 {
+    color: #918d97;
+    font-weight: normal;
+    padding: 30px 0 20px 0;
+    font-size: 30px;
+    strong {
+      color: #FFF;
+      font-weight: 300;
+    }
+  }
+  .rb-links {
+    padding-bottom: 23px;
+  }
+  ul, ul li {list-style: outside none; margin: 0;}
+  a {color: #FFF;}
+  a:hover, a:active, a:focus {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  .social-links a {
+    &:before {
+      display: inline-block;
+      content: ' ';
+      background: image-url('sprites.png') no-repeat -117px 0;
+      width: 28px;
+      height: 19px;
+      vertical-align: middle;
+    }
+    &.tw-link:before { background-position: -117px -33px;}
+    &.gplus-link:before { background-position: -117px -64px;}
+    &.ig-link:before { background-position: -117px -97px;}
+    &.pint-link:before { background-position: -117px -130px;}
+  }
+  .company-info a, .rb-links ul {
+    position: relative;
+    &:not(.no-divider) {
+      &:before {
+        content: ' ';
+        display: none;
+        position: absolute;
+        top: 0;
+        left: -10px;
+        background: #FFF;
+        width: 1px;
+        height: 100%;
+        margin-top: -1;
+        @media (min-width: @screen-xs-min) {
+          display: block;
+        }
+      }
+    }
+  }
+  .company-info > a {
+    float: left;
+    margin: 0 10px;
+    &.no-divider { margin-left: 0;}
+  }
+  .company-info a:first-child {margin-left: 0;}
+  .company-info a:last-child {margin-right: 0;}
+  .rb-links ul {
+    @media (min-width: @screen-sm-min) {
+      min-height: 120px;
+    }
+  }
+}

@@ -1,0 +1,48 @@
+= semantic_form_for [:admin, @import] do |f|
+  = f.inputs "Import" do
+    = f.input :user, as: :select, collection: User.companies, label_method: :name, value_method: :id
+    = f.input :import_type, collection: Rightboat::Imports::Base.source_types
+    = f.input :threads
+    = f.input :active
+    = f.input :use_proxy, as: :boolean
+  = f.inputs "Parameters", id: 'import-params'
+  = f.inputs "Scheduling", id: 'import-scheduling' do
+    %span Every
+    = f.input :frequency_quantity, label: false
+    = f.input :frequency_unit, as: :select, collection: Import::FREQUENCY_UNITS, include_blank: false, label: false
+    %span(style="margin-left: 20px;") At:
+    = f.input :at, label: false
+    %li
+      Example: Every 1 day at 01:30<br/><br/>
+      The `At` option is optional and format should be one of: <br/>
+      &nbsp;&nbsp;1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
+  = f.actions
+
+- j_params = Rightboat::Imports::Base.source_types.inject({}) { |h, import_type| h[import_type] = Import.source_class(import_type).params.map{|x| [x, x.to_s.titleize]}; h}
+:javascript
+  $(document).ready(function() {
+    var current_param = #{@import.param.to_json},
+      job_params = #{j_params.to_json};
+
+    $('#import_import_type').change(function(){
+      var type = $(this).val();
+      $('#import-params').hide().find('li').remove()
+      if (params = job_params[type]) {
+        $.each(params, function() {
+          var key = this[0], label = this[1],
+          $input = $('<input>').attr('name', 'import[param][_' + key + ']')
+          .attr('id', 'import_param_' + key).attr('type', 'text')
+          .val(current_param[key] || ''),
+          $label = $('<label>').attr('for', 'import_param_' + key)
+          .addClass('label').html(label).append('<abbr title="required">*</abbr>'),
+          $li = $('<li>').attr('class', 'string input required stringish')
+          .append($label).append($input);
+
+          $('#import-params').find('ol').append($li);
+        });
+        $('#import-params').show();
+      }
+    });
+
+    $('#import_import_type').change();
+  });

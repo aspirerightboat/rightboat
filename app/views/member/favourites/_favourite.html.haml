@@ -1,0 +1,6 @@
+- boat = favourite.boat
+= render layout: 'boats/boat', locals: {boat: boat, disable_social_links: true} do
+  .boat-social-links
+    = favourite_link_to boat
+    = link_to 'Share', '#', class: 'share-link'
+    = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'

@@ -1,0 +1,29 @@
+.boat-thumb-container.col-md-4.col-sm-6.col-xs-12
+  .boat-thumb.thumbnail(data-boat-ref="#{boat.slug}")
+    .boat-img-thumb
+      = link_to boat do
+        = image_tag boat.primary_image.file.url(:thumb)
+    .caption
+      %h4.text-uppercase= boat.manufacturer
+      %h5= boat.model
+      .boat-detail-item.boat-price
+        %span= boat_price(boat)
+
+        %span.small TAX
+        - if boat.tax_paid?
+          %span.tax-status &#10003;
+        - else
+          %span.tax-status &#10007;
+      .boat-detail-item
+        %span Length: #{boat.length_m}
+      .boat-detail-item
+        %span Year: #{boat.year_built}
+      .boat-detail-item
+        %span Location: #{boat.full_location}
+      - unless local_assigns[:disable_social_links]
+        .boat-social-links
+          = favourite_link_to boat, 'Favourite'
+          = link_to 'Share', '#', class: 'share-link'
+          = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'
+      = yield if block_given?
+      .clearfix

@@ -1,0 +1,72 @@
+#search-wrapper.navbar-static-top
+  #home-search.container
+    = image_tag 'logo.png', alt: 'Rightboat', class: 'logo-img'
+    #home-search-form
+      %h2
+        The <strong>global choice</strong><br/>
+        of boats for sale
+
+      = form_tag search_path, method: :get do
+        = hidden_field_tag :price_min, params[:price_min]
+        = hidden_field_tag :price_max, params[:price_max]
+        = hidden_field_tag :length_min, params[:length_min]
+        = hidden_field_tag :length_max, params[:length_max]
+
+        .top-border-wrapper
+          .top-border
+        .bordered-wrapper
+          .left-border-wrapper
+            .left-border
+          #boat-types.form-group.pull-right
+            = radio_button_tag :boat_type, '', params[:boat_type].blank?, id: 'boat_type_all'
+            = label_tag :boat_type_all, 'All', for: 'boat_type_all'
+            = radio_button_tag :boat_type, 'power', params[:boat_type].to_s.downcase == 'power'
+            = label_tag :boat_type_power, 'Power', for: 'boat_type_power'
+            = radio_button_tag :boat_type, 'sail', params[:boat_type].to_s.downcase == 'sail'
+            = label_tag :boat_type_sail, 'Sail', for: 'boat_type_sail'
+
+          .clearfix
+          .form-group.row
+            .col-xs-12= text_field_tag :q, '', placeholder: 'Search', class: 'form-control', id: 'search-input'
+
+          .range-slider-wrapper.row
+            .col-xs-3= label_tag :price
+            .col-xs-9
+              .rb-control-group
+                .rb-control
+                  = slider_tag(:price)
+                .rb-control-group-addon
+                  = select_tag :currency, options_from_collection_for_select(Currency.active, :name, :display_symbol), class: 'select-sm'
+          .range-slider-wrapper.row
+            .col-xs-3= label_tag :length
+            .col-xs-9
+              .rb-control-group
+                .rb-control
+                  = slider_tag(:length)
+                .rb-control-group-addon
+                  = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm'
+
+        .form-group.row
+          = link_to "Advanced Search", '#', class: 'toggle-adv-search'
+          %h3
+            Find your<br/>
+            <strong>Rightboat</strong>
+          %button#search-btn(type='submit')
+            %i
+
+:javascript
+  $(function() {
+    //function formatCurrency (currency) {
+    //  console.log(currency);
+    //  if (!currency.id) { return currency.text; }
+    //  var $currency = $(
+    //    '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+    //  );
+    //  return $currency;
+    //};
+
+    $("#home-search select").select2({
+      minimumResultsForSearch: Infinity
+      //templateResult: formatState
+    });
+  });

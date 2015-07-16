@@ -1,0 +1,11 @@
+- boat = enquiry.boat
+= render layout: 'boats/boat', locals: {boat: boat, disable_social_links: true} do
+  .boat-social-links
+    = favourite_link_to boat, 'Favourite'
+    =# link_to 'Share', '#', class: 'share-link'
+    .text-nowrap.pull-right
+      = link_to [boat, format: :pdf], class: 'pdf-link', target: :blank do
+        %i
+      = link_to 'Search Similar', '#', class: 'btn-flat search-similar'
+      = link_to 'Enquire Again', '#', class: 'btn-flat request-details'
+    .clearfix

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  source_ref: MyString
+  file: MyString
+  boat_id: 
+
+two:
+  source_ref: MyString
+  file: MyString
+  boat_id: 

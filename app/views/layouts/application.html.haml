@@ -1,0 +1,24 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+    %meta(name="viewport" content="width=device-width, initial-scale=1")
+
+    %title Rightboat
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body{id: "#{controller_name}-#{action_name}"}
+    - if content_for? :header
+      = yield :header
+    - else
+      = render 'shared/navbar'
+
+
+    #content-wrapper
+      = yield
+
+    = render 'shared/footer'
+
+    = render 'shared/session_popup' unless user_signed_in?
+    = render 'shared/enquiry_popup'

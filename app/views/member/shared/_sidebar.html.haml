@@ -1,0 +1,14 @@
+
+#sidebar.col-xs-6.col-sm-3.sidebar-offcanvas{:role => "navigation"}
+  .sidebar-nav
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: nav_class_for('member/dashboard#index')}
+        = link_to "My Details", member_root_path
+      %li{class: nav_class_for('member/favourites')}
+        = link_to "My Favorites", member_favourites_path
+      %li{class: nav_class_for('member/dashboard#enquiries')}
+        = link_to "My Requests", member_enquiries_path
+      %li{class: nav_class_for('member/dashboard#subscriptions')}
+        = link_to "My Alerts", member_subscriptions_path
+      %li{class: nav_class_for('member/dashboard#search_histories')}
+        = link_to "My Search History", member_search_histories_path

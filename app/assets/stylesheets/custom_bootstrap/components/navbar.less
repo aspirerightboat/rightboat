@@ -1,0 +1,13 @@
+.navbar-overrides(@xs-gutter);
+@media (min-width: @screen-sm-min) {
+  .navbar-overrides(@sm-gutter);
+}
+@media (min-width: @screen-md-min) {
+  .navbar-overrides(@md-gutter);
+}
+@media (min-width: @screen-lg-min) {
+  .navbar-overrides(@lg-gutter);
+}
+.nav > li:last-child > a {
+  padding-right: 0;
+}

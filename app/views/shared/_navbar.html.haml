@@ -1,0 +1,22 @@
+#normal-navbar
+  %nav#top-navbar.navbar.navbar-default.navbar-static-top
+    .container
+      .navbar-header
+        %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+          %span.sr-only Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+        = link_to root_path, class: 'navbar-brand' do
+          = image_tag 'logo.png', alt: 'Rightboat'
+      #navbar.navbar-collapse.collapse
+        %ul.nav.navbar-nav
+          %li
+            - if content_for? :header_text
+              = yield :header_text
+            - else
+              %h1
+                %span.hidden-sm Find your
+                %strong Rightboat
+        %ul#navbar-links.nav.navbar-nav.navbar-right
+          = render 'shared/nav_links'

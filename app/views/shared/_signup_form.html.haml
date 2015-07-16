@@ -1,0 +1,13 @@
+-# TODO: make ajax working for signup
+= form_tag user_registration_path, class: 'register-form' do
+  #signup-email.form-group
+    = label_tag :email
+    = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
+  .form-group
+    = label_tag :username
+    = text_field_tag :username, '', class: 'form-control', 'data-validetta' => 'required,custom[username]'
+  .form-group
+    = label_tag :password
+    = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
+  .form-group
+    = button_tag 'Register', type: 'submit', class: 'btn-flat btn-full'

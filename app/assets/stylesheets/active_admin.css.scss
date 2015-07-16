@@ -1,0 +1,61 @@
+// SASS variable overrides must be declared before loading up Active Admin's styles.
+//
+// To view the variables that Active Admin provides, take a look at
+// `app/assets/stylesheets/active_admin/mixins/_variables.css.scss` in the
+// Active Admin source.
+//
+//= require_tree ./admin
+
+// For example, to change the sidebar width:
+// $sidebar-width: 242px;
+
+// Active Admin's got SASS!
+@import "active_admin/mixins";
+@import "active_admin/base";
+
+// Overriding any non-variable SASS must be done after the fact.
+// For example, to change the default status-tag color:
+//
+//   .status_tag { background: #6090DB; }
+#import-scheduling {
+  ol {
+    display: table;
+    padding: 15px;
+  }
+  li { display: table-cell;}
+  input[type='number'] {
+    width: 50px;
+  }
+  input[type='text'] {
+    max-width: 140px;
+  }
+  select {
+    text-transform: capitalize;
+    height: 28px;
+    -webkit-appearance: menulist;
+    padding: 3px;
+    background: #FFF;
+    border-radius: 2px;
+    width: 70px;
+  }
+}
+
+a.job-action {
+  border-radius: 2px;
+  background: $link-color;
+  color: #FFF;
+  padding: 3px 7px;
+  text-decoration: none;
+  white-space: nowrap;
+  &:not(:last-child) { margin-right: 7px;}
+  &.job-action-danger {
+    background: $error-color;
+  }
+  &.job-action-warning {
+    background: #BB5;
+  }
+  &[disabled] {
+    color: #AAA;
+    background: #CCC;
+  }
+}

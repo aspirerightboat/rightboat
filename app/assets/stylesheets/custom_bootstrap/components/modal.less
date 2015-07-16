@@ -1,0 +1,27 @@
+.modal-header {
+  padding: 15px 15px 15px @modal-title-padding;
+  min-height: (30px + @modal-title-line-height);
+
+  @media(max-width: @screen-md-max) {
+    padding: 15px 15px 15px @modal-title-padding-md;
+  }
+  @media(max-width: @screen-xs-max) {
+    padding: 15px 15px 15px @modal-title-padding-sm;
+  }
+  h1, h2, h3 { margin: 0; }
+}
+
+.modal-body, .modal-footer {
+  @media(max-width: @screen-md-max) {
+    padding: @modal-inner-padding-md;
+  }
+  @media(max-width: @screen-xs-max) {
+    padding: @modal-inner-padding-sm;
+  }
+}
+
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}

@@ -1,0 +1,35 @@
+%nav#footer.navbar.navbar-default
+  .container
+    %h1.text-center.no-margin The &nbsp;<strong>global &nbsp; choice</strong> &nbsp; of &nbsp; boats &nbsp; for &nbsp; sale
+    .row.rb-links
+      %ul.col-xs-6.col-sm-2.no-divider
+        %a{:href => "#"}
+          = image_tag 'logo-footer.png', alt: 'Rightboat'
+      %ul.col-xs-6.col-sm-3
+        %li= link_to 'About Us', '#'
+        %li= link_to 'Support and Contact', '#'
+        %li= link_to 'Articles and Guides', '#'
+      %ul.col-xs-6.col-sm-3
+        %li= link_to 'Marine Services', '#'
+        %li= link_to 'Sell my boat', '#'
+        %li= link_to 'News', '#'
+      %ul.col-xs-6.col-sm-3.social-links
+        %li= link_to '/Rightboat', '#', class: 'fb-link'
+        %li= link_to '@rightboatdotcom', '#', class: 'tw-link'
+        %li= link_to 'Rightboat', '#', class: 'gplus-link'
+        %li= link_to '/rightboat', '#', class: 'pint-link'
+        %li= link_to '/rightboat-ltd', '#', class: 'ig-link'
+      .clearfix
+    .row.company-info
+      = link_to 'javascript: void(0);', class: 'no-divider' do
+        %span &copy;#{Date.today.year}&nbsp;&nbsp;&nbsp;Rightboat - All Rights Reserved
+      = link_to '#' do
+        %span Policies
+      = link_to '#' do
+        %span Terms and Conditions
+      = mail_to 'info@rightboat.com', nil, class: 'no-divider'
+      .pull-right
+        %span Website by
+        = image_tag 'recognition-logo.png', alt: 'Recognition'
+  = image_tag 'anchor.png', class: 'anchor-img', alt: ''
+.clearfix

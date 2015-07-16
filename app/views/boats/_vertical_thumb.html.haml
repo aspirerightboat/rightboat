@@ -1,0 +1,9 @@
+.boat-vertical-thumb.col-sm-4.col-xs-12.text-center(data-boat-ref="#{boat.slug}")
+  %h4
+    %strong= boat.manufacturer
+    = boat.model
+  %p.price= boat_price(boat)
+  %p Length: #{boat.length_m}
+  %p Year: #{boat.year_built}
+  %p Location: #{boat.full_location}
+  %p.small Listed: #{time_ago_in_words(boat.created_at)} ago

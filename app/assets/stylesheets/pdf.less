@@ -1,0 +1,106 @@
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! AUTOMATICALLY GENERATED FILE. DO NOT MODIFY !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// Core variables and mixins
+@import "twitter/bootstrap/variables.less";
+@grid-gutter-width:     15px;
+
+@import "twitter/bootstrap/mixins.less";
+@import "custom_bootstrap/mixins.less"; // Modify this for custom mixins
+
+@import "twitter/bootstrap/scaffolding.less";
+@import "twitter/bootstrap/type.less";
+@import "twitter/bootstrap/code.less";
+@import "twitter/bootstrap/grid.less";
+@import "twitter/bootstrap/tables.less";
+@import "twitter/bootstrap/forms.less";
+@import "twitter/bootstrap/buttons.less";
+
+@import "twitter/bootstrap/utilities.less";
+@import "twitter/bootstrap/responsive-utilities.less";
+
+@import "pdf/fonts";
+
+html, body {
+  color: #000;
+  font-family: "Freight Sans", arial, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 1.4em;
+  vertical-align: top;
+}
+.broker-info {
+  border: solid 1px #60bbff;
+  vertical-align: top;
+  margin-bottom: 20px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+img {
+  max-width: 100%;
+  display: inline-block;
+}
+.pull-right { float: right;}
+.pull-left { float: left;}
+h1, h2 {
+  font-weight: 300;
+  b, strong { font-weight: bold; }
+  margin: 0;
+}
+
+hr { border-top: 2px solid #60bbff; }
+
+.column {
+  vertical-align: top;
+  .box-sizing(border-box);
+  padding: 0 @grid-gutter-width;
+}
+a { display: inline-block; vertical-align: top;}
+.top-text { padding: 10px; vertical-align: top; text-transform: uppercase; text-align: center; font-size: 12px;}
+.two-columns .column {
+  width: 50%;
+  float: left;
+}
+p {margin: 0 0 1em 0;}
+
+.three-columns .column {
+  width: 33.33%;
+  float: left;
+}
+
+.small { line-height: 1.2em;}
+
+table.qrcode {
+  border-width: 0;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+
+  td {
+    border-width: 0;
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    width: 3px;
+    height: 3px;
+
+    &.black { background-color: #000;}
+    &.white { background-color: #FFF;}
+  }
+}
+
+.spec-container {
+  & > *:first-child { padding-right: 0 !important; }
+  & > *:last-child { padding-left: 0 !important; }
+}
+.spec-table {
+  border-collapse: collapse;
+  tr:not(:last-child) td { border-bottom: 1px solid rgba(96, 187, 255, 0.3); }
+  tr, td, th, tbody, thead, tfoot, td div {
+    page-break-inside: avoid !important;
+  }
+  margin: 0 @grid-gutter-width / 2;
+  margin-bottom: 20px;
+}
+
+.thumbnail { margin-bottom: 15px; }

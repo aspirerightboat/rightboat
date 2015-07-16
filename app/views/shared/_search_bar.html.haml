@@ -1,0 +1,45 @@
+%nav.navbar.navbar-default.nabvar-tools
+  .container
+    = form_tag search_path, method: :get, class: 'navbar-form navbar-left', role: "search" do
+      = text_field_tag :q, params[:q], class: 'form-control', placeholder: "Quick Search"
+    %ul.nav.navbar-nav
+      %li
+        = link_to "Advanced Search", '#', class: 'toggle-adv-search'
+
+    - unless local_assigns[:simple_search_bar]
+      %ul.nav.navbar-nav.navbar-right
+        /%li= link_to "Refine Results", '#'
+        %li
+          .navbar-text
+            %span Sort by
+            = select_tag :sort, options_for_select([['Best Match', 'score'], ['Price', 'price']], current_order_field), class: 'rb-select2-md', id: 'sort-field'
+        %li
+          .navbar-text
+            %span View
+            = select_tag :sort, options_for_select([['Gallery', 'gallery'], ['List', 'list']], current_view_layout), id: 'view-mode'
+.clearfix
+
+:javascript
+  $(function() {
+    function formatViewMode(viewMode, container, escapeMarkup) {
+      var $icon = $('<img>')
+      .attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png')
+      .addClass('view-mode-icon');
+      return $('<div>').append(viewMode.text + ' ').append($icon)
+    }
+    function formatSimpleViewMode(viewMode, container, escapeMarkup) {
+      return $('<img>')
+      .attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png')
+      .addClass('view-mode-icon');
+    }
+
+    $(document).ready(function() {
+      $('select#sort-field').select2({minimumResultsForSearch: Infinity});
+      $('select#view-mode').select2({
+        minimumResultsForSearch: Infinity,
+        formatSelection: formatSimpleViewMode,
+        formatResult: formatViewMode,
+        dropdownCssClass: 'view-mode-dropdown'
+      });
+    });
+  });

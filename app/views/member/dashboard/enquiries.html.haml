@@ -1,0 +1,11 @@
+- content_for :header_text do
+  %h1 My <strong>Rightboat</strong>
+
+.member-content(data-view-layout='list')
+  %h1 My Requests
+  %hr
+  - if @enquiries.blank?
+    .alert.alert-info
+      %h4.no-margin You have no requests yet.
+  - else
+    .row= render partial: 'enquiry', collection: @enquiries, as: :enquiry

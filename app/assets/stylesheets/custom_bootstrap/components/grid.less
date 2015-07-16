@@ -1,0 +1,41 @@
+.container {
+  .container-fixed(@gutter: @xs-gutter);
+
+  @media (min-width: @screen-sm-min) {
+    width: 100%;
+    .container-fixed(@gutter: @sm-gutter);
+  }
+  @media (min-width: @screen-md-min) {
+    width: @container-md;
+    .container-fixed(@gutter: @md-gutter);
+  }
+  @media (min-width: @screen-lg-min) {
+    width: @container-lg;
+    .container-fixed(@gutter: @lg-gutter);
+  }
+}
+
+.row {
+  .make-row(@gutter: @xs-gutter);
+
+  @media (min-width: @screen-sm-min) {
+    .make-row(@gutter: @sm-gutter);
+  }
+  @media (min-width: @screen-md-min) {
+    .make-row(@gutter: @md-gutter);
+  }
+  @media (min-width: @screen-lg-min) {
+    .make-row(@gutter: @lg-gutter);
+  }
+}
+
+.make-rb-grid-columns(@xs-gutter);
+@media (min-width: @screen-sm-min) {
+  .make-rb-grid-columns(@sm-gutter);
+}
+@media (min-width: @screen-md-min) {
+  .make-rb-grid-columns(@md-gutter);
+}
+@media (min-width: @screen-lg-min) {
+  .make-rb-grid-columns(@lg-gutter);
+}

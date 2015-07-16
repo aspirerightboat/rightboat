@@ -1,0 +1,45 @@
+#session-popup.modal.modal-login.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+      .modal-body
+        .signup-area.row
+          %h2.text-center Sing Up
+          .col-sm-offset-3.col-sm-6.col-xs-12
+            = render 'shared/signup_form'
+            %p
+              Do you have an account already?
+              = link_to "Login", '#', class: 'user-login'
+        .signin-area
+          .row#split-row
+            .col-sm-6
+              %h2 Sing In
+              %p If you already have an account, please enter your details:
+              = form_tag user_session_path, class: 'session-form' do
+                .form-group
+                  = label_tag :email, 'Account'
+                  = text_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Username or Email'
+                .form-group
+                  = label_tag :password
+                  = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Password'
+                .form-group
+                  = check_box_tag :remember_me
+                  = label_tag :remember_me
+                .form-group
+                  = button_tag 'Login', type: 'submit', class: 'btn-flat btn-full'
+                .form-group
+                  = link_to "Forgotten your password?", '#', id: 'forgot-link'
+            .col-sm-6
+              %h2 Join for free
+              %p Sign up now for free and discover how easy it is to keep up to date with THE latest boats for sale. Find your right boat, and tailor your voyage to becoming a boat owner.
+              %p Benefits of becoming a member:
+              %ul
+                %li Set up tailored alerts
+                %li Personalise your experience
+                %li Download full specifications and broker details
+                %li Keep tabs on your favourite boats
+              = link_to "Register", '#', class: 'btn-flat btn-full user-register'
+          .row
+            %p.trader-hint Are you a trader? Register in our Broker Area #{link_to "here", '#'}.

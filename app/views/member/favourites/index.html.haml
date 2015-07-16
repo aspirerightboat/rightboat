@@ -1,0 +1,12 @@
+- content_for :header_text do
+  %h1 My <strong>Favourites</strong>
+
+.member-content(data-view-layout="list")
+  %h1 My Favourites
+  %hr
+  - if @favourites.blank?
+    .alert.alert-info
+      %h4.no-margin You have no boats booked yet.
+  - else
+    #favourites.row= render partial: 'favourite', collection: @favourites, as: :favourite
+

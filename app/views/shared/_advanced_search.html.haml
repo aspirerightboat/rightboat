@@ -1,0 +1,194 @@
+#advanced-search-wrapper.navbar-static-top
+  = image_tag 'anchor.png', class: 'anchor-img', alt: ''
+  #advanced-search.container
+    %button.close{"aria-label" => "Close", :type => "button"}
+      %span{"aria-hidden" => "true"} &times;
+    %h2 Filter Results
+
+    = form_tag search_path, method: :get, class: 'row' do
+      = hidden_field_tag :year_min
+      = hidden_field_tag :year_max
+      = hidden_field_tag :price_min
+      = hidden_field_tag :price_max
+      = hidden_field_tag :length_min
+      = hidden_field_tag :length_max
+
+      .col-xs-12
+        .form-group.row
+          .col-xs-4.col-sm-2
+            = label_tag :keywords, 'Keywords'
+          .col-xs-8.col-sm-10
+            = text_field_tag :q, params[:q], id: 'keywords', class: 'tags-input'
+      .col-sm-6.col-xs-12
+        .form-group.row
+          .col-xs-4
+            = label_tag :manufacturer_model, 'Manufacturer / Model'
+          .col-xs-8
+            = text_field_tag :manufacturer_model, params[:manufacturer_model], class: 'select-black select-full tags-input'
+        -#.form-group.row
+        -#  .col-xs-4
+        -#    = label_tag :boat_type
+        -#  .col-xs-8
+        -#    = check_box_tag 'boat_type[all]'
+        -#    = label_tag :boat_type, 'All'
+        -#    = check_box_tag 'boat_type[power]'
+        -#    = label_tag :boat_type, 'Power(131)'
+        -#    = check_box_tag 'boat_type[sail]'
+        -#    = label_tag :boat_type, 'Sail(23)'
+        .range-slider-wrapper.row
+          .col-xs-5.col-sm-4
+            = label_tag :year
+          .col-xs-7.col-sm-8
+            = slider_tag(:year, max: Date.today.year)
+        .range-slider-wrapper.row
+          .col-xs-5.col-sm-4
+            .rb-control-group
+              .rb-control
+                = label_tag :length
+              .rb-control-group-addon
+                = select_tag :length_unit, options_for_select(['ft', 'm']), class: 'select-white select-sm select-general'
+          .col-xs-7.col-sm-8
+            = slider_tag(:length, unit: params[:length_unit] || 'ft')
+        .range-slider-wrapper.row
+          .col-xs-5.col-sm-4
+            .rb-control-group
+              .rb-control
+                = label_tag :price
+              .rb-control-group-addon
+                = select_tag :currency, options_from_collection_for_select(Currency.all, :name, :display_symbol, current_currency), class: 'select-white select-sm select-general'
+          .col-xs-7.col-sm-8
+            = slider_tag(:price)
+        .form-group.row
+          .col-xs-4
+            = label_tag :tax_status
+          .col-xs-8
+            = check_box_tag 'tax_status[paid]', true, (params[:tax_status] || {})['paid'], class: 'inverse'
+            = label_tag :tax_status_paid, 'Paid', class: 'tax-paid' do
+              Paid
+              %i
+            = check_box_tag 'tax_status[unpaid]', true, (params[:tax_status] || {})['unpaid'], class: 'inverse'
+            = label_tag :tax_status_unpaid, 'Unpaid', class: 'tax-not-paid' do
+              Unpaid
+              %i
+      .col-sm-6.col-xs-12
+        .form-group.row
+          .col-xs-4
+            = label_tag :new_used
+          .col-xs-8
+            = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
+            = label_tag :new_used_new, 'New'
+            = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
+            = label_tag :new_used_used, 'Used'
+        .form-group.row
+          .col-xs-4
+            = label_tag :fuel_type
+          .col-xs-8
+            = select_tag :fuel_type, options_for_select(['Diesel', 'Petrol', 'Other'], params[:fuel_type]), class: 'select-black select-full select-general', multiple: 'multiple'
+        .form-group.row
+          .col-xs-4
+            = label_tag :country
+          .col-xs-8
+            = select_tag :country, options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full select-general', multiple: 'multiple'
+        .form-group.row
+          .col-xs-4
+            = label_tag :ref_no, 'Ref No.'
+          .col-xs-8
+            = text_field_tag :ref_no, '', placeholder: 'e.g. RB48573', class: 'form-control'
+        .form-group.row
+          .col-xs-push-4.col-xs-8
+            = button_tag 'Search', type: 'submit', class: 'btn-flat'
+      .result-info.col-sm-12.col-md-6.col-md-offset-6
+        - if @boats
+          Results: #{@boats.total_count} boats fit your criteria
+
+:javascript
+  $(function() {
+    //function formatCurrency (currency) {
+    //  console.log(currency);
+    //  if (!currency.id) { return currency.text; }
+    //  var $currency = $(
+    //    '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+    //  );
+    //  return $currency;
+    //};
+
+    $('select.select-general').each(function() {
+      var options = {
+        //templateResult: formatState,
+        minimumResultsForSearch: Infinity
+      };
+
+      if ($(this).hasClass('select-white')) {
+        options = $.extend(options, {dropdownCssClass: 'select-white'});
+      }
+
+      $(this).select2(options);
+    });
+
+    $('#manufacturer_model').select2({
+      tags: true,
+      minimumInputLength: 0,
+      tokenSeparators: [','],
+      initSelection: function(el, callback) {
+        var tags = $(el).val().split(','),
+        data = $.map(tags, function(token) {
+          return {id: token, text: token};
+        });
+        callback(data);
+      },
+      ajax: {
+        url: "/manufacturer-model",
+        dataType: 'JSON',
+        delay: 150,
+        data: function (term, page) {
+          return { q: term, page: page};
+        },
+        results: function (data, page) {
+          return {
+            results: $.map(data.search, function(item) {
+              return { id: item, text: item }
+            })
+          };
+        },
+        cache: true
+      }
+    });
+
+    $('#keywords').select2({
+      tags: true,
+      minimumInputLength: 1,
+      tokenSeparators: [','],
+      initSelection: function(el, callback) {
+        var tags = $(el).val().split(','),
+        data = $.map(tags, function(token) {
+          return {id: token, text: token};
+        });
+        callback(data);
+      },
+      ajax: {
+        url: "/suggestion",
+        dataType: 'JSON',
+        delay: 150,
+        data: function (term, page) {
+          return {
+            q: term, // search term
+            page: page
+          };
+        },
+        results: function (data, page) {
+          // parse the results into the format expected by Select2.
+          // since we are using custom formatting functions we do not need to
+          // alter the remote JSON data
+          return {
+            results: $.map(data.search, function(item) {
+              return {
+                id: item,
+                text: item
+              }
+            })
+          };
+        },
+        cache: true
+      }
+    });
+  });

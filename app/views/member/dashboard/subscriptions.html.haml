@@ -1,0 +1,15 @@
+- content_for :header_text do
+  %h1 My <strong>Alerts</strong>
+
+.member-content(data-view-layout='list')
+  %h1 My Alerts
+  %hr
+  = form_for current_user, url: member_subscriptions_path do |f|
+    = f.collection_check_boxes :subscription_ids, Subscription.all, :id, :description do |b|
+      .form-group
+        = b.check_box
+        &nbsp;&nbsp;
+        = b.label
+    .row
+      .col-xs-6.col-sm-4
+        = f.submit 'Save Changes', class: 'btn-flat btn-full'

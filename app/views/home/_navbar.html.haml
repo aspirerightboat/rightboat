@@ -1,0 +1,15 @@
+= render 'shared/advanced_search'
+
+%nav.navbar.navbar-default.navbar-static-top
+  .container
+    .navbar-header
+      %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      .navbar-brand
+        = render 'search'
+    #navbar.navbar-collapse.collapse
+      %ul#navbar-links.nav.navbar-nav.navbar-right
+        = render 'shared/nav_links'

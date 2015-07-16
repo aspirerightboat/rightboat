@@ -1,0 +1,75 @@
+#advanced-search-wrapper {
+  background: #13022c;
+  position: relative;
+
+  input[type=checkbox] {
+    margin: 0 6px;
+    &:first-child { margin-left: 0; }
+  }
+}
+
+#advanced-search {
+  position: relative;
+  display: none;
+
+  & > h2 {
+    margin-bottom: 24px;
+    margin-top: 27px;
+  }
+  h4 { margin-top: 0;}
+
+  .close {margin-top: 27px;}
+  .tags-input {
+    width: 100%;
+  }
+
+  .ui-slider .ui-slider-handle {
+    background: #60bbff;
+  }
+  .ui-slider .ui-slider-range {
+    background: #FFF;
+  }
+  .btn-flat {
+    width: 100%;
+    .button-variant(#FFF; #60bbff; #60bbff);
+  }
+  .result-info {
+    font-size: 34px;
+    font-weight: normal;
+  }
+}
+
+body:not(#home-index) #advanced-search:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  left: 30px;
+  bottom: -72px;
+  width: 60px;
+  height: 72px;
+  background: image-url('logo.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.tax-paid, .tax-not-paid {
+  position: relative;
+  padding-right: 32px;
+  line-height: 15px;
+  font-weight: normal;
+  margin-right: 15px;
+  i {
+    content: ' ';
+    background-image: image-url('sprites.png');
+    background-position: -37px -73px;
+    background-repeat: no-repeat;
+    display: block;
+    position: absolute;
+    width: 25px;
+    height: 15px;
+    right: 0;
+    top: 2px;
+  }
+}
+.tax-not-paid i {
+  background-position: -74px -73px;
+}

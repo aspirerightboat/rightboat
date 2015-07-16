@@ -1,0 +1,24 @@
+- content_for :header_text do
+  %h1
+    %span.hidden-sm Find your
+    %strong Rightboat
+  %h3
+    Search Results:
+    %strong #{@boats.total_count}
+    %span.hidden-sm boats for sale
+
+- content_for :header do
+  = render 'shared/advanced_search'
+  = render 'shared/navbar'
+
+= render 'shared/search_bar'
+#main-content.container
+  #boats-list.row(data-view-layout="#{current_view_layout}")
+    = render @boats
+
+  - if @boats.total_pages > 1
+    .row
+      = link_to '#', class: 'view-more-link' do
+        %span VIEW MORE
+        %span
+          %i.glyphicon.glyphicon-chevron-down

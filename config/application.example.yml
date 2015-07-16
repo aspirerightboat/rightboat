@@ -1,0 +1,12 @@
+development:
+  twitter_handle:     "rightboatdotcom"
+  twitter_key:        "key"
+  twitter_secret:     "secret"
+  mongo_url:          "mongodb://127.0.0.1:27017/rightboat_development"
+
+production:
+  twitter_handle:     "rightboatdotcom"
+  twitter_key:        "key"
+  twitter_secret:     "secret"
+  mongo_url:          "mongodb://127.0.0.1:27017/rightboat_production"
+

@@ -76,7 +76,7 @@ module Rightboat
           value ||= instance_variable_get("@#{attr_name}".to_sym)
           value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
           value = nil if value =~ /^false$/i
-          value = 'Yes' if value =~ /^true$/i
+          value = 'Yes' if value =~ /^true|1|yes$/i
 
           is_blank_value = value.blank? || value.to_s =~ /^[\.0]+$/
 

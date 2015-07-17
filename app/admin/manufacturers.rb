@@ -26,9 +26,11 @@ ActiveAdmin.register Manufacturer do
     column :updated_at
     actions do |record|
       if record.active?
-        item "Disable", [:disable, :admin, record], method: :post, class: 'job-action job-action-warning'
+        item "Disable", [:disable, :admin, record], method: :post, class: 'job-action job-action-warning',
+             'data-confirm' => "The boats from this manufcturer[#{record}] will not appear. Are you sure?"
       else
-        item "Activate", [:active, :admin, record], method: :post, class: 'job-action'
+        item "Activate", [:active, :admin, record], method: :post, class: 'job-action',
+             'data-confirm' => "The boats will not appear until you activate each model under this manufacturer[#{record}]"
       end
       item "Merge".html_safe, 'javascript:void(0)',
               class: 'merge-record job-action',

@@ -87,6 +87,8 @@ class Boat < ActiveRecord::Base
 
   default_scope -> { active }
 
+  delegate :tax_paid?, to: :vat_rate
+
   def self.similar_boats(boat, options = {})
     # TODO: need confirmation from RB
     return [] unless boat.manufacturer
@@ -125,7 +127,7 @@ class Boat < ActiveRecord::Base
       ['Year Built', self.year_built],
       ['Location', self.full_location],
       ['LOA(m)', self.length_m],
-      ['Tax Status', self.vat_rate],
+      ['Tax Status', self.tax_status],
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
     ]
@@ -167,9 +169,8 @@ class Boat < ActiveRecord::Base
     !!self.booked_by(user)
   end
 
-  def tax_paid?
-    # TODO: need confirmation from RB
-    self.vat_rate.to_s =~ /inc vat|tax paid/i
+  def tax_status
+    vat_rate ? vat_rate.tax_status : 'NA'
   end
 
   private

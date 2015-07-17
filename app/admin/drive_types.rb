@@ -23,9 +23,11 @@ ActiveAdmin.register DriveType do
 
     actions do |record|
       if record.active?
-        item "Disable", [:disable, :admin, record], method: :post, class: 'job-action job-action-warning'
+        item "Disable", [:disable, :admin, record], method: :post, class: 'job-action job-action-warning',
+             'data-confirm' => "This drive type will not appear in boat specification. Are you sure?"
       else
-        item "Activate", [:active, :admin, record], method: :post, class: 'job-action'
+        item "Activate", [:active, :admin, record], method: :post, class: 'job-action',
+             'data-confirm' => "This drive type will appear in boat specification. Are you sure?"
       end
       item "Merge".html_safe, 'javascript:void(0)',
               class: 'merge-record job-action',

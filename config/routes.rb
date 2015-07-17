@@ -29,6 +29,9 @@ Rails.application.routes.draw do
     resources :specifications do
       resources :misspellings
     end
+    resources :fuel_types do
+      resources :misspellings
+    end
     resources :vat_rates do
       resources :misspellings
     end

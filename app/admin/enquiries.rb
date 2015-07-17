@@ -1,5 +1,5 @@
 ActiveAdmin.register Enquiry, as: 'Lead' do
-  menu label: 'Leads', parent: "Other", priority: 1
+  menu label: 'Leads', priority: 9
 
   config.sort_order = 'created_at_desc'
 

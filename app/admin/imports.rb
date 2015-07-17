@@ -38,7 +38,13 @@ ActiveAdmin.register Import do
     column :user, sortable: :user_id
     column :active
     column 'Sechuling Status' do |job|
-      job.running? ? status_tag('Running', :ok) : status_tag(job.active? && job.valid? ? 'Waiting' : 'Inactive')
+      status = job.status
+      case status
+        when /running/i then status_tag(status, :ok)
+        when /loading/i then status_tag(status, :yes)
+        when /waiting/i then status_tag(status, :no)
+        when /inactive/i then status_tag(status, :error)
+      end
     end
     column :import_type
     column :last_ran_at, sortable: :last_ran_at do |import|

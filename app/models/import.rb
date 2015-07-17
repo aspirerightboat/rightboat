@@ -52,6 +52,14 @@ class Import < ActiveRecord::Base
     false
   end
 
+  def status
+    if running?
+      self.pid.to_i > 0 ? 'Running' : 'Loading'
+    else
+      active? && valid? ? 'Waiting' : 'Inactive'
+    end
+  end
+
   def run!
     self.update_column :queued_at, Time.now
     self.update_column :pid, -1

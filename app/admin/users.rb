@@ -1,5 +1,7 @@
 ActiveAdmin.register User do
-  permit_params :username, :email, :password, :password_confirmation, :first_name, :last_name, :company_name, :role
+  permit_params :username, :email, :password, :password_confirmation,
+                :first_name, :last_name, :company_name, :role,
+                :avatar, :avatar_cache, :company_weburl, :company_description
 
   config.sort_order = 'role_asc'
   menu priority: 8
@@ -31,22 +33,29 @@ ActiveAdmin.register User do
   end
 
   filter :role, collection: -> { User::ROLES }, as: :select
+  filter :username
   filter :email
+  filter :first_name
+  filter :last_name
+  filter :company_name
   filter :current_sign_in_at
   filter :sign_in_count
   filter :created_at
 
   form do |f|
     f.inputs "User Details" do
+      f.input :role, as: :select, collection: User::ROLES, include_blank: false
+      f.input :avatar, as: :file, hint: image_tag(f.object.avatar_url(:thumb))
+      f.input :avatar_cache, as: :hidden
       f.input :username
       f.input :title, as: :select, collection: User::TITLES
       f.input :first_name
       f.input :last_name
-      f.input :company_name
-      f.input :role, as: :select, collection: User::ROLES, include_blank: false
       f.input :email
       f.input :password
-      f.input :password_confirmation
+      f.input :company_name
+      f.input :company_weburl
+      f.input :company_description, as: :text
     end
     f.actions
   end

@@ -22,11 +22,11 @@ module SunspotRelation
         reflection = self.class.reflections[relation.to_s]
         cardinality = reflection.macro.to_s.gsub('has_', '')
         if cardinality =~ /many/
-          has_change = changes.blank?
+          has_change = changed?
           yield
-          send(relation).unscoped.solr_index if has_change
+          send(relation).solr_index if has_change
         elsif cardinality == 'one' or cardinality == 'belongs_to'
-          has_change = changes.blank?
+          has_change = changed?
           records = [send(relation)] if has_change
           yield
           records << send(relation) if has_change

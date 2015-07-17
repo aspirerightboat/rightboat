@@ -6,6 +6,7 @@ ActiveAdmin.register Country do
 
   permit_params :name, :iso, :currency_id, :active
 
+  filter :active
   filter :name
   filter :iso, label: 'ISO 3166'
 

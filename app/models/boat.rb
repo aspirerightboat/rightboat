@@ -78,6 +78,7 @@ class Boat < ActiveRecord::Base
 
   sunspot_related :country, :manufacturer, :model, :fuel_type, :boat_type
   validates_presence_of :manufacturer, :model
+  validate :model_inclusion_of_manufacturer
 
   scope :featured, -> { where featured: true }
   scope :reduced, -> { where(recently_reduced: true) }
@@ -179,4 +180,9 @@ class Boat < ActiveRecord::Base
     ]
   end
 
+  def model_inclusion_of_manufacturer
+    if model && model.manufacturer != self.manufacturer
+      self.errors.add :model_id, 'should belongs to manufacturer'
+    end
+  end
 end

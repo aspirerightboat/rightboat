@@ -37,7 +37,8 @@ class User < ActiveRecord::Base
   validates_inclusion_of :title, within: TITLES, allow_blank: true
 
   validates_presence_of :first_name, :last_name, unless: :organization?
-  validates_presence_of :company_name, if: :organization?
+  validates_presence_of :company_name, :company_weburl, :company_description, if: :organization?
+  validates_url :company_weburl, allow_blank: true, if: :organization?
 
   after_create :create_subscriptions!
 

@@ -4,7 +4,7 @@ ActiveAdmin.register Specification do
   config.sort_order = 'name_asc'
   menu parent: "Boats", label: "Specifications"
 
-  permit_params :display_name, :active
+  permit_params :name, :display_name, :active
 
   filter :name
   filter :active, as: :boolean
@@ -36,10 +36,9 @@ ActiveAdmin.register Specification do
 
   form do |f|
     f.inputs do
-      f.input :name, input_html: { disabled: :disabled },
-              hint: "You can't edit name. Please use `display name` or `active` feature for hide in front site"
+      f.input :name, input_html: !f.object.new_record? ? { disabled: :disabled,
+              hint: "You can't edit name. Please use `display name` or `active` feature for hide in front site"} : {}
       f.input :display_name
-      # TODO: implement misspellings
     end
 
     f.actions

@@ -29,6 +29,7 @@ gem 'fog'
 gem 'twitter'
 gem 'twitter-text'
 gem 'figaro'
+gem 'validate_url'
 
 # deleted_at
 gem 'permanent_records'

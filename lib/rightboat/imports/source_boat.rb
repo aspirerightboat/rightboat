@@ -131,17 +131,15 @@ module Rightboat
           target.office = office
         end
 
-        unless ENV["SKIP_DOWNLOAD_IMAGES"]
-          images.each do |url|
-            if target.new_record?
-              img = BoatImage.new(source_url: url, boat: target)
-              img.cache_file_from_source_url
-              target.boat_images << img if img.valid?
-            else
-              img = target.boat_images.where(source_url: url).first_or_initialize
-              img.cache_file_from_source_url
-              img.save
-            end
+        images.each do |url|
+          if target.new_record?
+            img = BoatImage.new(source_url: url, boat: target)
+            img.cache_file_from_source_url
+            target.boat_images << img if img.valid?
+          else
+            img = target.boat_images.where(source_url: url).first_or_initialize
+            img.cache_file_from_source_url
+            img.save
           end
         end
 

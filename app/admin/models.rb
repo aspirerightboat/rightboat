@@ -4,6 +4,8 @@ ActiveAdmin.register Model do
   config.sort_order = 'name_asc'
   menu parent: "Boats", label: "Models", priority: 2
 
+  belongs_to :manufacturer, optional: true
+
   permit_params :manufacturer_id, :name, :active, :sailing
   filter :name
   filter :manufacturer, collection: -> { Manufacturer.active.order("name asc") }
@@ -11,6 +13,7 @@ ActiveAdmin.register Model do
 
 
   index do
+    column :id
     column :manufacturer, sortable: :manufacturer_id
     column :name
     column "# Boats" do |r|
@@ -22,8 +25,8 @@ ActiveAdmin.register Model do
     column :active do |r|
       r.active? ? status_tag('Active', :ok) : status_tag('Inactive', :error)
     end
-    column "Sailing?", :sailing do |r|
-      r.sailing? ? "Yes" : "No"
+    column "Sailing?", sortable: :sailing do |r|
+      r.sailing? ? status_tag("Yes", :ok) : status_tag("No")
     end
     column :updated_at
 

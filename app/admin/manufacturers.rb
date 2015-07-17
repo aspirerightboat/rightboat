@@ -14,6 +14,9 @@ ActiveAdmin.register Manufacturer do
     column :active do |r|
       r.active? ? status_tag('Active', :ok) : status_tag('Inactive', :error)
     end
+    column "# Models" do |r|
+      link_to r.models.count, [:admin, r, :models]
+    end
     column "# Boats" do |r|
       r.boats.count
     end

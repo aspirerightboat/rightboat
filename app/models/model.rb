@@ -1,5 +1,5 @@
 class Model < ActiveRecord::Base
-  include SunspotRelation
+  include AdvancedSolrIndex
   include FixSpelling
 
   extend FriendlyId
@@ -9,7 +9,7 @@ class Model < ActiveRecord::Base
 
   belongs_to :manufacturer, inverse_of: :models
 
-  sunspot_related :boats
+  solr_update_association :boats, fields: [:active, :name, :manufacturer_id]
 
   validates_presence_of :manufacturer, :name
   validates_uniqueness_of :name, scope: :manufacturer_id
@@ -25,7 +25,7 @@ class Model < ActiveRecord::Base
     end
     integer :manufacturer_id
     boolean :live do |record|
-      record.active? && record.boats.count > 0
+      record.manufacturer.try(&:active?) && record.active? && record.boats.count > 0
     end
   end
   alias_attribute :name_ngrme, :name

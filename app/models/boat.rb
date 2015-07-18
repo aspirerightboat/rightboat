@@ -1,6 +1,6 @@
 class Boat < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
-  include SunspotRelation
+  include AdvancedSolrIndex
 
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
@@ -76,7 +76,7 @@ class Boat < ActiveRecord::Base
   belongs_to :currency,      inverse_of: :boats
   belongs_to :country,       inverse_of: :boats
 
-  sunspot_related :country, :manufacturer, :model, :fuel_type, :boat_type
+  solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
   validates_presence_of :manufacturer, :model
   validate :model_inclusion_of_manufacturer
 

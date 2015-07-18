@@ -70,7 +70,7 @@ module Rightboat
           value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
           target.send "#{attr_name}=", value
         end
-        target.revive if target.deleted?
+        target.revive(true) if target.deleted?
 
         spec_proc = Proc.new do |attr_name, value|
           value ||= instance_variable_get("@#{attr_name}".to_sym)

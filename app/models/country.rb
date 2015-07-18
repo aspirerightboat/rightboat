@@ -1,5 +1,5 @@
 class Country < ActiveRecord::Base
-  include SunspotRelation
+  include AdvancedSolrIndex
   include FixSpelling
 
   extend FriendlyId
@@ -8,7 +8,7 @@ class Country < ActiveRecord::Base
   has_many :boats, inverse_of: :country, dependent: :restrict_with_error
   belongs_to :currency, inverse_of: :countries
 
-  sunspot_related :boats
+  solr_update_association :boats
 
   validates_presence_of :iso, :name
   validates_uniqueness_of :iso, :name, allow_blank: true

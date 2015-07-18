@@ -1,5 +1,5 @@
 class Manufacturer < ActiveRecord::Base
-  include SunspotRelation
+  include AdvancedSolrIndex
   include FixSpelling
 
   extend FriendlyId
@@ -8,7 +8,7 @@ class Manufacturer < ActiveRecord::Base
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
   has_many :boats, inverse_of: :manufacturer, dependent: :restrict_with_error
 
-  sunspot_related :models, :boats
+  solr_update_association :models, :boats, fields: [:active, :name]
   mount_uploader :logo, AvatarUploader
 
   validates_presence_of :name

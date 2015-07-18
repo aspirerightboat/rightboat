@@ -1,10 +1,10 @@
 class VatRate < ActiveRecord::Base
   include FixSpelling
-  include SunspotRelation
+  include AdvancedSolrIndex
 
   has_many :boats, inverse_of: :vat_rate, dependent: :restrict_with_error
 
-  sunspot_related :boats
+  solr_update_association :boats, fields: [:active, :name]
 
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true

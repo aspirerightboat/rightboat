@@ -34,7 +34,7 @@ ActiveAdmin.register Model do
       if record.active?
         item "Disable", [:disable, :admin, record], method: :post, class: 'job-action job-action-warning', 'data-confirm' => 'These models will not be shown. Are you sure?'
       else
-        options = record.manufacturer.active? ? {} : {'data-confirm' => "The manufacturer is not activated. These models wil not appear until manufacturer[#{model.manufactuer}] activated."}
+        options = record.manufacturer.active? ? {} : {'data-confirm' => "The manufacturer is not activated. These models wil not appear until manufacturer[#{record.manufacturer}] activated."}
         item "Activate", [:active, :admin, record], options.merge(method: :post, class: 'job-action')
       end
       item "Merge".html_safe, 'javascript:void(0)',

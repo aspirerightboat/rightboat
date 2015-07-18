@@ -10,6 +10,7 @@ ActiveAdmin.register Manufacturer do
   filter :active, as: :boolean
 
   index do
+    column :id
     column :name
     column :active do |r|
       r.active? ? status_tag('Active', :ok) : status_tag('Inactive', :error)

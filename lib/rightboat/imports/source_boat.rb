@@ -58,15 +58,19 @@ module Rightboat
         # some sources has only merged string instead of separate manufacturer/model
         # in this case, search db and find first
         # if not exists in db, use split method
-        #  e.g. yachtworld: Marine Projects Sigma 38
+        #  e.g. yachtworld: Marine Projects Sigma 38, Alloy Yachts Pilothouse
 
-        manufacturer, _, model = mnm.rpartition(/\s+/)
         search = Sunspot.search(Boat) do |q|
-          q.with :manufacturer, mnm
+          q.with :manufacturer_model, mnm
           q.order_by :live, :desc
           q.paginate per_page: 1
         end
-        search.raw_results.count
+        if (boat = search.results.first)
+          self.manufacturer = boat.manufacturer
+          self.model = boat.model
+        else
+          self.manufacturer, self.model = mnm.split(/\s+/, 2)
+        end
       end
 
       def initialize(attrs = {})
@@ -131,22 +135,25 @@ module Rightboat
         RELATION_ATTRIBUTES.each do |attr_name|
           klass = attr_name.to_s.camelize.constantize
           value = instance_variable_get("@#{attr_name}".to_sym)
-          if attr_name.to_sym == :model
-            query_option = { manufacturer_id: target.manufacturer_id }
-          elsif attr_name.to_sym == :engine_model
-            query_option = { engine_manufacturer_id: target.engine_manufacturer_id }
-          else
-            query_option = {}
+          unless value.is_a?(AcitveRecord::Base)
+            if attr_name.to_sym == :model
+              query_option = { manufacturer_id: target.manufacturer_id }
+            elsif attr_name.to_sym == :engine_model
+              query_option = { engine_manufacturer_id: target.engine_manufacturer_id }
+            else
+              query_option = {}
+            end
+            if value.blank? || value.to_s =~ /^[\.0]+$/
+              value = nil
+            elsif attr_name.to_sym == :currency
+              value = klass.find_by_name(value)
+              # TODO: report error for nil currency
+            else
+              value = klass.query_with_aliases(value).where(query_option).first_or_create
+            end
           end
-          if value.blank? || value.to_s =~ /^[\.0]+$/
-            relation_record = nil
-          elsif attr_name.to_sym == :currency
-            relation_record = klass.find_by_name(value)
-            # TODO: report error for nil currency
-          else
-            relation_record = klass.query_with_aliases(value).where(query_option).first_or_create
-          end
-          target.send "#{attr_name}=", relation_record
+
+          target.send "#{attr_name}=", value
         end
 
         unless @office.blank?

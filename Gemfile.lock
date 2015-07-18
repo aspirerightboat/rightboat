@@ -281,7 +281,7 @@ GEM
       tilt
     less-rails-bootstrap (3.3.4.0)
       less-rails (>= 2.6, <= 2.8)
-    libv8 (3.3.10.4)
+    libv8 (3.16.14.11)
     loofah (2.0.2)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -365,6 +365,7 @@ GEM
       i18n
       polyamorous (~> 1.2)
     rdoc (4.2.0)
+    ref (2.0.0)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
     rmagick (2.15.2)
@@ -406,8 +407,9 @@ GEM
       rails (>= 3)
       sunspot (= 2.2.0)
     sunspot_solr (2.2.0)
-    therubyracer (0.9.10)
-      libv8 (~> 3.3.10)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)

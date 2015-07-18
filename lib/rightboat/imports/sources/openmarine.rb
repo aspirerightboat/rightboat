@@ -95,7 +95,7 @@ module Rightboat
           boat.price = advert_features.at("asking_price").inner_html
           boat.currency = advert_features.at("asking_price")["currency"]
           poa = advert_features.at("asking_price")["poa"]
-          boat.poa = true if poa.to_s =~ /^(false|0|no)$/i
+          boat.poa = true unless poa.to_s =~ /^(false|0|no)$/i
           boat.description = advert_features.search("marketing_descs/marketing_desc").map do |marketing_desc|
             if !marketing_desc['language'] || marketing_desc['language'] =~ /en/i
               marketing_desc.inner_html.gsub('&lt;br&gt;',"\n")

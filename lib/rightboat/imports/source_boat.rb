@@ -3,6 +3,8 @@ require 'nokogiri'
 module Rightboat
   module Imports
     class SourceBoat
+      class_attribute :mnm_fixes
+
       include ActiveModel::Validations
       include Utils
 
@@ -49,6 +51,27 @@ module Rightboat
       (NORMAL_ATTRIBUTES + SPEC_ATTRS + DYNAMIC_ATTRIBUTES + RELATION_ATTRIBUTES).each do |attr_name|
         define_method "#{attr_name}=" do |v|
           instance_variable_set "@#{attr_name}".to_sym, cleanup_string(v)
+        end
+      end
+
+      def manufacturer_model=(mnm)
+        # some sources has only merged string instead of separate manufacturer/model
+        # in this case, search db and find first
+        # if not exists in db, use split method
+        #  e.g. yachtworld: Marine Projects Sigma 38
+
+        manufacturer, _, model = mnm.rpartition(/\s+/)
+        search = Sunspot.search(Boat) do |q|
+          q.with :manufacturer, mnm
+          q.order_by :live, :desc
+          q.paginate per_page: 1
+        end
+        search.raw_results.count
+      end
+
+      def initialize(attrs = {})
+        attrs.each do |k, v|
+          send "#{k}=", v
         end
       end
 
@@ -101,7 +124,9 @@ module Rightboat
         end
 
         SPEC_ATTRS.each { |attr_name| spec_proc.call(attr_name) }
-        @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
+        unless @missing_spec_attrs.blank?
+          @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
+        end
 
         RELATION_ATTRIBUTES.each do |attr_name|
           klass = attr_name.to_s.camelize.constantize
@@ -161,7 +186,7 @@ module Rightboat
 
       private
       def require_price
-        if !poa && price.blank?
+        if !(poa || price.to_i > 0)
           self.errors.add :price, "can't be blank"
         end
       end

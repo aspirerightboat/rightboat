@@ -1,6 +1,6 @@
 check process dj_rightboat
-  with pidfile <%= fetch :shared_path %>/tmp/pids/delayed_job.pid
-  start program = "/home/ubuntu/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :release_path %>/bin/delayed_job start'"
+  with pidfile <%= fetch :deploy_to %>/current/tmp/pids/delayed_job.pid
+  start program = "/home/ubuntu/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :deploy_to %>/current/bin/delayed_job start'"
         as uid ubuntu and gid ubuntu
-  stop program = "/home/ubuntu/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :release_path %>/bin/delayed_job stop'"
+  stop program = "/home/ubuntu/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :deploy_to %>/current/bin/delayed_job stop'"
 			 as uid ubuntu and gid ubuntu

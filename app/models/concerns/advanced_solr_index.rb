@@ -2,6 +2,16 @@ module AdvancedSolrIndex
   extend ActiveSupport::Concern
 
   included do
+    def solr_index_with_dj
+      Delayed::Job.enqueue(SolrIndexJob.new(self.class.to_s, self.id), priority: 10)
+    end
+    alias_method :index_with_dj, :solr_index_with_dj
+
+    def solr_remove_from_index_with_dj
+      Delayed::Job.enqueue(SolrIndexJob.new(self.class.to_s, self.id, :remove), priority: 9)
+    end
+    alias_method :remove_from_index_with_dj, :solr_remove_from_index_with_dj
+
     class << self
 
       def searchable_with_dj(options = {}, &blk)
@@ -11,9 +21,10 @@ module AdvancedSolrIndex
         # make solr index/remove working as background job for safe (DelayedJob)
         solr_searchable(options, &blk)
 
-        handle_asynchronously :solr_index, priority: 10
-        handle_asynchronously :solr_remove_from_index, priority: 9
-
+        alias_method_chain :solr_index, :dj
+        alias_method_chain :index, :dj
+        alias_method_chain :solr_remove_from_index, :dj
+        alias_method_chain :remove_from_index, :dj
       end
 
       alias_method :solr_searchable, :searchable
@@ -91,7 +102,7 @@ module AdvancedSolrIndex
       records = send(relation)
       if records.is_a?(ActiveRecord::Base)
         records.solr_index
-      else # collection
+      elsif records # collection
         records.each { |r| r.solr_index }
       end
     end

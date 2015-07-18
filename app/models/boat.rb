@@ -43,7 +43,7 @@ class Boat < ActiveRecord::Base
     end
     boolean :live do |boat|
       if boat.manufacturer && boat.model && boat.boat_images.count > 0
-        boat.manufacturer.active? && boat.model.active?
+        boat.manufacturer.active? && boat.model.active? && boat.valid_price?
       else
         false
       end
@@ -79,6 +79,7 @@ class Boat < ActiveRecord::Base
   solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
   validates_presence_of :manufacturer, :model
   validate :model_inclusion_of_manufacturer
+  validate :require_price
 
   scope :featured, -> { where featured: true }
   scope :reduced, -> { where(recently_reduced: true) }
@@ -167,6 +168,10 @@ class Boat < ActiveRecord::Base
 
   def booked_by?(user)
     !!self.booked_by(user)
+  end
+
+  def valid_price?
+    self.poa? || self.price.to_i > 0
   end
 
   def tax_status

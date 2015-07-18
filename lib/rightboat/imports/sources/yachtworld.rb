@@ -129,7 +129,7 @@ module Rightboat
           full_spec_link = doc.link_with(href: /pl_boat_full_detail/)
           full_spec_uri = doc.uri.merge(full_spec_link.uri)
 
-          boat = SourceBoat.new(source_url: source_url)
+          boat = SourceBoat.new(source_url: doc.uri.to_s)
 
           boat.instance_variable_set :@_length_m, job.delete(:length_m)
           job.merge(parse_codes(job.delete(:codes)))
@@ -147,7 +147,7 @@ module Rightboat
           rough_length = m[:length] if m
 
           begin
-            boat.manufacturer, boat.model = doc.search("h3").first.text.gsub(/^\s*\d+.\s*/,"").split(/\s+/,2)
+            boat.manufacturer_model = doc.search("h3").first.text.gsub(/^\s*\d+.\s*/,"")
           rescue
             puts "Couldn't match key field - moving onto next boat..."
             return

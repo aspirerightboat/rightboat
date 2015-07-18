@@ -17,7 +17,7 @@ module Rightboat
         q.fulltext @params[:q] unless @params[:q].blank?
         q.paginate page: @params[:page].to_i, per_page: 30
 
-        q.order_by @params[:order].to_sym
+        q.order_by @params[:order].to_sym if @params[:order]
 
         # new or used
         if (new_used = @params[:new_used])

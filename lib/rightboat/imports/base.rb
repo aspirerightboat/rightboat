@@ -120,10 +120,20 @@ module Rightboat
       def process_result
         remove_old_boats
 
+        if @scraped_boats.blank?
+          # TODO: notifiy error for no boat scraping
+          return
+        end
+
         @scraped_boats.each do |source_boat|
           break if @exit_worker
           source_boat.save
         end
+
+        @import.update_column :last_ran_at, Time.now
+      rescue Exception => e
+        # TODO notify error for exception
+        raise e
       end
 
       def remove_old_boats

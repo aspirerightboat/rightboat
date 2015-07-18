@@ -4,7 +4,7 @@ module Rightboat
       extend ActiveSupport::Concern
 
       self.included do
-        delegate :cleanup_string, :url_param, to: :class
+        delegate :cleanup_string, :url_param, :nbsp_char, to: :class
 
         private
         def self.url_param(url, k)

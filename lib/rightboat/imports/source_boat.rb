@@ -135,7 +135,7 @@ module Rightboat
         RELATION_ATTRIBUTES.each do |attr_name|
           klass = attr_name.to_s.camelize.constantize
           value = instance_variable_get("@#{attr_name}".to_sym)
-          unless value.is_a?(AcitveRecord::Base)
+          unless value.is_a?(ActiveRecord::Base)
             if attr_name.to_sym == :model
               query_option = { manufacturer_id: target.manufacturer_id }
             elsif attr_name.to_sym == :engine_model
@@ -149,7 +149,7 @@ module Rightboat
               value = klass.find_by_name(value)
               # TODO: report error for nil currency
             else
-              value = klass.query_with_aliases(value).where(query_option).first_or_create
+              value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!
             end
           end
 

@@ -188,7 +188,13 @@ class Boat < ActiveRecord::Base
 
   def model_inclusion_of_manufacturer
     if model && model.manufacturer != self.manufacturer
-      self.errors.add :model_id, 'should belongs to manufacturer'
+      self.errors.add :model_id, "[#{self.mdoel}] should belongs to manufacturer[#{self.manufacturer}]"
+    end
+  end
+
+  def require_price
+    unless valid_price?
+      self.errors.add :price, 'can\'t be blank'
     end
   end
 end

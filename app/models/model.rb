@@ -3,7 +3,7 @@ class Model < ActiveRecord::Base
   include FixSpelling
 
   extend FriendlyId
-  friendly_id :name, use: [:slugged, :finders]
+  friendly_id :slug_candidates, use: [:slugged, :finders]
 
   has_many :boats, inverse_of: :model, dependent: :restrict_with_error
 
@@ -37,4 +37,12 @@ class Model < ActiveRecord::Base
   def full_name
     [self.manufacturer, self.name].reject(&:blank?).join(' ')
   end
+
+
+  private
+
+  def slug_candidates
+    [ name, "rb-#{name}" ]
+  end
+
 end

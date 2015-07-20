@@ -3,7 +3,7 @@ class Manufacturer < ActiveRecord::Base
   include FixSpelling
 
   extend FriendlyId
-  friendly_id :name, use: [:slugged, :finders]
+  friendly_id :slug_candidates, use: [:slugged, :finders]
 
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
   has_many :boats, inverse_of: :manufacturer, dependent: :restrict_with_error
@@ -28,4 +28,10 @@ class Manufacturer < ActiveRecord::Base
   def to_s
     name
   end
+
+  private
+  def slug_candidates
+    [ name, "rb-#{name}" ]
+  end
+
 end

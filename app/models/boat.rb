@@ -6,7 +6,9 @@ class Boat < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   searchable do
-    integer :id
+    string :id do |boat|
+      "Boat #{boat.id}"
+    end
     text :name,                 boost: 4
     text :manufacturer_model,   boost: 3
     text :description,          boost: 0.5
@@ -88,14 +90,14 @@ class Boat < ActiveRecord::Base
 
   default_scope -> { active }
 
-  delegate :tax_paid?, to: :vat_rate
+  delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
   def self.similar_boats(boat, options = {})
     # TODO: need confirmation from RB
     return [] unless boat.manufacturer
     search = Sunspot.search Boat do |q|
       q.with :live, true
-      q.without :id, [boat.id]
+      q.without :id, ["Boat #{boat.id}"]
       q.with :manufacturer_id, boat.manufacturer_id
       q.any_of do |q|
         q.all_of do |q|

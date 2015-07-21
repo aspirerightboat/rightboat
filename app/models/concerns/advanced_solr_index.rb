@@ -76,9 +76,9 @@ module AdvancedSolrIndex
       prev_relations.each do |relation|
         reindex_relation(relation)
       end
-      
+
       yield
-      
+
       after_relations.each do |relation|
         reindex_relation(relation)
       end

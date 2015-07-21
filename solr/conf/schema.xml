@@ -53,12 +53,13 @@
        org.apache.solr.analysis package.
     -->
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="string" class="solr.TextField" omitNorms="true">
+    <fieldType name="lc_string" class="solr.TextField" omitNorms="true">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
+    <fieldType name="string" class="solr.StrField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="tdouble" class="solr.TrieDoubleField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
@@ -301,13 +302,13 @@
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="*_lms" stored="true" type="slong" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_s" stored="false" type="string" multiValued="false" indexed="true"/>
+    <dynamicField name="*_s" stored="false" type="lc_string" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_sm" stored="false" type="string" multiValued="true" indexed="true"/>
+    <dynamicField name="*_sm" stored="false" type="lc_string" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_ss" stored="true" type="string" multiValued="false" indexed="true"/>
+    <dynamicField name="*_ss" stored="true" type="lc_string" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_sms" stored="true" type="string" multiValued="true" indexed="true"/>
+    <dynamicField name="*_sms" stored="true" type="lc_string" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="*_it" stored="false" type="tint" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->

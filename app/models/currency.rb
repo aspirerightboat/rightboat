@@ -9,7 +9,7 @@ class Currency < ActiveRecord::Base
   def self.convert(amount, source_currency, required_currency)
     return amount if source_currency == required_currency
     source_currency ||= Currency.default
-    amount * required_currency.rate / source_currency.rate
+    amount.to_f * required_currency.rate / source_currency.rate
   end
 
   def display_symbol

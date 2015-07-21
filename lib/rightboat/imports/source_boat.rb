@@ -69,7 +69,21 @@ module Rightboat
           self.manufacturer = boat.manufacturer
           self.model = boat.model
         else
-          self.manufacturer, self.model = mnm.split(/\s+/, 2)
+          tokens = mnm.split(/\s+/).reject(&:blank?)
+          manufacturer = tokens[0..-2].join(' ')
+          model = tokens[-1]
+          ((1 - tokens.count)..0).each do |i|
+            manufacturer = tokens[0..i].join(' ')
+            model = tokens[(i + 1)..-1].join(' ')
+            search = Sunspot.search(Boat) do |q|
+              q.with :manufacturer, manufacturer
+              q.order_by :live, :desc
+              q.paginate per_page: 1
+            end
+            break if search.raw_results.first
+          end
+
+          self.manufacturer, self.model = manufacturer, model
         end
       end
 

@@ -15,6 +15,8 @@ class Import < ActiveRecord::Base
   # scheduling options
   validates_presence_of :frequency_quantity, :frequency_unit, if: :active
   validates_inclusion_of :frequency_unit, within: FREQUENCY_UNITS.map(&:to_s), allow_blank: true, if: :active
+  validates_presence_of :tz, if: lambda {|r| r.active? && !r.at.blank? }
+  validates_inclusion_of :tz, within: TZInfo::Timezone.all_identifiers, allow_blank: true, if: :active
   validates_numericality_of :frequency_quantity, greater_than: 0, allow_blank: true, if: :active
   validate do
     # at value should be understandable by clockwork

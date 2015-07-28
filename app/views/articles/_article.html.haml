@@ -1,0 +1,12 @@
+.article-item
+  %h3= article.title
+  %p.article-ts= article.ts_str
+  .article-body.clearfix
+    - if article.image?
+      .article-image= image_tag article.image_url(:thumb)
+      .article-text= article.short
+    - else
+      = article.short
+  .article-actions
+    = link_to "Read More", article, class: 'btn btn-normal btn-flat'
+    .g-plus(data-action="share" data-height="32" data-href="#{article_url(article)}" data-annotation="inline" data-align="right")

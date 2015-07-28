@@ -24,10 +24,16 @@
   }
   li { display: table-cell;}
   input[type='number'] {
-    width: 50px;
+    width: 100px;
   }
   input[type='text'] {
     max-width: 140px;
+  }
+  #import_at {
+    width: 100px;
+  }
+  #import_frequency_quantity, #import_at {
+    text-align: right;
   }
   select {
     text-transform: capitalize;
@@ -36,7 +42,6 @@
     padding: 3px;
     background: #FFF;
     border-radius: 2px;
-    width: 70px;
   }
 }
 

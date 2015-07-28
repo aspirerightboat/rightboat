@@ -7,6 +7,20 @@ namespace :db do
       establish_connection "v1_#{Rails.env}"
     end
 
+    class V1ArticleAuthor < V1Base
+      self.table_name = 'article_authors'
+    end
+
+    class V1ArticleCategory < V1Base
+      self.table_name = 'article_categories'
+    end
+
+    class V1Article < V1Base
+      self.table_name = 'articles'
+      belongs_to :category, class_name: 'V1ArticleCategory', foreign_key: :article_category_id
+      belongs_to :author, class_name: 'V1ArticleAuthor', foreign_key: :article_author_id
+    end
+
     class V1User < V1Base
       self.table_name = 'members'
       belongs_to :country, class_name: 'V1Country', foreign_key: :country_id
@@ -72,6 +86,10 @@ namespace :db do
       find_or_create_user(v1_user)
     end
 
+    V1Article.find_each do |v1_article|
+      find_or_create_article(v1_article)
+    end
+
     V1Boat.where('deleted <> true').find_each do |v1_boat|
       user = find_or_create_user(v1_boat.user)
       boat = Boat.unscoped.where(user_id: user.id, source_id: v1_boat.source_id).first_or_initialize
@@ -133,6 +151,48 @@ def find_or_create_country(v1_country)
   c.description = v1_country.description
   c.save(validate: false)
   c
+end
+
+def find_or_create_article_author(v1_author)
+  return ArticleAuthor.new unless v1_author
+  attrs = v1_author.attributes.except('id')
+  img_ref = attrs.delete 'image_reference'
+  author = ArticleAuthor.where(
+    name: attrs['name'],
+    created_at: attrs['created_at']
+  ).first_or_initialize
+  if author.new_record? || (!img_ref.blank? && !author.photo?)
+    author.photo = remote_image(img_ref) unless img_ref.blank?
+    author.update_attributes!(attrs)
+  end
+  author
+end
+
+def find_or_create_article_category(v1_category)
+  return ArticleCategory.new unless v1_category
+  attrs = v1_category.attributes.except('id')
+  category = ArticleCategory.where(
+    name: attrs['name'],
+    created_at: attrs['created_at']
+  ).first_or_initialize
+  category.update_attributes!(attrs) if category.new_record?
+  category
+end
+
+def find_or_create_article(v1_article)
+  attrs = v1_article.attributes.except('id', 'article_category_id', 'article_author_id')
+  img_ref = attrs.delete('image_reference')
+  article = Article.where(
+    title: attrs['title'],
+    created_at: attrs['created_at']
+  ).first_or_initialize
+  if article.new_record? || (!img_ref.blank? && !article.image?)
+    attrs['article_category_id'] = find_or_create_article_category(v1_article.category).id
+    attrs['article_author_id'] = find_or_create_article_author(v1_article.author).id
+    article.image = remote_image(img_ref) unless img_ref.blank?
+    article.update_attributes!(attrs)
+  end
+  article
 end
 
 def find_or_create_currency(v1_currency)
@@ -305,4 +365,15 @@ end
 def remote_image_url(hash)
   return if hash.blank?
   "http://images.rightboat.com/images/#{hash[0..1]}/#{hash}/original.jpg"
+end
+
+def remote_image(hash)
+  url = remote_image_url(hash)
+  _file = Tempfile.new(['original', '.jpg'])
+  _file.binmode
+  _file.write open(url).read
+  _file.rewind
+  _file
+rescue
+  nil
 end

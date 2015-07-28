@@ -13,7 +13,7 @@ module DBBackedClockwork
 
   configure do |config|
     config[:sleep_timeout] = 1
-    config[:tz] = 'Chongqing' # http://tzinfo.rubyforge.org
+    config[:tz] = 'UTC' # http://tzinfo.rubyforge.org
     config[:thread] = true
     config[:max_threads] = 15
   end
@@ -68,7 +68,8 @@ module DBBackedClockwork
       self.id = event.id
       self.updated_at = event.updated_at
 
-      super(DBBackedClockwork.manager, event.frequency, "import-#{event.import_type}[#{event.id}]", handler, at: event.at)
+      at = event.at.blank? ? nil : event.at
+      super(DBBackedClockwork.manager, event.frequency, "import-#{event.import_type}[#{event.id}]", handler, at: at, tz: event.tz)
     end
 
     # find the job in the database and update or remove it if necessary

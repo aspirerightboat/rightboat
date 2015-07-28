@@ -47,9 +47,8 @@
                     %dt= spec_name
                     %dd= spec_value
           - unless @boat.owners_comment.blank?
-            .row
-              %h3 Owners Comment
-              %p.owners-commnet= @boat.owners_comment
+            %h3 Owners Comment
+            %p.owners-commnet= @boat.owners_comment
 
         .col-sm-7.col-md-5.col-xs-12
           %h1 About #{@boat.to_s}

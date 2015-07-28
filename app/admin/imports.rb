@@ -11,7 +11,7 @@ ActiveAdmin.register Import do
     def import_params
       permitted_param_names = [
         :import_type, :active, :use_proxy, :user_id,
-        :frequency_unit, :frequency_quantity, :at
+        :frequency_unit, :frequency_quantity, :at, :tz
       ]
 
       params.require(:import).permit(permitted_param_names).tap do |w|

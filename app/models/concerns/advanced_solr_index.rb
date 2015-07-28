@@ -7,11 +7,6 @@ module AdvancedSolrIndex
     end
     alias_method :index_with_dj, :solr_index_with_dj
 
-    def solr_remove_from_index_with_dj
-      Delayed::Job.enqueue(SolrIndexJob.new(self.class.to_s, self.id, :remove), priority: 9)
-    end
-    alias_method :remove_from_index_with_dj, :solr_remove_from_index_with_dj
-
     class << self
 
       def searchable_with_dj(options = {}, &blk)
@@ -23,8 +18,6 @@ module AdvancedSolrIndex
 
         alias_method_chain :solr_index, :dj
         alias_method_chain :index, :dj
-        alias_method_chain :solr_remove_from_index, :dj
-        alias_method_chain :remove_from_index, :dj
       end
 
       alias_method :solr_searchable, :searchable
@@ -46,12 +39,16 @@ module AdvancedSolrIndex
 
       # destroy hooking is not needed due dependent & permanent
       around_save :reindex_relations_while_saving
+      after_destroy :reindex_relations_after_destroy
 
       relations.each do |relation|
         self._sunspot_relations[relation] = options
       end
 
     end
+
+
+    private
 
     def reindex_relations_while_saving
       prev_relations = []
@@ -81,6 +78,16 @@ module AdvancedSolrIndex
 
       after_relations.each do |relation|
         reindex_relation(relation)
+      end
+    end
+
+    def reindex_relations_after_destroy
+      self.class._sunspot_relations.each do |relation, _|
+        reflection = self.class.reflections[relation.to_s]
+        cardinality = reflection.macro.to_s
+        if cardinality == 'belongs_to'
+          send(relation).solr_index
+        end
       end
     end
 

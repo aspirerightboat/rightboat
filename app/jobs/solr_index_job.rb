@@ -6,7 +6,6 @@ class SolrIndexJob
   end
 
   def perform
-    record = @klass.constantize.unscoped.find(@id)
     if @type.to_sym == :index
       record.solr_index_without_dj
     else

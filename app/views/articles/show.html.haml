@@ -1,0 +1,39 @@
+- content_for :header_text do
+  %h1
+    %span.hidden-sm Find your
+    %strong Rightboat
+  %h3
+    %strong News
+
+- content_for :header do
+  = render 'shared/advanced_search'
+  = render 'shared/navbar'
+
+
+= render 'shared/search_bar'
+#main-content.container
+  .article-full
+    %h3= @article.title
+    %p.article-ts= @article.ts_str
+    .article-body.clearfix
+      - if @article.image?
+        .article-image= image_tag @article.image_url(:thumb)
+        .article-text= sanitize @article.full
+      - else
+        = sanitize @article.full
+    .article-actions
+      .g-plus(data-action="share" data-height="32" data-href="#{article_url(@article)}" data-annotation="inline" data-align="left")
+  .pagination-wrapper
+    .prev-page
+      = link_to "< View previous story", @prev_article, :rel => 'prev'
+    .next-page
+      = link_to "View next story >", @next_article, :rel => 'next'
+
+
+:javascript
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/platform.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+

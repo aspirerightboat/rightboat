@@ -55,6 +55,9 @@ Rails.application.routes.draw do
 
   put 'session-settings', to: 'session_settings#change', constraints: { format: :json }
 
+  get 'news(/category/:category_id)', to: 'articles#index', as: :articles
+  resources :articles, only: [:show], path: :news
+
   resources :boats, only: [:show]
   get 'search', to: 'search#results'
   post 'boats/:boat_id/request-details', to: 'enquiries#create'

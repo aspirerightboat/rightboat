@@ -1,7 +1,9 @@
 // Use this file to override Twitter Bootstrap variables or define own variables.
+@rb-color-dark:                    #13022c;
+@rb-color-primary:                 #60bbff;
 
 @font-size-base:                   16px;
-@link-color:                       #60bbff;
+@link-color:                       @rb-color-primary;
 
 // navbar
 @navbar-height:                    42px;
@@ -10,23 +12,23 @@
 @navbar-margin-bottom:             0;
 @navbar-default-bg:                transparent;
 @navbar-default-link-color:        #FFF;
-@navbar-default-link-hover-color:  #60bbff;
+@navbar-default-link-hover-color:  @rb-color-primary;
 @navbar-default-toggle-border-color:   transparent;
 @navbar-default-toggle-icon-bar-bg:    #FFF;
-@navbar-default-toggle-hover-bg:       darken(#60bbff, 0.8);
+@navbar-default-toggle-hover-bg:       darken(@rb-color-primary, 0.8);
 
 // side bar
 @nav-pills-border-radius:           0;
-@nav-pills-active-link-hover-bg:    #60bbff;
+@nav-pills-active-link-hover-bg:    @rb-color-primary;
 // input-groups
 @input-group-addon-border-color:   transparent;
 @input-group-addon-bg:             transparent;
 
 // modal
-@modal-backdrop-bg:                #60bbff;
+@modal-backdrop-bg:                @rb-color-primary;
 @modal-backdrop-opacity:           0.5;
 @border-radius-large:              0;
-@modal-content-bg:                 #13022c;
+@modal-content-bg:                 @rb-color-dark;
 @modal-title-padding:              55px;
 @modal-title-padding-md:           35px;
 @modal-title-padding-sm:           15px;
@@ -39,13 +41,13 @@
 
 // form controls
 @input-border-radius:              0;
-@input-border:                     #13022c;
+@input-border:                     @rb-color-dark;
 
 // thumbnails
 @thumbnail-padding:                0;
 @thumbnail-border-radius:          0;
 @thumbnail-caption-padding:        15px;
-@thumbnail-caption-color:          #13022c;
+@thumbnail-caption-color:          @rb-color-dark;
 
 //#### grid system #####
 @xs-gutter: 16px;

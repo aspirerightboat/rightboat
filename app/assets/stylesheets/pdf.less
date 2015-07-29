@@ -5,6 +5,7 @@
 // Core variables and mixins
 @import "twitter/bootstrap/variables.less";
 @grid-gutter-width:     15px;
+@rb-color-primary:      #60bbff;
 
 @import "twitter/bootstrap/mixins.less";
 @import "custom_bootstrap/mixins.less"; // Modify this for custom mixins
@@ -31,7 +32,7 @@ html, body {
   vertical-align: top;
 }
 .broker-info {
-  border: solid 1px #60bbff;
+  border: solid 1px @rb-color-primary;
   vertical-align: top;
   margin-bottom: 20px;
   padding: 5px;
@@ -49,7 +50,7 @@ h1, h2 {
   margin: 0;
 }
 
-hr { border-top: 2px solid #60bbff; }
+hr { border-top: 2px solid @rb-color-primary; }
 
 .column {
   vertical-align: top;

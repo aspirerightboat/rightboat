@@ -11,7 +11,7 @@ h1.navbar-brand {
   line-height: 1em;
 }
 .navbar-toggle {
-  background-color: #60bbff;
+  background-color: @rb-color-primary;
 }
 #top-navbar .navbar-header {
   height: 98px;
@@ -60,7 +60,7 @@ a.navbar-brand {
   }
 }
 #navbar.in, #navbar.collapsing {
-  background: #60bbff;
+  background: @rb-color-primary;
   @media (min-width: @grid-float-breakpoint) {
     background: transparent;
   }
@@ -70,7 +70,7 @@ a.navbar-brand {
   text-decoration-color: rgba(98, 98, 98, 0.8);
   -webkit-text-decoration-color: rgba(98, 98, 98, 0.8);
   -moz-text-decoration-color: rgba(98, 98, 98, 0.8);
-  &, &:hover, &:active, &:focus { color: #13022c; }
+  &, &:hover, &:active, &:focus { color: @rb-color-dark; }
 }
 .view-mode-icon {
   vertical-align: top;
@@ -81,9 +81,9 @@ a.navbar-brand {
   .view-mode-icon { float: right }
 }
 .nabvar-tools {
-  color: #13022c;
+  color: @rb-color-dark;
 
-  background-color: #60bbff;
+  background-color: @rb-color-primary;
 
   form, .nav.navbar-nav:first-child {margin-left: 98px;}
 
@@ -102,7 +102,7 @@ a.navbar-brand {
     margin-right: 0;
     span {
       padding-right: 5px;
-      color: #13022c;
+      color: @rb-color-dark;
     }
   }
   .rb-select2-md {

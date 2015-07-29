@@ -7,7 +7,7 @@
   .article-ts {
     font-weight: bold;
     font-size: 15px;
-    color: #60bbff;
+    color: @rb-color-primary;
   }
   .article-actions {
     margin-top: 20px;
@@ -24,8 +24,8 @@
   .article-body .article-text {
     margin-left: 32%;
   }
-  border-bottom: solid 1px #60bbff;
-  &:first-child { border-top: solid 1px #60bbff; }
+  border-bottom: solid 1px @rb-color-primary;
+  &:first-child { border-top: solid 1px @rb-color-primary; }
   padding: 2em 0;
 }
 
@@ -45,7 +45,7 @@
         text-decoration: none;
       }
       &:not(:last-child) {
-        border-right: 1px solid #60bbff;
+        border-right: 1px solid @rb-color-primary;
       }
     }
   }
@@ -67,12 +67,12 @@
 
 .article-categories {
   padding: 0.7em 0;
-  border: 1px solid #60bbff;
+  border: 1px solid @rb-color-primary;
   border-left: 0;
   border-right: 0;
   li { line-height: 1.8em; }
   a span.article-category { color: #000; font-weight: bold; }
-  li.active a span.article-category { color: #60bbff; }
+  li.active a span.article-category { color: @rb-color-primary; }
 }
 
 #rb-tweets {

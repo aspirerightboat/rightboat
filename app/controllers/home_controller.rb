@@ -9,19 +9,19 @@ class HomeController < ApplicationController
       return redirect_to(root_path)
     end
 
-    @featured_boats = Boat.featured
-    @recent_boats = Boat.recently_reduced
+    @featured_boats = Rails.cache.fetch "rb.featured_boats", expires_in: 1.hour do
+      Boat.featured.limit(6)
+    end
+    @recent_boats = Rails.cache.fetch "rb.reduced_boats", expires_in: 1.hour do
+      Boat.recently_reduced
+    end
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 
   private
   def register_statistics
-    featured_boats = Rails.cache.fetch "rightboat.featured_boats", expires_in: 1.day do
-      @featured_boats
-    end
-
-    unless featured_boats.blank?
-      featured_boats.each do |boat|
+    unless @featured_boats.blank?
+      @featured_boats.each do |boat|
         Statistics.record_featured_boat_view(boat)
       end
     end

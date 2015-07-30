@@ -65,7 +65,7 @@ class Rightboat::TwitterFeed
 
   def self.send_hot_boat
     hot_ids = Statistics.hot_boat_ids_of_last_day
-    boat = Boat.member_active.where(id: hot_ids, twitted_at: nil).first
+    boat = Boat.where(id: hot_ids, twitted_at: nil).first
     if boat
       description = get_random_description(boat, :hot)
       if description
@@ -77,7 +77,7 @@ class Rightboat::TwitterFeed
   end
 
   def self.send_featured_boat
-    boat = Boat.member_active.featured(twitted_at: nil).first
+    boat = Boat.featured(twitted_at: nil).first
     if boat
       description = get_random_description(boat, :featured)
       if description

@@ -49,10 +49,6 @@ module Rightboat
       search.results
     end
 
-    def base_scope
-      Boat.active.member_active
-    end
-
     def preprocess_param(params)
       req_params = params.symbolize_keys
       type_mapping = {

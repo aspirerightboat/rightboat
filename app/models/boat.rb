@@ -44,11 +44,7 @@ class Boat < ActiveRecord::Base
       boat.tax_paid?
     end
     boolean :live do |boat|
-      if boat.manufacturer && boat.model && boat.boat_images.count > 0
-        boat.manufacturer.active? && boat.model.active? && boat.valid_price?
-      else
-        false
-      end
+      boat.live?
     end
   end
 
@@ -82,11 +78,12 @@ class Boat < ActiveRecord::Base
   validates_presence_of :manufacturer, :model
   validate :model_inclusion_of_manufacturer
   validate :require_price
+  validate :active_of
 
-  scope :featured, -> { where featured: true }
+  scope :featured, -> { where(featured: true) }
   scope :reduced, -> { where(recently_reduced: true) }
   scope :recently_reduced, -> { reduced.limit(3) }
-  scope :active, -> { where deleted_at: nil }
+  scope :active, -> { where(deleted_at: nil) }
 
   default_scope -> { active }
 
@@ -162,6 +159,14 @@ class Boat < ActiveRecord::Base
     favourites.where(user_id: user_id).first
   end
 
+  def live?
+    if self.manufacturer && self.model && self.boat_images.count > 0
+      self.manufacturer.active? && self.model.active? && self.valid_price?
+    else
+      false
+    end
+  end
+
   def geocoded?
     return false if geo_location.blank? || country_id.nil?
     _l, _, _c = geo_location.rpartition(',')
@@ -197,6 +202,18 @@ class Boat < ActiveRecord::Base
   def require_price
     unless valid_price?
       self.errors.add :price, 'can\'t be blank'
+    end
+  end
+
+  # featured and reduced attrs are used without solr in some queries
+  # so it should be set as true only for live boats
+  def active_of
+    return if self.live?
+
+    [:featured, :recently_reduced].each do |attr_name|
+      if send(attr_name)
+        self.errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
+      end
     end
   end
 end

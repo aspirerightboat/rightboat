@@ -18,13 +18,13 @@
           .col-xs-4.col-sm-2
             = label_tag :keywords, 'Keywords'
           .col-xs-8.col-sm-10
-            = text_field_tag :q, params[:q], id: 'keywords', class: 'tags-input'
+            = text_field_tag :q, params[:q], id: 'keywords', class: 'tags-input', placeholder: 'e.g. 4berth'
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-4
             = label_tag :manufacturer_model, 'Manufacturer / Model'
           .col-xs-8
-            = text_field_tag :manufacturer_model, params[:manufacturer_model], class: 'select-black select-full tags-input'
+            = text_field_tag :manufacturer_model, params[:manufacturer_model], class: 'select-black select-full tags-input', placeholder: 'e.g. Princess'
         -#.form-group.row
         -#  .col-xs-4
         -#    = label_tag :boat_type

@@ -8,4 +8,6 @@ class BoatSpecification < ActiveRecord::Base
     joins(:specification).where('specifications.active = ?', true)
   }
 
+  default_scope -> { joins(:specification).order('specifications.position') }
+
 end

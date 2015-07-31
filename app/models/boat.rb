@@ -131,7 +131,7 @@ class Boat < ActiveRecord::Base
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
     ]
-    ret = boat_specifications.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
+    ret = boat_specifications.active.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
     ret.reject{|_, v| v.blank? }
   end
 

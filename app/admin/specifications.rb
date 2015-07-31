@@ -1,7 +1,7 @@
 ActiveAdmin.register Specification do
   include SpellFixable
+  include Sortable
 
-  config.sort_order = 'name_asc'
   menu parent: "Boats", label: "Specifications"
 
   permit_params :name, :display_name, :active
@@ -10,7 +10,7 @@ ActiveAdmin.register Specification do
   filter :active, as: :boolean
 
 
-  index do
+  index as: :sortable_table do
     column "Name", :display_name
     column "# Boats" do |r|
       r.boats.count

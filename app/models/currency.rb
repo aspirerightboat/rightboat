@@ -4,7 +4,8 @@ class Currency < ActiveRecord::Base
 
   validates_presence_of :rate, :name, :symbol
 
-  scope :active, -> { where active: true }
+  scope :active, -> { where(active: true) }
+  default_scope -> { order(position: :asc) }
 
   def self.convert(amount, source_currency, required_currency)
     return amount if source_currency == required_currency

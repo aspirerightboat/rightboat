@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150728091407) do
+ActiveRecord::Schema.define(version: 20150730101225) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -36,19 +36,25 @@ ActiveRecord::Schema.define(version: 20150728091407) do
     t.string   "photo",            limit: 255
     t.string   "google_plus_link", limit: 255
     t.string   "twitter_handle",   limit: 255
+    t.string   "slug",             limit: 255
+    t.integer  "articles_count",   limit: 4,     default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "article_authors", ["name"], name: "index_article_authors_on_name", using: :btree
+  add_index "article_authors", ["slug"], name: "index_article_authors_on_slug", using: :btree
 
   create_table "article_categories", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name",           limit: 255
+    t.string   "slug",           limit: 255
+    t.integer  "articles_count", limit: 4,   default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "article_categories", ["name"], name: "index_article_categories_on_name", using: :btree
+  add_index "article_categories", ["slug"], name: "index_article_categories_on_slug", using: :btree
 
   create_table "articles", force: :cascade do |t|
     t.string   "title",               limit: 255
@@ -57,6 +63,7 @@ ActiveRecord::Schema.define(version: 20150728091407) do
     t.string   "image",               limit: 255
     t.boolean  "frontpage",           limit: 1,     default: false
     t.boolean  "live",                limit: 1,     default: false
+    t.string   "slug",                limit: 255
     t.integer  "article_category_id", limit: 4
     t.integer  "article_author_id",   limit: 4
     t.datetime "created_at"
@@ -65,6 +72,7 @@ ActiveRecord::Schema.define(version: 20150728091407) do
 
   add_index "articles", ["article_author_id"], name: "index_articles_on_article_author_id", using: :btree
   add_index "articles", ["article_category_id"], name: "index_articles_on_article_category_id", using: :btree
+  add_index "articles", ["slug"], name: "index_articles_on_slug", using: :btree
 
   create_table "boat_images", force: :cascade do |t|
     t.string   "source_ref",         limit: 255
@@ -177,6 +185,7 @@ ActiveRecord::Schema.define(version: 20150728091407) do
     t.boolean  "active",     limit: 1
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
+    t.integer  "position",   limit: 4
   end
 
   add_index "currencies", ["name"], name: "index_currencies_on_name", using: :btree

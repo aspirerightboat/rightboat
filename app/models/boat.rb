@@ -160,6 +160,8 @@ class Boat < ActiveRecord::Base
   end
 
   def live?
+    return false if self.deleted?
+
     if self.manufacturer && self.model && self.boat_images.count > 0
       self.manufacturer.active? && self.model.active? && self.valid_price?
     else

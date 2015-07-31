@@ -49,6 +49,7 @@ class ApplicationController < ActionController::Base
 
   def load_search_facets
     search = Sunspot.search(Boat) do |q|
+      q.with :live, true
       q.facet :manufacturer_model
       q.facet :country_id
       q.stats :year

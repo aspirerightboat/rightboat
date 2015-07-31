@@ -41,6 +41,10 @@ module Rightboat
         q.with(:price).greater_than_or_equal_to(@params[:price_min]) unless @params[:price_min].blank?
         q.with(:price).less_than_or_equal_to(@params[:price_max]) unless @params[:price_max].blank?
 
+        # year
+        q.with(:year).greater_than_or_equal_to(@params[:year_min]) unless @params[:year_min].blank?
+        q.with(:year).less_than_or_equal_to(@params[:year_max]) unless @params[:year_max].blank?
+
         # fuel type
         match_conidtion.call(q, :fuel_type)
         match_conidtion.call(q, :boat_type)

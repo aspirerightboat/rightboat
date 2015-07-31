@@ -3,7 +3,7 @@
     %strong= boat.manufacturer
     = boat.model
   %p.price= boat_price(boat)
-  %p Length: #{boat.length_m}
+  %p Length: #{boat.length_m}m
   %p Year: #{boat.year_built}
   %p Location: #{boat.full_location}
   %p.small Listed: #{time_ago_in_words(boat.created_at)} ago

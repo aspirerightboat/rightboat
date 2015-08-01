@@ -48,10 +48,11 @@ $ ->
         max = $slider.data('max')
         min_v = $slider.slider('values', 0)
         max_v = $slider.slider('values', 1)
-        min_v = '' if min == min_v
+        min_v = if min == min_v then '' else Math.floor(convertValue(min_v, $slider))
+        max_v = if max == max_v then '' else Math.floor(convertValue(max_v, $slider))
         max_v = '' if max == max_v
-        $('input[name="' + input_name + '_min"]').val(Math.floor(convertValue(min_v, $slider)))
-        $('input[name="' + input_name + '_max"]').val(Math.ceil(convertValue(max_v, $slider)))
+        $('input[name="' + input_name + '_min"]').val(min_v)
+        $('input[name="' + input_name + '_max"]').val(max_v)
 
     $( '.slider' ).each ->
       $sliderContainer = $(this).parent()

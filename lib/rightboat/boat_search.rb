@@ -41,6 +41,10 @@ module Rightboat
         q.with(:price).greater_than_or_equal_to(@params[:price_min]) unless @params[:price_min].blank?
         q.with(:price).less_than_or_equal_to(@params[:price_max]) unless @params[:price_max].blank?
 
+        # length
+        q.with(:length_m).greater_than_or_equal_to(@params[:length_min]) unless @params[:length_min].blank?
+        q.with(:length_m).less_than_or_equal_to(@params[:length_max]) unless @params[:length_max].blank?
+
         # year
         q.with(:year).greater_than_or_equal_to(@params[:year_min]) unless @params[:year_min].blank?
         q.with(:year).less_than_or_equal_to(@params[:year_max]) unless @params[:year_max].blank?
@@ -79,6 +83,25 @@ module Rightboat
               when :boolean
                 v =~ /^yes|true|1$/i ? true : false
             end
+        end
+      end
+
+      # calculate price with default currency
+      if !req_params[:currency].blank?
+        c = Currency.find_by_name(req_params[:currency])
+        [:price_min, :price_max].each do |k|
+          unless req_params[k].blank?
+            req_params[k] = Currency.convert(req_params[k], c, Currency.default)
+          end
+        end
+      end
+
+      # length is indexed in meter
+      if !(u = req_params[:length_unit]).blank? && (u.to_s.downcase == 'ft')
+        [:length_min, :length_max].each do |k|
+          unless req_params[k].blank?
+            req_params[k] = (req_params[k] * 0.3048).round(2)
+          end
         end
       end
 

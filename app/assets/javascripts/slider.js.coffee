@@ -1,10 +1,30 @@
 $ ->
   $(document).ready ->
+    @convertCurrency = (value) ->
+      currency = $('form:visible select[name="currency"]').val()
+      rate = window.currencyRates[currency]
+      rate * value
+
+    @convertLength = (value) ->
+      unit = $('form:visible select[name="length_unit"]').val()
+      if unit == 'ft'
+        return value * 3.28084
+      else
+        return value
+
+    convertValue = (v, $item) =>
+      convertFuncName = $item.data('convert')
+      return v unless convertFuncName
+      @[convertFuncName](v)
+
     window.alignSliderLabelPosition = ($item) ->
       $sliderContainer = $item.parent()
 
+      v1 = Math.floor(convertValue($item.slider('values', 0), $item))
+      v2 = Math.ceil(convertValue($item.slider('values', 1), $item))
+
       $sliderContainer.find('.min-label')
-      .html($item.slider('values', 0) + ' ' + ($item.data('unit') || ''))
+      .html(v1 + ' ' + ($item.data('unit') || ''))
       .position
           my: 'center top'
           at: 'center bottom'
@@ -13,7 +33,7 @@ $ ->
           offset: '0, 10'
 
       $sliderContainer.find('.max-label')
-      .html($item.slider('values', 1) + ' ' + ($item.data('unit') || ''))
+      .html(v2 + ' ' + ($item.data('unit') || ''))
       .position
           my: 'center top'
           at: 'center bottom'
@@ -21,42 +41,67 @@ $ ->
           collision: 'flip none'
           offset: '0, 10'
 
+    updateValues = ($slider) ->
+      input_name = $slider.data('input')
+      if input_name && input_name.length
+        min = $slider.data('min')
+        max = $slider.data('max')
+        min_v = $slider.slider('values', 0)
+        max_v = $slider.slider('values', 1)
+        min_v = '' if min == min_v
+        max_v = '' if max == max_v
+        $('input[name="' + input_name + '_min"]').val(Math.floor(convertValue(min_v, $slider)))
+        $('input[name="' + input_name + '_max"]').val(Math.ceil(convertValue(max_v, $slider)))
+
     $( '.slider' ).each ->
       $sliderContainer = $(this).parent()
       $this = $(this)
-      min = $this.data('min')
-      max = $this.data('max')
+
+      v1 = $this.data('value1')
+      v2 = $this.data('value2')
 
       $this.slider
         range: true
-        min: min
-        max: max
-        values: [ $this.data('value1'), $this.data('value2') ]
+        min: $this.data('min')
+        max: $this.data('max')
+        values: [ v1, v2 ]
         slide: ( event, ui ) ->
           delay = ->
             handleIndex = $(ui.handle).data('uiSliderHandleIndex')
-            label = if handleIndex == 0 then '.min-label' else '.max-label'
+            if handleIndex == 0
+              label = '.min-label'
+              value = Math.floor(convertValue(ui.value, $this))
+            else
+              label = '.max-label'
+              value = Math.ceil(convertValue(ui.value, $this))
+
             $sliderContainer.find(label)
-            .html(ui.value + ' ' + ($this.data('unit') || ''))
+            .html(value + ' ' + ($this.data('unit') || ''))
             .position
               my: 'center top'
               at: 'center bottom'
               of: ui.handle
               collision: 'flip none'
               offset: "0, 10"
-            input_name = $this.data('input')
-            if input_name && input_name.length
-              min_v = $this.slider('values', 0)
-              max_v = $this.slider('values', 1)
-              min_v = '' if min == min_v
-              max_v = '' if max == max_v
-              $('input[name="' + input_name + '_min"]').val(min_v)
-              $('input[name="' + input_name + '_max"]').val(max_v)
+            updateValues($this)
 
           setTimeout(delay, 5)
 
       alignSliderLabelPosition($this)
 
-    $('#length_unit').change ->
-      $('#length-slider').data('unit', $(this).val())
-      alignSliderLabelPosition($('#length-slider'))
+    $('select[name="length_unit"]').change ->
+      unit = $(this).val()
+      $('select[name="length_unit"]').select2('val', unit)
+      $('[data-slide-name="length"]').each ->
+        $slider = $(this)
+        $slider.data('unit', unit)
+        updateValues($slider)
+        alignSliderLabelPosition($slider)
+
+    $('select[name="currency"]').change ->
+      $('select[name="currency"]').select2('val', $(this).val())
+      $('[data-slide-name="price"]').each ->
+        $slider = $(this)
+        updateValues($slider)
+        alignSliderLabelPosition($slider)
+

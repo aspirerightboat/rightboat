@@ -24,9 +24,11 @@ module ApplicationHelper
       'data-value1' => v1,
       'data-value2' => v2,
       'data-unit' => options[:unit],
+      'data-slide-name' => field,
       id: "#{field}-slider",
       class: 'slider'
     }
+    html_options = html_options.merge(options[:html] || {})
 
     ret = content_tag :div, '', html_options
     ret += content_tag(:div, '', class: 'min-label')
@@ -34,4 +36,9 @@ module ApplicationHelper
 
     ret.html_safe
   end
+
+  def currency_tag(name, selected, options = {})
+    select_tag name, options_from_collection_for_select(Currency.active, :name, :display_symbol, selected), options
+  end
+
 end

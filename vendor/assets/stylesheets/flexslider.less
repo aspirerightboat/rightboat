@@ -12,6 +12,9 @@
 /* ====================================================================================================================
  * FONT-FACE
  * ====================================================================================================================*/
+
+@import "custom_bootstrap/variables";
+
 @font-face {
   font-family: 'flexslider-icon';
   src: font-url('flexslider-icon.eot');
@@ -49,10 +52,13 @@
 .flexslider .slides > li {
   display: none;
   -webkit-backface-visibility: hidden;
+  text-align: center;
 }
 .flexslider .slides img {
-  width: 100%;
-  display: block;
+  max-width: 100%;
+  display: inline-block;
+  line-height: 100%;
+  vertical-align: middle;
 }
 .flexslider .slides:after {
   content: "\0020";
@@ -76,8 +82,8 @@ html[xmlns] .flexslider .slides {
  * ====================================================================================================================*/
 .flexslider {
   margin: 0 0 60px;
-  background: #ffffff;
-  border: 4px solid #ffffff;
+  background: @rb-color-dark;
+  border: 4px solid @rb-color-dark;
   position: relative;
   zoom: 1;
   -webkit-border-radius: 4px;

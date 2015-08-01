@@ -36,7 +36,7 @@ class Boat < ActiveRecord::Base
     end
     float :price do |boat|
       # TODO: make confirm about poa price filter
-      boat.poa? ? 0 : boat.price
+      boat.poa? ? 0 : Currency.convert(boat.price, boat.currency, Currency.default)
     end
     float :length_m
     boolean :new_boat

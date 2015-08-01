@@ -27,7 +27,7 @@ module Rightboat
         def convert_unit(value, unit)
           return value.to_f.round(2) if unit.blank?
           case unit.downcase
-            when 'feet' then value = (value.to_f * 0.3048).round(2)
+            when 'feet', 'ft' then value = (value.to_f * 0.3048).round(2)
             when 'metres', 'meters' then value = value.to_f.round(2)
             when 'kg', 'kgs' then value = value.to_f.round(2)
             when 'lbs' then value = (value.to_f * 0.453592).round(2)

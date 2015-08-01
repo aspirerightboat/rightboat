@@ -48,16 +48,16 @@
               .rb-control-group-addon
                 = select_tag :length_unit, options_for_select(['ft', 'm']), class: 'select-white select-sm select-general'
           .col-xs-7.col-sm-8
-            = slider_tag(:length, unit: params[:length_unit] || 'ft')
+            = slider_tag(:length, unit: current_length_unit || 'ft', html: { 'data-convert' => 'convertLength' })
         .range-slider-wrapper.row
           .col-xs-5.col-sm-4
             .rb-control-group
               .rb-control
                 = label_tag :price
               .rb-control-group-addon
-                = select_tag :currency, options_from_collection_for_select(Currency.all, :name, :display_symbol, current_currency), class: 'select-white select-sm select-general'
+                = currency_tag :currency, current_currency, class: 'select-white select-sm select-general'
           .col-xs-7.col-sm-8
-            = slider_tag(:price)
+            = slider_tag(:price, html: { 'data-convert' => 'convertCurrency' })
         .form-group.row
           .col-xs-4
             = label_tag :tax_status
@@ -102,16 +102,9 @@
           Results: #{@boats.total_count} boats fit your criteria
 
 :javascript
-  $(function() {
-    //function formatCurrency (currency) {
-    //  console.log(currency);
-    //  if (!currency.id) { return currency.text; }
-    //  var $currency = $(
-    //    '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
-    //  );
-    //  return $currency;
-    //};
+  window.currencyRates = #{Currency.active.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
 
+  $(function() {
     $('select.select-general').each(function() {
       var options = {
         //templateResult: formatState,

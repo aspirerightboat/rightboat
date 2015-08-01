@@ -2,10 +2,6 @@ class SearchController < ApplicationController
   before_filter :save_session_settings, only: :results
   before_filter :load_search_facets, only: :results
 
-  def tags
-    render json: Currency.all.map(&:name)
-  end
-
   def suggestion
     return render(json: []) if params[:q].blank?
 

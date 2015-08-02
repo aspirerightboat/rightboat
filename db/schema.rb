@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150730101225) do
+ActiveRecord::Schema.define(version: 20150801081521) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -73,6 +73,16 @@ ActiveRecord::Schema.define(version: 20150730101225) do
   add_index "articles", ["article_author_id"], name: "index_articles_on_article_author_id", using: :btree
   add_index "articles", ["article_category_id"], name: "index_articles_on_article_category_id", using: :btree
   add_index "articles", ["slug"], name: "index_articles_on_slug", using: :btree
+
+  create_table "boat_categories", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.boolean  "active",     limit: 1,   default: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "boat_categories", ["active"], name: "index_boat_categories_on_active", using: :btree
+  add_index "boat_categories", ["name"], name: "index_boat_categories_on_name", using: :btree
 
   create_table "boat_images", force: :cascade do |t|
     t.string   "source_ref",         limit: 255
@@ -143,6 +153,7 @@ ActiveRecord::Schema.define(version: 20150730101225) do
     t.integer  "fuel_type_id",           limit: 4
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
+    t.integer  "category_id",            limit: 4
   end
 
   add_index "boats", ["boat_type_id"], name: "index_boats_on_boat_type_id", using: :btree

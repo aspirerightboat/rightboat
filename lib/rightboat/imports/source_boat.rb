@@ -35,7 +35,7 @@ module Rightboat
       ]
 
       RELATION_ATTRIBUTES = [
-        :engine_model, :drive_type, :currency, :manufacturer, :model, :fuel_type, :vat_rate, :engine_manufacturer, :engine_model, :boat_type
+        :engine_model, :drive_type, :currency, :manufacturer, :model, :fuel_type, :vat_rate, :engine_manufacturer, :engine_model, :boat_type, :category
       ]
 
       DYNAMIC_ATTRIBUTES = [
@@ -147,7 +147,7 @@ module Rightboat
         end
 
         RELATION_ATTRIBUTES.each do |attr_name|
-          klass = attr_name.to_s.camelize.constantize
+          klass = Boat.reflections[attr_name.to_s].klass
           value = instance_variable_get("@#{attr_name}".to_sym)
           unless value.is_a?(ActiveRecord::Base)
             if attr_name.to_sym == :model

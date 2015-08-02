@@ -26,6 +26,9 @@ class Boat < ActiveRecord::Base
     string :fuel_type do |boat|
       boat.fuel_type.try(&:name_stripped)
     end
+    string :category do |boat|
+      boat.category && boat.category.active? ? boat.category.name : nil
+    end
     string :boat_type do |boat|
       boat.boat_type.try(&:name_stripped)
     end
@@ -67,6 +70,7 @@ class Boat < ActiveRecord::Base
   belongs_to :model,         inverse_of: :boats
   belongs_to :engine_manufacturer,  inverse_of: :boats
   belongs_to :engine_model,  inverse_of: :boats
+  belongs_to :category,      inverse_of: :boats, class_name: 'BoatCategory'
   belongs_to :boat_type,     inverse_of: :boats
   belongs_to :drive_type,    inverse_of: :boats
   belongs_to :fuel_type,     inverse_of: :boats

@@ -32,6 +32,15 @@ Rails.application.routes.draw do
     resources :fuel_types do
       resources :misspellings
     end
+    resources :boat_types do
+      resources :misspellings
+    end
+    resources :boat_categories do
+      resources :misspellings
+    end
+    resources :drive_types do
+      resources :misspellings
+    end
     resources :vat_rates do
       resources :misspellings
     end

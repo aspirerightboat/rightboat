@@ -107,6 +107,9 @@ module Rightboat
           if (boat_type = advert_features.at("boat_type"))
             boat.boat_type = cleanup_string(boat_type.text)
           end
+          if (category = advert_features.at("boat_category"))
+            boat.category = cleanup_string(category.text)
+          end
           if (vat_rate = advert_features.at("asking_price")["vat_included"])
             case vat_rate.downcase
               when "true", "inc vat", "1"

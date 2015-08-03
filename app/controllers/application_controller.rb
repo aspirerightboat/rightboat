@@ -51,6 +51,7 @@ class ApplicationController < ActionController::Base
     search = Sunspot.search(Boat) do |q|
       q.with :live, true
       q.facet :manufacturer_model
+      q.facet :category_id
       q.facet :country_id
       q.stats :year
       q.stats :price
@@ -67,7 +68,8 @@ class ApplicationController < ActionController::Base
       min_year:   (year_data && year_data['min'].floor) || 1970,
       min_length: (length_data && length_data['min'].floor) || 10,
       max_length: (length_data && length_data['max'].ceil) || 1000,
-      countries: Country.where(id: search.facet(:country_id).rows.map(&:value))
+      categories: BoatCategory.active.where(id: search.facet(:category_id).rows.map(&:value)),
+      countries: Country.active.where(id: search.facet(:country_id).rows.map(&:value))
     }
   end
 

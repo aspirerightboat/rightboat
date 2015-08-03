@@ -26,9 +26,7 @@ class Boat < ActiveRecord::Base
     string :fuel_type do |boat|
       boat.fuel_type.try(&:name_stripped)
     end
-    string :category do |boat|
-      boat.category && boat.category.active? ? boat.category.name : nil
-    end
+    integer :category_id
     string :boat_type do |boat|
       boat.boat_type.try(&:name_stripped)
     end

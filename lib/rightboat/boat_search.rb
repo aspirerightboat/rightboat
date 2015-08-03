@@ -37,6 +37,10 @@ module Rightboat
           match_conidtion.call(sq, :manufacturer_model)
         end
 
+        # category
+        match_conidtion.call(q, :country_id, :country)
+        match_conidtion.call(q, :category_id, :category)
+
         # price
         q.with(:price).greater_than_or_equal_to(@params[:price_min]) unless @params[:price_min].blank?
         q.with(:price).less_than_or_equal_to(@params[:price_max]) unless @params[:price_max].blank?
@@ -61,6 +65,8 @@ module Rightboat
       req_params = params.symbolize_keys
       type_mapping = {
         manufacturer_model: :array,
+        category:     :array,
+        country:      :array,
         boat_type:    :string,
         fuel_type:    :array,
         price_min:    :float,
@@ -79,7 +85,7 @@ module Rightboat
               when :float then v.to_f
               when :integer then v.to_i
               when :array
-                v.is_a?(Array) ? v : v.to_s.split(',')
+                (v.is_a?(Array) ? v : v.to_s.split(',')).reject(&:blank?)
               when :boolean
                 v =~ /^yes|true|1$/i ? true : false
             end

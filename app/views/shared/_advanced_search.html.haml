@@ -79,16 +79,21 @@
             = label_tag :new_used_new, 'New'
             = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
             = label_tag :new_used_used, 'Used'
+        -#.form-group.row
+        -#  .col-xs-4
+        -#    = label_tag :fuel_type
+        -#  .col-xs-8
+        -#    = select_tag :fuel_type, options_for_select(['Diesel', 'Petrol', 'Other'], params[:fuel_type]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
-            = label_tag :fuel_type
+            = label_tag :category
           .col-xs-8
-            = select_tag :fuel_type, options_for_select(['Diesel', 'Petrol', 'Other'], params[:fuel_type]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'category[]', options_from_collection_for_select(@search_facets[:categories], :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            = select_tag :country, options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full select-general', multiple: 'multiple', prompt: 'All'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'
@@ -115,7 +120,14 @@
         options = $.extend(options, {dropdownCssClass: 'select-white'});
       }
 
-      $(this).select2(options);
+      $(this).select2(options).on('change', function() {
+        var $allOption = $(this).find("option[value='']");
+        if ($allOption.length && $allOption.text().match(/^all$/i)) {
+          if ($allOption.is(':selected')) {
+            $(this).select2("val", '');
+          }
+        }
+      });
     });
 
     $('#manufacturer_model').select2({

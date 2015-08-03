@@ -41,4 +41,8 @@ module ApplicationHelper
     select_tag name, options_from_collection_for_select(Currency.active, :name, :display_symbol, selected), options
   end
 
+  def sort_options(selected = nil)
+    options_for_select(Rightboat::BoatSearch::SortTypes, selected || current_order_field)
+  end
+
 end

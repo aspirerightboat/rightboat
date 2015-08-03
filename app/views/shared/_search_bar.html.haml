@@ -12,7 +12,7 @@
         %li
           .navbar-text
             %span Sort by
-            = select_tag :sort, options_for_select([['Best Match', 'score'], ['Price', 'price']], current_order_field), class: 'rb-select2-md', id: 'sort-field'
+            = select_tag :sort, sort_options, class: 'rb-select2-md', id: 'sort-field'
         %li
           .navbar-text
             %span View

@@ -26,7 +26,7 @@ module SessionSetting
     end
 
     def set_order_field(field)
-      return if field.blank? || !['score', 'price'].include?(field.to_s.downcase)
+      return if field.blank? || Rightboat::BoatSearch::SortTypes.values.include?(field.to_s.downcase)
       cookies[:order_field] = field.to_s.downcase
     end
 

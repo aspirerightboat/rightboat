@@ -1,6 +1,16 @@
 module Rightboat
 
   class BoatSearch
+    SortTypes = {
+      'Best Match'        => :score,
+      'Newly listed'      => :created_at,
+      'Price: high - low' => :price_desc,
+      'Price: low - high' => :price_asc,
+      'Age: high - low'   => :year_asc,
+      'Age: low - high'   => :year_desc,
+      'LOA: high - low'   => :length_m_desc,
+      'LOA: low - high'   => :length_m_asc
+    }
 
     def initialize(params = {})
       @params = preprocess_param(params)
@@ -17,7 +27,7 @@ module Rightboat
         q.fulltext @params[:q] unless @params[:q].blank?
         q.paginate page: @params[:page].to_i, per_page: 30
 
-        q.order_by @params[:order].to_sym if @params[:order]
+        q.order_by @params[:order].to_sym, @params[:order_dir].to_sym if @params[:order]
 
         # new or used
         if (new_used = @params[:new_used])
@@ -125,6 +135,15 @@ module Rightboat
 
       page = req_params[:page].to_i
       req_params[:page] = page > 1 ? page : 1
+
+      if req_params[:order]
+        if SortTypes.values.map(&:to_s).include?(req_params[:order])
+          req_params[:order_dir] = req_params[:order].to_s =~ /_asc$/ ? :asc : :desc
+          req_params[:order] = req_params[:order].gsub(/_(asc|desc)$/, '')
+        else
+          req_params.delete :order
+        end
+      end
 
       req_params
     end

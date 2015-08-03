@@ -47,6 +47,7 @@ class Boat < ActiveRecord::Base
     boolean :live do |boat|
       boat.live?
     end
+    time :created_at
   end
 
   has_many :favourites, inverse_of: :boat, dependent: :destroy

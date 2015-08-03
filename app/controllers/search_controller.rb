@@ -65,9 +65,11 @@ class SearchController < ApplicationController
     if !params[:currency].blank?
       currency = Currency.find_by_name(params[:currency]) rescue nil
       set_currency(currency)
-    elsif !params[:length_unit].blank?
+    end
+    if !params[:length_unit].blank?
       set_length_unit(params[:length_unit])
-    elsif !params[:order].blank?
+    end
+    if !params[:order].blank?
       set_order_field(params[:order])
     end
   end

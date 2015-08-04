@@ -1,7 +1,22 @@
 body#home-index {
-  background: image-url('home-bg.png') no-repeat;
-  background-size: 100% auto;
-  //height: 1000px;
+  .home-bg {
+    position: relative;
+    img {
+      position: absolute; top: 0;
+      @media(max-width: 790px) {
+        height: 600px;
+        width: auto;
+      }
+    }
+    width: 100%;
+    z-index: -1;
+  }
+  .page-gap {
+    min-height: 500px;
+  }
+  .embed-responsive-home-page {
+    padding-bottom: 63.44%;
+  }
   #search-wrapper {
     position: relative;
     font-size: 16px;
@@ -141,12 +156,6 @@ body#home-index {
         left: 13px;
       }
     }
-  }
-  .page-gap {
-    min-height: 500px;
-  }
-  .embed-responsive-home-page {
-    padding-bottom: 63.44%;
   }
   .rb-brief {
     max-width: 820px;

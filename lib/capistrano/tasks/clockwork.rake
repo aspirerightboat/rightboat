@@ -3,7 +3,7 @@ namespace :workers do
     desc "Stop clockwork"
     task :stop do
       on roles(:app) do
-        within release_path do
+        within current_path do
           with rails_env: fetch(:rails_env) do
             execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m stop"
           end
@@ -14,7 +14,7 @@ namespace :workers do
     desc "Clockwork status"
     task :status do
       on roles(:app) do
-        within release_path do
+        within current_path do
           with rails_env: fetch(:rails_env) do
             execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m status"
           end
@@ -25,7 +25,7 @@ namespace :workers do
     desc "Start clockwork"
     task :start do
       on roles(:app) do
-        within release_path do
+        within current_path do
           with rails_env: fetch(:rails_env) do
             execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m start"
           end
@@ -36,7 +36,7 @@ namespace :workers do
     desc "Restart clockwork"
     task :restart do
       on roles(:app) do
-        within release_path do
+        within current_path do
           with rails_env: fetch(:rails_env) do
             execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m restart"
           end

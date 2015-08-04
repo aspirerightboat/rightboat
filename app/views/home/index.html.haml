@@ -1,4 +1,7 @@
 - content_for :header do
+  = render 'shared/advanced_search'
+  .home-bg
+    = image_tag 'home-bg.png', alt: '', class: 'home-bg'
   = render 'navbar'
 
 .container

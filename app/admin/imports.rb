@@ -24,7 +24,7 @@ ActiveAdmin.register Import do
     def check_running_job
       if resource.running?
         flash[:warning] = "You can not manage this import since it's in running status. Please stop it first."
-        redirect_to action: :index
+        redirect_to :back
       end
     end
 
@@ -66,12 +66,12 @@ ActiveAdmin.register Import do
 
   member_action :run, method: :post do
     resource.run!
-    redirect_to action: :index
+    redirect_to :back
   end
 
   member_action :stop, method: :post do
     resource.stop!
-    redirect_to action: :index
+    redirect_to :back
   end
 
   csv do

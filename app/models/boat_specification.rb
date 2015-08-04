@@ -7,6 +7,9 @@ class BoatSpecification < ActiveRecord::Base
   scope :active, -> {
     joins(:specification).where('specifications.active = ?', true)
   }
+  scope :front, -> {
+    joins(:specification).where('specifications.visible = ?', true)
+  }
 
   default_scope -> { joins(:specification).order('specifications.position') }
 

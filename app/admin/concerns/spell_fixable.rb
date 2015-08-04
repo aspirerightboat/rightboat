@@ -8,7 +8,7 @@ module SpellFixable
       else
         flash[:error] = "Sorry, #{resource} can't be activated."
       end
-      redirect_to action: :index
+      redirect_to :back
     end
 
     base.send :member_action, :disable, method: :post do
@@ -17,7 +17,7 @@ module SpellFixable
       else
         flash[:error] = "Sorry, #{resource} can't be disabled."
       end
-      redirect_to action: :index
+      redirect_to :back
     end
 
     base.send :collection_action, :all, method: :get, format: :json do
@@ -35,7 +35,7 @@ module SpellFixable
       else
         flash[:error] = "Sorry, #{resource} can't be merged into #{target}"
       end
-      redirect_to action: :index
+      redirect_to :back
     end
   end
 

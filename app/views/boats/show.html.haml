@@ -41,9 +41,9 @@
           %h1 Details
           .row
             - @spec_attributes.each_slice(2).each do |spec_group|
-              .col-md-6.col-xs-12
-                %dl.dl-horizontal
-                  - spec_group.each do |spec_name, spec_value|
+              - spec_group.each do |spec_name, spec_value|
+                .col-md-6.col-xs-12
+                  %dl.dl-horizontal
                     %dt= spec_name
                     %dd= spec_value
           -# unless @boat.owners_comment.blank?

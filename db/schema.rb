@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150801081521) do
+ActiveRecord::Schema.define(version: 20150803101038) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -389,6 +389,7 @@ ActiveRecord::Schema.define(version: 20150801081521) do
     t.boolean  "active",       limit: 1,   default: false
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
+    t.boolean  "visible",      limit: 1
   end
 
   add_index "specifications", ["active"], name: "index_specifications_on_active", using: :btree

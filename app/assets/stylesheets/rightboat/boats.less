@@ -17,8 +17,8 @@
     .boat-img-thumb, .caption {
       display: table-cell;
       vertical-align: top;
-      font-size: 16px;
       position: relative;
+      @media(max-width: @screen-sm-min) { font-size: 16px; }
     }
     .boat-img-thumb { width: 250px}
     .boat-detail-item { display: block; }
@@ -26,12 +26,15 @@
     h4 {margin-right: 8px;}
     .boat-price {
       float: right;
+      text-align: right;
       margin-right: 0 !important;
       .clearfix-after();
     }
-    .tax-status { font-size: 12px;}
+    .boat-location-1 { display: block; margin-right: 0 !important; .clearfix-now(); }
+    .boat-location-2 { display: none; }
+    //.tax-status { font-size: 12px;}
     .boat-social-links { position: absolute; left: 0; bottom: 0; width: 100%; padding: 15px }
-    .boat-social-links a { font-size: 14px; }
+    //.boat-social-links a { font-size: 14px; }
 
     @media(max-width: @screen-sm-max) {
       .caption { padding: 6px; }

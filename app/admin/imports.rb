@@ -37,7 +37,7 @@ ActiveAdmin.register Import do
     column :id
     column :user, sortable: :user_id
     column :active
-    column 'Sechuling Status' do |job|
+    column 'Scheduling Status' do |job|
       status = job.status
       case status
         when /running/i then status_tag(status, :ok)

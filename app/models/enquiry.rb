@@ -15,6 +15,14 @@ class Enquiry < ActiveRecord::Base
   end
   alias_method :to_s, :name
 
+  def self.pepper
+    Figaro.env.captcha_salt
+  end
+
+  def self.stretches
+    10
+  end
+
   private
   def generate_token
     self.token ||= loop do

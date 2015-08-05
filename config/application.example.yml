@@ -3,10 +3,12 @@ development:
   twitter_key:        "key"
   twitter_secret:     "secret"
   mongo_url:          "mongodb://127.0.0.1:27017/rightboat_development"
+  captcha_salt:       "a78668d1cdf08b82d"
 
 production:
   twitter_handle:     "rightboatdotcom"
   twitter_key:        "key"
   twitter_secret:     "secret"
+  captcha_salt:       "a78668d1cdf08b82d"
   mongo_url:          "mongodb://127.0.0.1:27017/rightboat_production"
 

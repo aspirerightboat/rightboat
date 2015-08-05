@@ -1,15 +1,23 @@
 body {
   //padding-top: 98px;
+  background: @rb-color-dark;
   color: @rb-color-dark;
   -webkit-overflow-scrolling: touch;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 html, body {
   font-family: "Freight Sans", "Open Sans", arial, sans-serif;
 }
 
-#main-content {
+#content-wrapper {
   background: #FFF;
+}
+@media(min-width: 1280px) {
+  #content-wrapper, #footer { border: 4px solid #FFF; }
+}
+#main-content {
   &.container {
     padding-top: 40px;
     padding-bottom: 20px;

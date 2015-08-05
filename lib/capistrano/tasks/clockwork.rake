@@ -2,10 +2,10 @@ namespace :workers do
   namespace :clockwork do
     desc "Stop clockwork"
     task :stop do
-      on roles(:app) do
+      on roles(:import) do
         within current_path do
           with rails_env: fetch(:rails_env) do
-            execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m stop"
+            execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} stop"
           end
         end
       end
@@ -13,10 +13,10 @@ namespace :workers do
 
     desc "Clockwork status"
     task :status do
-      on roles(:app) do
+      on roles(:import) do
         within current_path do
           with rails_env: fetch(:rails_env) do
-            execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m status"
+            execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} status"
           end
         end
       end
@@ -24,7 +24,7 @@ namespace :workers do
 
     desc "Start clockwork"
     task :start do
-      on roles(:app) do
+      on roles(:import) do
         within current_path do
           with rails_env: fetch(:rails_env) do
             execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m start"
@@ -35,13 +35,8 @@ namespace :workers do
 
     desc "Restart clockwork"
     task :restart do
-      on roles(:app) do
-        within current_path do
-          with rails_env: fetch(:rails_env) do
-            execute :bundle, :exec, :clockworkd, "-c clock.rb --pid-dir=#{cw_pid_dir} --dir=#{current_path} --log-dir=#{cw_log_dir} -m restart"
-          end
-        end
-      end
+      invoke 'workers:clockwork:stop'
+      invoke 'workers:clockwork:start'
     end
 
     def cw_log_dir
@@ -51,10 +46,6 @@ namespace :workers do
       "#{shared_path}/tmp/pids"
     end
 
-
-    def rails_env
-      fetch(:rails_env, false) ? "RAILS_ENV=#{fetch(:rails_env)}" : ''
-    end
   end
 
 end

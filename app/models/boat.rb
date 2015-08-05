@@ -120,9 +120,10 @@ class Boat < ActiveRecord::Base
   end
 
   def spec_attributes(full_spec = false)
-    ret = full_spec ? [['Seller', user.name], ['RB Boat Ref', id]] : []
+    ret = full_spec ? [['Seller', user.name]] : []
 
     ret += [
+      ['RB Boat Ref', id],
       ['Manufacturer', self.manufacturer],
       ['Model', self.model],
       ['Price', display_price],

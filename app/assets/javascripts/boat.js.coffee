@@ -59,9 +59,13 @@ $ ->
     $('#enquiry-popup').modal(show: false)
     $('#enquiry-result-popup').modal(show: false)
 
+    $('#enquiry-popup').on 'show.bs.modal', ->
+      $('#enquiry-popup form').renderCaptcha()
+
     onSubmit = (e)->
       e.preventDefault()
       $this = $(e.target) # form
+      $this.find('.alert').remove()
       url = $this.attr('action')
       $.ajax
         url: url
@@ -103,10 +107,17 @@ $ ->
             boatThumb.append(boatLink)
             $similar_boats.append(boatThumb)
           $('#enquiry-result-popup .similar-boats').html($similar_boats.html()).show()
+          $('#enquiry-result-popup .similar-boats-link').show()
         else
+          $('#enquiry-result-popup .similar-boats-link').hide()
           $('#enquiry-result-popup .similar-boats').hide()
-      .error ->
-        alert('Unexpected error occured.')
+      .error (resp)->
+        $('#enquiry-popup form').renderCaptcha()
+        errors = resp.responseJSON.errors
+        $errors = $('<div class="alert alert-danger">')
+        $.each errors, (k, v)->
+          $errors.append(k + ' ' + v + '<br>')
+        $this.prepend($errors)
 
     validetta_options = $.extend Rightboat.validetta_options, onValid: onSubmit
     $('.enquiry-form').validetta(validetta_options)

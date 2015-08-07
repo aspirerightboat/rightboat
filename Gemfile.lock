@@ -120,6 +120,7 @@ GEM
     erubis (2.7.0)
     excon (0.45.3)
     execjs (2.5.2)
+    ezcrypto (0.7.2)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     figaro (1.1.1)
@@ -460,6 +461,7 @@ DEPENDENCIES
   daemons
   delayed_job_active_record
   devise
+  ezcrypto
   figaro
   fog
   friendly_id

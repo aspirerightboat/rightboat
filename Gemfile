@@ -31,6 +31,7 @@ gem 'twitter'
 gem 'twitter-text'
 gem 'figaro'
 gem 'validate_url'
+gem 'ezcrypto'
 
 # deleted_at
 gem 'permanent_records'

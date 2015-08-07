@@ -107,3 +107,22 @@ ul, ul li {
   }
 }
 
+.captcha-input {
+  //padding-left: 100px;
+  position: relative;
+  background: #FFF;
+  .input-group-addon {
+    padding-right: 0;
+    padding-top: 2px;
+  }
+  input, input:focus, input:active {
+    border: 0;
+    .box-shadow(none);
+  }
+
+  input::-webkit-input-placeholder { color: @rb-color-primary; }
+  input:-moz-placeholder { color: @rb-color-primary; }
+  input::-moz-placeholder { color: @rb-color-primary; }
+  input:-ms-input-placeholder { color: @rb-color-primary; }
+
+}

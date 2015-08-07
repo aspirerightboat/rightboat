@@ -101,7 +101,7 @@ class Boat < ActiveRecord::Base
       q.with :manufacturer_id, boat.manufacturer_id
       q.any_of do |q|
         q.all_of do |q|
-          q.with :fuel_type_id, boat.fuel_type_id
+          q.with :category_id, boat.category_id
           q.with :drive_type_id, boat.drive_type_id
         end
         q.with :model_id, boat.model_id if boat.model

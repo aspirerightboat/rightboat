@@ -2,12 +2,20 @@ class EnquiriesController < ApplicationController
 
   def create
     enquiry = Enquiry.new(enquiry_params)
-    enquiry.user = current_user
-    enquiry.boat = Boat.find(params[:boat_id])
-    if enquiry.save
-      render json: enquiry, serializer: EnquirySerializer
+
+    captcha = Rightboat::Captcha.decrypt(params[:enquiry][:captcha_key])
+
+    unless captcha.correct?(params[:enquiry][:captcha])
+      enquiry.errors.add :captcha, "is invalid"
+      render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
     else
-      render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity
+      enquiry.user = current_user
+      enquiry.boat = Boat.find(params[:boat_id])
+      if enquiry.save
+        render json: enquiry, serializer: EnquirySerializer
+      else
+        render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
+      end
     end
   end
 

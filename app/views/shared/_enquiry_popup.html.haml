@@ -41,7 +41,11 @@
               = label_tag :captcha, 'Prove you are human*:'
             .col-xs-12.col-sm-6
               .form-group
-                = text_field_tag :captcha, '', class: 'form-control'
+                .input-group.captcha-input
+                  %label.input-group-addon(for="captcha")
+                    %img.captcha-img
+                  = hidden_field_tag :captcha_key
+                  = text_field_tag :captcha, '', class: 'form-control', 'data-validetta' => 'required,number', placeholder: '?'
             .col-xs-12.col-sm-6
               = button_tag 'Send', type: 'submit', class: 'btn-flat btn-full'
           .clearfix
@@ -72,7 +76,7 @@
           .col-sm-offset-3.col-sm-6.col-xs-12
             = render 'shared/signup_form'
         .row
-          %h4= link_to "Similar Boats (click for more details)", '#'
+          %h4.similar-boats-link= link_to "Similar Boats (click for more details)", '#'
           .similar-boats.row
 
 :javascript

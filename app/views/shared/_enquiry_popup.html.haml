@@ -14,20 +14,20 @@
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = label_tag :title, 'Title*:'
+                    = label_tag :title, 'Title:*'
                     %br
                     = select_tag :title, options_for_select(User::TITLES), class: 'select-white select-sm'
                   .rb-control
-                    = label_tag :title, 'First Name*:'
+                    = label_tag :title, 'First Name:*'
                     = text_field_tag :first_name, '', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :surname, 'Surname*:'
+                = label_tag :surname, 'Surname:*'
                 = text_field_tag :surname, '', class: 'form-control', 'data-validetta' => 'required'
           .row
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :email, 'Email*:'
+                = label_tag :email, 'Email:*'
                 = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
               .form-group
@@ -38,7 +38,7 @@
             = text_area_tag :message, '', class: 'form-control'
           .row
             .col-xs-12
-              = label_tag :captcha, 'Prove you are human*:'
+              = label_tag :captcha, 'Prove you are human:*'
             .col-xs-12.col-sm-6
               .form-group
                 .input-group.captcha-input

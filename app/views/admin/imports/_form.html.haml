@@ -30,7 +30,8 @@
     $('#import_import_type').change(function(){
       var type = $(this).val();
       $('#import-params').hide().find('ol > li').remove()
-      if (params = job_params[type]) {
+      params = job_params[type]
+      if (params && params.length) {
         $.each(params, function() {
           var key = this[0], label = this[1],
           $input = $('<input>').attr('name', 'import[param][' + key + ']')

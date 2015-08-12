@@ -4,7 +4,7 @@ module Rightboat
       extend ActiveSupport::Concern
 
       self.included do
-        delegate :cleanup_string, :url_param, :nbsp_char, to: :class
+        delegate :convert_unit, :cleanup_string, :url_param, :nbsp_char, to: :class
 
         private
         def self.url_param(url, k)
@@ -24,7 +24,7 @@ module Rightboat
           Nokogiri::HTML('&nbsp;').text
         end
 
-        def convert_unit(value, unit)
+        def self.convert_unit(value, unit)
           return value.to_f.round(2) if unit.blank?
           case unit.downcase
             when 'feet', 'ft' then value = (value.to_f * 0.3048).round(2)

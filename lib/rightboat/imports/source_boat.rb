@@ -17,7 +17,7 @@ module Rightboat
 
       SPEC_ATTRS = [
         :hull_type, :hull_shape, :hull_material, :hull_color, :cockpit_type,
-        :flybridge, :air_conditioning, :stern_thruster, :bow_thruster,
+        :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig,
         :range, :lwl_m, :draft_m,
         :engine_count, :engine_type, :engine_location, :beam_m, :engine_horse_power, :engine_hours, :max_speed, :cruising_speed,
         :displacement_kgs, :ballast, :electrical_circuit,

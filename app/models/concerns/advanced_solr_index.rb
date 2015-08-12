@@ -86,7 +86,7 @@ module AdvancedSolrIndex
         reflection = self.class.reflections[relation.to_s]
         cardinality = reflection.macro.to_s
         if cardinality == 'belongs_to'
-          send(relation).solr_index
+          send(relation).try(&:solr_index)
         end
       end
     end

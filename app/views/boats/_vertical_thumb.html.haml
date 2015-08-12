@@ -1,9 +1,11 @@
-.boat-vertical-thumb.col-sm-4.col-xs-12.text-center(data-boat-ref="#{boat.slug}")
+.boat-vertical-thumb.col-sm-4.col-xs-12.text-center{'data-boat-ref' => boat.slug, 'data-length' => boat.length_m.to_f, 'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
   %h4
     %strong= boat.manufacturer
     = boat.model
-  %p.price= boat_price(boat)
-  %p Length: #{boat.length_m}m
+  %p.price(data-attr-name='price')= boat_price(boat)
+  %p.boat-length
+    %span Length:
+    %span(data-attr-name='loa')= boat_length(boat)
   %p Year: #{boat.year_built}
   %p Location: #{boat.full_location}
   %p.small Listed: #{time_ago_in_words(boat.created_at)} ago

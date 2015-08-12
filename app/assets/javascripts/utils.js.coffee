@@ -19,3 +19,5 @@ $ ->
         this[pair[0]] = decodeURIComponent(pair[1]) if pair[0] && pair[0].length
         this
       ).bind({}))[0]
+    numberWithCommas: (x) ->
+      x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

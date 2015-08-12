@@ -3,7 +3,6 @@ class BoatsController < ApplicationController
 
   def show
     @boat = Boat.find(params[:id])
-    @spec_attributes = @boat.spec_attributes
 
     respond_to do |format|
       format.html

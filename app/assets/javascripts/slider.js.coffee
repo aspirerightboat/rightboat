@@ -90,19 +90,30 @@ $ ->
 
       alignSliderLabelPosition($this)
 
-    $('select[name="length_unit"]').change ->
-      unit = $(this).val()
+    $('select[name="length_unit"]').change (e)=>
+      unit = $(e.currentTarget).val()
       $('select[name="length_unit"]').select2('val', unit)
       $('[data-slide-name="length"]').each ->
         $slider = $(this)
         $slider.data('unit', unit)
         updateValues($slider)
         alignSliderLabelPosition($slider)
+      $('[data-attr-name="loa"]').each (_, el)=>
+        $boat = $(el).closest('[data-boat-ref]')
+        l = Number(@convertLength($boat.data('length')).toFixed(2))
+        $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
 
-    $('select[name="currency"]').change ->
-      $('select[name="currency"]').select2('val', $(this).val())
+    $('select[name="currency"]').change (e)=>
+      $el = $(e.currentTarget)
+      currency = $el.find('option:selected').text()
+      $('select[name="currency"]').select2('val', $el.val())
       $('[data-slide-name="price"]').each ->
         $slider = $(this)
         updateValues($slider)
         alignSliderLabelPosition($slider)
+      $('[data-attr-name="price"]').each (_, el)=>
+        $boat = $(el).closest('[data-boat-ref]')
+        if price = $boat.data('price')
+          p = Number(@convertCurrency(price).toFixed(2))
+          $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
 

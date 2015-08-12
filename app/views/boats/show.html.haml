@@ -1,3 +1,5 @@
+:plain
+  <a href="//www.tripexpert.com/new-york-city/hotels/crosby-street-hotel"><img src="//www.tripexpert.com/badge-v2/new-york-city/hotels/crosby-street-hotel/expert?retina=true" alt="TripExpert Badge" data-at2x="//www.tripexpert.com/badge-v2/new-york-city/hotels/crosby-street-hotel/expert?retina=true" srcset="//www.tripexpert.com/badge-v2/new-york-city/hotels/crosby-street-hotel/expert?retina=true 2x"></a>
 - if @back_url
   %nav.navbar.navbar-default.nabvar-tools
     .container
@@ -28,7 +30,7 @@
         %li= image_tag boat_img.file.url(:thumb)
 
   #main-content
-    .container
+    .container{'data-boat-ref' => @boat.slug, 'data-length' => @boat.length_m.to_f, 'data-price' => @boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}
       .boat-social-links.pull-left
         = link_to 'Share', '#', class: 'share-link'
         = favourite_link_to @boat, 'Favourite'
@@ -40,19 +42,22 @@
         .col-sm-5.col-md-7.col-xs-12.pull-right
           %h1 Details
           .row
-            - @spec_attributes.each_slice(2).each do |spec_group|
-              - spec_group.each do |spec_name, spec_value|
+            - @boat.spec_attributes(self).each_slice(2).each do |spec_group|
+              - spec_group.each do |spec|
                 .col-md-6.col-xs-12
                   %dl.dl-horizontal
-                    %dt= spec_name
-                    %dd= spec_value
+                    %dt= spec[0]
+                    - if spec[2]
+                      %dd{ 'data-attr-name' => spec[2] }= spec[1]
+                    - else
+                      %dd= spec[1]
           -# unless @boat.owners_comment.blank?
           -#  %h3 Owners Comment
           -#  %p.owners-commnet= @boat.owners_comment
 
         .col-sm-7.col-md-5.col-xs-12
           %h1 About #{@boat.to_s}
-          = sanitize(@boat.description)
+          .truncated-description= truncate_html(sanitize(@boat.description), length: 200, omission: ' ...')
 
 :javascript
   $(function() {

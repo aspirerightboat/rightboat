@@ -1,4 +1,8 @@
 module BoatsHelper
+  def boat_length(boat, unit = current_length_unit)
+    boat.display_length(unit)
+  end
+
   def boat_price(boat, currency = current_currency)
     boat.display_price(currency)
   end

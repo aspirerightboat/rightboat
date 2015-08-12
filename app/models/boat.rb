@@ -119,18 +119,21 @@ class Boat < ActiveRecord::Base
     name.blank? ? manufacturer_model : name
   end
 
-  def spec_attributes(full_spec = false)
+  def spec_attributes(context = nil, full_spec = false)
     ret = full_spec ? [['Seller', user.name]] : []
+
+    currency = context ? context.current_currency : nil
+    l_unit = context ? context.current_length_unit : nil
 
     ret += [
       ['RB Boat Ref', id],
       ['Manufacturer', self.manufacturer],
       ['Model', self.model],
-      ['Price', display_price],
+      ['Price', display_price(currency), 'price'],
       ['Boat Type', boat_type],
       ['Year Built', self.year_built],
       ['Location', self.full_location],
-      ['LOA(m)', self.length_m],
+      ['LOA', display_length(l_unit), 'loa'],
       ['Tax Status', self.tax_status],
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
@@ -143,6 +146,13 @@ class Boat < ActiveRecord::Base
 
   def full_location
     [location, country.to_s].reject(&:blank?).join(', ')
+  end
+
+  def display_length(unit = nil)
+    unit ||= 'm'
+    length = self.length_m.to_f
+    length = unit.to_s =~ /ft/i ? (length * 3.2808399).round(2) : length.round(2)
+    "#{length} #{unit}"
   end
 
   def display_price(currency = nil)

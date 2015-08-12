@@ -28,10 +28,12 @@ $ ->
             progress: setupSliderLabelPosition
             complete: setupSliderLabelPosition
 
-    $('#view-mode, #sort-field').change ->
+    $('#view-mode, #sort-field, select#currency, select#length_unit').change ->
       value = $(this).val().toLowerCase()
       id = $(this).attr('id')
-      if id == 'view-mode'
+      if id == 'currency'
+        value = value.toUpperCase()
+      else if id == 'view-mode'
         $('*[data-view-layout]').attr('data-view-layout', value)
       else if id == 'sort-field'
         # TODO: need to reset pagination with ajax

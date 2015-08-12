@@ -38,6 +38,7 @@ module ApplicationHelper
   end
 
   def currency_tag(name, selected, options = {})
+    selected = selected.is_a?(Currency) ? selected.name : selected
     select_tag name, options_from_collection_for_select(Currency.active, :name, :display_symbol, selected), options
   end
 

@@ -1,5 +1,5 @@
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12
-  .boat-thumb.thumbnail(data-boat-ref="#{boat.slug}")
+  .boat-thumb.thumbnail{'data-boat-ref' => boat.slug, 'data-length' => boat.length_m.to_f, 'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
     .boat-img-thumb
       = link_to boat do
         = image_tag boat.primary_image.file.url(:thumb)
@@ -7,7 +7,7 @@
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-detail-item.boat-price
-        %span= boat_price(boat)
+        %span(data-attr-name='price')= boat_price(boat)
 
         %span.small TAX
         - if boat.tax_paid?
@@ -16,8 +16,9 @@
           %span.tax-status &#10007;
         .boat-location-1
           %span Location: #{boat.full_location}
-      .boat-detail-item
-        %span Length: #{boat.length_m}m
+      .boat-detail-item.boat-length
+        %span Length:
+        %span(data-attr-name='loa')= boat_length(boat)
       .boat-detail-item
         %span Year: #{boat.year_built}
       .boat-detail-item.boat-location-2

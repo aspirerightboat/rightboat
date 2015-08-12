@@ -241,7 +241,7 @@ module Rightboat
             # )
 
             geo_result = Geocoder.search(full_location, lookup: :google).first
-            if geo_result
+            if geo_result && geo_result.country
               self.country = geo_result.country_code
               rcc = "#{Regexp.escape(geo_result.country_code)}|#{Regexp.escape(geo_result.country)}"
               self.location = full_location.strip.gsub(/([\s,]+)?(#{rcc})([^\w])?$/i, '')

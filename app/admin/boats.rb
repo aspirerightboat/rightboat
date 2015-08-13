@@ -22,6 +22,8 @@ ActiveAdmin.register Boat do
     column :geocoded do |boat|
       boat.geocoded? ? status_tag('Geocoded', :ok) : status_tag('Failed', :error)
     end
+    column :country
+    column :location
     actions do |boat|
       item "Statistics", statistics_admin_boat_path(boat)
     end

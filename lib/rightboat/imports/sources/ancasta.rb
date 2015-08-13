@@ -47,7 +47,9 @@ module Rightboat
             next unless c.is_a?(Nokogiri::XML::Element)
             attr = DATA_MAPPINGS[c.name]
             value = cleanup_string(c.text).gsub("/n","\n")
-            if c.name == 'Images'
+            if c.name == 'BcbComments'
+              next
+            elsif c.name == 'Images'
               image_elements = c.search('.//Image').select do |el|
                 el.search('.//Type').text =~ /Image$/
               end

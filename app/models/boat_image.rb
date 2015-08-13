@@ -19,7 +19,7 @@ class BoatImage < ActiveRecord::Base
 
   def cache_file_from_source_url
     retries = 0
-    url = source_url.to_s.gsub('[', '%5B').gsub(']', '%5D')
+    url = URI.encode(URI.decode(source_url.to_s)).gsub('[', '%5B').gsub(']', '%5D')
     uri = URI.parse(url) rescue nil
     if !uri || ENV["SKIP_DOWNLOAD_IMAGES"]
       write_attribute :file, File.basename(uri.path)

@@ -117,6 +117,10 @@ module Rightboat
         end
       end
 
+      def basic_auth(user, password)
+        @_agent.auth(user, password)
+      end
+
       def process_result
         remove_old_boats
 

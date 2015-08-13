@@ -202,7 +202,11 @@ module Rightboat
       # boat spec that is not managed
       def set_missing_attr(attr, value)
         @missing_spec_attrs ||= {}
-        @missing_spec_attrs[attr] = value
+        @missing_spec_attrs[attr.to_s] = value
+      end
+
+      def get_missing_attr(attr)
+        @missing_spec_attrs[attr.to_s]
       end
 
       private

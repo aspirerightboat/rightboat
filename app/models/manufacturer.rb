@@ -26,7 +26,7 @@ class Manufacturer < ActiveRecord::Base
   alias_attribute :name_ngrme, :name
 
   def to_s
-    name
+    name.gsub(/&amp;/i, '&')
   end
 
   private

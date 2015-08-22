@@ -21,7 +21,7 @@ class BoatType < ActiveRecord::Base
   alias_attribute :name_ngrme, :name
 
   def to_s
-    name
+    name_stripped
   end
 
   def name_stripped

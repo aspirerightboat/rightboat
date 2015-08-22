@@ -63,7 +63,7 @@
 
         .col-sm-7.col-md-5.col-xs-12
           %h1 About #{@boat.to_s}
-          .truncated-description= truncate_html(sanitize(@boat.description), length: 200, omission: ' ...')
+          .truncated-description= reduced_description(@boat.description)
 
 :javascript
   $(function() {

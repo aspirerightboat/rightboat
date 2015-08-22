@@ -9,16 +9,15 @@
       .boat-detail-item.boat-price
         %span(data-attr-name='price')= boat_price(boat)
         %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
-
-        .boat-location-1
-          %span Location: #{boat.full_location}
+      .boat-location-1
+        %span Location: #{boat.full_location}
       .boat-detail-item.boat-length
         %span Length:
         %span(data-attr-name='loa')= boat_length(boat)
       .boat-detail-item
         %span Year: #{boat.year_built}
-      .boat-detail-item.boat-location-2
-        %span Location: #{boat.full_location}
+      /.boat-detail-item.boat-location-2
+      /  %span Location: #{boat.full_location}
       - unless local_assigns[:disable_social_links]
         .boat-social-links
           = favourite_link_to boat, 'Favourite'

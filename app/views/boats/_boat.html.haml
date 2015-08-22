@@ -8,12 +8,8 @@
       %h5= boat.model
       .boat-detail-item.boat-price
         %span(data-attr-name='price')= boat_price(boat)
+        %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
 
-        %span.small TAX
-        - if boat.tax_paid?
-          %span.tax-status &#10003;
-        - else
-          %span.tax-status &#10007;
         .boat-location-1
           %span Location: #{boat.full_location}
       .boat-detail-item.boat-length

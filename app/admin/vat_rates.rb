@@ -29,7 +29,6 @@ ActiveAdmin.register VatRate do
       end
       item "Merge".html_safe, 'javascript:void(0)',
               class: 'merge-record job-action',
-              'data-confirm' => 'Are you sure? You can\'t revert this action',
               'data-url' => url_for([:merge, :admin, record]),
               'data-id' => record.id
     end

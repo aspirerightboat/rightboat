@@ -1,3 +1,11 @@
+- if session[:boats_count] && @back_url
+  - content_for :header_text do
+    %h1 &nbsp;
+    %h3
+      Search Results:
+      %strong #{session[:boats_count]}
+      %span.hidden-sm boats for sale
+
 - if @back_url
   %nav.navbar.navbar-default.nabvar-tools
     .container

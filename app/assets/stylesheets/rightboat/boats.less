@@ -218,6 +218,7 @@ a.pdf-link {
     border: 0;
     border-radius: 0;
     width: 100%;
+
     @media(min-width: 1281px) {
       border: 1px solid #FFF;
       border-top: 0;
@@ -225,7 +226,25 @@ a.pdf-link {
     }
   }
   .boat-social-links { margin-top: 18px;}
-  #slider {margin-top: 15px;}
+  #slider {
+    .slides {
+      > li {
+        height: 534px;
+        white-space: nowrap;
+        text-align: center;
+      }
+
+      .dummy {
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+      }
+
+      img {
+        vertical-align: middle;
+      }
+    }
+  }
   #main-content {
     color: @rb-color-dark;
     h1 {font-size: 28px; font-weight: bold;}

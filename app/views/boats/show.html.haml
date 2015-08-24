@@ -29,7 +29,9 @@
   #slider.flexslider
     %ul.slides
       - @boat.boat_images.each do |boat_img|
-        %li= image_tag boat_img.file.url(:main)
+        %li
+          .dummy
+          = image_tag boat_img.file.url(:main)
   #carousel.flexslider
     %ul.slides
       - @boat.boat_images.each do |boat_img|

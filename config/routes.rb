@@ -82,6 +82,7 @@ Rails.application.routes.draw do
 
   get 'about' => 'home#about', as: :about
   get 'contact' => 'home#contact', as: :contact
+  get 'toc' => 'home#toc', as: :toc
 
   namespace :api, constraints: { format: :json } do
     controller :manufacturers, path: 'manufacturers' do

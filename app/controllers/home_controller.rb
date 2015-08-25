@@ -26,6 +26,10 @@ class HomeController < ApplicationController
     @page_title = 'Support and Contact'
   end
 
+  def toc
+    @page_title = 'Terms and Conditions'
+  end
+
   private
   def register_statistics
     unless @featured_boats.blank?

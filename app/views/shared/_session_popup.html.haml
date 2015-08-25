@@ -6,12 +6,12 @@
           %span{"aria-hidden" => "true"} &times;
       .modal-body
         .signup-area.row
-          %h2.text-center Sing Up
-          .col-sm-offset-3.col-sm-6.col-xs-12
-            = render 'shared/signup_form'
-            %p
-              Do you have an account already?
-              = link_to "Login", '#', class: 'user-login'
+          %h3 My Rightboat
+          %hr
+          = render 'shared/signup_form'
+          %p
+            Do you have an account already?
+            = link_to "Login", '#', class: 'user-login'
         .signin-area
           .row#split-row
             .col-sm-6

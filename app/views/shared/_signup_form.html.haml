@@ -1,5 +1,13 @@
--# TODO: make ajax working for signup
 = form_tag user_registration_path, class: 'register-form' do
+  .form-group
+    = label_tag :name
+    .row
+      .col-md-2.col-xs-12
+        = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'form-control'
+      .col-md-5.col-xs-12
+        = text_field_tag :first_name, '', placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
+      .col-md-5.col-xs-12
+        = text_field_tag :last_name, '', placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
   #signup-email.form-group
     = label_tag :email
     = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
@@ -10,4 +18,9 @@
     = label_tag :password
     = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
   .form-group
-    = button_tag 'Register', type: 'submit', class: 'btn-flat btn-full'
+    = label_tag :password_confirmation
+    = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
+  .form-group
+    = button_tag 'Create Account', type: 'submit', class: 'btn btn-flat btn-primary'
+    &nbsp;Or&nbsp;
+    = link_to 'Cancel', '#', "aria-label" => "Close", "data-dismiss" => "modal"

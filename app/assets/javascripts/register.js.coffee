@@ -2,11 +2,12 @@ $ ->
   $(document).ready ->
     $('.user-register').click (e) ->
       e.preventDefault()
+      $('form .alert').remove()
       $('#session-popup .signin-area').hide()
       $('#session-popup .signup-area').show()
       $('#session-popup').modal()
 
-    onSubmit = (e) ->
+    onRegisterSubmit = (e) ->
       e.preventDefault()
       $this = $(e.target) # form
       $this.find('button[type=submit]').attr('disabled', 'disabled')
@@ -15,19 +16,23 @@ $ ->
         method: 'POST'
         dataType: 'JSON'
         url: url
-        data: { user: $(@).serializeObject() }
+        data: { user: $this.serializeObject() }
       .success ->
         # TODO: update page using ajax result instead of page refresh
         window.location = window.location
-      .error ->
-        console.log 'Error'
-        console.log arguments
+      .error (response) ->
+        errors = response.responseJSON.errors
+        $errors = $('<div class="alert alert-danger">')
+        Object.keys(errors).forEach (key) ->
+          field = key.toString()
+          $errors.append(field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ') + ' ' + errors[key].toString() + '<br>')
+        $this.prepend($errors)
       .always =>
         $this.find('button[type=submit]').removeAttr('disabled')
-    validetta_options = $.extend Rightboat.validetta_options, onValid: onSubmit
+    validetta_options = $.extend Rightboat.validetta_options, onValid: onRegisterSubmit
     $('.register-form').validetta(validetta_options)
 
-    onSubmit = (e) ->
+    onProfileSubmit = (e) ->
       e.preventDefault()
       $this = $(e.target) # form
       $this.find('.alert').remove()
@@ -47,5 +52,5 @@ $ ->
       .always =>
         $this.find('button[type=submit]').removeAttr('disabled')
 
-    validetta_options = $.extend Rightboat.validetta_options, onValid: onSubmit
+    validetta_options = $.extend Rightboat.validetta_options, onValid: onProfileSubmit
     $('.profile-form').validetta(validetta_options)

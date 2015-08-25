@@ -1,0 +1,11 @@
+= form_for MailSubscription.new, html: { class: 'mail-subsctiption-form' } do |f|
+
+  .form-group.row
+    .col-md-3= f.label :email, 'Email address *:'
+    .col-md-8= f.text_field :email, class: 'form-control', 'data-validetta' => 'required,email'
+
+  .form-group.row
+    .col-md-3
+    .col-md-8
+      = f.submit 'Subscribe', class: 'btn btn-primary btn-flat'
+      = f.submit 'Unsubscribe', class: 'btn btn-primary btn-flat'

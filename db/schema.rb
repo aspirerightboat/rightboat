@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803101038) do
+ActiveRecord::Schema.define(version: 20150825095914) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -313,6 +313,13 @@ ActiveRecord::Schema.define(version: 20150803101038) do
   end
 
   add_index "imports", ["user_id"], name: "index_imports_on_user_id", using: :btree
+
+  create_table "mail_subscriptions", force: :cascade do |t|
+    t.string   "email",      limit: 255
+    t.boolean  "active",     limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "manufacturers", force: :cascade do |t|
     t.string   "name",        limit: 255

@@ -72,13 +72,16 @@ Rails.application.routes.draw do
       resources :boats, only: [:show]
     end
   end
+  resources :feedbacks, only: [:create]
+  resources :mail_subscriptions, only: [:create]
 
   get 'search', to: 'search#results'
   post 'boats/:boat_id/request-details', to: 'enquiries#create'
   get 'captcha', to: 'captcha#image'
   get 'captcha/new', to: 'captcha#new'
 
-  get '/about' => 'home#about', :as => :about
+  get 'about' => 'home#about', as: :about
+  get 'contact' => 'home#contact', as: :contact
 
   namespace :api, constraints: { format: :json } do
     controller :manufacturers, path: 'manufacturers' do

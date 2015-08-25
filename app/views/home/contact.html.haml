@@ -1,0 +1,56 @@
+#main-content.container
+  .row
+    .col-md-3
+      = image_tag "advert-left.png"
+
+    .col-md-9
+      %h1 Contact
+
+      %h2 Using the Rightboat website
+      %p The rightboat site has been designed to ensure all visitors can find what they need to know by simply navigating around the signposted site.
+      %p Please note we are a site advertising on behalf of our clients and we are unable to answer specific questions on items for sale. In order to answer such queries and for the most helpful answer please contact the advertiser direct. You will find their contact details when you scroll down to the bottom of the listing.
+
+      %h2 Feedback
+      %p If you would like to send us feedback on the rightboat website, you can do so via our Feedback Form.
+      = render 'feedbacks/form'
+
+      %h2 Email Marketing
+      %p
+        If you would like to receive messages regarding Rightboat.com and other products and services we think may be of interest to you, please enter your email address below and click
+        %strong subscribe
+        \.
+      %p
+        If you are currently receiving email marketing from Rightboat.com and would like to stop, please enter your email address below and click
+        %strong unsubscribe
+        \.
+      = render 'mail_subscriptions/form'
+
+      %h2
+        Are you considering advertising on rightboat.com
+        %br
+        or are you an existing advertiser?
+      %p Please contact us using the telephone number and email address below. This will guarantee a speedy response from a customer services representative.
+
+      %p
+        %strong Call
+        us now on +44 (0)333 322 2628 or
+      %p
+        %strong Email
+        us at #{mail_to 'sales@rightboat.com'}
+
+      %h2 Office opening hours
+      %p Monday - Friday 9:00am - 5:30pm (UK)
+
+      %h2 Postal Address
+      %p
+        Rightboat Ltd
+        %br
+        Castle Malwood
+        %br
+        Minstead
+        %br
+        Hampshire
+        %br
+        S043 7PE
+        %br
+        England

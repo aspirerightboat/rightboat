@@ -1,0 +1,9 @@
+Please find below details of your enquiry from #{@feedback.title} #{@feedback.first_name} #{@feedback.last_name} (#{@feedback.email}),
+
+= @feedback.comments
+
+- if @feedback.phone_number
+  Telephone: #{@feedback.phone_number}
+
+Kind regards,
+Rightboat.com

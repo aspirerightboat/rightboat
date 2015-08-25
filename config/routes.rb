@@ -67,7 +67,12 @@ Rails.application.routes.draw do
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
   resources :articles, only: [:show], path: :news
 
-  resources :boats, only: [:show]
+  resources :manufacturers, only: [] do
+    resources :models, only: [] do
+      resources :boats, only: [:show]
+    end
+  end
+
   get 'search', to: 'search#results'
   post 'boats/:boat_id/request-details', to: 'enquiries#create'
   get 'captcha', to: 'captcha#image'

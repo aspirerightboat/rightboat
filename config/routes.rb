@@ -78,6 +78,8 @@ Rails.application.routes.draw do
   get 'captcha', to: 'captcha#image'
   get 'captcha/new', to: 'captcha#new'
 
+  get '/about' => 'home#about', :as => :about
+
   namespace :api, constraints: { format: :json } do
     controller :manufacturers, path: 'manufacturers' do
       get ':id/models', action: :models

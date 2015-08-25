@@ -18,6 +18,10 @@ class HomeController < ApplicationController
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 
+  def about
+    @page_title = "About Us"
+  end
+
   private
   def register_statistics
     unless @featured_boats.blank?

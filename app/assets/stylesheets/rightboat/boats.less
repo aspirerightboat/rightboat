@@ -164,7 +164,7 @@ a.pdf-link {
   }
 }
 
-.boat-vertical-thumb {
+.boat-vertical-thumb a {
   color: @rb-color-dark;
   h4 {
     font-weight: normal;
@@ -176,14 +176,22 @@ a.pdf-link {
     line-height: 1.3em;
     &.boat-price { font-size: 20px; }
   }
-  padding-bottom: 23px;
+  display: block;
+  padding: 15px 0;
   margin-bottom: 15px;
+  .transition(all .25s ease-out);
   &:not(:last-child) {
     border-bottom: 1px solid #FFF;
     @media (min-width: @screen-sm-min) {
       border-bottom: 0;
       border-right: 1px solid #FFF;
     }
+  }
+
+  &:hover {
+    color: white;
+    background-color: @rb-color-dark;
+    text-decoration: none;
   }
 }
 

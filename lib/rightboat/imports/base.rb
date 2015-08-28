@@ -1,4 +1,5 @@
 require 'mechanize'
+require 'nokogiri'
 
 module Rightboat
   module Imports
@@ -10,7 +11,7 @@ module Rightboat
       attr_accessor :scraped_boats, :missing_attrs, :exit_worker
 
       def self.source_types
-        ['openmarine', 'yachtworld', 'ancasta']
+        ['openmarine', 'yachtworld', 'ancasta', 'boatsandoutboards']
       end
 
       def initialize(import)

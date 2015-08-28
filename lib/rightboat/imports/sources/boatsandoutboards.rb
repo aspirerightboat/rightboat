@@ -55,8 +55,8 @@ module Rightboat
               puts "parsing #{url}"
               doc = get(url)
               doc.search("div.listingsv2 td .title a").each do |a|
-                unless (detail_url = a['href']).blank?
-                  job = { url: detail_url }
+                unless (detail_page = a['href']).blank?
+                  job = { url: detail_page }
                   enqueue_job(job)
                 end
               end
@@ -99,7 +99,7 @@ module Rightboat
           doc.search("table.other_details tr").each do |tr|
             tr.search(".label").each do |key_td|
               key = key_td.text.strip.gsub(/((\s+)?:$|\.)/, '').gsub(/(\s+|\/)/, '_').downcase
-              value = key_td.next().text.strip
+              value = key_td.next.text.strip
               fields[key] =  value unless key.blank? || value.blank?
             end
           end
@@ -110,7 +110,7 @@ module Rightboat
             fields[key] = 'Yes'
           end
 
-          boat.boat_type = fields['type']
+          boat.name = doc.search('.ad_header .title').first.text.strip rescue nil
           price_text = doc.search('.ad_header .price').first.text.strip.gsub(/[\s,]/, '') rescue nil
           boat.price = price_text[/\d+/].to_i rescue nil
           boat.vat_rate = price_text[/[^\d]+$/].strip rescue nil

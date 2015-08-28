@@ -3,7 +3,7 @@
 module Rightboat
   module Imports
     module Sources
-      class BoatCare < Base
+      class Boatcare < Base
         def advert_url(id)
           "http://www.boatcarelimited.com/module/Brokerage/#{id}/26.htm"
         end

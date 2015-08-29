@@ -35,16 +35,12 @@ module Rightboat
           end
         )
 
-        def self.validate_param_option
-          { source_id: [:presence, /^[A-Za-z0-9]{1,7}$/] }
+        def host
+          'www.boatsandoutboards.co.uk'
         end
 
-        def advert_url(url)
-          return unless url
-          uri = URI(url)
-          uri.host ||= 'www.boatsandoutboards.co.uk'
-          uri.scheme ||= 'http'
-          uri.to_s
+        def self.validate_param_option
+          { source_id: [:presence, /^[A-Za-z0-9]{1,7}$/] }
         end
 
         def enqueue_jobs

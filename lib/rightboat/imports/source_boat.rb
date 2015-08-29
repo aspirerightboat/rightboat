@@ -160,7 +160,7 @@ module Rightboat
             if value.blank? || value.to_s =~ /^[\.0]+$/
               value = nil
             elsif attr_name.to_sym == :currency
-              value = klass.find_by_name(value)
+              value = klass.where("name = ? OR symbol = ?", value, value).first
               # TODO: report error for nil currency
             else
               value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!

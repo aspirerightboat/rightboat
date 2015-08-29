@@ -9,7 +9,7 @@ module Rightboat
           'boat_reference' => :source_id,
           'build_year' => :year_built,
           'boat_price' => Proc.new { |boat, val| boat.price = val.gsub(/,/, '').to_f; boat.currency = val[/[a-zA-Z]{3}/] },
-          'vat_status' => :vat_rate,
+          'vat_status' => Proc.new { |boat, val| boat.vat_rate = true if val =~ /^paid/i },
           'hull_construction' => :hull_type,
           'builder' => :builder,
           'designer' => :designer,
@@ -29,12 +29,8 @@ module Rightboat
           end
         )
 
-        def advert_url(url)
-          return unless url
-          uri = URI(url)
-          uri.host ||= 'www.charleswatsonmarine.co.uk'
-          uri.scheme ||= 'http'
-          uri.to_s
+        def host
+          'www.charleswatsonmarine.co.uk'
         end
 
         def enqueue_jobs
@@ -68,8 +64,7 @@ module Rightboat
           boat.source_url = url
           doc = get(url)
 
-          manufacturer_model = doc.search('article[@id="mainContent"] h2').first.text
-          boat.manufacturer, boat.model = manufacturer_model.split(/[^A-Za-z0-9]/, 2)
+          boat.manufacturer_model = doc.search('article[@id="mainContent"] h2').first.text.strip rescue nil
 
           doc.search("td.tdTitle").each do |key_td|
             key = key_td.text.strip.gsub(/((\s+)?:$|\.)/, '').gsub(/(\s+|\/)/, '_').downcase

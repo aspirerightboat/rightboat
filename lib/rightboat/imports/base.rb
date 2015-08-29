@@ -11,7 +11,7 @@ module Rightboat
       attr_accessor :scraped_boats, :missing_attrs, :exit_worker
 
       def self.source_types
-        ['openmarine', 'yachtworld', 'ancasta', 'boatcare', 'boatmatch', 'boatsandoutboards', 'charleswatson']
+        ['openmarine', 'yachtworld', 'ancasta', 'boatsandoutboards', 'charleswatson']
       end
 
       def initialize(import)
@@ -152,6 +152,13 @@ module Rightboat
         end
       end
 
+      def advert_url(url, scheme='http')
+        return unless url
+        uri = URI(url)
+        uri.host ||= host
+        uri.scheme ||= scheme
+        uri.to_s
+      end
     end
   end
 end

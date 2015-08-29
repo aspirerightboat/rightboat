@@ -11,7 +11,7 @@ module Rightboat
       attr_accessor :scraped_boats, :missing_attrs, :exit_worker
 
       def self.source_types
-        ['openmarine', 'yachtworld', 'ancasta', 'boatsandoutboards', 'charleswatson']
+        ['openmarine', 'yachtworld', 'ancasta', 'boatsandoutboards', 'charleswatson', 'eyb']
       end
 
       def initialize(import)

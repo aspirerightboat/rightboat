@@ -22,7 +22,8 @@ module BoatsHelper
     link_to label || fav_label(boat), '#', class: fav_class(boat)
   end
 
-  def reduced_description(description)
+  def reduced_description(description=nil)
+    return '' if description.blank?
     length = vlength = 0
     description.split('.').each do |x|
       vlength += 50 if x =~ /<(br|h\d|p)>/

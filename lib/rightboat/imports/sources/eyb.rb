@@ -17,7 +17,7 @@ module Rightboat
           'builder' => :manufacturer,
           'year_built' => :year_built,
           'name_boat' => :name,
-          'length' => Proc.new { |boat, val| boat.length_m = val },
+          'length' => :length_m,
           'beam' => :beam_m,
           'draugth' => :draft_m,
           'number_engines' => :engine_count,

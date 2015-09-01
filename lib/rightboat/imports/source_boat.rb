@@ -109,6 +109,15 @@ module Rightboat
         NORMAL_ATTRIBUTES.each do |attr_name|
           value = instance_variable_get("@#{attr_name}".to_sym)
           value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
+          if attr_name.to_sym == :description and !value.nil?
+            # Remove contact information
+            # including email
+            value = value.gsub(/\s+[^.,?!]*(email)?[^.,?!]*[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}[^.?!]*[.?!]/i, '')
+            # including phone number
+            value = value.gsub(/\s+[^.,?!]*(call)?[^.,?!]*[\d\-\s\(\)]{9,20}[^.?!]*[.?!]/i, '')
+            # including url
+            value = value.gsub(/\s+[^.,?!]*(http|https|ftp)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?\/?([a-zA-Z0-9\-\._\?\,\'\\+&amp;%\$#\=~])*/i, '')
+          end
           target.send "#{attr_name}=", value
         end
         target.revive(true) if target.deleted?

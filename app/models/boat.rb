@@ -92,6 +92,8 @@ class Boat < ActiveRecord::Base
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
+  before_destroy :remove_activities
+
   def self.similar_boats(boat, options = {})
     # TODO: need confirmation from RB
     return [] unless boat.manufacturer
@@ -203,6 +205,10 @@ class Boat < ActiveRecord::Base
     vat_rate ? vat_rate.tax_status : 'NA'
   end
 
+  def activities
+    Activity.where(target_id: id, action: :show)
+  end
+
   private
   def slug_candidates
     [
@@ -233,5 +239,9 @@ class Boat < ActiveRecord::Base
         self.errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
       end
     end
+  end
+
+  def remove_activities
+    activities.destroy_all
   end
 end

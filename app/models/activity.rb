@@ -2,8 +2,6 @@ class Activity
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  belongs_to :user
-
   field :action,      type: String
   field :target_id,   type: String
   field :ip,          type: String
@@ -11,7 +9,10 @@ class Activity
   field :parameters,  type: Hash
   field :count,       type: Integer, default: 1
 
-  validates_presence_of :action, :ip
+  validates_presence_of :action
 
-  default_scope -> { order(count: :desc) }
+  scope :recent, ->   { order(updated_at: :desc) }
+  scope :popular, ->  { order(count: :desc) }
+  scope :show, ->     { where(action: :show) }
+  scope :search, ->   { where(action: :search) }
 end

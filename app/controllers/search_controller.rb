@@ -1,6 +1,7 @@
 class SearchController < ApplicationController
   before_filter :save_session_settings, only: :results
   before_filter :load_search_facets, only: :results
+  after_filter :log_search_terms, only: :results
 
   def suggestion
     return render(json: []) if params[:q].blank?
@@ -72,6 +73,17 @@ class SearchController < ApplicationController
     end
     if !params[:order].blank?
       set_order_field(params[:order])
+    end
+  end
+
+  def log_search_terms
+    attrs = params.except(:utf8, :controller, :action, :button)
+    return if attrs.values.all?(&:blank?)
+
+    if activity = Activity.search.where(parameters: attrs).first
+      activity.inc(count: 1)
+    else
+      Activity.create(parameters: attrs, action: :search)
     end
   end
 end

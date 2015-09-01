@@ -12,9 +12,7 @@ class HomeController < ApplicationController
     @featured_boats = Rails.cache.fetch "rb.featured_boats", expires_in: 1.hour do
       Boat.featured.limit(6)
     end
-    @recent_boats = Rails.cache.fetch "rb.reduced_boats", expires_in: 1.hour do
-      Boat.recently_reduced
-    end
+    @recent_boats = Boat.where(id: Activity.where(ip: request.remote_ip, action: :show).limit(3).map(&:target_id))
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 

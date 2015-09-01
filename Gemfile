@@ -59,6 +59,8 @@ gem 'mechanize', require: false
 
 # for statistics
 gem 'mongo'
+gem 'mongoid'
+gem 'bson_ext'
 
 group :development, :test do
   # gem 'byebug'

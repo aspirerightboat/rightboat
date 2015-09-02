@@ -9,7 +9,7 @@ module Member
       attrs = { boat_id: boat.id, user_id: current_user.id }
 
       if boat.booked_by?(current_user)
-        Favourite.where(attrs).destroy_all
+        Favourite.where(attrs).delete_all
         active = false
       else
         favourite = Favourite.create!(attrs)

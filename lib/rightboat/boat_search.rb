@@ -31,8 +31,11 @@ module Rightboat
 
         # new or used
         if (new_used = @params[:new_used])
-          q.with :new_boat, true if new_used == :new
-          q.without :new_boat, true if new_used == :used
+          year = Date.today.year
+          # q.with :new_boat, true if new_used == :new
+          q.with(:year).greater_than_or_equal_to(year) if new_used == :new
+          # q.without :new_boat, true if new_used == :used
+          q.with(:year).less_than_or_equal_to(year - 1) if new_used == :used
         end
 
         # tax paid or unpaid

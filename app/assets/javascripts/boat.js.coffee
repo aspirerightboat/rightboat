@@ -8,9 +8,6 @@ class @BoatView
       e.preventDefault()
       @requestDetails()
 
-    @$('.share-link').click (e) =>
-      e.preventDefault()
-
     @$('.fav-link').click (e) =>
       e.preventDefault()
       return if requireLogin(e, true)

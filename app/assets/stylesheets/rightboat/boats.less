@@ -100,7 +100,7 @@
   @media(min-width: @screen-xs-min) {margin-top: 8px;}
   display: block;
   vertical-align: top;
-  a {
+  > a, > div {
     font-size: 16px;
     line-height: 26px;
     vertical-align: top;
@@ -110,7 +110,7 @@
     text-decoration: none;
     opacity: 0.8;
   }
-  a.fav-link:before, a.share-link:before {
+  a.fav-link:before, .share-link:before {
     display: inline-block;
     content: ' ';
     background: image-url('sprites.png') no-repeat;
@@ -125,7 +125,37 @@
   a.fav-link.active:before {
     background-position: 0 -92px;
   }
-  a.share-link:before { background-position: 0 -118px; }
+
+  .share-link {
+    display: inline-block;
+    position: relative;
+
+    &:before { background-position: 0 -118px; }
+    &:hover {
+      .share-platforms {
+        opacity: 1;
+      }
+    }
+
+    .share-platforms {
+      background-color: #ffffc6;
+      opacity: 0;
+      position: absolute;
+      left: -13px;
+      top: -24px;
+      width: 82px;
+      border-radius: 3px;
+      transition: all .3s ease-in-out;
+
+      a {
+        font-size: 18px;
+      }
+
+      .icon-facebook-squared { color: rgb(76, 112, 167) }
+      .icon-twitter-squared { color: rgb(47, 186, 253) }
+      .icon-mail { color: gray }
+    }
+  }
 }
 
 .btn-flat.request-details, .btn-flat.search-similar {

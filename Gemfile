@@ -71,6 +71,7 @@ group :development, :test do
   gem 'capistrano-passenger'
   gem 'capistrano-rails'
   gem 'pry-rails'
+  gem 'mailcatcher'
 end
 
 group :produciton do

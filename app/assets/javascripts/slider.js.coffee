@@ -20,6 +20,9 @@ $ ->
     window.alignSliderLabelPosition = ($item) ->
       $sliderContainer = $item.parent()
 
+      # do not use show price label until the slider was used
+      return if $sliderContainer.find('.slider').attr('id') is 'price-slider'
+
       v1 = Math.floor(convertValue($item.slider('values', 0), $item))
       v2 = Math.ceil(convertValue($item.slider('values', 1), $item))
 

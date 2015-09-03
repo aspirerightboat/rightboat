@@ -1,8 +1,8 @@
 class Currency < ActiveRecord::Base
 
   include AdvancedSolrIndex
+  include BoatOwner
 
-  has_many :boats, inverse_of: :currency, dependent: :restrict_with_error
   has_many :countries, inverse_of: :currency, dependent: :restrict_with_error
 
   validates_presence_of :rate, :name, :symbol

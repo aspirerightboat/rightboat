@@ -1,8 +1,7 @@
 class DriveType < ActiveRecord::Base
   include AdvancedSolrIndex
   include FixSpelling
-
-  has_many :boats, inverse_of: :drive_type, dependent: :restrict_with_error
+  include BoatOwner
 
   solr_update_association :boats
 

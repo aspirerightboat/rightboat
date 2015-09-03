@@ -1,11 +1,11 @@
 class Country < ActiveRecord::Base
   include AdvancedSolrIndex
   include FixSpelling
+  include BoatOwner
 
   extend FriendlyId
   friendly_id :name, use: [:slugged, :finders]
 
-  has_many :boats, inverse_of: :country, dependent: :restrict_with_error
   belongs_to :currency, inverse_of: :countries
 
   solr_update_association :boats

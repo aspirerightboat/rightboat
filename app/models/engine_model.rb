@@ -1,8 +1,7 @@
 class EngineModel < ActiveRecord::Base
   include AdvancedSolrIndex
   include FixSpelling
-
-  has_many :boats, inverse_of: :engine_model, dependent: :restrict_with_error
+  include BoatOwner
 
   belongs_to :engine_manufacturer, inverse_of: :engine_models
 

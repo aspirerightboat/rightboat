@@ -1,11 +1,10 @@
 class Model < ActiveRecord::Base
   include AdvancedSolrIndex
   include FixSpelling
+  include BoatOwner
 
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
-
-  has_many :boats, inverse_of: :model, dependent: :restrict_with_error
 
   belongs_to :manufacturer, inverse_of: :models
 

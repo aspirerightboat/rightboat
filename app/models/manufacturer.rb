@@ -1,12 +1,12 @@
 class Manufacturer < ActiveRecord::Base
   include AdvancedSolrIndex
   include FixSpelling
+  include BoatOwner
 
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
-  has_many :boats, inverse_of: :manufacturer, dependent: :restrict_with_error
 
   solr_update_association :models, :boats, fields: [:active, :name]
   mount_uploader :logo, AvatarUploader

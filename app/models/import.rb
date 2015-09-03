@@ -1,8 +1,8 @@
 class Import < ActiveRecord::Base
+  include BoatOwner
 
   FREQUENCY_UNITS = [:hour, :day, :week, :month] # :second, :minute
 
-  has_many :boats, inverse_of: :import, dependent: :nullify
   belongs_to :user, inverse_of: :imports
 
   serialize :param, Hash

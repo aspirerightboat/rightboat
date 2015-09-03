@@ -1,8 +1,7 @@
 class VatRate < ActiveRecord::Base
   include FixSpelling
   include AdvancedSolrIndex
-
-  has_many :boats, inverse_of: :vat_rate, dependent: :restrict_with_error
+  include BoatOwner
 
   solr_update_association :boats, fields: [:active, :name]
 

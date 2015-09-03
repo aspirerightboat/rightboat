@@ -5,6 +5,7 @@ ActiveAdmin.register Boat do
 
   menu priority: 2
 
+  filter :id
   filter :user
   filter :country
   filter :manufacturer

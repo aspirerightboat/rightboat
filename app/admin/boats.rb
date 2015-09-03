@@ -18,12 +18,13 @@ ActiveAdmin.register Boat do
   index do
     column :id
     column :name
-    column :manufacturer_model
-    column :user
+    column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
+    column :model, :model, sortable: 'models.name'
+    column :user, :user, sortable: 'users.first_name'
     column :geocoded do |boat|
       boat.geocoded? ? status_tag('Geocoded', :ok) : status_tag('Failed', :error)
     end
-    column :country
+    column :country, :country, sortable: 'countries.name'
     column :location
     actions do |boat|
       item "Statistics", statistics_admin_boat_path(boat)
@@ -50,6 +51,12 @@ ActiveAdmin.register Boat do
       f.input :recently_reduced, as: :boolean
     end
     actions
+  end
+
+  controller do
+    def scoped_collection
+      end_of_association_chain.includes(:manufacturer, :model, :user, :country)
+    end
   end
 
   member_action :statistics, method: :get do

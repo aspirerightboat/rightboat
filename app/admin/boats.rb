@@ -7,7 +7,7 @@ ActiveAdmin.register Boat do
 
   filter :id
   filter :user
-  filter :country
+  filter :country, as: :select, collection: Country.order(name: :asc)
   filter :manufacturer
   filter :model, collection: []
   filter :featured

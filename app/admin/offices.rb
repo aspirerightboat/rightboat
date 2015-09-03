@@ -10,6 +10,7 @@ ActiveAdmin.register Office do
 
   index do
     column :user, sortable: false
+    column :name
     column :address
     column :website do |r|
       link_to r.website, r.website, target: :blank unless r.website.blank?

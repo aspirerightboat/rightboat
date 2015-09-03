@@ -5,6 +5,7 @@ ActiveAdmin.register Boat do
 
   menu priority: 2
 
+  filter :id_or_name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Free'
   filter :id
   filter :user
   filter :country, as: :select, collection: Country.order(name: :asc)
@@ -21,6 +22,7 @@ ActiveAdmin.register Boat do
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
     column :user, :user, sortable: 'users.first_name'
+    column :office, :office, sortable: 'offices.name'
     column :geocoded do |boat|
       boat.geocoded? ? status_tag('Geocoded', :ok) : status_tag('Failed', :error)
     end

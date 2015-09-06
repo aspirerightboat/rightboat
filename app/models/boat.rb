@@ -128,7 +128,6 @@ class Boat < ActiveRecord::Base
     l_unit = context ? context.current_length_unit : nil
 
     ret += [
-      ['RB Boat Ref', id],
       ['Manufacturer', self.manufacturer],
       ['Model', self.model],
       ['Price', display_price(currency), 'price'],
@@ -138,7 +137,8 @@ class Boat < ActiveRecord::Base
       ['LOA', display_length(l_unit), 'loa'],
       ['Tax Status', self.tax_status],
       ['Engine make/model', self.engine_model],
-      ['Fuel', self.fuel_type]
+      ['Fuel', self.fuel_type],
+      ['RB Boat Ref', id]
     ]
     specs = boat_specifications.active
     specs = specs.front unless full_spec

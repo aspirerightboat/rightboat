@@ -5,7 +5,7 @@ ActiveAdmin.register Boat do
 
   menu priority: 2
 
-  filter :id_or_name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Free'
+  filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Free'
   filter :id
   filter :user
   filter :country, as: :select, collection: Country.order(name: :asc)

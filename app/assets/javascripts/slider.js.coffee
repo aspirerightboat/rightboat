@@ -20,14 +20,22 @@ $ ->
     window.alignSliderLabelPosition = ($item) ->
       $sliderContainer = $item.parent()
 
-      # do not use show price label until the slider was used
-      return if $sliderContainer.find('.slider').attr('id') is 'price-slider'
+      v1 = $item.slider('values', 0)
+      if v1 == $item.data('min')
+        html1 = ''
+      else
+        v1 = Math.floor(convertValue(v1, $item))
+        html1 = v1 + ' ' + ($item.data('unit') || '')
 
-      v1 = Math.floor(convertValue($item.slider('values', 0), $item))
-      v2 = Math.ceil(convertValue($item.slider('values', 1), $item))
+      v2 = $item.slider('values', 1)
+      if v2 == $item.data('max')
+        html2 = ''
+      else
+        v2 = Math.ceil(convertValue(v2, $item))
+        html2 = v2 + ' ' + ($item.data('unit') || '')
 
       $sliderContainer.find('.min-label')
-      .html(v1 + ' ' + ($item.data('unit') || ''))
+      .html(html1)
       .position
           my: 'center top'
           at: 'center bottom'
@@ -36,7 +44,7 @@ $ ->
           offset: '0, 10'
 
       $sliderContainer.find('.max-label')
-      .html(v2 + ' ' + ($item.data('unit') || ''))
+      .html(html2)
       .position
           my: 'center top'
           at: 'center bottom'

@@ -5,6 +5,8 @@
     %ul.nav.navbar-nav
       %li
         = link_to "Advanced Search", '#', class: 'toggle-adv-search'
+      %li
+        = link_to "Return to Previous", :back
 
     - unless local_assigns[:simple_search_bar]
       %ul.nav.navbar-nav.navbar-right

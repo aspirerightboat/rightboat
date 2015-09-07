@@ -1,4 +1,10 @@
 $(document).ready ->
+  $('.rb-dropdown')
+    .on 'mouseenter', ->
+      $(this).addClass 'open'
+    .on 'mouseleave', ->
+      $(this).removeClass 'open'
+
   $('[data-require-login]').click (e) ->
     requireLogin(e)
     true

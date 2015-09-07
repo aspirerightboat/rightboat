@@ -135,3 +135,34 @@ a.navbar-brand {
     }
   }
 }
+
+.navbar-nav > li {
+  &.rb-dropdown {
+    &.open {
+      > a {
+        color: @rb-color-primary;
+
+        &:hover, &:focus {
+          color: @rb-color-primary;
+        }
+      }
+    }
+
+    .dropdown-menu {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      margin-top: -5px;
+
+      li a {
+        color: white;
+        font-weight: 500;
+
+        &:hover {
+          background: transparent;
+          color: @rb-color-primary;
+        }
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ module DBBackedClockwork
     config[:max_threads] = 15
   end
 
-  every 1.minute, "update jobs" do
+  every 1.minute, 'update jobs' do
     db_events.each do |event|
       event.update_from_db
     end

@@ -39,7 +39,7 @@
     %h2= boat_price(@boat)
     %h2= @boat.year_built
   .col-xs-3.text-center.small
-    = render_qr_code(boat_url(@boat))
+    = render_qr_code(manufacturer_model_boat_url(@boat.slug, manufacturer_id: @boat.manufacturer.slug, model_id: @boat.model.slug))
     %p Scan to view boat online
 %hr
 

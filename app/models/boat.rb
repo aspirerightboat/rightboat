@@ -138,11 +138,11 @@ class Boat < ActiveRecord::Base
       ['Tax Status', self.tax_status],
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type],
-      ['RB Boat Ref', id]
     ]
     specs = boat_specifications.active
     specs = specs.front unless full_spec
     ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
+    ret << ['RB Boat Ref', self.id]
     ret.reject{|_, v| v.blank? }
   end
 

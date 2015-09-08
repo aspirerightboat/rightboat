@@ -6,9 +6,7 @@ class Boat < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   searchable do
-    string :id do |boat|
-      "Boat #{boat.id}"
-    end
+    string :ref_no
     text :name,                 boost: 4
     text :manufacturer_model,   boost: 3
     text :description,          boost: 0.5
@@ -121,6 +119,10 @@ class Boat < ActiveRecord::Base
     name.blank? ? manufacturer_model : name
   end
 
+  def ref_no
+    "RB#{100000 + id}"
+  end
+
   def spec_attributes(context = nil, full_spec = false)
     ret = full_spec ? [['Seller', user.name]] : []
 
@@ -142,7 +144,7 @@ class Boat < ActiveRecord::Base
     specs = boat_specifications.active
     specs = specs.front unless full_spec
     ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
-    ret << ['RB Boat Ref', self.id]
+    ret << ['RB Boat Ref', self.ref_no]
     ret.reject{|_, v| v.blank? }
   end
 

@@ -56,7 +56,7 @@
 
       .row.boat-description
         .col-sm-5.col-md-7.col-xs-12.pull-right
-          %h1 Details
+          %br
           .row
             - @boat.spec_attributes(self).each_slice(2).each do |spec_group|
               - spec_group.each do |spec|

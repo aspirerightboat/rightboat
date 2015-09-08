@@ -133,7 +133,7 @@ class Boat < ActiveRecord::Base
       ['Price', display_price(currency), 'price'],
       ['Boat Type', boat_type],
       ['Year Built', self.year_built],
-      ['Location', self.full_location],
+      ['Location', self.country.to_s],
       ['LOA', display_length(l_unit), 'loa'],
       ['Tax Status', self.tax_status],
       ['Engine make/model', self.engine_model],

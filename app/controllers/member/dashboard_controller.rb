@@ -7,5 +7,9 @@ module Member
     def subscriptions
       @subscriptions = current_user.subscriptions
     end
+
+    def information
+      current_user.build_information if current_user.information.blank?
+    end
   end
 end

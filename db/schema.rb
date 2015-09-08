@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825095914) do
+ActiveRecord::Schema.define(version: 20150907091242) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -417,6 +417,16 @@ ActiveRecord::Schema.define(version: 20150825095914) do
   end
 
   add_index "subscriptions_users", ["user_id", "subscription_id"], name: "index_subscriptions_users_on_user_id_and_subscription_id", unique: true, using: :btree
+
+  create_table "user_informations", force: :cascade do |t|
+    t.integer "user_id",            limit: 4
+    t.boolean "require_finance",    limit: 1, default: false
+    t.boolean "list_boat_for_sale", limit: 1, default: false
+    t.boolean "buy_this_season",    limit: 1, default: false
+    t.boolean "looking_for_berth",  limit: 1, default: false
+  end
+
+  add_index "user_informations", ["user_id"], name: "index_user_informations_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255,   default: "", null: false

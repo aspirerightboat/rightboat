@@ -31,7 +31,7 @@
       - @boat.boat_images.each do |boat_img|
         %li
           .dummy
-          = image_tag boat_img.file.url(:main)
+          = image_tag boat_img.file.url
   #carousel.flexslider
     %ul.slides
       - @boat.boat_images.each do |boat_img|

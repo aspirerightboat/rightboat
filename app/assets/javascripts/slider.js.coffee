@@ -17,40 +17,31 @@ $ ->
       return v unless convertFuncName
       @[convertFuncName](v)
 
+    changeSliderValue = ($slider, handleIndex=0) ->
+      value = $slider.slider('values', handleIndex)
+      selector = if handleIndex == 0 then 'min' else 'max'
+      if value == $slider.data(selector)
+        html = ''
+      else
+        value = Math.floor(convertValue(value, $slider))
+        html = value + ' ' + ($slider.data('unit') || '')
+
+      $sliderContainer = $slider.parent()
+
+      $sliderContainer.find('.' + selector + '-label')
+      .html(html)
+      .position
+          my: 'center top'
+          at: 'center bottom'
+          of: $sliderContainer.find('.ui-slider-handle:eq(' + handleIndex + ')')
+          collision: 'flip none'
+          offset: "0, 10"
+
+      updateValues($slider)
+
     window.alignSliderLabelPosition = ($item) ->
-      $sliderContainer = $item.parent()
-
-      v1 = $item.slider('values', 0)
-      if v1 == $item.data('min')
-        html1 = ''
-      else
-        v1 = Math.floor(convertValue(v1, $item))
-        html1 = v1 + ' ' + ($item.data('unit') || '')
-
-      v2 = $item.slider('values', 1)
-      if v2 == $item.data('max')
-        html2 = ''
-      else
-        v2 = Math.ceil(convertValue(v2, $item))
-        html2 = v2 + ' ' + ($item.data('unit') || '')
-
-      $sliderContainer.find('.min-label')
-      .html(html1)
-      .position
-          my: 'center top'
-          at: 'center bottom'
-          of: $sliderContainer.find('.ui-slider-handle:eq(0)')
-          collision: 'flip none'
-          offset: '0, 10'
-
-      $sliderContainer.find('.max-label')
-      .html(html2)
-      .position
-          my: 'center top'
-          at: 'center bottom'
-          of: $sliderContainer.find('.ui-slider-handle:eq(1)')
-          collision: 'flip none'
-          offset: '0, 10'
+      for i in [0, 1]
+        changeSliderValue($item, i)
 
     updateValues = ($slider) ->
       input_name = $slider.data('input')
@@ -66,9 +57,7 @@ $ ->
         $('input[name="' + input_name + '_max"]').val(max_v)
 
     $( '.slider' ).each ->
-      $sliderContainer = $(this).parent()
       $this = $(this)
-
       v1 = $this.data('value1')
       v2 = $this.data('value2')
 
@@ -79,27 +68,8 @@ $ ->
         values: [ v1, v2 ]
         slide: ( event, ui ) ->
           delay = ->
-            handleIndex = $(ui.handle).data('uiSliderHandleIndex')
-            if handleIndex == 0
-              label = '.min-label'
-              value = Math.floor(convertValue(ui.value, $this))
-            else
-              label = '.max-label'
-              value = Math.ceil(convertValue(ui.value, $this))
-
-            $sliderContainer.find(label)
-            .html(value + ' ' + ($this.data('unit') || ''))
-            .position
-              my: 'center top'
-              at: 'center bottom'
-              of: ui.handle
-              collision: 'flip none'
-              offset: "0, 10"
-            updateValues($this)
-
+            changeSliderValue($this, $(ui.handle).data('uiSliderHandleIndex'))
           setTimeout(delay, 5)
-
-      alignSliderLabelPosition($this)
 
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()
@@ -107,7 +77,6 @@ $ ->
       $('[data-slide-name="length"]').each ->
         $slider = $(this)
         $slider.data('unit', unit)
-        updateValues($slider)
         alignSliderLabelPosition($slider)
       $('[data-attr-name="loa"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
@@ -120,11 +89,9 @@ $ ->
       $('select[name="currency"]').select2('val', $el.val())
       $('[data-slide-name="price"]').each ->
         $slider = $(this)
-        updateValues($slider)
         alignSliderLabelPosition($slider)
       $('[data-attr-name="price"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
         if price = $boat.data('price')
           p = Number(@convertCurrency(price).toFixed(2))
           $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
-

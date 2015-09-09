@@ -1,4 +1,4 @@
-server '52.28.183.197',
+server '54.93.85.152',
   user: 'ubuntu',
   roles: %w{web app db import}
 

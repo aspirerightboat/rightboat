@@ -1,0 +1,10 @@
+- content_for :header_text do
+  %h1 Boats <strong>For Sale</strong>
+
+= render 'shared/search_bar'
+
+#main-content.container
+  %h1 #{@boat_type.name} Boats
+  %ol
+    - @boats.each do |b|
+      %li #{link_to b.name, boat_for_sale_path(b.manufacturer.slug, b.slug)}

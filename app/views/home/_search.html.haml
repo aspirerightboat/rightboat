@@ -46,15 +46,17 @@
                   = slider_tag(:length, unit: current_length_unit, html: { 'data-convert' => 'convertLength' })
                 .rb-control-group-addon
                   = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm'
+          .row
+            .col-xs-12
+              %a(href="#") Reset
+              %button.primary-button(type="submit") Search
 
         .form-group.row
-          = link_to "Advanced Search", '#', class: 'toggle-adv-search'
+          %a(href="#{boats_for_sale_path}") Browse boats for sale
+          = link_to 'Advanced Search', '#', class: 'toggle-adv-search'
           %h3
             Find your<br/>
             <strong>Rightboat</strong>
-          %button#search-btn(type='submit')
-            %i
-
 :javascript
   $(function() {
     $("#home-search select").select2({

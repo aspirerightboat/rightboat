@@ -72,6 +72,7 @@ group :development, :test do
   gem 'capistrano-rails'
   gem 'pry-rails'
   gem 'mailcatcher'
+  gem 'quiet_assets'
 end
 
 group :produciton do

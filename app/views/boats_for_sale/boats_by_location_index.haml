@@ -1,0 +1,11 @@
+- content_for :header_text do
+  %h1 Boats <strong>For Sale</strong>
+
+= render 'shared/search_bar'
+
+#main-content.container
+  = render 'shared/boats_for_sale_tabs'
+  %h1 Boat Countries
+  %ol
+    - @countries.each do |c|
+      %li #{link_to c.name, boats_by_location_path(c.slug)} #{c.boats_count}

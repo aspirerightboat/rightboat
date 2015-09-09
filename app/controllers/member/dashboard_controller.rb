@@ -1,5 +1,8 @@
 module Member
   class DashboardController < BaseController
+    def index
+    end
+
     def enquiries
       @enquiries = current_user.enquiries
     end

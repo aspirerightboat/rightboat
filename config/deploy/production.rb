@@ -1,3 +1,7 @@
+server '52.28.195.70',
+       user: 'ubuntu',
+       roles: %w{web app db import}
+
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.

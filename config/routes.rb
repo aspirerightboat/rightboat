@@ -80,15 +80,25 @@ Rails.application.routes.draw do
   get 'captcha', to: 'captcha#image'
   get 'captcha/new', to: 'captcha#new'
 
-  get 'about' => 'home#about', as: :about
-  get 'contact' => 'home#contact', as: :contact
-  get 'toc' => 'home#toc', as: :toc
+  get 'about', to: 'home#about', as: :about
+  get 'contact', to: 'home#contact', as: :contact
+  get 'toc', to: 'home#toc', as: :toc
 
   namespace :api, constraints: { format: :json } do
     controller :manufacturers, path: 'manufacturers' do
       get ':id/models', action: :models
     end
   end
+
+  get 'boats-for-sale', to: 'boats_for_sale#index', as: :boats_for_sale
+  get 'boats-for-sale/:manufacturer', to: 'boats_for_sale#manufacturer_boats', as: :manufacturer_boats
+  get 'boats-for-sale/:manufacturer/:model', to: 'boats_for_sale#show_boat', as: :boat_for_sale
+  get 'manufacturer/:manufacturer', to: 'boats_for_sale#manufacturer_boats', as: :manufacturer_boats_explicit
+  get 'manufacturers-by-letter/:letter', to: 'boats_for_sale#manufacturers_by_letter', as: :manufacturers_by_letter
+  get 'boat-type', to: 'boats_for_sale#boats_by_type_index', as: :boats_by_type_index
+  get 'boat-type/:boat_type', to: 'boats_for_sale#boats_by_type', as: :boats_by_type
+  get 'location', to: 'boats_for_sale#boats_by_location_index', as: :boats_by_location_index
+  get 'location/:country', to: 'boats_for_sale#boats_by_location', as: :boats_by_location
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index'

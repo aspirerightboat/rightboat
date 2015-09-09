@@ -361,6 +361,8 @@ GEM
       pry (>= 0.9.10)
     puma (2.11.3)
       rack (>= 1.1, < 2.0)
+    quiet_assets (1.1.0)
+      railties (>= 3.1, < 5.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -531,6 +533,7 @@ DEPENDENCIES
   progress_bar
   pry-rails
   puma
+  quiet_assets
   rails (= 4.2.1)
   rmagick
   rqrcode
@@ -549,4 +552,4 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 BUNDLED WITH
-   1.10.3
+   1.10.6

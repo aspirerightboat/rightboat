@@ -70,6 +70,7 @@ group :development, :test do
   gem 'capistrano-rvm'
   gem 'capistrano-passenger'
   gem 'capistrano-rails'
+  gem 'capistrano3-delayed-job' # temporary
   gem 'pry-rails'
   gem 'mailcatcher'
   gem 'quiet_assets'

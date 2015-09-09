@@ -85,6 +85,8 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    capistrano3-delayed-job (1.4.0)
+      capistrano (>= 3.0.0)
     carrierwave (0.10.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -403,7 +405,7 @@ GEM
     ref (2.0.0)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
-    rmagick (2.15.2)
+    rmagick (2.15.4)
     rqrcode (0.4.2)
     rsolr (1.0.12)
       builder (>= 2.1.2)
@@ -504,6 +506,7 @@ DEPENDENCIES
   capistrano-passenger
   capistrano-rails
   capistrano-rvm
+  capistrano3-delayed-job
   carrierwave
   clockwork
   coffee-rails (~> 4.1.0)

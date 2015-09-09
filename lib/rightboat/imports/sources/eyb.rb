@@ -52,7 +52,7 @@ module Rightboat
           end
         end
 
-        def process_job(job=nil)
+        def process_job(job)
           doc = job[:ad]
           boat = SourceBoat.new
           office_attrs = {}

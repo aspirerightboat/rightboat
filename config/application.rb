@@ -29,6 +29,5 @@ module Rightboat
 
     config.autoload_paths << "#{Rails.root}/app/admin/concerns"
     config.autoload_paths << "#{Rails.root}/app/jobs"
-
   end
 end

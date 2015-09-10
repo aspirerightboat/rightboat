@@ -21,7 +21,7 @@ module SpellFixable
     end
 
     base.send :collection_action, :all, method: :get, format: :json do
-      collection = resource_class.select(:id, :name).order("name ASC").map{ |r|
+      collection = resource_class.select(:id, :name).order(:name).map{ |r|
         { id: r.id, name: r.name }
       }
 

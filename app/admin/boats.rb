@@ -8,8 +8,8 @@ ActiveAdmin.register Boat do
   filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Free'
   filter :id
   filter :user
-  filter :country, as: :select, collection: Country.order(name: :asc)
-  filter :manufacturer, as: :select, collection: Manufacturer.order(name: :asc)
+  filter :country, as: :select, collection: Country.order(:name)
+  filter :manufacturer, as: :select, collection: Manufacturer.order(:name)
   filter :model, collection: []
   filter :featured
   filter :recently_reduced
@@ -29,8 +29,12 @@ ActiveAdmin.register Boat do
     column :country, :country, sortable: 'countries.name'
     column :location
     actions do |boat|
-      item "Statistics", statistics_admin_boat_path(boat)
+      item 'Statistics', statistics_admin_boat_path(boat)
     end
+  end
+
+  index as: :grid do |boat|
+    link_to image_tag(boat.primary_image.file.url(:thumb)), admin_boat_path(boat)
   end
 
   form do |f|
@@ -61,9 +65,26 @@ ActiveAdmin.register Boat do
     end
   end
 
+  if !Rails.env.production?
+    sidebar 'Delete All Boats', only: [:index] do
+      link_to 'Delete All', {action: :delete_all_boats}, method: :post, class: 'button',
+              data: {confirm: 'Are you sure to delete all the boats?', disable_with: 'Deleting...'}
+    end
+  end
+
   member_action :statistics, method: :get do
     @boat = Boat.find(params[:id])
     @page_title = @boat.name
     @monthly = Rightboat::Statistics.monthly_boat_stats(@boat)
+  end
+
+  collection_action :delete_all_boats, method: :post do
+    if !Rails.env.production?
+      Boat.unscoped.each do |boat|
+        boat.destroy
+      end
+      flash.notice = 'All the boats were deleted'
+    end
+    redirect_to({action: :index})
   end
 end

@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   def authenticate_admin_user!
     authenticate_user!
     unless current_user.admin?
-      flash[:error] = "You need admin privilege to continue. Please login as admin and try again."
+      flash[:error] = 'You need admin privilege to continue. Please login as admin and try again.'
       redirect_to root_path
     end
   end

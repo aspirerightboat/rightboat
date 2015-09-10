@@ -4,7 +4,7 @@ namespace :workers do
   namespace :delayed_job do
 
     def args
-      fetch(:delayed_job_args, "")
+      fetch(:delayed_job_args, '')
     end
 
     def delayed_job_roles

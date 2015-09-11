@@ -35,20 +35,16 @@ module Rightboat
 
         def enqueue_jobs
           url = "http://www.charleswatsonmarine.co.uk/results.asp?bit=3"
-          i = 0
-
           begin
             puts "parsing #{url}"
             doc = get(url)
 
             doc.search('article[@id="mainContent"] table tr td a').each do |a|
               unless (detail_page = a['href']).blank?
-                i += 1
-                job = { url: detail_page }
+                job = { url: "/#{detail_page}" }
                 enqueue_job(job)
               end
 
-              break if i > 30
             end
           rescue SocketError => se
             puts "Inable to retrieve IDs - verify source id parameter in " + url

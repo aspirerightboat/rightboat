@@ -8,10 +8,10 @@ class BoatImageUploader < ImageUploader
   end
 
   version :thumb do
-    process :resize_to_fill => [350, 234]
+    process :resize_to_limit => [350, 146]
   end
 
   version :mini do
-    process :resize_to_fill => [127, 101]
+    process :resize_to_limit => [127, 42]
   end
 end

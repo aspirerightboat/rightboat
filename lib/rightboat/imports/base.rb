@@ -66,8 +66,7 @@ module Rightboat
                   boat.import = @import
                 end
               rescue Exception => e
-                # TODO: messaging system for exception
-                raise e
+                ImportMailer.process_error(e, @import, job).deliver_now
               end
               @_writer_mutex.synchronize {@scraped_boats << boat if boat}
             end
@@ -126,19 +125,23 @@ module Rightboat
         remove_old_boats
 
         if @scraped_boats.blank?
-          # TODO: notifiy error for no boat scraping
+          ImportMailer.import_blank(@import).deliver_now
           return
         end
 
         @scraped_boats.each do |source_boat|
           break if @exit_worker
-          source_boat.save
+          begin
+            source_boat.save
+          rescue
+            ImportMailer.invalid_boat(source_boat).deliver_now
+            next
+          end
         end
 
         @import.update_column :last_ran_at, Time.now
       rescue Exception => e
-        # TODO notify error for exception
-        raise e
+        ImportMailer.process_result_error(e, @import).deliver_now
       end
 
       def remove_old_boats

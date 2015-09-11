@@ -15,7 +15,7 @@
       .boat-detail-item
         %span Year: #{boat.year_built}
       .boat-location-1
-        %span Location: #{boat.full_location}
+        %span Location: #{boat.country.to_s}
       /.boat-detail-item.boat-location-2
       /  %span Location: #{boat.full_location}
       - unless local_assigns[:disable_social_links]

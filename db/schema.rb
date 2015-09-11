@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150907091242) do
+ActiveRecord::Schema.define(version: 20150909032145) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20150907091242) do
     t.integer  "boat_id",            limit: 4
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.datetime "deleted_at"
   end
 
   add_index "boat_images", ["boat_id"], name: "index_boat_images_on_boat_id", using: :btree
@@ -105,6 +106,7 @@ ActiveRecord::Schema.define(version: 20150907091242) do
     t.string   "value",            limit: 255
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.datetime "deleted_at"
   end
 
   add_index "boat_specifications", ["boat_id"], name: "index_boat_specifications_on_boat_id", using: :btree

@@ -34,21 +34,16 @@ module Rightboat
         def enqueue_jobs
           file_name = Rails.root.join('tmp', 'eyb.xml')
 
-          begin
-            puts "parsing #{file_name}"
-            f = File.open(file_name)
-            doc = Nokogiri::XML(f) do |config|
-              config.strict.noblanks
-            end
-            f.close
+          puts "parsing #{file_name}"
+          f = File.open(file_name)
+          doc = Nokogiri::XML(f) do |config|
+            config.strict.noblanks
+          end
+          f.close
 
-            doc.search('AD').each do |ad|
-              job = { ad: ad }
-              enqueue_job(job)
-            end
-          rescue SocketError => se
-            puts "Inable to retrieve IDs - verify source id parameter in " + url
-            exit 1
+          doc.search('AD').each do |ad|
+            job = { ad: ad }
+            enqueue_job(job)
           end
         end
 

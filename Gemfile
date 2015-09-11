@@ -74,7 +74,7 @@ group :development, :test do
   gem 'mailcatcher'
 end
 
-group :produciton do
+group :production do
   gem 'daemons'
   gem 'passenger'
 end

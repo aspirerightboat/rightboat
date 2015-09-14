@@ -69,9 +69,11 @@ ActiveAdmin.register Boat do
   end
 
   if !Rails.env.production?
-    sidebar 'Delete All Boats', only: [:index] do
-      link_to 'Delete All', {action: :delete_all_boats}, method: :post, class: 'button',
-              data: {confirm: 'Are you sure to delete all the boats?', disable_with: 'Deleting...'}
+    sidebar 'Tools', only: [:index] do
+      res = link_to('Delete All Boats', {action: :delete_all_boats}, method: :post, class: 'button', style: 'margin-bottom: 10px',
+              data: {confirm: 'Are you sure to delete all the boats?', disable_with: 'Deleting...'})
+      res << link_to('Activate All Models', {action: :activate_all_models}, method: :post, class: 'button')
+      res
     end
   end
 
@@ -89,5 +91,24 @@ ActiveAdmin.register Boat do
       flash.notice = 'All the boats were deleted'
     end
     redirect_to({action: :index})
+  end
+
+  collection_action :activate_all_models, method: :post do
+    Boat.update_all(deleted_at: nil)
+    BoatCategory.update_all(active: true)
+    BoatType.update_all(active: true)
+    Country.update_all(active: true)
+    Currency.update_all(active: true)
+    DriveType.update_all(active: true)
+    EngineManufacturer.update_all(active: true)
+    EngineModel.update_all(active: true)
+    FuelType.update_all(active: true)
+    Import.update_all(active: true)
+    Manufacturer.update_all(active: true)
+    Model.update_all(active: true)
+    Specification.update_all(active: true)
+    VatRate.update_all(active: true)
+
+    redirect_to({action: :index}, {notice: 'All models was activated'})
   end
 end

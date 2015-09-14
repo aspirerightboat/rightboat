@@ -13,7 +13,7 @@ class Model < ActiveRecord::Base
   validates_presence_of :manufacturer, :name
   validates_uniqueness_of :name, scope: :manufacturer_id
 
-  scope :active, -> { where("active = ?", true)}
+  scope :active, -> { where(active: true)}
 
   searchable do
     string :name do |model|

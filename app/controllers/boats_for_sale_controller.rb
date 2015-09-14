@@ -14,7 +14,7 @@ class BoatsForSaleController < ApplicationController
 
   def manufacturer_boats
     @manufacturer = Manufacturer.where(slug: params[:manufacturer]).first!
-    @boats = @manufacturer.boats.order(:name)
+    @boats = @manufacturer.boats.includes(:currency, :model, :primary_image, :vat_rate, :country).order(:name)
   end
 
   def show_boat

@@ -5,6 +5,7 @@
 
 #main-content.container
   %h1 Boats of Type #{@country.name}
-  %ol
+  .row(data-view-layout="list")
     - @boats.each do |b|
-      %li #{link_to b.name, boat_for_sale_path(b.manufacturer.slug, b.slug)}
+      = render layout: 'boats/boat', locals: {boat: b} do
+        -#%li #{link_to b.name, boat_for_sale_path(@manufacturer.slug, b.slug)}

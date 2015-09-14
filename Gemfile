@@ -74,6 +74,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'mailcatcher'
   gem 'quiet_assets'
+  gem 'bullet'
 end
 
 group :production, :staging do

@@ -64,7 +64,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:manufacturer, :model, :user, :country)
+      end_of_association_chain.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
     end
   end
 

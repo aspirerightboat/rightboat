@@ -69,6 +69,9 @@ GEM
     bson_ext (1.5.1)
     buftok (0.2.0)
     builder (3.2.2)
+    bullet (4.14.7)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.9.0)
     cancan (1.6.10)
     capistrano (3.4.0)
       i18n
@@ -485,6 +488,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
+    uniform_notifier (1.9.0)
     validate_url (1.0.0)
       activemodel (>= 3.0.0)
       addressable
@@ -502,6 +506,7 @@ DEPENDENCIES
   active_model_serializers
   activeadmin!
   bson_ext
+  bullet
   cancan
   capistrano-passenger
   capistrano-rails

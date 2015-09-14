@@ -47,13 +47,14 @@
                 .rb-control-group-addon
                   = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm'
           .row
-            .col-xs-12
-              %a(href="#") Reset
-              %button.primary-button(type="submit") Search
+            .col-xs-12.nice-buttons.last-row-pad
+              %button.transparent-button.reset-search-form(type="button") Reset
+              %button.nice-button(type="submit") Search
 
         .form-group.row
-          %a(href="#{boats_for_sale_path}") Browse boats for sale
-          = link_to 'Advanced Search', '#', class: 'toggle-adv-search'
+          .nice-buttons(style="margin: 10px 0")
+            %a.nice-button(href="#{boats_for_sale_path}") Browse boats for sale
+            %button.nice-button.toggle-adv-search Advanced Search
           %h3
             Find your<br/>
             <strong>Rightboat</strong>

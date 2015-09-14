@@ -53,5 +53,17 @@ $(document).ready ->
     else
       $(this).find('.glyphicon').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-right')
 
+  $('.reset-search-form').click ->
+    form = this.form
+    form.q.value = ''
+    form.boat_type[0].checked = true
+    $(form.currency).val('GBP').trigger('change')
+    $(form.length_unit).val('ft').trigger('change')
+    $('#price-slider, #length-slider').each ->
+      opts = $(this).slider('option')
+      $slider = $(this)
+      $slider.slider('option', 'values', [opts.min, opts.max])
+      alignSliderLabelPosition($slider)
+    false
 
 

@@ -10,7 +10,7 @@ set :format, :pretty
 set :log_level, :debug
 set :pty, true
 set :linked_files, %w(config/database.yml config/secrets.yml config/application.yml)
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/rb-assets', 'public/uploads', 'solr/data')
+set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/rb-assets public/uploads solr/data)
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -21,7 +21,6 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 set :passenger_in_gemfile, true
 set :passenger_roles, :app
 set :passenger_restart_with_sudo, true
-set :passenger_restart_with_touch, true
 set :passenger_restart_command, 'bundle exec passenger-config restart-app'
 set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
 

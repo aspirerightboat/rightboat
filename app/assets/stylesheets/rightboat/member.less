@@ -3,6 +3,20 @@
   padding-bottom: @form-group-margin-bottom;
 }
 
+.member-right {
+  .btn-flat.btn-full {
+    border-color: @rb-color-dark;
+    color: @rb-color-dark;
+    font-weight: bold;
+
+    &:hover, &:focus, &:active, &.active {
+      background-color: @rb-color-dark;
+      border-color: @rb-color-dark;
+      color: white;
+    }
+  }
+}
+
 @media (min-width: @screen-sm-min) {
   .member-ref-links {
     line-height: 2.4em;

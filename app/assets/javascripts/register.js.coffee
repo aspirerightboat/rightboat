@@ -45,7 +45,7 @@ $ ->
         url: url
         data: $this.serializeObject()
       .success ->
-        $this.prepend('<div class="alert alert-success">Chnages saved successfully.</div>')
+        $this.prepend('<div class="alert alert-success">Changes saved successfully.</div>')
       .error ->
         console.log 'Error'
         console.log arguments

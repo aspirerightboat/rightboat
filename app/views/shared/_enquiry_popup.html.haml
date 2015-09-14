@@ -6,8 +6,7 @@
           %span{"aria-hidden" => "true"} &times;
         %h1 Request Details
       .modal-body
-        *Required
-        %h4.text-center Complete your enquiry details. Full specifications will be available for download and a copy sent to your email.
+        %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
         = form_tag '#', class: 'enquiry-form' do
           .row
             .col-sm-6.col-xs-12
@@ -16,25 +15,25 @@
                   .rb-control-group-addon
                     = label_tag :title, 'Title:*'
                     %br
-                    = select_tag :title, options_for_select(User::TITLES), class: 'select-white select-sm'
+                    = select_tag :title, options_for_select(User::TITLES, selected: current_user.try(:title)), class: 'select-white select-sm'
                   .rb-control
                     = label_tag :title, 'First Name:*'
-                    = text_field_tag :first_name, '', class: 'form-control', 'data-validetta' => 'required'
+                    = text_field_tag :first_name, current_user.try(:first_name), class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
                 = label_tag :surname, 'Surname:*'
-                = text_field_tag :surname, '', class: 'form-control', 'data-validetta' => 'required'
+                = text_field_tag :surname, current_user.try(:last_name), class: 'form-control', 'data-validetta' => 'required'
           .row
             .col-sm-6.col-xs-12
               .form-group
                 = label_tag :email, 'Email:*'
-                = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
+                = email_field_tag :email, current_user.try(:email), class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
               .form-group
                 = label_tag :phone, 'Tel/Mobile:'
-                = text_field_tag :phone, '', class: 'form-control'
+                = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
           .form-group
-            = label_tag :message, 'Message:'
+            = label_tag :message, 'Comments:'
             = text_area_tag :message, '', class: 'form-control'
           .row
             .col-xs-12
@@ -49,6 +48,7 @@
             .col-xs-12.col-sm-6
               = button_tag 'Send', type: 'submit', class: 'btn-flat btn-full'
           .clearfix
+          %small *Required
 
 #enquiry-result-popup.modal.fade
   .modal-dialog

@@ -94,14 +94,9 @@ module Rightboat
       end
 
       def save
-        unless valid?
-          Rails.logger.error "Scraper seems wrong: Import(#{self.import.id}/#{self.source_id}) - #{self.errors.full_messages.join("\n")}"
-          return
-          # TODO: mailing system for unexpected fail
-        end
+        return unless valid?
 
         user_id = user.respond_to?(:id) ? user.id : user
-
         target = Boat.unscoped.where(user_id: user_id, source_id: source_id).first_or_initialize
         target.import = self.import
         adjust_location(target)
@@ -171,7 +166,7 @@ module Rightboat
             elsif attr_name.to_sym == :currency
               value = 'USD' if value == '$'
               value = klass.where("name = ? OR symbol = ?", value, value).first
-              # TODO: report error for nil currency
+              ImportMailer.blank_currency(self).deliver_now if value.nil?
             else
               value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!
             end

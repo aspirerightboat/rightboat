@@ -36,7 +36,7 @@ class @BoatView
   requestDetails: ->
     url = '/boats/' + @boat_id + '/request-details'
     $('.enquiry-form').attr('action', url)
-    $('.enquiry-form').find('input, textarea').val('')
+    $('.enquiry-form').find('#message, #captcha').val('')
     $('.enquiry-result-container').hide()
     $('.enquiry-form-container').show()
     $('#enquiry-popup').modal('show')

@@ -6,9 +6,7 @@ class Boat < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   searchable do
-    string :id do |boat|
-      "Boat #{boat.id}"
-    end
+    string :ref_no
     text :name,                 boost: 4
     text :manufacturer_model,   boost: 3
     text :description,          boost: 0.5
@@ -121,6 +119,10 @@ class Boat < ActiveRecord::Base
     name.blank? ? manufacturer_model : name
   end
 
+  def ref_no
+    "RB#{100000 + id}"
+  end
+
   def spec_attributes(context = nil, full_spec = false)
     ret = full_spec ? [['Seller', user.name]] : []
 
@@ -128,21 +130,21 @@ class Boat < ActiveRecord::Base
     l_unit = context ? context.current_length_unit : nil
 
     ret += [
+      ['Price', display_price(currency), 'price'],
+      ['LOA', display_length(l_unit), 'loa'],
       ['Manufacturer', self.manufacturer],
       ['Model', self.model],
-      ['Price', display_price(currency), 'price'],
       ['Boat Type', boat_type],
       ['Year Built', self.year_built],
-      ['Location', self.full_location],
-      ['LOA', display_length(l_unit), 'loa'],
+      ['Location', self.country.to_s],
       ['Tax Status', self.tax_status],
       ['Engine make/model', self.engine_model],
-      ['Fuel', self.fuel_type],
-      ['RB Boat Ref', id]
+      ['Fuel', self.fuel_type]
     ]
     specs = boat_specifications.active
     specs = specs.front unless full_spec
     ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
+    ret << ['RB Boat Ref', self.ref_no]
     ret.reject{|_, v| v.blank? }
   end
 
@@ -153,7 +155,8 @@ class Boat < ActiveRecord::Base
   def display_length(unit = nil)
     unit ||= 'm'
     length = self.length_m.to_f
-    length = unit.to_s =~ /ft/i ? (length * 3.2808399).round(2) : length.round(2)
+    return '' if length == 0
+    length = unit.to_s =~ /ft/i ? (length * 3.2808399).round : length.round
     "#{length} #{unit}"
   end
 

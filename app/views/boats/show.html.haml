@@ -13,7 +13,7 @@
         %li
           = link_to "< Back to Results", @back_url
 
-%div
+%div{'data-boat-ref' => @boat.slug, 'data-length' => @boat.length_m.to_f, 'data-price' => @boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}
   .container
     %h1.pull-left
       %strong.text-nowrap= @boat.manufacturer
@@ -38,7 +38,7 @@
         %li= image_tag boat_img.file.url(:thumb)
 
   #main-content
-    .container{'data-boat-ref' => @boat.slug, 'data-length' => @boat.length_m.to_f, 'data-price' => @boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}
+    .container
       .boat-social-links.pull-left
         .share-link
           %span Share
@@ -56,7 +56,7 @@
 
       .row.boat-description
         .col-sm-5.col-md-7.col-xs-12.pull-right
-          %h1 Details
+          %br
           .row
             - @boat.spec_attributes(self).each_slice(2).each do |spec_group|
               - spec_group.each do |spec|
@@ -82,7 +82,7 @@
       $('#carousel').flexslider({
         animation: "slide",
         controlNav: false,
-        animationLoop: false,
+        animationLoop: true,
         slideshow: false,
         itemWidth: 210,
         itemMargin: 5,

@@ -75,7 +75,7 @@ group :development, :test do
   gem 'quiet_assets'
 end
 
-group :produciton do
+group :production, :staging do
   gem 'daemons'
   gem 'passenger'
 end

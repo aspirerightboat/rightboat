@@ -10,7 +10,8 @@ class EnquirySerializer < ActiveModel::Serializer
   end
 
   def boat_pdf
-    boat_path(object.boat, format: :pdf)
+    boat = object.boat
+    manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, format: :pdf)
   end
 
   def similar_boats

@@ -14,7 +14,10 @@
 = render 'shared/search_bar'
 #main-content.container
   #boats-list.row(data-view-layout="#{current_view_layout}")
-    = render @boats
+    - if @boats.length > 0
+      = render @boats
+    - else
+      %p.lead.text-center No boats were found matching your search criteria. Please try again.
 
   - if @boats.total_pages > 1
     .row

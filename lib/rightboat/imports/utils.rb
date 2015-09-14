@@ -35,9 +35,7 @@ module Rightboat
             when 'tonnes' then value = (value.to_f * 1000).round(2)
             when /gallon/ then value = (value.to_f * 3.78541).round(2)
             when /(liter|litre)(s)?/ then value = (value.to_f).round(2)
-            else
-              # TODO: report new unit by mail
-              raise "Wrong unit #{unit}"
+            else ImportMailer.new_unit(unit).deliver_now
           end
           value.to_s =~ /^[0\.]+$/ ? nil : value
         end

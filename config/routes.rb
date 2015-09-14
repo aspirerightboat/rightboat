@@ -107,6 +107,7 @@ Rails.application.routes.draw do
     controller :dashboard do
       get :enquiries
       get :subscriptions
+      get :information
       put :subscriptions, action: :update_subscriptions, constraints: { format: :json }
       get :search_histories
     end

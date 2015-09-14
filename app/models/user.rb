@@ -25,11 +25,13 @@ class User < ActiveRecord::Base
   has_many :boats, inverse_of: :user, dependent: :destroy
   has_many :favourites, inverse_of: :user, dependent: :destroy
   has_many :saved_boats, class_name: 'Boat', through: :favourites
+  has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
   has_and_belongs_to_many :subscriptions
 
   mount_uploader :avatar, AvatarUploader
 
   accepts_nested_attributes_for :address, allow_destroy: true
+  accepts_nested_attributes_for :information, allow_destroy: true
 
   validates_presence_of :username
   validates_uniqueness_of :username, allow_blank: true

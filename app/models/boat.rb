@@ -75,7 +75,7 @@ class Boat < ActiveRecord::Base
   belongs_to :currency,      inverse_of: :boats
   belongs_to :country,       inverse_of: :boats
 
-  solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
+  # solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
   validates_presence_of :manufacturer, :model
   validate :model_inclusion_of_manufacturer
   validate :require_price

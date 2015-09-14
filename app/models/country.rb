@@ -8,7 +8,7 @@ class Country < ActiveRecord::Base
 
   belongs_to :currency, inverse_of: :countries
 
-  solr_update_association :boats
+  # solr_update_association :boats
 
   validates_presence_of :iso, :name
   validates_uniqueness_of :iso, :name, allow_blank: true

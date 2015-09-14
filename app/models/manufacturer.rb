@@ -8,7 +8,7 @@ class Manufacturer < ActiveRecord::Base
 
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
 
-  solr_update_association :models, :boats, fields: [:active, :name]
+  # solr_update_association :models, :boats, fields: [:active, :name]
   mount_uploader :logo, AvatarUploader
 
   validates_presence_of :name

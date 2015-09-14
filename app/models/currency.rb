@@ -7,7 +7,7 @@ class Currency < ActiveRecord::Base
 
   validates_presence_of :rate, :name, :symbol
 
-  solr_update_association :boats, fields: [:rate]
+  # solr_update_association :boats, fields: [:rate]
 
   scope :active, -> { where(active: true) }
   default_scope -> { order(position: :asc) }

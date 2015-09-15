@@ -29,12 +29,11 @@
     .nabvar-tools.twitter-feed-slider
       .container
         .flexslider
-          %ul.slides
-            - @recent_tweets.each do |tweet|
-              %li
-                .tweet-feed
-                  %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
-                  %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
+          - @recent_tweets.each do |tweet|
+            %li
+              .tweet-feed
+                %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
+                %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
 
 :javascript
   $(function() {
@@ -51,10 +50,9 @@
       minimumResultsForSearch: Infinity
     });
 
-    $('.flexslider').flexslider({
-      controlNav: false,
-      prevText: '',
-      nextText: ''
+    $('.flexslider').slick({
+      slidesToShow: 1,
+      arrows: true
     });
 
     if (#{params[:popup_login].to_json}) {

@@ -170,28 +170,26 @@ body#home-index {
 
 .twitter-feed-slider {
   padding: 23px 0;
-  vertical-align: middle;
   &, a {font-size: 20px; color: #FFF;}
   .small {font-size: 16px;}
   .flexslider {
-    margin: 0;
-    border: 0;
-    background: transparent;
-    color: #FFF;
+    margin-bottom: 0;
+    padding: 0 60px;
+
+    &:before {
+      content: '\e806';
+      font-family: 'fontello';
+      font-size: 131px;
+      position: absolute;
+      left: 7%;
+      line-height: 80px;
+      top: 0;
+      color: rgba(255, 255, 255, 0.1);
+    }
+
     li p a.tweet-source-link {
       color: @rb-color-dark;
       text-decoration: underline;
-    }
-    ul.slides > li {
-      display: block;
-      height: 100%;
-      .tweet-feed {
-        &:before {content:" "; display:inline-block; height:100%; font-size: 0; vertical-align:middle; margin-top: -50%;}
-        p {
-          display:inline-block; width: 100%; margin: 0;
-          line-height: 1em;
-        }
-      }
     }
   }
 }

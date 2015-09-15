@@ -18,7 +18,7 @@
 #= require jquery.ui.touch-punch
 #= require select2
 #= require utils
-#= require jquery.flexslider
+#= require slick.min
 #= require validetta
 #= require_self
 #= require_tree .

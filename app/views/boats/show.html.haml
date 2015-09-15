@@ -26,16 +26,14 @@
 
   .clearfix
 
-  #slider.flexslider
-    %ul.slides
-      - @boat.boat_images.each do |boat_img|
-        %li
-          .dummy
-          = image_tag boat_img.file.url(:main)
-  #carousel.flexslider
-    %ul.slides
-      - @boat.boat_images.each do |boat_img|
-        %li= image_tag boat_img.file.url(:thumb)
+  #slider.slick-for
+    - @boat.boat_images.each do |boat_img|
+      .item
+        .dummy
+        = image_tag boat_img.file.url(:main)
+  #carousel.slick-nav
+    - @boat.boat_images.each do |boat_img|
+      %nav-item= image_tag boat_img.file.url(:thumb)
 
   #main-content
     .container
@@ -78,27 +76,20 @@
 :javascript
   $(function() {
     $(document).ready(function() {
-      // The slider being synced must be initialized first
-      $('#carousel').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: true,
-        slideshow: false,
-        itemWidth: 210,
-        itemMargin: 5,
-        asNavFor: '#slider',
-        nextText: '',
-        prevText: ''
-      }).disableSelection();
+      $('.slick-for').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        fade: true,
+        asNavFor: '.slick-nav'
+      });
 
-      $('#slider').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: false,
-        slideshow: false,
-        sync: "#carousel",
-        nextText: '',
-        prevText: ''
-      }).disableSelection();
+      $('.slick-nav').slick({
+        slidesToShow: 5,
+        asNavFor: '.slick-for',
+        //dots: true,
+        centerMode: true,
+        focusOnSelect: true
+      });
     });
   });

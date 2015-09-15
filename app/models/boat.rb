@@ -6,7 +6,7 @@ class Boat < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   searchable do
-    string :ref_no
+    text :ref_no,               boost: 5
     text :name,                 boost: 4
     text :manufacturer_model,   boost: 3
     text :description,          boost: 0.5

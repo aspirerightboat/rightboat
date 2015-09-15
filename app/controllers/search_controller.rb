@@ -80,7 +80,7 @@ class SearchController < ApplicationController
     attrs = params.except(:utf8, :controller, :action, :button)
     return if attrs.values.all?(&:blank?)
 
-    if activity = Activity.search.where(parameters: attrs).first
+    if (activity = Activity.search.where(parameters: attrs).first)
       activity.inc(count: 1)
     else
       Activity.create(parameters: attrs, action: :search)

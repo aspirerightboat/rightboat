@@ -71,7 +71,7 @@ ActiveAdmin.register Boat do
   if !Rails.env.production?
     sidebar 'Tools', only: [:index] do
       res = link_to('Delete All Boats', {action: :delete_all_boats}, method: :post, class: 'button', style: 'margin-bottom: 10px',
-              data: {confirm: 'Are you sure to delete all the boats?', disable_with: 'Deleting...'})
+              data: {confirm: 'Are you sure you want to delete all boat data?', disable_with: 'Deleting...'})
       res << link_to('Activate All Models', {action: :activate_all_models}, method: :post, class: 'button')
       res
     end

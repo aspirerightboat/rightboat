@@ -84,7 +84,7 @@ Rails.application.routes.draw do
   get 'contact', to: 'home#contact', as: :contact
   get 'toc', to: 'home#toc', as: :toc
 
-  namespace :api, constraints: { format: :json } do
+  namespace :api, defaults: {format: :json}, constraints: {format: :json} do
     controller :manufacturers, path: 'manufacturers' do
       get ':id/models', action: :models
     end

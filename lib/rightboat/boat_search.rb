@@ -22,7 +22,7 @@ module Rightboat
         q.with field, @params[param_field] unless @params[param_field].blank?
       end
 
-      search = Sunspot.search(Boat) do |q|
+      search = Boat.solr_search(include: [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]) do |q|
         q.with :ref_no, @params[:ref_no] unless @params[:ref_no].blank?
         q.with :live, true
         q.fulltext @params[:q] unless @params[:q].blank?

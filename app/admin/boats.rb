@@ -94,20 +94,21 @@ ActiveAdmin.register Boat do
   end
 
   collection_action :activate_all_models, method: :post do
-    Boat.update_all(deleted_at: nil)
-    BoatCategory.update_all(active: true)
-    BoatType.update_all(active: true)
-    Country.update_all(active: true)
+    Boat.update_all(deleted_at: nil); Boat.reindex
+    BoatCategory.update_all(active: true); BoatCategory.reindex
+    BoatType.update_all(active: true); BoatType.reindex
+    Country.update_all(active: true); Country.reindex
     Currency.update_all(active: true)
     DriveType.update_all(active: true)
     EngineManufacturer.update_all(active: true)
     EngineModel.update_all(active: true)
-    FuelType.update_all(active: true)
+    FuelType.update_all(active: true); FuelType.reindex
     Import.update_all(active: true)
-    Manufacturer.update_all(active: true)
-    Model.update_all(active: true)
+    Manufacturer.update_all(active: true); Manufacturer.reindex
+    Model.update_all(active: true); Model.reindex
     Specification.update_all(active: true)
     VatRate.update_all(active: true)
+    Sunspot.commit
 
     redirect_to({action: :index}, {notice: 'All models was activated'})
   end

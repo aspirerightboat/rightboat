@@ -21,7 +21,7 @@ ActiveAdmin.register Boat do
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
-    column :status, sortable: 'boats.live?' do |boat|
+    column :status do |boat|
       boat.live? ? 'Active' : 'Inactive'
     end
     column :user, :user, sortable: 'users.first_name'
@@ -60,7 +60,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:manufacturer, :model, :user, :country)
+      end_of_association_chain.includes(:manufacturer, :model, :user, :country, :office)
     end
   end
 

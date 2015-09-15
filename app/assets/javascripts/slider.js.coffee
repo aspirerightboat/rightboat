@@ -39,7 +39,7 @@ $ ->
 
       updateValues($slider)
 
-    window.alignSliderLabelPosition = ($item) ->
+    alignSliderLabelPosition = ($item) ->
       for i in [0, 1]
         changeSliderValue($item, i)
 
@@ -95,3 +95,60 @@ $ ->
         if price = $boat.data('price')
           p = Number(@convertCurrency(price).toFixed(2))
           $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
+
+    setupSliderLabelPosition = ->
+      $('#advanced-search .slider, #home-search .slider').each ->
+        alignSliderLabelPosition($(this))
+
+    $('.toggle-adv-search').click (e)->
+      e.preventDefault()
+
+      $('#home-search-form, #normal-navbar').slideUp
+        duration: 200
+        progress: setupSliderLabelPosition
+        complete: ->
+          $('#advanced-search').slideDown
+            duration: 200
+            progress: setupSliderLabelPosition
+            complete: setupSliderLabelPosition
+
+    $('#advanced-search .close').click (e) ->
+      e.preventDefault()
+
+      $('#advanced-search').slideUp
+        duration: 200
+        progress: setupSliderLabelPosition
+        complete: ->
+          $('#home-search-form, #normal-navbar').slideDown
+            duration: 200
+            progress: setupSliderLabelPosition
+            complete: setupSliderLabelPosition
+
+    $('#view-mode, #sort-field, select#currency, select#length_unit').change ->
+      value = $(this).val().toLowerCase()
+      id = $(this).attr('id')
+      if id == 'currency'
+        value = value.toUpperCase()
+      else if id == 'view-mode'
+        $('*[data-view-layout]').attr('data-view-layout', value)
+      else if id == 'sort-field'
+        # TODO: need to reset pagination with ajax
+        params = $.queryParams()
+        params.order = value
+        window.location.search = $.param(params)
+
+      param = {}
+      param[id] = value
+      $.ajax
+        url: '/session-settings'
+        method: 'PUT'
+        dataType: 'JSON'
+        data: param
+
+    if /\/search\?(.*)?&button=/.test location.href
+      $backLink = $('.return-prev')
+      href = $backLink.attr('href')
+      $backLink.attr('href', href + '&advanced=true')
+
+    if /&advanced/.test location.href
+      $('.toggle-adv-search').click()

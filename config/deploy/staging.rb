@@ -8,5 +8,4 @@ set :log_level, :info
 set :branch, ENV['BRANCH'] || 'master'
 
 set :passenger_in_gemfile, false
-set :passenger_roles, :app
-set :restart_with_touch, true
+set :passenger_restart_with_touch, true

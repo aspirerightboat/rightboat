@@ -88,7 +88,7 @@
           .col-xs-4
             = label_tag :category
           .col-xs-8
-            = select_tag 'category[]', options_from_collection_for_select(@search_facets[:categories], :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.active, :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :country

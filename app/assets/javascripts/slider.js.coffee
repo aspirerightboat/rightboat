@@ -58,18 +58,22 @@ $ ->
         $('input[name="' + input_name + '_min"]').val(min_v)
         $('input[name="' + input_name + '_max"]').val(max_v)
 
-    changeSliderIncrement = ($slider) ->
+    changeLengthIncrement = ($slider) ->
       min = $slider.data('min')
       max = $slider.data('max')
       diff = parseInt(max) - parseInt(min)
 
       step = if $slider.data('unit') == 'ft'
-        if convertLength(diff) > 20 then 20 else 10
+        if diff > 6.096 then 6.096 else 3.048
       else
         if diff > 10 then 10 else 5
 
-      console.log min, max, $slider.data('unit'), diff, step
+      $slider.slider
+        step: step
 
+    changePriceIncrement = ($slider) ->
+      max = parseInt($slider.data('max'))
+      step = if max > 1000000 then 100000 else 500000
       $slider.slider
         step: step
 
@@ -89,7 +93,10 @@ $ ->
           setTimeout(delay, 5)
 
       if $this.attr('id') == 'length-slider'
-        changeSliderIncrement($this)
+        changeLengthIncrement($this)
+
+      if $this.attr('id') == 'price-slider'
+        changePriceIncrement($this)
 
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()
@@ -98,7 +105,7 @@ $ ->
         $slider = $(this)
         $slider.data('unit', unit)
         alignSliderLabelPosition($slider)
-        changeSliderIncrement($slider)
+        changeLengthIncrement($slider)
       $('[data-attr-name="loa"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
         l = Number(convertLength($boat.data('length')).toFixed(2))

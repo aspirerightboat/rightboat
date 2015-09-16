@@ -14,6 +14,13 @@ module ApplicationHelper
   def slider_tag(field, options = {})
     min = options[:min] || @search_facets["min_#{field}".to_sym]
     max = options[:max] || @search_facets["max_#{field}".to_sym]
+    if field == :price
+      min = min.to_i / 500000 * 500000
+      max = (max.to_i / 500000 + 1) * 500000
+    elsif field == :length
+      min = min.to_i / 5 * 5
+      max = (max.to_i / 5 + 1) * 5
+    end
     v1 = options[:value1] || params["#{field}_min".to_sym]; v1 = v1.blank? ? min : v1
     v2 = options[:value2] || params["#{field}_max".to_sym]; v2 = v2.blank? ? max : v2
 

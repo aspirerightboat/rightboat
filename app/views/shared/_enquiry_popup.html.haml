@@ -2,8 +2,8 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} &times;
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
         %h1 Request Details
       .modal-body
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
@@ -54,8 +54,8 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} &times;
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
         %h1 Message Sent
       .modal-body
         %h1.text-center Thank you for your enquiry
@@ -76,7 +76,7 @@
           .col-sm-offset-3.col-sm-6.col-xs-12
             = render 'shared/signup_form'
         .row
-          %h4.similar-boats-link= link_to "Similar Boats (click for more details)", '#'
+          %h4.similar-boats-link= link_to 'Similar Boats (click for more details)', '#'
           .similar-boats.row
 
 :javascript

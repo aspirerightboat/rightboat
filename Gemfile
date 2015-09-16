@@ -24,14 +24,15 @@ gem 'open_uri_redirections'
 gem 'select2-rails'
 gem 'kaminari'
 gem 'friendly_id'
-gem 'rmagick'
+# This project needs imagemagick to generate captcha!
+# on Mac Os run: brew install imagemagick & brew install gs
+# on Ubuntu run: sudo apt-get install imagemagick
 gem 'carrierwave'
 gem 'fog'
 gem 'twitter'
 gem 'twitter-text'
 gem 'figaro'
 gem 'validate_url'
-gem 'ezcrypto'
 gem 'truncate_html'
 
 # deleted_at
@@ -72,7 +73,8 @@ group :development, :test do
   gem 'capistrano-passenger'
   gem 'capistrano-rails'
   gem 'pry-rails'
-  gem 'mailcatcher'
+#  gem 'mailcatcher'
+  gem 'letter_opener'
   gem 'quiet_assets'
   gem 'bullet'
 end

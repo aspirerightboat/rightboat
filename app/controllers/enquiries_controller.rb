@@ -1,27 +1,26 @@
 class EnquiriesController < ApplicationController
+  before_action :authenticate_user!
 
   def create
-    enquiry = Enquiry.new(enquiry_params)
+    enquiry = current_user.enquiries.new(enquiry_params)
 
-    captcha = Rightboat::Captcha.decrypt(params[:enquiry][:captcha_key])
+    if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
+      enquiry.captcha_correct = false
+    end
 
-    unless captcha.correct?(params[:enquiry][:captcha])
-      enquiry.errors.add :captcha, "is invalid"
-      render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
+    enquiry.boat = Boat.find(params[:boat_id])
+    if enquiry.save
+      session.delete(:captcha)
+      render json: enquiry, serializer: EnquirySerializer, root: false
     else
-      enquiry.user = current_user
-      enquiry.boat = Boat.find(params[:boat_id])
-      if enquiry.save
-        render json: enquiry, serializer: EnquirySerializer
-      else
-        render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
-      end
+      session[:captcha] = Rightboat::Captcha.generate
+      render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
     end
   end
 
   private
+
   def enquiry_params
     params.require(:enquiry).permit(:title, :first_name, :surname, :email, :phone, :message)
   end
-
 end

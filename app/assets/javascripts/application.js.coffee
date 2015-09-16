@@ -27,7 +27,7 @@ window.Rightboat = {}
 Rightboat.validetta_options =
   custom :
     username :
-      pattern : /^[a-zA-Z][\w\d\-\@\._]+$/,
+      pattern : /^[a-zA-Z][\w@.-]+$/,
       errorMessage : "Only include a-z, A-Z, digits and underline."
   display: 'inline'
 

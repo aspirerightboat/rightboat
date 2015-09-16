@@ -97,7 +97,7 @@ class Boat < ActiveRecord::Base
     return [] unless boat.manufacturer
     search = Sunspot.search Boat do |q|
       q.with :live, true
-      q.without :id, ["Boat #{boat.id}"]
+      q.without :ref_no, boat.ref_no
       q.with :manufacturer_id, boat.manufacturer_id
       q.any_of do |q|
         q.all_of do |q|

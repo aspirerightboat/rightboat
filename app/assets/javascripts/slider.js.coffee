@@ -1,11 +1,13 @@
 $ ->
   $(document).ready ->
-    @convertCurrency = (value) ->
+    convertCurrency = (value) ->
+      value = Number(value)
       currency = $('form:visible select[name="currency"]').val()
       rate = window.currencyRates[currency]
       rate * value
 
-    @convertLength = (value) ->
+    convertLength = (value) ->
+      value = Number(value)
       unit = $('form:visible select[name="length_unit"]').val()
       if unit == 'ft'
         return value * 3.28084
@@ -15,7 +17,7 @@ $ ->
     convertValue = (v, $item) =>
       convertFuncName = $item.data('convert')
       return v unless convertFuncName
-      @[convertFuncName](v)
+      eval(convertFuncName + "(" + v + ")");
 
     changeSliderValue = ($slider, handleIndex=0) ->
       value = $slider.slider('values', handleIndex)
@@ -56,6 +58,21 @@ $ ->
         $('input[name="' + input_name + '_min"]').val(min_v)
         $('input[name="' + input_name + '_max"]').val(max_v)
 
+    changeSliderIncrement = ($slider) ->
+      min = $slider.data('min')
+      max = $slider.data('max')
+      diff = parseInt(max) - parseInt(min)
+
+      step = if $slider.data('unit') == 'ft'
+        if convertLength(diff) > 20 then 20 else 10
+      else
+        if diff > 10 then 10 else 5
+
+      console.log min, max, $slider.data('unit'), diff, step
+
+      $slider.slider
+        step: step
+
     $( '.slider' ).each ->
       $this = $(this)
       v1 = $this.data('value1')
@@ -71,6 +88,9 @@ $ ->
             changeSliderValue($this, $(ui.handle).data('uiSliderHandleIndex'))
           setTimeout(delay, 5)
 
+      if $this.attr('id') == 'length-slider'
+        changeSliderIncrement($this)
+
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()
       $('select[name="length_unit"]').select2('val', unit)
@@ -78,9 +98,10 @@ $ ->
         $slider = $(this)
         $slider.data('unit', unit)
         alignSliderLabelPosition($slider)
+        changeSliderIncrement($slider)
       $('[data-attr-name="loa"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
-        l = Number(@convertLength($boat.data('length')).toFixed(2))
+        l = Number(convertLength($boat.data('length')).toFixed(2))
         $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
 
     $('select[name="currency"]').change (e)=>
@@ -93,7 +114,7 @@ $ ->
       $('[data-attr-name="price"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
         if price = $boat.data('price')
-          p = Number(@convertCurrency(price).toFixed(2))
+          p = Number(convertCurrency(price).toFixed(2))
           $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
 
     setupSliderLabelPosition = ->

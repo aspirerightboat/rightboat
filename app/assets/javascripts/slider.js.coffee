@@ -73,7 +73,13 @@ $ ->
 
     changePriceIncrement = ($slider) ->
       max = parseInt($slider.data('max'))
-      step = if max > 1000000 then 100000 else 500000
+      step = if max < 1000000
+        50000
+      else if max < 3000000
+        100000
+      else
+        500000
+
       $slider.slider
         step: step
 

@@ -15,6 +15,7 @@
 solr
 config/database.yml
 config/application.yml
+config/smtp.yml
 
 # uploaded files
 public/rb-assets

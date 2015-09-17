@@ -8,13 +8,13 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:boat)
+      end_of_association_chain.includes(:user, boat: [:manufacturer, :model])
     end
   end
 
   index download_links: [:csv] do
     column 'Date of Lead', sortable: :created_at do |record|
-      record.created_at
+      "#{record.created_at} (#{distance_of_time_in_words(record.created_at, Time.current)} ago)"
     end
     column :user, sortable: :user_id
     column :boat, sortable: :boat_id do |record|
@@ -45,6 +45,26 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       }.map {|k, v|
         "<b>#{k}</b>: #{v}" unless v.blank?
       }.reject(&:blank?).join('<br/>').html_safe
+    end
+    column :status
+    actions
+  end
+
+  form do |f|
+    f.inputs do
+      f.input :user, as: :select, collection: User.where(id: f.object.user_id).map { |u| ["#{u.first_name}, #{u.last_name}", u.id] }
+      f.input :boat, as: :select, collection: Boat.where(id: f.object.boat_id).map { |b| ["#{b.manufacturer.name}, #{b.name}", b.id] }
+      f.input :status, as: :select, collection: Enquiry::STATUSES.map { |s| [s.capitalize, s] }
+      f.input :title, as: :select, collection: User::TITLES.map { |t| [t, t] }
+      f.input :first_name
+      f.input :surname
+      f.input :email
+      f.input :phone
+      f.input :remote_ip
+      f.input :browser
+      f.input :token
+      f.input :created_at
+      f.input :deleted_at
     end
     actions
   end

@@ -79,4 +79,5 @@ Rails.application.configure do
 
   config.action_controller.default_url_options = { host: '52.28.247.128' }
   config.action_mailer.default_url_options = { host: '52.28.247.128' }
+  config.action_mailer.delivery_method = :smtp
 end

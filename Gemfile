@@ -28,6 +28,7 @@ gem 'friendly_id'
 # on Mac Os run: brew install imagemagick & brew install gs
 # on Ubuntu run: sudo apt-get install imagemagick
 gem 'carrierwave'
+gem 'rmagick' # needed by carrierwave
 gem 'fog'
 gem 'twitter'
 gem 'twitter-text'

@@ -1,7 +1,9 @@
 class Enquiry < ActiveRecord::Base
 
-  belongs_to :user, inverse_of: :enquiries
-  belongs_to :boat, inverse_of: :enquiries
+  STATUSES = %w(pending approved review cancelled rejected)
+
+  belongs_to :user
+  belongs_to :boat
 
   validates_presence_of :title, :first_name, :surname, :email, :boat, :user, :token
   validates_inclusion_of :title, within: User::TITLES, allow_blank: true

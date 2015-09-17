@@ -95,7 +95,7 @@ class Boat < ActiveRecord::Base
   def self.similar_boats(boat, options = {})
     # TODO: need confirmation from RB
     return [] unless boat.manufacturer
-    search = Sunspot.search Boat do |q|
+    search = Boat.solr_search(include: [:manufacturer, :model, :primary_image]) do |q|
       q.with :live, true
       q.without :ref_no, boat.ref_no
       q.with :manufacturer_id, boat.manufacturer_id

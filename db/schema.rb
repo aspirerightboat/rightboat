@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150909032145) do
+ActiveRecord::Schema.define(version: 20150916342185) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -312,6 +312,11 @@ ActiveRecord::Schema.define(version: 20150909032145) do
     t.integer  "pid",                limit: 4
     t.datetime "queued_at"
     t.string   "tz",                 limit: 255
+    t.integer  "total_count",        limit: 4,     default: 0
+    t.integer  "new_count",          limit: 4,     default: 0
+    t.integer  "updated_count",      limit: 4,     default: 0
+    t.integer  "deleted_count",      limit: 4,     default: 0
+    t.string   "error_msg",          limit: 255
   end
 
   add_index "imports", ["user_id"], name: "index_imports_on_user_id", using: :btree

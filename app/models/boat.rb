@@ -50,7 +50,7 @@ class Boat < ActiveRecord::Base
 
   has_many :favourites, inverse_of: :boat, dependent: :destroy
   has_many :liked, class_name: 'User', through: :favourites, source: :user
-  has_many :enquiries, inverse_of: :boat, dependent: :nullify
+  has_many :enquiries, inverse_of: :boat, dependent: :destroy
   has_many :boat_specifications, inverse_of: :boat, dependent: :destroy
   has_many :boat_images, inverse_of: :boat, dependent: :destroy
   has_one :primary_image,

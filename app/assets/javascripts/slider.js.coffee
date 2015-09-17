@@ -174,7 +174,8 @@ $ ->
     if /\/search\?(.*)?&button=/.test location.href
       $backLink = $('.return-prev')
       href = $backLink.attr('href')
-      $backLink.attr('href', href + '&advanced=true')
+      if /\/search\?(.*)?&button=/.test href
+        $backLink.attr('href', href + '&advanced=true')
 
     if /&advanced/.test location.href
       $('.toggle-adv-search').click()

@@ -40,6 +40,7 @@ $ ->
           offset: "0, 10"
 
       updateValues($slider)
+      changePriceIncrement($slider)
 
     alignSliderLabelPosition = ($item) ->
       for i in [0, 1]
@@ -59,6 +60,7 @@ $ ->
         $('input[name="' + input_name + '_max"]').val(max_v)
 
     changeLengthIncrement = ($slider) ->
+      return unless $slider.attr('id') is 'length-slider'
       min = $slider.data('min')
       max = $slider.data('max')
       diff = parseInt(max) - parseInt(min)
@@ -72,7 +74,8 @@ $ ->
         step: step
 
     changePriceIncrement = ($slider) ->
-      max = parseInt($slider.data('max'))
+      return unless $slider.attr('id') is 'price-slider'
+      max = parseInt($slider.slider('values', 0))
       step = if max < 1000000
         50000
       else if max < 3000000
@@ -98,11 +101,8 @@ $ ->
             changeSliderValue($this, $(ui.handle).data('uiSliderHandleIndex'))
           setTimeout(delay, 5)
 
-      if $this.attr('id') == 'length-slider'
-        changeLengthIncrement($this)
-
-      if $this.attr('id') == 'price-slider'
-        changePriceIncrement($this)
+      changeLengthIncrement($this)
+      changePriceIncrement($this)
 
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()

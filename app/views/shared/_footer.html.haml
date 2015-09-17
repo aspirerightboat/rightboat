@@ -24,10 +24,11 @@
     .row.company-info
       = link_to 'javascript: void(0);', class: 'no-divider' do
         %span &copy;#{Date.today.year}&nbsp;&nbsp;&nbsp;Rightboat Ltd - All Rights Reserved
-      = link_to '#' do
+      = link_to 'javascript: void(0);' do
         %span Policies
       = link_to toc_path do
         %span Terms and Conditions
-      = mail_to 'info@rightboat.com', nil, class: 'no-divider'
+      = mail_to 'info@rightboat.com', nil#, class: 'no-divider'
+      = link_to 'Cookies policy', 'javascript: void(0);'
   = image_tag 'anchor.png', class: 'anchor-img', alt: ''
 .clearfix

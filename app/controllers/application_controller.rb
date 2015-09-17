@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  after_action :set_visited
 
   include SessionSetting
 
@@ -77,5 +78,9 @@ class ApplicationController < ActionController::Base
   # prevent flash message in devise controller
   def is_flashing_format?
     false
+  end
+
+  def set_visited
+    cookies[:visited] = true if cookies[:visited].nil?
   end
 end

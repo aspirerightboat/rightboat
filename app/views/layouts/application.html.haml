@@ -9,6 +9,8 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body{id: "#{controller_name}-#{action_name}"}
+    - if cookies[:visited].nil?
+      = render 'shared/cookies_warning'
     - if content_for? :header
       = yield :header
     - else

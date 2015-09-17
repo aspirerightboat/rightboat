@@ -18,8 +18,13 @@ module ApplicationHelper
       min = min.to_i / 500000 * 500000
       max = (max.to_i / 500000 + 1) * 500000
     elsif field == :length
-      min = min.to_i / 5 * 5
-      max = (max.to_i / 5 + 1) * 5
+      if options[:unit] == 'ft'
+        min = 6.096
+        max = ((3.28084 * max / 6.096).to_i + 1) * 6.096
+      else
+        min = (min / 5) * 5
+        max = ((max / 5) + 1) * 5
+      end
     end
     v1 = options[:value1] || params["#{field}_min".to_sym]; v1 = v1.blank? ? min : v1
     v2 = options[:value2] || params["#{field}_max".to_sym]; v2 = v2.blank? ? max : v2

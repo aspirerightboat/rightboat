@@ -61,15 +61,7 @@ $ ->
 
     changeLengthIncrement = ($slider) ->
       return unless $slider.attr('id') is 'length-slider'
-      min = $slider.data('min')
-      max = $slider.data('max')
-      diff = parseInt(max) - parseInt(min)
-
-      step = if $slider.data('unit') == 'ft'
-        if diff > 6.096 then 6.096 else 3.048
-      else
-        if diff > 10 then 10 else 5
-
+      step = if $slider.data('unit') == 'ft' then 6.096 else 10
       $slider.slider
         step: step
 

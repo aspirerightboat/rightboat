@@ -8,9 +8,6 @@
   }
 
   .boat-thumb.thumbnail {
-    .boat-price {
-      display: block;
-    }
     .boat-location-1 {
       height: 54px;
     }
@@ -33,25 +30,19 @@
     .boat-detail-item { display: block; }
     h4, h5 {font-size: 18px; display: inline-block; margin-bottom: 2px;}
     h4 {margin-right: 8px;}
-    .boat-price {
-      float: right;
-      text-align: right;
-      margin-right: 0 !important;
-      .clearfix-after();
-    }
+
     .boat-location-1 { display: block; margin-right: 0 !important; .clearfix-now(); }
     .boat-location-2 { display: none; }
     //.tax-status { font-size: 12px;}
-    .boat-social-links { position: absolute; left: 0; bottom: 0; width: 100%; padding: 15px }
-    //.boat-social-links a { font-size: 14px; }
+    .boat-links-bottom { position: absolute; left: 0; bottom: 0; width: 100%; padding: 15px }
 
     @media(max-width: @screen-sm-max) {
       .caption { padding: 6px; }
-      .boat-social-links { padding: 6px; }
+      .boat-links { padding: 6px; }
     }
     @media(max-width: 545px) { // buttons can't be located in an one row
       display: block;
-      .boat-social-links { position: relative; padding: 0; }
+      .boat-links { position: relative; padding: 0; }
       .boat-img-thumb { width: 100% }
       .boat-img-thumb, .caption { display: block;}
     }
@@ -95,68 +86,78 @@
   }
 }
 
-.boat-social-links {
+.boat-price {
+  display: inline-block;
+}
+
+.boat-links {
   .clearfix-now();
   @media(min-width: @screen-xs-min) {margin-top: 8px;}
-  display: block;
-  vertical-align: top;
+
   > a, > div {
     font-size: 16px;
     line-height: 26px;
-    vertical-align: top;
+  }
+  > a {
     margin-right: 13px;
   }
   a:hover {
     text-decoration: none;
-    opacity: 0.8;
   }
-  a.fav-link:before, .share-link:before {
+
+  .boat-price {
+    font-size: 19px;
+  }
+}
+
+a.fav-link, .share-link {
+  &:before {
     display: inline-block;
     content: ' ';
     background: image-url('sprites.png') no-repeat;
     width: 27px;
     height: 27px;
-    vertical-align: top;
-    &:hover { opacity: 0.8; }
+    vertical-align: middle;
   }
-  a.fav-link:before {
-    background-position: 0 -66px;
-  }
-  a.fav-link.active:before {
-    background-position: 0 -94px;
-  }
+}
 
-  .share-link {
-    color: @rb-color-primary;
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
+a.fav-link:before {
+  background-position: 0 -66px;
+}
+a.fav-link.active:before {
+  background-position: 0 -94px;
+}
 
-    &:before { background-position: 0 -118px; }
-    &:hover {
-      .share-platforms {
-        opacity: 1;
-      }
-    }
+.share-link {
+  color: @rb-color-primary;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
 
+  &:before { background-position: 0 -118px; }
+  &:hover {
     .share-platforms {
-      background-color: @rb-color-yellow;
-      opacity: 0;
-      position: absolute;
-      left: -13px;
-      top: -31px;
-      width: 82px;
-      border-radius: 3px;
-      transition: all .3s ease-in-out;
-
-      a {
-        font-size: 18px;
-      }
-
-      .icon-facebook-squared { color: rgb(76, 112, 167) }
-      .icon-twitter-squared { color: rgb(47, 186, 253) }
-      .icon-mail { color: gray }
+      opacity: 1;
     }
+  }
+
+  .share-platforms {
+    background-color: @rb-color-yellow;
+    opacity: 0;
+    position: absolute;
+    left: -9px;
+    top: -31px;
+    width: 82px;
+    border-radius: 3px;
+    transition: all .3s ease-in-out;
+
+    a {
+      font-size: 18px;
+    }
+
+    .icon-facebook-squared { color: rgb(76, 112, 167) }
+    .icon-twitter-squared { color: rgb(47, 186, 253) }
+    .icon-mail { color: gray }
   }
 }
 
@@ -187,7 +188,7 @@ a.pdf-link {
   display: inline-block;
   padding-left: 30px;
   margin: 0;
-  height: 30px;
+  height: 20px;
   line-height: 30px;
   i {
     display: block;
@@ -211,7 +212,6 @@ a.pdf-link {
     margin: 0;
     font-size: 16px;
     line-height: 1.3em;
-    &.boat-price { font-size: 20px; }
   }
   display: block;
   padding: 15px 0;
@@ -255,7 +255,7 @@ a.pdf-link {
     }
     margin-top: 18px;
   }
-  .boat-social-links { margin-top: 18px;}
+  .boat-links { margin-top: 18px;}
   #slider, #carousel {
     background: @rb-color-dark;
     margin-bottom: 18px;

@@ -6,7 +6,7 @@
     .caption
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
-      .boat-detail-item.boat-price
+      .boat-detail-item.boat-price.pull-right.text-right
         %span(data-attr-name='price')= boat_price(boat)
         %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
       .boat-detail-item.boat-length
@@ -19,7 +19,7 @@
       /.boat-detail-item.boat-location-2
       /  %span Location: #{boat.full_location}
       - unless local_assigns[:disable_social_links]
-        .boat-social-links
+        .boat-links.boat-links-bottom
           = favourite_link_to boat, 'Favourite'
           = render 'shared/social_share', boat: boat
           = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'

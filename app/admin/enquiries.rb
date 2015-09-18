@@ -5,6 +5,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   filter :user, collection: -> { User.organizations }
   filter :created_at, label: 'Date of Lead'
+  filter :status, as: :select, collection: -> { Enquiry::STATUSES }
 
   controller do
     def scoped_collection

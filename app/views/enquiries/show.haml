@@ -1,0 +1,28 @@
+- content_for :header_text do
+  %h1 Lead for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
+
+= render 'shared/search_bar'
+
+#main-content.container
+  - if (msg = notice || alert)
+    %p= msg
+
+  %h2 Boat info
+  %ol
+    %li <b>Manufacturer</b>: #{@boat.manufacturer}
+    %li <b>Model</b>: #{@boat.model}
+    %li <b>Broker</b>: #{@boat.user.name}
+
+  %h2 Requester info
+  %ol
+    %li <b>Name</b>: #{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}
+    %li <b>Email</b>: #{@enquiry.email}
+    %li <b>Phone</b>: #{@enquiry.phone}
+    %li <b>Message</b>: #{@enquiry.message}
+    %li <b>Requested</b>: #{@enquiry.created_at} (#{distance_of_time_in_words(@enquiry.created_at, Time.current)} ago)
+  %p
+    Current status – <b>#{@enquiry.status.capitalize}</b>
+  - if @enquiry.status == 'pending' && current_user && current_user.company?
+    %p.nice-buttons
+      = link_to 'Cancel', lead_cancel_path(@enquiry), class: 'nice-button', method: 'post'
+      = link_to 'Approve', lead_approve_path(@enquiry), class: 'nice-button', method: 'post'

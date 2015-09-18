@@ -99,6 +99,9 @@ Rails.application.routes.draw do
   get 'boat-type/:boat_type', to: 'boats_for_sale#boats_by_type', as: :boats_by_type
   get 'location', to: 'boats_for_sale#boats_by_location_index', as: :boats_by_location_index
   get 'location/:country', to: 'boats_for_sale#boats_by_location', as: :boats_by_location
+  get 'leads/:id', to: 'enquiries#show', as: :lead
+  post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
+  post 'leads/:id/cancel', to: 'enquiries#cancel', as: :lead_cancel
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index'

@@ -73,6 +73,11 @@
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-4
+            = label_tag :boat_type
+          .col-xs-8
+            = select_tag 'boat_type[]', options_for_select(['Power', 'Sail', 'Other'], params[:boat_type]), class: 'select-black select-full select-general', multiple: 'multiple'
+        .form-group.row
+          .col-xs-4
             = label_tag :new_used
           .col-xs-8
             = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
@@ -191,7 +196,6 @@
         cache: true
       }
     });
-
     $('.county-select').multipleSelect({
       placeholder: 'Select Countries...',
       selectAllText: 'Check/Uncheck All',

@@ -102,6 +102,7 @@ Rails.application.routes.draw do
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
   post 'leads/:id/cancel', to: 'enquiries#cancel', as: :lead_cancel
+  get 'test-email', to: 'testing#test_email'
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index'

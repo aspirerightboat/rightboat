@@ -93,7 +93,7 @@
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full select-general', multiple: 'multiple', prompt: 'All'
+            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full county-select', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'
@@ -108,18 +108,15 @@
 
 :javascript
   window.currencyRates = #{Currency.active.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
-
   $(function() {
     $('select.select-general').each(function() {
       var options = {
         //templateResult: formatState,
         minimumResultsForSearch: Infinity
       };
-
       if ($(this).hasClass('select-white')) {
         options = $.extend(options, {dropdownCssClass: 'select-white'});
       }
-
       $(this).select2(options).on('change', function() {
         var $allOption = $(this).find("option[value='']");
         if ($allOption.length && $allOption.text().match(/^all$/i)) {
@@ -129,7 +126,6 @@
         }
       });
     });
-
     $('#manufacturer_model').select2({
       tags: true,
       minimumInputLength: 0,
@@ -158,7 +154,6 @@
         cache: true
       }
     });
-
     $('#keywords').select2({
       tags: true,
       minimumInputLength: 1,
@@ -195,5 +190,11 @@
         },
         cache: true
       }
+    });
+
+    $('.county-select').multipleSelect({
+      placeholder: 'Select Countries...',
+      selectAllText: 'Check/Uncheck All',
+      selectAllDelimiter: ['', '']
     });
   });

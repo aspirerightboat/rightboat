@@ -17,6 +17,7 @@
 #= require jquery-ui/slider
 #= require jquery.ui.touch-punch
 #= require select2
+#= require jquery.multiple.select
 #= require utils
 #= require slick.min
 #= require validetta

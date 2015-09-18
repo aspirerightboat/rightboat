@@ -1,4 +1,8 @@
 ActiveAdmin.register Enquiry, as: 'Lead' do
+  permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone,
+                :message, :remote_ip, :browser, :token, :deleted_at, :created_at, :updated_at, :status
+
+
   menu label: 'Leads', priority: 9
 
   config.sort_order = 'created_at_desc'

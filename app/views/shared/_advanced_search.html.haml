@@ -59,9 +59,9 @@
           .col-xs-7.col-sm-8
             = slider_tag(:price, html: { 'data-convert' => 'convertCurrency' })
         .form-group.row
-          .col-xs-5
+          .col-xs-4
             = label_tag :tax_status
-          .col-xs-7
+          .col-xs-8
             = check_box_tag 'tax_status[paid]', true, (params[:tax_status] || {})['paid'], class: 'inverse'
             = label_tag :tax_status_paid, 'Paid', class: 'tax-paid' do
               Paid
@@ -97,9 +97,9 @@
           .col-xs-8
             = text_field_tag :ref_no, '', placeholder: 'e.g. RB48573', class: 'form-control'
         .form-group.row
-          .col-xs-5
+          .col-xs-4
             = label_tag :new_used, 'New / Used'
-          .col-xs-7
+          .col-xs-8
             = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
             = label_tag :new_used_new, 'New'
             = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'

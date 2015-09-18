@@ -28,6 +28,10 @@ class HomeController < ApplicationController
     @page_title = 'Terms and Conditions'
   end
 
+  def marine_services
+    @pate_title = 'Maring Services'
+  end
+
   private
   def register_statistics
     unless @featured_boats.blank?

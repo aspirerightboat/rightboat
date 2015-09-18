@@ -1,0 +1,9 @@
+.share-link
+  %span Share
+  %span.share-platforms
+    = link_to "https://www.facebook.com/sharer.php?u=#{URI::escape(manufacturer_model_boat_url(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug))}", target: '_blank', title: 'Share with facebook' do
+      %i.icon.icon-facebook-squared
+    = link_to "https://www.twitter.com/intent/tweet?url=#{URI::escape(manufacturer_model_boat_url(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug))}", target: '_blank', title: 'Share with twitter' do
+      %i.icon.icon-twitter-squared
+    = link_to "mailto:?subject=I want you to see this site&body=Check out this site #{manufacturer_model_boat_url(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug)}", target: '_blank', title: 'Share by email' do
+      %i.icon.icon-mail

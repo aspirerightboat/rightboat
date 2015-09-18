@@ -74,11 +74,9 @@ $ ->
       return unless $slider.attr('id') is 'price-slider'
       max = parseInt($slider.slider('values', 0))
       step = if max < 1000000
-        50000
-      else if max < 3000000
         100000
       else
-        500000
+        1000000
 
       $slider.slider
         step: step

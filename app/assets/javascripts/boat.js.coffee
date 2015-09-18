@@ -23,8 +23,18 @@ class @BoatView
       .success (response) ->
         if response.active
           $this.addClass('active')
+          $this.attr('title', 'Unfavourite')
+               .tooltip('fixTitle')
+               .data('bs.tooltip')
+               .$tip.find('.tooltip-inner')
+               .text('Unfavourite')
         else
           $this.removeClass('active')
+          $this.attr('title', 'Favourite')
+               .tooltip('fixTitle')
+               .data('bs.tooltip')
+               .$tip.find('.tooltip-inner')
+               .text('Favourite')
           if $this.parents('#favourites').length > 0
             $this.parents('.boat-thumb-container').fadeOut()
       .error ->

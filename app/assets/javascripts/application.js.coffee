@@ -54,5 +54,7 @@ $(document).ready ->
     else
       $(this).find('.glyphicon').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-right')
 
+  $('[data-toggle="tooltip"]').tooltip()
+
 
 

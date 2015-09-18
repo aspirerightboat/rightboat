@@ -1,3 +1,8 @@
+getLocation = (href) ->
+  loc = document.createElement('a')
+  loc.href = href
+  return loc
+
 $ ->
   $(document).ready ->
     convertCurrency = (value) ->
@@ -176,6 +181,10 @@ $ ->
       href = $backLink.attr('href')
       if /\/search\?(.*)?&button=/.test href
         $backLink.attr('href', href + '&advanced=true')
+      else
+        loc = getLocation(href)
+        if loc.pathname == '/'
+          $backLink.attr('href', href + '?advanced=true')
 
-    if /&advanced/.test location.href
+    if /advanced=/.test location.href
       $('.toggle-adv-search').click()

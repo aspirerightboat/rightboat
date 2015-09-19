@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916342185) do
+ActiveRecord::Schema.define(version: 20150919732142) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -176,14 +176,15 @@ ActiveRecord::Schema.define(version: 20150916342185) do
   add_index "boats", ["vat_rate_id"], name: "index_boats_on_vat_rate_id", using: :btree
 
   create_table "countries", force: :cascade do |t|
-    t.string   "iso",         limit: 255
-    t.string   "name",        limit: 255
-    t.string   "slug",        limit: 255
-    t.text     "description", limit: 65535
-    t.integer  "currency_id", limit: 4
-    t.boolean  "active",      limit: 1,     default: false
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.string   "iso",          limit: 255
+    t.string   "name",         limit: 255
+    t.string   "slug",         limit: 255
+    t.text     "description",  limit: 65535
+    t.integer  "currency_id",  limit: 4
+    t.boolean  "active",       limit: 1,     default: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.string   "country_code", limit: 255
   end
 
   add_index "countries", ["active"], name: "index_countries_on_active", using: :btree

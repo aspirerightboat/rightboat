@@ -58,4 +58,8 @@ module ApplicationHelper
     options_for_select(Rightboat::BoatSearch::SortTypes, selected || current_order_field)
   end
 
+  def options_for_country_code
+    options_for_select(Country.order(:name).map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]})
+  end
+
 end

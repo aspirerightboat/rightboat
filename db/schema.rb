@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150919732142) do
+ActiveRecord::Schema.define(version: 20150919803453) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -343,6 +343,19 @@ ActiveRecord::Schema.define(version: 20150919732142) do
   add_index "manufacturers", ["active"], name: "index_manufacturers_on_active", using: :btree
   add_index "manufacturers", ["name"], name: "index_manufacturers_on_name", using: :btree
   add_index "manufacturers", ["slug"], name: "index_manufacturers_on_slug", using: :btree
+
+  create_table "marine_enquiries", force: :cascade do |t|
+    t.string   "title",        limit: 255
+    t.string   "first_name",   limit: 255
+    t.string   "last_name",    limit: 255
+    t.string   "email",        limit: 255
+    t.string   "enquiry_type", limit: 255
+    t.string   "country_code", limit: 255
+    t.string   "phone",        limit: 255
+    t.text     "comments",     limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "misspellings", force: :cascade do |t|
     t.integer  "source_id",    limit: 4

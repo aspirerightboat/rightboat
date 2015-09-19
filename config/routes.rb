@@ -74,6 +74,7 @@ Rails.application.routes.draw do
   end
   resources :feedbacks, only: [:create]
   resources :mail_subscriptions, only: [:create]
+  resources :marine_enquiries, only: [:create]
 
   get 'search', to: 'search#results'
   post 'boats/:boat_id/request-details', to: 'enquiries#create'

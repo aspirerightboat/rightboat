@@ -15,12 +15,8 @@
           %td
             %p The simple, free, no-obligation way to gain access to all the information you need to get out onto the water.
             %p From selling your boat, to arranging finance or insurance, our  trusted partners are here to help you.
-            %p
-            %p Enquiry type
-            %p
-              - ['Insurance', 'Finance', 'Transport', 'Warranty', 'Sell my Boat', 'Berths', 'Charter'].each do |item|
-                = check_box_tag item, nil, true
-                = label_tag item
+            %br
+            = render 'marine_enquiries/form'
           %td
             %p
               %b What happens next?

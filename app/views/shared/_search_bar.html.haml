@@ -2,14 +2,14 @@
   .container
     = form_tag search_path, method: :get, class: 'navbar-form navbar-left', role: "search" do
       = text_field_tag :q, params[:q], class: 'form-control', placeholder: "Quick Search"
-    %ul.nav.navbar-nav
+    %ul.nav.navbar-nav.page-links
       %li
         = link_to "Advanced Search", '#', class: 'toggle-adv-search'
       %li
         = link_to "Return to Previous", :back, class: 'return-prev'
 
     - unless local_assigns[:simple_search_bar]
-      %ul.nav.navbar-nav.navbar-right
+      %ul.nav.navbar-nav.navbar-right.display-options
         /%li= link_to "Refine Results", '#'
         %li
           .navbar-text
@@ -18,7 +18,7 @@
         %li
           .navbar-text
             %span View
-            = select_tag :sort, options_for_select([['Gallery', 'gallery'], ['List', 'list']], current_view_layout), id: 'view-mode'
+            = select_tag :sort, options_for_select([['Thumbnail', 'thumbnail'], ['Gallery', 'gallery'], ['List', 'list']], current_view_layout), id: 'view-mode'
 .clearfix
 
 :javascript

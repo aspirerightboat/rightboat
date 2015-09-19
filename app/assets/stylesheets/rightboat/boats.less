@@ -13,6 +13,24 @@
     }
   }
 }
+*[data-view-layout="thumbnail"] {
+  .caption {
+    display: none;
+  }
+
+  @media(min-width: @screen-md-min) {
+    .boat-thumb-container {
+      width: 16.6667%;
+
+      &:nth-child(6n+1) {
+        clear: both;
+      }
+    }
+  }
+  @media(min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
+    .boat-thumb-container:nth-child(2n+1) { clear: both; }
+  }
+}
 *[data-view-layout="list"] {
   .boat-thumb-container {
     width: 100% !important;
@@ -312,6 +330,12 @@ a.pdf-link {
         }
       }
     }
+  }
+}
+
+.page-links, .display-options {
+  li {
+    display: inline-block;
   }
 }
 

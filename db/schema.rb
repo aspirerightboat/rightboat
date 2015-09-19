@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150919803453) do
+ActiveRecord::Schema.define(version: 20150919932124) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -254,20 +254,21 @@ ActiveRecord::Schema.define(version: 20150919803453) do
   add_index "engine_models", ["name"], name: "index_engine_models_on_name", using: :btree
 
   create_table "enquiries", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.integer  "boat_id",    limit: 4
-    t.string   "title",      limit: 255
-    t.string   "first_name", limit: 255
-    t.string   "surname",    limit: 255
-    t.string   "email",      limit: 255
-    t.string   "phone",      limit: 255
-    t.text     "message",    limit: 65535
-    t.string   "remote_ip",  limit: 255
-    t.string   "browser",    limit: 255
-    t.string   "token",      limit: 64
+    t.integer  "user_id",      limit: 4
+    t.integer  "boat_id",      limit: 4
+    t.string   "title",        limit: 255
+    t.string   "first_name",   limit: 255
+    t.string   "surname",      limit: 255
+    t.string   "email",        limit: 255
+    t.string   "phone",        limit: 255
+    t.text     "message",      limit: 65535
+    t.string   "remote_ip",    limit: 255
+    t.string   "browser",      limit: 255
+    t.string   "token",        limit: 64
     t.datetime "deleted_at"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.string   "country_code", limit: 255
   end
 
   add_index "enquiries", ["boat_id"], name: "index_enquiries_on_boat_id", using: :btree

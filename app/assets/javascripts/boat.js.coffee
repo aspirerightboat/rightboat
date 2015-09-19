@@ -6,6 +6,7 @@ class @BoatView
 
     @$('.request-details').click (e) =>
       e.preventDefault()
+      return if requireLogin(e, true)
       @requestDetails()
 
     @$('.fav-link').click (e) =>

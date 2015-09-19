@@ -16,10 +16,6 @@ class HomeController < ApplicationController
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 
-  def about
-    @page_title = "About Us"
-  end
-
   def contact
     @page_title = 'Support and Contact'
   end

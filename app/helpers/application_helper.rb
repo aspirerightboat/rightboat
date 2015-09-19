@@ -62,4 +62,9 @@ module ApplicationHelper
     options_for_select(Country.order(:name).map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]})
   end
 
+  def tel_to(text)
+    groups = text.to_s.scan(/(?:^\+)?\d+/)
+    link_to text, "tel:#{groups.join('-')}"
+  end
+
 end

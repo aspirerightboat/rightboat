@@ -25,43 +25,44 @@
     %p If you want to have unlimited access to a global marine marketplace, then you have come to the right place! With over 20,000 boats and yachts for sale, reaching 500 international boat brokers, our growing inventory offers the latest search and mobile technology to ensure your boat search is as easy as 1, 2, 3!
     %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer.
     .rb-extended{style: 'display: none;'}
-      %p Our techies insist on the highest level of clever coding. Our designers ensure everything looks its level best. And our devoted boat industry experts constantly keep us up to date and in the know.
-      %p The website represents hundreds of leading boat brokers and dealers from around the globe. We want to help our members, individuals and businesses to buy or sell boats quickly, easily and cost-effectively. Our database of boats has grown year on year becoming the most comprehensive marine website for all types of vessels. Everything from ribs, speed boats, motor cruisers, sailing boats, house boats, to fishing boats and commercial vessels.
-      %p We strive to be at the forefront of the market by embracing technological advances and applying them to marine advertising.
       %p
-        The following list is a sample where we have led the field:
+        Here some of the reasons why Rightboat.com should be the ONLY place you visit to buy a boat:
         %ul.list-disc
-          %li Jan 2007 we launched the unique anti ghost boats feature – i.e we actively police fake ads and listings.
-          %li Jan 2007 we launched the unique multi broker listing feature – i.e we highlight if more than one broker has the same boat for sale.
-          %li Jan 2007 we launched our free boat valuation service.
-          %li May 2008 we were the first to launch a faceted search system – i.e you can drill down and easily narrow your search options.
-          %li Jun 2009 we added our recently viewed boats – remembering visitors last viewed boats even when they leave the website.
-          %li Jan 2011 we launched the first boats for sale iPhone app – allowing easy access on the move.
-          %li April 2012 we launched our recently reduced boats page to the homepage of the website – allowing visitors to see the latest reduced boats.
-          %li June 2012 the new Rightboat.com website arrived with new features like - Our Suggestions For You – Offering boats of interest to every visitor who returns to Rightboat.com.
-
-      %p As well as facilities for buying and selling boats, we also provide a comprehensive range of links to: boat insurance, boat transport, boat finance, foreign exchange, boat surveyors, boat berths, and marina’s in our directory menu and banner advertising.
-
+          %li
+            %b A simple to use, uncluttered website
+            \– no distractions, just an exceptional boat search facility for buyers and sellers.Jan 2007 we launched the unique anti ghost boats feature – i.e we actively police fake ads and listings.
+          %li
+            %b Mobile
+            \– everyone’s got a smart phone or a table these days, so we’ve ensured the technology behind our website makes it the most effective and smart way to buy and sell boats on any device, at home on your PC, or on the move.
+          %li
+            %b No ghost boats
+            \– we know how frustrating it can be when you find the same boat listed 2 or 3 times on a website and at different prices or the broker doesn’t actually own the listing.   Our service offers buyers direct access to the main sales specialist on any boat for sale.	We regularly check for duplicate adverts and just in case we do find any, we ask our brokers for proof of main-brokerage contract.  Saving time for everyone.
+          %li
+            %b Join My Rightboat and tailor your experience
+            \- We broadcast all boats to everyone who uses the site and encourage users to become a member of MyRightboat.      Sign up and take advantage of the personalised service we offer.   MyRightboat gives you access to your own homepage, featuring recent searches, saved PDF’s of downloaded specifications, favourites, communications and much more.   The added alert facility means you can keep in touch with new listings and price reductions of boats you have viewed and also share information socially.
+          %li
+            %b Easy to print off specifications
+            \- A branded PDF print-off of every boat is available.
+          %li
+            %b Get social
+            \- share your dream boat, using our easy to use sharing tool, broadcast on social media or send using email to your nearest and dearest.
+      %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer.
       %p
-        %strong Dealers and Brokers
-        , you'll find that our membership packages are not only highly successful at generating boat sales, but also provide you with an attractive showcase that can be used to power your own website. Our website will also focus on promoting brand awareness for your company, providing you with consistent marketing support. For full information on what Rightboat.com can do to help your business can be found in our #{link_to 'trade account', 'javascript: void(0);'}.
-
+        Thats enough about us!  Lets talk about you - if you already own a boat or are just dipping your toe in the water, let our expert support team guide you and put you in touch with the right broker and turn your dream into reality.
+        %br
+        Get in touch!
       %p
-        %strong Boat buyers
-        , If you are looking for the right boat, we have thousands of new and used boats and #{link_to 'yachts for sale', 'javascript: void(0);'} to choose from. Why not start your search today by simply typing what you are looking for in our ‘keyword search’ box  - our clever system will offer you some predictive makes as you type or if you are unsure of the manufacturer simply fill in our ‘keyword search’ box.
-
+        = mail_to 'info@rightboat.com', nil
       %p
-        %strong Private sellers
-        , why not sign up today and you will be able to use these useful services;
-        %ul.list-disc
-          %li Free valuation service.
-          %li Free email alerts on the latest boats added to our system you are looking for.
-          %li Sell your boat from as little as £10.00 per month.
-
-      %p Contact us today to find out how we can help you sell boats.
-
-      %h3 Your Feedback Counts!
-      %p One of the issues that motivated Rightboat.com to form and develop was a frustration that existing sites did not respond to feedback and suggestions. At Rightboat.com we love to hear your comments (both good and bad!). Please feel free to send us #{link_to 'your suggestions', 'javascript: void(0);'}.
+        Castle Malwood
+        %br
+        Minstead
+        %br
+        Hants
+        %br
+        SO43 7PE
+        %br
+        = tel_to '0333 3222628'
     = link_to 'more...', 'javascript: void(0)', class: 'toggle-about'
 
   - if @recent_tweets.any?

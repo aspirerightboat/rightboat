@@ -14,7 +14,7 @@ module DBBackedClockwork
   configure do |config|
     config[:sleep_timeout] = 1
     config[:tz] = 'UTC' # http://tzinfo.rubyforge.org
-    config[:thread] = true
+    config[:thread] = false # multithreading ignores job when count of threads reached to max, disable threading for safe
     config[:max_threads] = 15
   end
 

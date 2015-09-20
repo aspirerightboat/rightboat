@@ -69,7 +69,9 @@ Rails.application.routes.draw do
 
   resources :manufacturers, only: [] do
     resources :models, only: [] do
-      resources :boats, only: [:show]
+      resources :boats, only: [:show] do
+        get :pdf, on: :member
+      end
     end
   end
   resources :feedbacks, only: [:create]

@@ -5,24 +5,28 @@ class LeadsMailer < ApplicationMailer
     @enquiry = enquiry
     @boat = enquiry.boat
     @office = @boat.office
+    attach_boat_pdf
 
-    file_name = "#{@boat.manufacturer.slug}-#{@boat.slug}.pdf"
-    attachments[file_name] = WickedPdf.new.pdf_from_string(render pdf: 'boats/show')
-
-    mail(to: enquiry.email, subject: "Boat Enquiry #{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
+    mail(to: enquiry.email, subject: "Buyer Lead Notification - #{@boat.manufacturer} #{@boat.model} #{@boat.ref_no} - Rightboat")
   end
 
   def lead_created_notify_broker(enquiry)
     @enquiry = enquiry
     @boat = enquiry.boat
     @office = @boat.office
+    attach_boat_pdf
     to_email = @office.try(:email) || @boat.user.email
-    mail_params = {to: to_email, subject: "Boat Enquiry #{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}"}
+    mail_params = {to: to_email, subject: "Broker Lead Notification - #{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model} - Rightboat"}
     mail_params[:cc] = @boat.user.email if to_email != @boat.user.email
-
-    file_name = "#{@boat.manufacturer.slug}-#{@boat.slug}.pdf"
-    attachments[file_name] = WickedPdf.new.pdf_from_string(render pdf: 'boats/show')
 
     mail(mail_params)
   end
+
+  private
+
+  def attach_boat_pdf
+    file_name = "#{@boat.manufacturer.slug}-#{@boat.slug}.pdf"
+    attachments[file_name] = WickedPdf.new.pdf_from_string(render 'boats/show', formats: [:pdf])
+  end
+
 end

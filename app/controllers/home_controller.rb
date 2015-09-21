@@ -28,6 +28,10 @@ class HomeController < ApplicationController
     @pate_title = 'Maring Services'
   end
 
+  def cookies_policy
+    @page_title = 'Cookies Policy'
+  end
+
   private
   def register_statistics
     unless @featured_boats.blank?

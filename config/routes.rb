@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   get 'contact' => 'home#contact', as: :contact
   get 'toc' => 'home#toc', as: :toc
   get 'marine_services' => 'home#marine_services', as: :marine_services
+  get 'cookies_policy' => 'home#cookies_policy', as: :cookies_policy
 
   namespace :api, constraints: { format: :json } do
     controller :manufacturers, path: 'manufacturers' do

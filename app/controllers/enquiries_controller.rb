@@ -1,7 +1,7 @@
 class EnquiriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_enquiry, only: [:show, :approve, :cancel]
-  before_action :require_broker, only: [:approve, :cancel]
+  before_action :load_enquiry, only: [:show, :approve, :review]
+  before_action :require_broker, only: [:approve, :review]
   before_action :require_buyer_or_broker, only: [:show]
 
   def create
@@ -34,6 +34,7 @@ class EnquiriesController < ApplicationController
   end
 
   def review
+    LeadsMailer.broker_wants_review(@enquiry).deliver_now
     @enquiry.status = 'review'
     @enquiry.save!
     redirect_to({action: :show}, {notice: 'Lead will be reviewed by Rightboat staff'})

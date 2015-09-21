@@ -22,6 +22,11 @@ class LeadsMailer < ApplicationMailer
     mail(mail_params)
   end
 
+  def broker_wants_review(enquiry)
+    @enquiry = enquiry
+    mail(to: 'boats@rightboat.com', subject: "Broker wants review lead #{@enquiry.id} - Rightboat")
+  end
+
   private
 
   def attach_boat_pdf

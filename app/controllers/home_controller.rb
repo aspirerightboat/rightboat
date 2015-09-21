@@ -28,6 +28,11 @@ class HomeController < ApplicationController
     @pate_title = 'Maring Services'
   end
 
+  def privacy_policy
+    @page_title = 'Privacy Policy'
+  end
+
+
   def cookies_policy
     @page_title = 'Cookies Policy'
   end

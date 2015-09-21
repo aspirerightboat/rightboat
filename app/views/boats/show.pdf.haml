@@ -4,26 +4,18 @@
     .broker-logo
       = wicked_pdf_image_tag broker.avatar_url, height: 100
   .broker-info
-    %p Broker Details:
-    %p
-      %strong= broker.name
-      %br
-      = broker.address
-    %p
-      - if broker.phone.present?
-        = broker.phone
-        %br
-      - if broker.mobile.present?
-        = broker.mobile
-        %br
-      - if broker.fax.present?
-        = broker.fax
-        %br
-      = mail_to broker.email
-      %br
-      - if broker.company_weburl.present?
-        = link_to broker.company_weburl, broker.company_weburl
-        %br
+    %div <strong>#{broker.name}</strong>
+    = render partial: 'shared/address', locals: {address: broker.address}
+  .broker-info
+    - if broker.phone.present?
+      %div <b>phone:</b> #{broker.phone}
+    - if broker.mobile.present?
+      %div <b>mobile:</b> #{broker.mobile}
+    - if broker.fax.present?
+      %div <b>fax:</b> #{broker.fax}
+    %div #{mail_to broker.email}
+    - if broker.company_weburl.present?
+      %div #{link_to broker.company_weburl, broker.company_weburl}
 
 - if @boat.primary_image
   .boat-main-image

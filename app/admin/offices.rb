@@ -1,5 +1,5 @@
 ActiveAdmin.register Office do
-  menu parent: "Users"
+  menu parent: 'Users'
 
   config.sort_order = 'name_asc'
   permit_params :user_id, :name, :email, :daytime_phone, :evening_phone,
@@ -29,7 +29,7 @@ ActiveAdmin.register Office do
       f.input :mobile
       f.input :website
 
-      f.has_many :address, allow_destroy: true, new_record: false do |addr_f|
+      f.has_many :address, allow_destroy: true do |addr_f|
         addr_f.input :line1
         addr_f.input :line2
         addr_f.input :town_city

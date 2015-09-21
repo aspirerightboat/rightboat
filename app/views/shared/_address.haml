@@ -1,0 +1,10 @@
+- if address.line1.present?
+  %div= address.line1
+- if address.line2.present?
+  %div= address.line2
+- if address.town_city.present?
+  %div= address.town_city
+- if address.county.present? || address.zip.present?
+  %div= [address.county.presence, address.zip.presence].compact.join(', ')
+- if address.country
+  %div= address.country.name

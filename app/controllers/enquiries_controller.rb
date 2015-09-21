@@ -14,8 +14,8 @@ class EnquiriesController < ApplicationController
     enquiry.boat = Boat.find(params[:boat_id])
     if enquiry.save
       session.delete(:captcha)
-      LeadsMailer.lead_created_notify_buyer(enquiry).deliver_now
-      LeadsMailer.lead_created_notify_broker(enquiry).deliver_now
+      LeadsMailer.delay.lead_created_notify_buyer(enquiry) #.deliver_now
+      LeadsMailer.delay.lead_created_notify_broker(enquiry) #.deliver_now
       render json: enquiry, serializer: EnquirySerializer, root: false
     else
       session[:captcha] = Rightboat::Captcha.generate
@@ -33,10 +33,10 @@ class EnquiriesController < ApplicationController
     redirect_to({action: :show}, {notice: 'Lead approved'})
   end
 
-  def cancel
-    @enquiry.status = 'cancelled'
+  def review
+    @enquiry.status = 'review'
     @enquiry.save!
-    redirect_to({action: :show}, {notice: 'Lead cancelled'})
+    redirect_to({action: :show}, {notice: 'Lead will be reviewed by Rightboat staff'})
   end
 
   private

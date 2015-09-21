@@ -126,8 +126,8 @@ class Boat < ActiveRecord::Base
   def spec_attributes(context = nil, full_spec = false)
     ret = full_spec ? [['Seller', user.name]] : []
 
-    currency = context ? context.current_currency : nil
-    l_unit = context ? context.current_length_unit : nil
+    currency = (context.current_currency if context && context.respond_to?(:current_currency))
+    l_unit = (context.current_length_unit if context && context.respond_to?(:current_length_unit))
 
     ret += [
       ['Price', display_price(currency), 'price'],

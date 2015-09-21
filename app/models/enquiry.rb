@@ -1,6 +1,6 @@
 class Enquiry < ActiveRecord::Base
 
-  STATUSES = %w(pending approved review cancelled rejected)
+  STATUSES = %w(pending approved review rejected)
 
   belongs_to :user
   belongs_to :boat

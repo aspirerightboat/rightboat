@@ -103,7 +103,7 @@ Rails.application.routes.draw do
   get 'location/:country', to: 'boats_for_sale#boats_by_location', as: :boats_by_location
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
-  post 'leads/:id/cancel', to: 'enquiries#cancel', as: :lead_cancel
+  post 'leads/:id/review', to: 'enquiries#review', as: :lead_review
   get 'test-email', to: 'testing#test_email'
 
   namespace :member, path: 'my-rightboat' do

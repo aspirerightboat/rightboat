@@ -141,7 +141,7 @@ class Boat < ActiveRecord::Base
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
     ]
-    specs = boat_specifications.active
+    specs = boat_specifications.includes(:specification).active
     specs = specs.front unless full_spec
     ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
     ret << ['RB Boat Ref', self.ref_no]

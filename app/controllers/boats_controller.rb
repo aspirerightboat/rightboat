@@ -4,16 +4,11 @@ class BoatsController < ApplicationController
 
   def show
     @boat = Boat.find(params[:id])
-
-    respond_to do |format|
-      format.html
-      format.pdf { render pdf: 'show', layout: 'application' }
-    end
   end
 
   def pdf
     @boat = Boat.find(params[:id])
-    render layout: 'application.pdf'
+    render pdf: 'pdf', layout: 'pdf'
   end
 
   private

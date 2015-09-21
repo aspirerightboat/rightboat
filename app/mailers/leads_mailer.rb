@@ -31,7 +31,7 @@ class LeadsMailer < ApplicationMailer
 
   def attach_boat_pdf
     file_name = "#{@boat.manufacturer.slug}-#{@boat.slug}.pdf"
-    attachments[file_name] = WickedPdf.new.pdf_from_string(render 'boats/show', formats: [:pdf])
+    attachments[file_name] = WickedPdf.new.pdf_from_string(render 'boats/pdf', layout: 'pdf')
   end
 
 end

@@ -80,4 +80,12 @@ Rails.application.configure do
   config.action_controller.default_url_options = { host: '52.28.247.128' }
   config.action_mailer.default_url_options = { host: '52.28.247.128' }
   config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      authentication: :plain,
+      address: 'smtp.mailgun.org',
+      port: 587,
+      domain: 'sandbox1ca003a0e0df4795827e217900f554c7.mailgun.org',
+      user_name: 'postmaster@sandbox1ca003a0e0df4795827e217900f554c7.mailgun.org',
+      password: 'c3351ade274d2f2e4975b9a11259bd13'
+  }
 end

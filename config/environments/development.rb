@@ -41,5 +41,15 @@ Rails.application.configure do
 
   config.action_controller.default_url_options = { host: 'localhost:3006' }
   config.action_mailer.default_url_options = { host: 'localhost:3006' }
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :smtp #:letter_opener
+  config.action_mailer.smtp_settings = {
+      authentication: :plain,
+      address: 'smtp.gmail.com',
+      port: 587,
+      domain: 'rightboat.com',
+      user_name: 'boats@rightboat.com',
+      password: 'V6rB763-Zy',
+      enable_starttls_auto: true
+  }
+
 end

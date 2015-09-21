@@ -221,19 +221,32 @@ a.pdf-link {
 }
 
 .boat-vertical-thumb a {
-  color: @rb-color-dark;
   h4 {
     font-weight: normal;
-    font-size: 22px;
   }
   p {
     margin: 0;
     font-size: 16px;
     line-height: 1.3em;
   }
+  img {
+    width: 100%;
+  }
+  .caption {
+    background: rgba(255, 255, 255, 0.7);
+    bottom: -100%;
+    left: 0;
+    height: 100%;
+    padding: 15px;
+    position: absolute;
+    .transition(all .25s ease-out);
+    width: 100%;
+  }
+  color: @rb-color-dark;
   display: block;
-  padding: 15px 0;
   margin-bottom: 15px;
+  overflow: hidden;
+  position: relative;
   .transition(all .25s ease-out);
   &:not(:last-child) {
     border-bottom: 1px solid #FFF;
@@ -244,9 +257,10 @@ a.pdf-link {
   }
 
   &:hover {
-    color: white;
-    background-color: @rb-color-dark;
     text-decoration: none;
+    .caption {
+      bottom: 0;
+    }
   }
 }
 
@@ -341,4 +355,8 @@ a.pdf-link {
 
 @media(max-width: @screen-xs-max) {
   #carousel { display: none; }
+}
+
+@media(max-width: @screen-lg-min) {
+  .boat-vertical-thumb a .caption { bottom: 0; }
 }

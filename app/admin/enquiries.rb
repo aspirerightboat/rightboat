@@ -81,7 +81,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column('Boat') { |record| record.boat.try(&:manufacturer_model) }
     column('Length(m)') { |record|
       l = record.boat.try(&:length_m)
-      l.blank? ? nil : "#{l}m"
+      "#{l}m" if l.present?
     }
     # column('Length(ft in)') { |record|
     #   out = ""

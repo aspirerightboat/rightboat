@@ -13,7 +13,8 @@ class RBConfig < ActiveRecord::Base
   def self.repair
     configs = [
         {key: 'lead_quality_check_email', value: 'boats@rightboat.com', description: 'When lead status changes to QualityCheck then email will be sent to this admin email'},
-        {key: 'leads_approve_delay', value: '72', description: 'Lead delay before approved in hours'}
+        {key: 'leads_approve_delay', value: '72', description: 'Lead delay before approved in hours'},
+        {key: 'invoicing_report_email', value: 'boats@rightboat.com', description: 'Where to send report summary about generated invoices'},
     ]
 
     available_keys = RBConfig.pluck(:key)

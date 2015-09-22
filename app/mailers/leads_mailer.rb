@@ -28,6 +28,13 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "Broker wants review lead #{@enquiry.id} - Rightboat")
   end
 
+  def invoicing_report(invoice_ids)
+    @invoices = Invoice.where(id: invoice_ids).includes(:enquiries, :user).to_a
+
+    to_email = RBConfig.store['invoicing_report_email']
+    mail(to: to_email, subject: "Invoicing Report #{Time.current.to_date.to_s(:short)}")
+  end
+
   private
 
   def attach_boat_pdf

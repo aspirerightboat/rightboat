@@ -19,15 +19,15 @@ class ApplicationController < ActionController::Base
   end
 
   def current_length_unit
-    @_current_length_unit ||= cookies[:length_unit] ? cookies[:length_unit] : 'ft'
+    @_current_length_unit ||= cookies[:length_unit] || 'ft'
   end
 
   def current_view_layout
-    @_current_view_layout ||= cookies[:view_layout] ? cookies[:view_layout] : 'gallery'
+    @_current_view_layout ||= cookies[:view_layout] || 'gallery'
   end
 
   def current_order_field
-    @_current_order_field ||= cookies[:order_field] ? cookies[:order_field] : 'score'
+    @_current_order_field ||= cookies[:order_field] || 'score'
   end
   helper_method :current_currency, :current_view_layout,
                 :current_order_field, :current_length_unit
@@ -89,5 +89,11 @@ class ApplicationController < ActionController::Base
 
   def set_visited
     cookies[:visited] = true if cookies[:visited].nil?
+  end
+
+  def require_broker_user
+    if !current_user.try(:company?) && !current_user.try(:admin?)
+      redirect_to root_path, alert: 'broker user required'
+    end
   end
 end

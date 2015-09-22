@@ -154,11 +154,15 @@ class Boat < ActiveRecord::Base
   end
 
   def display_length(unit = nil)
+    return '' if length_m <= 0
     unit ||= 'm'
     length = self.length_m.to_f
-    return '' if length == 0
-    length = unit.to_s =~ /ft/i ? (length * 3.2808399).round : length.round
+    length = unit.to_s =~ /ft/i ? length_ft.round : length.round
     "#{length} #{unit}"
+  end
+
+  def length_ft
+    (length_m * 3.2808399 * 100).round / 100.0
   end
 
   def display_price(currency = nil)

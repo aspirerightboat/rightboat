@@ -26,7 +26,9 @@ class User < ActiveRecord::Base
   has_many :favourites, inverse_of: :user, dependent: :destroy
   has_many :saved_boats, class_name: 'Boat', through: :favourites
   has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
+  has_one :broker_info, dependent: :destroy
   has_and_belongs_to_many :subscriptions
+  has_many :invoices, dependent: :nullify
 
   mount_uploader :avatar, AvatarUploader
 
@@ -43,6 +45,7 @@ class User < ActiveRecord::Base
   validates_url :company_weburl, allow_blank: true, if: :organization?
 
   after_create :create_subscriptions!
+  before_save :create_broker_info
 
   delegate :country, to: :address
 
@@ -103,5 +106,15 @@ class User < ActiveRecord::Base
 
   def create_subscriptions!
     self.subscription_ids = Subscription.all.map(&:id)
+  end
+
+  def create_broker_info
+    if role_changed?
+      if company?
+        BrokerInfo.find_or_create_by(user_id: id)
+      else
+        BrokerInfo.where(user_id: id).delete_all
+      end
+    end
   end
 end

@@ -24,5 +24,5 @@
     Current status – <b>#{@enquiry.status.titleize}</b>
   - if @enquiry.status == 'pending' && current_user && current_user.company?
     %p.nice-buttons
-      = link_to 'Quality Check', quality_check_path(@enquiry), class: 'nice-button', method: 'post'
+      = link_to 'Request Quality Check', quality_check_path(@enquiry), class: 'transparent-button', method: 'post'
       = link_to 'Approve', lead_approve_path(@enquiry), class: 'nice-button', method: 'post'

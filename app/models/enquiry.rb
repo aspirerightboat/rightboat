@@ -1,9 +1,10 @@
 class Enquiry < ActiveRecord::Base
 
-  STATUSES = %w(pending quality_check approved rejected)
+  STATUSES = %w(pending quality_check approved rejected invoiced)
 
   belongs_to :user
   belongs_to :boat
+  belongs_to :invoice
 
   validates_presence_of :title, :first_name, :surname, :email, :boat_id, :user, :token
   validates_inclusion_of :title, within: User::TITLES, allow_blank: true
@@ -37,7 +38,7 @@ class Enquiry < ActiveRecord::Base
 
   def send_quality_check_email
     if status_changed? && status == 'quality_check'
-      LeadsMailer.lead_quality_check(self).deliver_now
+      LeadsMailer.delay.lead_quality_check(self) #.deliver_now
     end
   end
 end

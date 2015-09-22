@@ -105,4 +105,13 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:remote_ip)
     column(:browser)
   end
+
+  sidebar 'Tools', only: [:index] do
+    link_to('Run approve-old-leads job', {action: :approve_old_leads}, method: :post, class: 'button')
+  end
+
+  collection_action :approve_old_leads, method: :post do
+    res = LeadsApproveJob.new.perform
+    redirect_to({action: :index}, notice: "#{res} leads was approved")
+  end
 end

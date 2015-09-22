@@ -29,6 +29,10 @@ module DBBackedClockwork
     end
   end
 
+  every 1.minute, 'approve old pending leads' do
+    LeadsApproveJob.new.perform
+  end
+
   # get the manager object
   def self.manager
     Clockwork.instance_variable_get(:@manager)

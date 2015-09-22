@@ -33,10 +33,9 @@ class EnquiriesController < ApplicationController
     redirect_to({action: :show}, {notice: 'Lead approved'})
   end
 
-  def review
-    LeadsMailer.broker_wants_review(@enquiry).deliver_now
-    @enquiry.status = 'review'
-    @enquiry.save!
+  def quality_check
+    @enquiry.status = 'quality_check'
+    @enquiry.save! # email should be sent on after_save callback
     redirect_to({action: :show}, {notice: 'Lead will be reviewed by Rightboat staff'})
   end
 

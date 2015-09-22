@@ -1,0 +1,55 @@
+- content_for :header_text do
+  %h1 Broker Area
+
+= render 'shared/search_bar'
+
+#main-content.container
+  .row
+    .row-offcanvas.row-offcanvas-left
+      #sidebar.col-xs-6.col-sm-3.sidebar-offcanvas(role="navigation")
+        .sidebar-nav
+          %ul.nav.nav-pills.nav-stacked
+            %li{class: nav_class_for('broker#index')}
+              = link_to_unless_current 'My Leads', broker_path
+      .col-xs-12.col-sm-9.member-right
+        %h1 My Leads
+
+        %h2 Pending Leads
+        %table.rb-table
+          %tr
+            %th LeadID
+            %th User
+            %th Boat
+            %th Created
+            %th Status
+            %th Actions
+          - @pending_leads.each do |lead|
+            %tr
+              %td #{lead.id}
+              %td #{lead.name}
+              - boat = lead.boat
+              %td #{link_to "#{boat.manufacturer.name} #{boat.model.name} #{boat.name}".strip, boat_path(boat.slug)}
+              %td #{distance_of_time_in_words(lead.created_at, Time.current)} ago
+              %td #{lead.status.capitalize}
+              %td #{link_to 'Details', lead_path(lead)}
+        = paginate @pending_leads
+
+        %h2 History
+        %table.rb-table
+          %tr
+            %th LeadID
+            %th User
+            %th Boat
+            %th Created
+            %th Status
+            %th Actions
+          - @history_leads.each do |lead|
+            %tr
+              %td #{lead.id}
+              %td #{lead.name}
+              - boat = lead.boat
+              %td #{boat.manufacturer.name} #{boat.model.name} #{boat.name}
+              %td #{distance_of_time_in_words(lead.created_at, Time.current)} ago
+              %td #{lead.status.capitalize}
+              %td #{link_to 'Details', lead_path(lead)}
+        = paginate @history_leads, param_name: :page2

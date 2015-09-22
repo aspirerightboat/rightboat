@@ -1,11 +1,11 @@
 $ ->
   $(document).ready ->
     $('.user-register').click (e) ->
-      e.preventDefault()
       $('form .alert').remove()
       $('#session-popup .signin-area').hide()
       $('#session-popup .signup-area').show()
       $('#session-popup').modal()
+      false
 
     onRegisterSubmit = (e) ->
       e.preventDefault()

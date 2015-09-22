@@ -66,14 +66,6 @@ Rails.application.routes.draw do
 
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
   resources :articles, only: [:show], path: :news
-
-  resources :manufacturers, only: [] do
-    resources :models, only: [] do
-      resources :boats, only: [:show] do
-        get :pdf, on: :member
-      end
-    end
-  end
   resources :feedbacks, only: [:create]
   resources :mail_subscriptions, only: [:create]
 
@@ -92,19 +84,21 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'boats-for-sale', to: 'boats_for_sale#index', as: :boats_for_sale
-  get 'boats-for-sale/:manufacturer', to: 'boats_for_sale#manufacturer_boats', as: :manufacturer_boats
-  get 'boats-for-sale/:manufacturer/:model', to: 'boats_for_sale#show_boat', as: :boat_for_sale
-  get 'manufacturer/:manufacturer', to: 'boats_for_sale#manufacturer_boats', as: :manufacturer_boats_explicit
-  get 'manufacturers-by-letter/:letter', to: 'boats_for_sale#manufacturers_by_letter', as: :manufacturers_by_letter
-  get 'boat-type', to: 'boats_for_sale#boats_by_type_index', as: :boats_by_type_index
-  get 'boat-type/:boat_type', to: 'boats_for_sale#boats_by_type', as: :boats_by_type
-  get 'location', to: 'boats_for_sale#boats_by_location_index', as: :boats_by_location_index
-  get 'location/:country', to: 'boats_for_sale#boats_by_location', as: :boats_by_location
+  resources :boats, path: 'boats-for-sale', only: [:index, :show] do
+    get :pdf
+  end
+  get 'manufacturer/:slug', to: 'boats#manufacturer_boats', as: :manufacturer_boats_explicit
+  get 'manufacturers-by-letter/:letter', to: 'boats#manufacturers_by_letter', as: :manufacturers_by_letter
+  get 'boat-type', to: 'boats#boats_by_type_index', as: :boats_by_type_index
+  get 'boat-type/:boat_type', to: 'boats#boats_by_type', as: :boats_by_type
+  get 'location', to: 'boats#boats_by_location_index', as: :boats_by_location_index
+  get 'location/:country', to: 'boats#boats_by_location', as: :boats_by_location
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
-  post 'leads/:id/review', to: 'enquiries#review', as: :lead_review
+  post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check
   get 'test-email', to: 'testing#test_email'
+
+  resource :broker, controller: :broker, only: [:show]
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index'

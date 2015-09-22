@@ -1,6 +1,6 @@
 class Enquiry < ActiveRecord::Base
 
-  STATUSES = %w(pending approved review rejected)
+  STATUSES = %w(pending quality_check approved rejected)
 
   belongs_to :user
   belongs_to :boat
@@ -12,6 +12,8 @@ class Enquiry < ActiveRecord::Base
 
   before_validation :generate_token
   before_validation :add_captcha_error
+
+  after_save :send_quality_check_email
 
   attr_accessor :captcha_correct
 
@@ -31,5 +33,11 @@ class Enquiry < ActiveRecord::Base
 
   def add_captcha_error
     errors.add(:captcha, 'is invalid') if captcha_correct != nil && !captcha_correct
+  end
+
+  def send_quality_check_email
+    if status_changed? && status == 'quality_check'
+      LeadsMailer.broker_requested_quality_check(self).deliver_now
+    end
   end
 end

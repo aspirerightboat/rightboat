@@ -10,11 +10,11 @@ $(document).ready ->
     true
 
   $('.user-login').click (e) ->
-    e.preventDefault()
     $('form .alert').remove()
     $('#session-popup .signin-area').show()
     $('#session-popup .signup-area').hide()
     $('#session-popup').modal()
+    false
 
   onSubmit = (e) ->
     e.preventDefault()

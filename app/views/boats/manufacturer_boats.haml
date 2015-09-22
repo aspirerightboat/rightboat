@@ -4,8 +4,8 @@
 = render 'shared/search_bar'
 
 #main-content.container
-  %h1 Boats of Type #{@country.name}
+  %h1 #{@manufacturer.name}
   .row(data-view-layout="list")
     - @boats.each do |b|
       = render layout: 'boats/boat', locals: {boat: b} do
-        -#%li #{link_to b.name, boat_for_sale_path(@manufacturer.slug, b.slug)}
+        -#

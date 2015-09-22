@@ -8,7 +8,7 @@
   %li <b>Ref No:</b> #{@boat.ref_no}
   %li <b>Manufacturer:</b> #{@boat.manufacturer}
   %li <b>Model:</b> #{@boat.model}
-  - boat_url = boat_for_sale_url(@boat.manufacturer.slug, @boat.slug)
+  - boat_url = boat_url(@boat.slug)
   %li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>
 
 %p

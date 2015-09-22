@@ -26,7 +26,7 @@
   %h2 #{@boat.display_price(Currency.where(name: 'GBP').first)}
   %h2 #{@boat.year_built} year
   .qr-code-block
-    - boat_url = boat_for_sale_url(manufacturer: @boat.manufacturer.slug, model: @boat.model.slug)
+    - boat_url = boat_url(@boat.slug)
     = render partial: 'shared/qr_code', locals: {url: boat_url, size: 6}
     .qr-code-hint Scan to view boat online
 .hr

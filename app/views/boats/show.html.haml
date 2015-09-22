@@ -6,6 +6,14 @@
       %strong #{session[:boats_count]}
       %span.hidden-sm boats for sale
 
+- if params[:back].present? && params[:back] == 'true'
+  - content_for :header_text do
+    %h1
+      %span.hidden-sm Find your
+      %strong Rightboat
+    %h3
+      = link_to "Back", :back, class: 'text-white'
+
 - if @back_url
   %nav.navbar.navbar-default.nabvar-tools
     .container

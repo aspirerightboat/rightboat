@@ -10,14 +10,14 @@
       %h3.toolbar-title Featured Boats
     .container
       .row(data-view-layout="gallery")
-        = render @featured_boats
+        = render @featured_boats, back: true
 
   - if @recent_boats.any?
     #recent-boats
       %h3.toolbar-title My Recent Views
       .container
         .row
-          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat
+          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat, locals: { back: true }
 
   #about.rb-brief.container.text-justify
     %h3.text-center About Us

@@ -45,6 +45,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       {
         'Title' => record.title,
         'Name' => record.name,
+        'Country code' => record.country_code,
         'Phone' => record.phone,
         'Email' => record.email
       }.map {|k, v|
@@ -96,13 +97,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     # }
     column(:title)
     column(:name)
+    column(:country_code)
     column(:phone)
     column(:email)
     column(:message)
-    column(:chase_sent)
-    column(:eyb_processed)
     column(:token)
-    column(:dev_res)
     column(:remote_ip)
     column(:browser)
   end

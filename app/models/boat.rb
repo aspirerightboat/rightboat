@@ -6,7 +6,7 @@ class Boat < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   searchable do
-    string :ref_no
+    text :ref_no,               boost: 5
     text :name,                 boost: 4
     text :manufacturer_model,   boost: 3
     text :description,          boost: 0.5
@@ -16,6 +16,7 @@ class Boat < ActiveRecord::Base
     text :engine_manufacturer,  boost: 1
     text :engine_model,         boost: 1
     text :drive_type,           boost: 1
+    string :ref_no
     string :manufacturer_model
     string :manufacturer
     integer :user_id
@@ -50,7 +51,7 @@ class Boat < ActiveRecord::Base
 
   has_many :favourites, inverse_of: :boat, dependent: :destroy
   has_many :liked, class_name: 'User', through: :favourites, source: :user
-  has_many :enquiries, inverse_of: :boat, dependent: :nullify
+  has_many :enquiries, inverse_of: :boat, dependent: :destroy
   has_many :boat_specifications, inverse_of: :boat, dependent: :destroy
   has_many :boat_images, inverse_of: :boat, dependent: :destroy
   has_one :primary_image,

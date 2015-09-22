@@ -17,8 +17,9 @@
 #= require jquery-ui/slider
 #= require jquery.ui.touch-punch
 #= require select2
+#= require jquery.multiple.select
 #= require utils
-#= require jquery.flexslider
+#= require slick.min
 #= require validetta
 #= require_self
 #= require_tree .
@@ -43,7 +44,12 @@ window.requireLogin = (e, disable_history)->
     $loginBtn.trigger('click')
     return true
 
-  false
+  false;
+
+scrollToTarget = (target) ->
+  $('html, body').animate
+    scrollTop: $(target).offset().top
+  , 500
 
 $(document).ready ->
   $('[data-toggle=offcanvas]').click ->
@@ -66,4 +72,20 @@ $(document).ready ->
       alignSliderLabelPosition($slider)
     false
 
+  $('[data-toggle="tooltip"]').tooltip()
+  $('.toggle-about').click ->
+    $this = $(this)
+    $extended = $('.rb-extended')
+    if $extended.is(':visible')
+      $this.html 'more...'
+      $extended.slideUp('slow')
+    else
+      $this.html 'less...'
+      $extended.slideDown('slow')
 
+  target = window.location.hash
+  scrollToTarget(target) if $(target).length
+
+  $('a[href*=#]').click (e) ->
+    target = $(this).attr('href').replace(/^\//, '')
+    scrollToTarget(target) if $(target).length

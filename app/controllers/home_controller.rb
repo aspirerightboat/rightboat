@@ -16,16 +16,25 @@ class HomeController < ApplicationController
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 
-  def about
-    @page_title = "About Us"
-  end
-
   def contact
     @page_title = 'Support and Contact'
   end
 
   def toc
     @page_title = 'Terms and Conditions'
+  end
+
+  def marine_services
+    @pate_title = 'Maring Services'
+  end
+
+  def privacy_policy
+    @page_title = 'Privacy Policy'
+  end
+
+
+  def cookies_policy
+    @page_title = 'Cookies Policy'
   end
 
   private

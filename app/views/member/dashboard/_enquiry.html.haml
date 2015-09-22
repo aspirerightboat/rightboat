@@ -1,8 +1,8 @@
 - if (boat = Boat.unscoped.where(id: enquiry.boat_id).first)
   = render layout: 'boats/boat', locals: {boat: boat, disable_social_links: true} do
-    .boat-social-links
+    .boat-links
       = favourite_link_to boat, 'Favourite'
-      =# link_to 'Share', '#', class: 'share-link'
+      /= render 'shared/social_share', boat: boat
       .text-nowrap.pull-right
         = link_to boat_pdf_path(boat.slug), class: 'pdf-link', target: :blank do
           %i

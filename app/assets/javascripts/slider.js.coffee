@@ -1,11 +1,18 @@
+getLocation = (href) ->
+  loc = document.createElement('a')
+  loc.href = href
+  return loc
+
 $ ->
   $(document).ready ->
-    @convertCurrency = (value) ->
+    convertCurrency = (value) ->
+      value = Number(value)
       currency = $('form:visible select[name="currency"]').val()
       rate = window.currencyRates[currency]
       rate * value
 
-    @convertLength = (value) ->
+    convertLength = (value) ->
+      value = Number(value)
       unit = $('form:visible select[name="length_unit"]').val()
       if unit == 'ft'
         return value * 3.28084
@@ -15,7 +22,7 @@ $ ->
     convertValue = (v, $item) =>
       convertFuncName = $item.data('convert')
       return v unless convertFuncName
-      @[convertFuncName](v)
+      eval(convertFuncName + "(" + v + ")");
 
     changeSliderValue = ($slider, handleIndex=0) ->
       value = $slider.slider('values', handleIndex)
@@ -38,8 +45,9 @@ $ ->
           offset: "0, 10"
 
       updateValues($slider)
+      changePriceIncrement($slider)
 
-    window.alignSliderLabelPosition = ($item) ->
+    alignSliderLabelPosition = ($item) ->
       for i in [0, 1]
         changeSliderValue($item, i)
 
@@ -56,6 +64,23 @@ $ ->
         $('input[name="' + input_name + '_min"]').val(min_v)
         $('input[name="' + input_name + '_max"]').val(max_v)
 
+    changeLengthIncrement = ($slider) ->
+      return unless $slider.attr('id') is 'length-slider'
+      step = if $slider.data('unit') == 'ft' then 6.096 else 10
+      $slider.slider
+        step: step
+
+    changePriceIncrement = ($slider) ->
+      return unless $slider.attr('id') is 'price-slider'
+      max = parseInt($slider.slider('values', 0))
+      step = if max < 1000000
+        100000
+      else
+        1000000
+
+      $slider.slider
+        step: step
+
     $( '.slider' ).each ->
       $this = $(this)
       v1 = $this.data('value1')
@@ -71,6 +96,9 @@ $ ->
             changeSliderValue($this, $(ui.handle).data('uiSliderHandleIndex'))
           setTimeout(delay, 5)
 
+      changeLengthIncrement($this)
+      changePriceIncrement($this)
+
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()
       $('select[name="length_unit"]').select2('val', unit)
@@ -78,9 +106,10 @@ $ ->
         $slider = $(this)
         $slider.data('unit', unit)
         alignSliderLabelPosition($slider)
+        changeLengthIncrement($slider)
       $('[data-attr-name="loa"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
-        l = Number(@convertLength($boat.data('length')).toFixed(2))
+        l = Number(convertLength($boat.data('length')).toFixed(2))
         $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
 
     $('select[name="currency"]').change (e)=>
@@ -93,5 +122,67 @@ $ ->
       $('[data-attr-name="price"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
         if price = $boat.data('price')
-          p = Number(@convertCurrency(price).toFixed(2))
+          p = Number(convertCurrency(price).toFixed(2))
           $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
+
+    setupSliderLabelPosition = ->
+      $('#advanced-search .slider, #home-search .slider').each ->
+        alignSliderLabelPosition($(this))
+
+    $('.toggle-adv-search').click (e)->
+      e.preventDefault()
+
+      $('#home-search-form, #normal-navbar').slideUp
+        duration: 200
+        progress: setupSliderLabelPosition
+        complete: ->
+          $('#advanced-search').slideDown
+            duration: 200
+            progress: setupSliderLabelPosition
+            complete: setupSliderLabelPosition
+
+    $('#advanced-search .close').click (e) ->
+      e.preventDefault()
+
+      $('#advanced-search').slideUp
+        duration: 200
+        progress: setupSliderLabelPosition
+        complete: ->
+          $('#home-search-form, #normal-navbar').slideDown
+            duration: 200
+            progress: setupSliderLabelPosition
+            complete: setupSliderLabelPosition
+
+    $('#view-mode, #sort-field, select#currency, select#length_unit').change ->
+      value = $(this).val().toLowerCase()
+      id = $(this).attr('id')
+      if id == 'currency'
+        value = value.toUpperCase()
+      else if id == 'view-mode'
+        $('*[data-view-layout]').attr('data-view-layout', value)
+      else if id == 'sort-field'
+        # TODO: need to reset pagination with ajax
+        params = $.queryParams()
+        params.order = value
+        window.location.search = $.param(params)
+
+      param = {}
+      param[id] = value
+      $.ajax
+        url: '/session-settings'
+        method: 'PUT'
+        dataType: 'JSON'
+        data: param
+
+    if /\/search\?(.*)?&button=/.test location.href
+      $backLink = $('.return-prev')
+      href = $backLink.attr('href')
+      if /\/search\?(.*)?&button=/.test href
+        $backLink.attr('href', href + '&advanced=true')
+      else
+        loc = getLocation(href)
+        if loc.pathname == '/'
+          $backLink.attr('href', href + '?advanced=true')
+
+    if /advanced=/.test location.href
+      $('.toggle-adv-search').click()

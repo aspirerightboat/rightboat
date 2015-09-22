@@ -66,6 +66,7 @@ module Rightboat
                   boat.import = @import
                 end
               rescue Exception => e
+                @import.update(error_msg: 'process_error')
                 ImportMailer.process_error(e, @import, job).deliver_now
               end
               @_writer_mutex.synchronize {@scraped_boats << boat if boat}
@@ -125,6 +126,7 @@ module Rightboat
         remove_old_boats
 
         if @scraped_boats.blank?
+          @import.update(error_msg: 'import_blank')
           ImportMailer.import_blank(@import).deliver_now
           return
         end
@@ -134,6 +136,7 @@ module Rightboat
           begin
             source_boat.save
           rescue
+            @import.update(error_msg: 'invalid_boat')
             ImportMailer.invalid_boat(source_boat).deliver_now
             next
           end
@@ -141,11 +144,17 @@ module Rightboat
 
         @import.update_column :last_ran_at, Time.now
       rescue Exception => e
+        @import.update(error_msg: 'process_result_error')
         ImportMailer.process_result_error(e, @import).deliver_now
       end
 
       def remove_old_boats
-        deleted_source_ids = @user.boats.map{|b|b.source_id.to_s} - @scraped_boats.map{|b|b.source_id.to_s}
+        old_source_ids = @user.boats.map{|b|b.source_id.to_s}
+        scraped_source_ids = @scraped_boats.map{|b|b.source_id.to_s}
+        deleted_source_ids = old_source_ids - scraped_source_ids
+        new_source_ids = scraped_source_ids - old_source_ids
+        updated_source_ids = old_source_ids & scraped_source_ids
+
         deleted_source_ids.each do |source_id|
           break if @exit_worker
           next if source_id.blank?
@@ -153,6 +162,13 @@ module Rightboat
           puts "Deleting #{boat.id} - #{source_id}"
           boat.destroy
         end
+
+        @import.update(
+          total_count: scraped_source_ids.length,
+          new_count: new_source_ids.length,
+          updated_count: updated_source_ids.length,
+          deleted_count: deleted_source_ids.length
+        )
       end
 
       def advert_url(url, scheme='http')

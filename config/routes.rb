@@ -68,15 +68,18 @@ Rails.application.routes.draw do
   resources :articles, only: [:show], path: :news
   resources :feedbacks, only: [:create]
   resources :mail_subscriptions, only: [:create]
+  resources :marine_enquiries, only: [:create]
 
   get 'search', to: 'search#results'
   post 'boats/:boat_id/request-details', to: 'enquiries#create'
   get 'captcha', to: 'captcha#image'
   get 'captcha/new', to: 'captcha#new'
 
-  get 'about', to: 'home#about', as: :about
   get 'contact', to: 'home#contact', as: :contact
   get 'toc', to: 'home#toc', as: :toc
+  get 'marine_services', to: 'home#marine_services', as: :marine_services
+  get 'privacy_policy', to: 'home#privacy_policy', as: :privacy_policy
+  get 'cookies_policy', to: 'home#cookies_policy', as: :cookies_policy
 
   namespace :api, defaults: {format: :json}, constraints: {format: :json} do
     controller :manufacturers, path: 'manufacturers' do

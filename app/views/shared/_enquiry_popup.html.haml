@@ -29,9 +29,13 @@
                 = label_tag :email, 'Email:*'
                 = email_field_tag :email, current_user.try(:email), class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :phone, 'Tel/Mobile:'
-                = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
+              .form-group.row
+                .col-xs-6
+                  = label_tag :country_code, 'Country code:'
+                  = select_tag :country_code, options_for_country_code, prompt: 'Please select...', class: 'select-white select-sm country-code-select'
+                .col-xs-6
+                  = label_tag :phone, 'Tel/Mobile:'
+                  = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
           .form-group
             = label_tag :message, 'Comments:'
             = text_area_tag :message, '', class: 'form-control'

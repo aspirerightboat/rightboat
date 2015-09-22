@@ -18,8 +18,12 @@ module BoatsHelper
     boat.booked_by?(current_user) ? "Favourited on #{boat.favourited_at_by(current_user)}" : 'Favourite'
   end
 
+  def fav_title(boat)
+    boat.booked_by?(current_user) ? 'Unfavourite' : 'Favourite'
+  end
+
   def favourite_link_to(boat, label = nil)
-    link_to label || fav_label(boat), '#', class: fav_class(boat)
+    link_to label || fav_label(boat), '#', class: fav_class(boat), title: fav_title(boat), data: { toggle: 'tooltip', placement: 'top' }
   end
 
   def reduced_description(description=nil)

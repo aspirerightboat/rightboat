@@ -81,7 +81,7 @@ module Rightboat
         manufacturer_model: :array,
         category:     :array,
         country:      :array,
-        boat_type:    :string,
+        boat_type:    :array,
         fuel_type:    :array,
         price_min:    :float,
         price_max:    :float,

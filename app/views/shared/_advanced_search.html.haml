@@ -73,12 +73,9 @@
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-4
-            = label_tag :new_used
+            = label_tag :boat_type
           .col-xs-8
-            = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
-            = label_tag :new_used_new, 'New'
-            = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
-            = label_tag :new_used_used, 'Used'
+            = select_tag 'boat_type[]', options_for_select(['Power', 'Sail', 'Other'], params[:boat_type]), class: 'select-black select-full select-general', multiple: 'multiple'
         -#.form-group.row
         -#  .col-xs-4
         -#    = label_tag :fuel_type
@@ -88,17 +85,25 @@
           .col-xs-4
             = label_tag :category
           .col-xs-8
-            = select_tag 'category[]', options_from_collection_for_select(@search_facets[:categories], :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.active, :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full select-general', multiple: 'multiple', prompt: 'All'
+            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full county-select', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'
           .col-xs-8
             = text_field_tag :ref_no, '', placeholder: 'e.g. RB48573', class: 'form-control'
+        .form-group.row
+          .col-xs-4
+            = label_tag :new_used, 'New / Used'
+          .col-xs-8
+            = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
+            = label_tag :new_used_new, 'New'
+            = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
+            = label_tag :new_used_used, 'Used'
         .form-group.row
           .col-xs-push-4.col-xs-8
             = button_tag 'Search', type: 'submit', class: 'btn-flat'
@@ -108,18 +113,15 @@
 
 :javascript
   window.currencyRates = #{Currency.active.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
-
   $(function() {
     $('select.select-general').each(function() {
       var options = {
         //templateResult: formatState,
         minimumResultsForSearch: Infinity
       };
-
       if ($(this).hasClass('select-white')) {
         options = $.extend(options, {dropdownCssClass: 'select-white'});
       }
-
       $(this).select2(options).on('change', function() {
         var $allOption = $(this).find("option[value='']");
         if ($allOption.length && $allOption.text().match(/^all$/i)) {
@@ -129,7 +131,6 @@
         }
       });
     });
-
     $('#manufacturer_model').select2({
       tags: true,
       minimumInputLength: 0,
@@ -158,7 +159,6 @@
         cache: true
       }
     });
-
     $('#keywords').select2({
       tags: true,
       minimumInputLength: 1,
@@ -195,5 +195,10 @@
         },
         cache: true
       }
+    });
+    $('.county-select').multipleSelect({
+      placeholder: 'Select Countries...',
+      selectAllText: 'Check/Uncheck All',
+      selectAllDelimiter: ['', '']
     });
   });

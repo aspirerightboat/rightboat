@@ -10,31 +10,70 @@
       %h3.toolbar-title Featured Boats
     .container
       .row(data-view-layout="gallery")
-        = render @featured_boats
+        = render @featured_boats, back: true
 
   - if @recent_boats.any?
-    #recent-boats.nabvar-tools
-      %h3.toolbar-title.toolbar-title-white Most Recent Boats
+    #recent-boats
+      %h3.toolbar-title My Recent Views
       .container
         .row
-          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat
+          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat, locals: { back: true }
 
-  .rb-brief.text-center.container
-    %h2 About Us
+  #about.rb-brief.container.text-center
+    %h3 About Us
     %p.lead Rightboat.com was launched in 2005 with the aim of being the quickest, easiest place to buy and sell boats on the internet.
     %p If you want to have unlimited access to a global marine marketplace, then you have come to the right place! With over 20,000 boats and yachts for sale, reaching 500 international boat brokers, our growing inventory offers the latest search and mobile technology to ensure your boat search is as easy as 1, 2, 3!
-    %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer. #{link_to 'more...', about_path}
+    %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer.
+    .rb-extended{style: 'display: none;'}
+      %p
+        Here some of the reasons why Rightboat.com should be the ONLY place you visit to buy a boat:
+        %ul.list-disc.text-left
+          %li
+            %b A simple to use, uncluttered website
+            \– no distractions, just an exceptional boat search facility for buyers and sellers.Jan 2007 we launched the unique anti ghost boats feature – i.e we actively police fake ads and listings.
+          %li
+            %b Mobile
+            \– everyone’s got a smart phone or a table these days, so we’ve ensured the technology behind our website makes it the most effective and smart way to buy and sell boats on any device, at home on your PC, or on the move.
+          %li
+            %b No ghost boats
+            \– we know how frustrating it can be when you find the same boat listed 2 or 3 times on a website and at different prices or the broker doesn’t actually own the listing.   Our service offers buyers direct access to the main sales specialist on any boat for sale.	We regularly check for duplicate adverts and just in case we do find any, we ask our brokers for proof of main-brokerage contract.  Saving time for everyone.
+          %li
+            %b Join My Rightboat and tailor your experience
+            \- We broadcast all boats to everyone who uses the site and encourage users to become a member of MyRightboat.      Sign up and take advantage of the personalised service we offer.   MyRightboat gives you access to your own homepage, featuring recent searches, saved PDF’s of downloaded specifications, favourites, communications and much more.   The added alert facility means you can keep in touch with new listings and price reductions of boats you have viewed and also share information socially.
+          %li
+            %b Easy to print off specifications
+            \- A branded PDF print-off of every boat is available.
+          %li
+            %b Get social
+            \- share your dream boat, using our easy to use sharing tool, broadcast on social media or send using email to your nearest and dearest.
+      %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer.
+      %p
+        Thats enough about us!  Lets talk about you - if you already own a boat or are just dipping your toe in the water, let our expert support team guide you and put you in touch with the right broker and turn your dream into reality.
+        %br
+        Get in touch!
+      %p
+        = mail_to 'info@rightboat.com', nil
+      %p
+        Castle Malwood
+        %br
+        Minstead
+        %br
+        Hants
+        %br
+        SO43 7PE
+        %br
+        = tel_to '0333 3222628'
+    = link_to 'more...', 'javascript: void(0)', class: 'toggle-about'
 
   - if @recent_tweets.any?
     .nabvar-tools.twitter-feed-slider
       .container
         .flexslider
-          %ul.slides
-            - @recent_tweets.each do |tweet|
-              %li
-                .tweet-feed
-                  %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
-                  %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
+          - @recent_tweets.each do |tweet|
+            %li
+              .tweet-feed
+                %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
+                %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
 
 :javascript
   $(function() {
@@ -51,10 +90,9 @@
       minimumResultsForSearch: Infinity
     });
 
-    $('.flexslider').flexslider({
-      controlNav: false,
-      prevText: '',
-      nextText: ''
+    $('.flexslider').slick({
+      slidesToShow: 1,
+      arrows: true
     });
 
     if (#{params[:popup_login].to_json}) {

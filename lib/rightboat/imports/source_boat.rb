@@ -166,7 +166,10 @@ module Rightboat
             elsif attr_name.to_sym == :currency
               value = 'USD' if value == '$'
               value = klass.where("name = ? OR symbol = ?", value, value).first
-              ImportMailer.blank_currency(self).deliver_now if value.nil?
+              if value.nil?
+                self.import.update(error_msg: 'blank_currency')
+                ImportMailer.blank_currency(self).deliver_now
+              end
             else
               value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!
             end

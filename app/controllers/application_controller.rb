@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  after_action :set_visited
 
   include SessionSetting
 
@@ -63,6 +64,13 @@ class ApplicationController < ActionController::Base
     year_data = search.stats(:year).data
     length_data = search.stats(:length_m).data
 
+    country_facet = search.facet(:country_id).rows
+    countries = Country.active.where(id: country_facet.map(&:value))
+
+    countries.each do |country|
+      country.name = "#{country.name}(#{country_facet.select { |x| x.value == country.id }.first.count})"
+    end
+
     @search_facets = {
       min_price:  (price_data && price_data['min'].floor) || 0,
       max_price:  (price_data && price_data['max'].ceil) || 10000,
@@ -70,12 +78,16 @@ class ApplicationController < ActionController::Base
       min_length: (length_data && length_data['min'].floor) || 10,
       max_length: (length_data && length_data['max'].ceil) || 1000,
       categories: BoatCategory.active.where(id: search.facet(:category_id).rows.map(&:value)),
-      countries: Country.active.where(id: search.facet(:country_id).rows.map(&:value))
+      countries: countries
     }
   end
 
   # prevent flash message in devise controller
   def is_flashing_format?
     false
+  end
+
+  def set_visited
+    cookies[:visited] = true if cookies[:visited].nil?
   end
 end

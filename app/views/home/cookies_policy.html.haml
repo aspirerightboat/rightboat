@@ -1,0 +1,48 @@
+#main-content.container
+  .row
+    .col-md-3
+      = image_tag "advert-left.png"
+
+    .col-md-9
+      %p Fancy a cookie? Here’s one from us!
+      %p Note the grey bar at the bottom is the info that appears on the bottom of the home page, and can be dismissed with a x at the right hand end.
+      %p We would need to list all the cookies we use and their purpose.
+      %br
+
+      %h4 Cookie Policy
+      %h5 What are cookies?
+      %p Cookies are tiny text files containing small amounts of information which are downloaded to your computer / device when you visit certain web pages.
+      %p Cookies do lots of different jobs, like letting you navigate between pages efficiently, remembering your preferences, and generally improve the user experience. Most web browsers have cookies enabled, but see www.allaboutcookies.org/manage-cookies/ for help to turn them on or off should you need to. Please note that cookies do not harm your computer /device.
+      %p More information about cookies can be found on #{link_to 'www.allaboutcookies.org', 'http://www.allaboutcookies.org/'}
+      %h5 Cookies used by Rightboat
+      %p The table below lists the cookie names and their purpose.
+      %table.table.table-striped.table-bordered
+        %tr
+          %td PHPSESSID
+          %td The PHPSESSID cookie is native to PHP and enables websites to store serialised state data. It is used to establish a user session and to pass state data via a temporary cookie, which is commonly referred to as a session cookie. As the PHPSESSID cookie has no timed expiry, it disappears when the client is closed.
+        %tr
+          %td cookie_banner_state
+          %td Denotes whether the cookie banner/panel is visible.
+      %h5 YouTube
+      %p YouTube is used by the website to show video content. These cookies are set by YouTube to track usage of its services.
+      %table.table.table-striped.table-bordered
+        %tr
+          %td VISITOR_INFO1_LIVE
+          %td Cookie attempts to estimate your bandwidth.
+        %tr
+          %td PREF
+          %td A 3rd party cookie served by the domain #{link_to 'youtube.com', 'https://www.youtube.com'}. It may be set when a visitor to this website clicks the ‘Share’ button on an embedded YouTube video. This cookie may be used by YouTube to store session preferences that relate to your activity when watching the embedded videos. These cookies don’t gather information that identifies a user.
+      %h5 Google Analytics
+      %p Google Analytics is used to help us to improve the content on the website.
+      %table.table.table-striped.table-bordered
+        %tr
+          %td __utma, _utmb, __utmc, __utmz
+          %td These cookies enable the function of Google Analytics. Google Analytics anonymously tracks how visitors interact with a website, including where they came from, how long they spent on the site, how many pages were visited.
+      %h5 Suggestions to improve this document
+      %table.table.table-striped
+        %tr
+          %td{width: 50}
+            = image_tag 'cookies.png', alt: 'Cookies'
+          %td
+            %b Cookies are enabled
+            You are viewing the fully-optimised version of our website. For more details, please read our Cookie Policy.

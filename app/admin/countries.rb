@@ -16,6 +16,7 @@ ActiveAdmin.register Country do
     column 'ISO', :iso
     column :active
     column :currency
+    column :country_code
     column "# Boats" do |r|
       r.boats.count
     end
@@ -43,6 +44,7 @@ ActiveAdmin.register Country do
       f.input :name
       f.input :iso, label: 'ISO'
       f.input :currency, colleciton: Currency.active
+      f.input :country_code
     end
 
     f.actions

@@ -7,11 +7,11 @@
         = link_to root_path do
           = image_tag 'logo-footer.png', alt: 'Rightboat'
       %ul.col-xs-6.col-sm-3.site-map
-        %li= link_to 'About Us', about_path
+        %li= link_to 'About Us', root_path(anchor: 'about')
         %li= link_to 'Support and Contact', contact_path
         %li= link_to 'Articles and Guides', '#'
       %ul.col-xs-6.col-sm-3.site-map
-        %li= link_to 'Marine Services', '#'
+        %li= link_to 'Marine Services', marine_services_path
         %li= link_to 'Sell my boat', '#'
         %li= link_to 'News', articles_path
       %ul.col-xs-6.col-sm-3.social-links
@@ -24,10 +24,11 @@
     .row.company-info
       = link_to 'javascript: void(0);', class: 'no-divider' do
         %span &copy;#{Date.today.year}&nbsp;&nbsp;&nbsp;Rightboat Ltd - All Rights Reserved
-      = link_to '#' do
+      = link_to privacy_policy_path do
         %span Policies
       = link_to toc_path do
         %span Terms and Conditions
-      = mail_to 'info@rightboat.com', nil, class: 'no-divider'
+      = mail_to 'info@rightboat.com', nil#, class: 'no-divider'
+      = link_to 'Cookies policy', cookies_policy_path
   = image_tag 'anchor.png', class: 'anchor-img', alt: ''
 .clearfix

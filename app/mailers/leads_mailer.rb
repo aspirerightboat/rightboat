@@ -7,7 +7,7 @@ class LeadsMailer < ApplicationMailer
     @office = @boat.office
     attach_boat_pdf
 
-    mail(to: enquiry.email, subject: "Buyer Lead Notification - #{@boat.manufacturer} #{@boat.model} #{@boat.ref_no} - Rightboat")
+    mail(to: enquiry.email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
   def lead_created_notify_broker(enquiry)
@@ -16,7 +16,7 @@ class LeadsMailer < ApplicationMailer
     @office = @boat.office
     attach_boat_pdf
     to_email = @office.try(:email) || @boat.user.email
-    mail_params = {to: to_email, subject: "Broker Lead Notification - #{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model} - Rightboat"}
+    mail_params = {to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}"}
     mail_params[:cc] = @boat.user.email if to_email != @boat.user.email
 
     mail(mail_params)

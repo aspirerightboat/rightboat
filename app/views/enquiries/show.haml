@@ -21,7 +21,7 @@
     %li <b>Message</b>: #{@enquiry.message}
     %li <b>Requested</b>: #{@enquiry.created_at} (#{distance_of_time_in_words(@enquiry.created_at, Time.current)} ago)
   %p
-    Current status – <b>#{@enquiry.status.capitalize}</b>
+    Current status – <b>#{@enquiry.status.titleize}</b>
   - if @enquiry.status == 'pending' && current_user && current_user.company?
     %p.nice-buttons
       = link_to 'Quality Check', quality_check_path(@enquiry), class: 'nice-button', method: 'post'

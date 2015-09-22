@@ -1,7 +1,7 @@
 class EnquiriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_enquiry, only: [:show, :approve, :review]
-  before_action :require_broker, only: [:approve, :review]
+  before_action :load_enquiry, only: [:show, :approve, :quality_check]
+  before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
 
   def create

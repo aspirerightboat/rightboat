@@ -69,7 +69,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       f.input :browser
       f.input :token
       f.input :created_at
-      f.input :deleted_at
     end
     actions
   end

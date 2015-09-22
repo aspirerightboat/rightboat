@@ -22,9 +22,10 @@ class LeadsMailer < ApplicationMailer
     mail(mail_params)
   end
 
-  def broker_requested_quality_check(enquiry)
+  def lead_quality_check(enquiry)
     @enquiry = enquiry
-    mail(to: 'boats@rightboat.com', subject: "Broker wants review lead #{@enquiry.id} - Rightboat")
+    to_email = RBConfig.store['lead_quality_check_email']
+    mail(to: to_email, subject: "Broker wants review lead #{@enquiry.id} - Rightboat")
   end
 
   private

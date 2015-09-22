@@ -37,7 +37,7 @@ class Enquiry < ActiveRecord::Base
 
   def send_quality_check_email
     if status_changed? && status == 'quality_check'
-      LeadsMailer.broker_requested_quality_check(self).deliver_now
+      LeadsMailer.lead_quality_check(self).deliver_now
     end
   end
 end

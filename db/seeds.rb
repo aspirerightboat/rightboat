@@ -87,3 +87,5 @@ end
   record = Subscription.where(name: name).first_or_initialize
   record.update_attributes(description: description)
 end
+
+RBConfig.create([{key: 'lead_quality_check_email', value: 'boats@rightboat.com', description: 'When lead status changes to QualityCheck then email will be sent to this admin email'}])

@@ -37,6 +37,7 @@ class EnquiriesController < ApplicationController
 
   def quality_check
     @enquiry.status = 'quality_check'
+    @enquiry.assign_attributes(params.require(:enquiry).permit(:bad_quality_reason, :bad_quality_comment))
     @enquiry.save! # email should be sent on after_save callback
     redirect_to({action: :show}, {notice: 'Lead will be reviewed by Rightboat staff'})
   end

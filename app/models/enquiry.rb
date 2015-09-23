@@ -1,6 +1,7 @@
 class Enquiry < ActiveRecord::Base
 
   STATUSES = %w(pending quality_check approved rejected invoiced)
+  BAD_QUALITY_REASONS = %w(bad_contact other)
 
   belongs_to :user
   belongs_to :boat

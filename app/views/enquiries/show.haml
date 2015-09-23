@@ -4,8 +4,10 @@
 = render 'shared/search_bar'
 
 #main-content.container
-  - if (msg = notice || alert)
-    %p= msg
+  - if notice
+    .alert.alert-info= notice
+  - if alert
+    .alert.alert-warning= alert
 
   %h1 Lead ##{@enquiry.id} for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
 
@@ -27,8 +29,9 @@
     %li Current status: #{lead_status_label @enquiry.status}
 
   - if @enquiry.status == 'pending' && current_user && current_user.company?
-    %p.nice-buttons
-      = link_to 'Request Quality Check', quality_check_path(@enquiry), class: 'transparent-button', method: 'post'
+    %p.nice-buttons(style="margin-top: 1em")
+      %a#request_qc_button.transparent-button(href="#") Request Quality Check
+      -#= link_to 'Request Quality Check', quality_check_path(@enquiry), class: 'transparent-button', method: 'post'
       = link_to 'Approve', lead_approve_path(@enquiry), class: 'nice-button', method: 'post'
 
   %h2 Lead History
@@ -48,3 +51,23 @@
             RB Administrator
           - else
             Automatically
+
+#qc_reason_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+        %h1 Reason for Quality Check Request
+      .modal-body
+        = form_for @enquiry, url: quality_check_path(@enquiry), method: :post do |f|
+          .row
+            .form-group
+              = f.label :bad_quality_reason, 'Why this lead has bad quality:'
+              = f.select :bad_quality_reason, Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, {prompt: 'Please select...'}, class: 'select-white select-sm', id: 'bad_quality_select'
+          .row
+            .form-group.hidden#bad_quality_comment
+              = f.label :bad_quality_comment, 'Why you think this lead is invalid:'
+              = f.text_area :bad_quality_comment, class: 'form-control'
+          .row
+            %button.btn-flat.btn-full(type="submit") Send

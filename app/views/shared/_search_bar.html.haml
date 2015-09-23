@@ -27,7 +27,8 @@
       var $icon = $('<img>')
       .attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png')
       .addClass('view-mode-icon');
-      return $('<div>').append(viewMode.text + ' ').append($icon)
+      //return $('<div>').append(viewMode.text + ' ').append($icon)
+      return $('<div>').append($icon)
     }
     function formatSimpleViewMode(viewMode, container, escapeMarkup) {
       return $('<img>')

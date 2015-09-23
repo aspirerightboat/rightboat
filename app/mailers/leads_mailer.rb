@@ -1,18 +1,18 @@
 class LeadsMailer < ApplicationMailer
   layout 'mailer'
 
-  def lead_created_notify_buyer(enquiry)
-    @enquiry = enquiry
-    @boat = enquiry.boat
+  def lead_created_notify_buyer(enquiry_id)
+    @enquiry = Enquiry.find(enquiry_id)
+    @boat = @enquiry.boat
     @office = @boat.office
     attach_boat_pdf
 
     mail(to: enquiry.email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
-  def lead_created_notify_broker(enquiry)
-    @enquiry = enquiry
-    @boat = enquiry.boat
+  def lead_created_notify_broker(enquiry_id)
+    @enquiry = Enquiry.find(enquiry_id)
+    @boat = @enquiry.boat
     @office = @boat.office
     attach_boat_pdf
     to_email = @office.try(:email) || @boat.user.email
@@ -22,8 +22,8 @@ class LeadsMailer < ApplicationMailer
     mail(mail_params)
   end
 
-  def lead_quality_check(enquiry)
-    @enquiry = enquiry
+  def lead_quality_check(enquiry_id)
+    @enquiry = Enquiry.find(enquiry_id)
     to_email = RBConfig.store['lead_quality_check_email']
     mail(to: to_email, subject: "Broker wants review lead #{@enquiry.id} - Rightboat")
   end
@@ -42,6 +42,12 @@ class LeadsMailer < ApplicationMailer
     @leads = @invoice.enquiries.includes(:boat).order('id DESC')
 
     mail(to: @broker.email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
+  end
+
+  def lead_reviewed_notify_broker(enquiry_id)
+    @lead = Enquiry.find(enquiry_id)
+
+    mail(to: @lead.boat.user.email, subject: "Lead reviewed Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
   private

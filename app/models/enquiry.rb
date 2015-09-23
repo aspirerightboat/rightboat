@@ -18,6 +18,7 @@ class Enquiry < ActiveRecord::Base
 
   after_save :send_quality_check_email
   after_update :create_lead_trail
+  after_update :admin_reviewed_email
 
   attr_accessor :captcha_correct
 
@@ -45,7 +46,13 @@ class Enquiry < ActiveRecord::Base
 
   def send_quality_check_email
     if status_changed? && status == 'quality_check'
-      LeadsMailer.lead_quality_check(self).deliver_later
+      LeadsMailer.lead_quality_check(id).deliver_later
+    end
+  end
+
+  def admin_reviewed_email
+    if $current_user.try(:admin?) && status_changed? && status.in?(%w(approved rejected))
+      LeadsMailer.lead_reviewed_notify_broker(id).deliver_later
     end
   end
 end

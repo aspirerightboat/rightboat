@@ -14,8 +14,8 @@ class EnquiriesController < ApplicationController
     enquiry.boat = Boat.find(params[:boat_id])
     if enquiry.save
       session.delete(:captcha)
-      LeadsMailer.lead_created_notify_buyer(enquiry).deliver_later
-      LeadsMailer.lead_created_notify_broker(enquiry).deliver_later
+      LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
+      LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
       enquiry.create_lead_trail(true)
       render json: enquiry, serializer: EnquirySerializer, root: false
     else

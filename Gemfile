@@ -65,6 +65,8 @@ gem 'mongo'
 gem 'mongoid'
 gem 'bson_ext'
 
+gem 'premailer-rails'
+
 group :development, :test do
   # gem 'byebug'
   # gem 'web-console', '~> 2.0'

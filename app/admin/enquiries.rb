@@ -18,16 +18,16 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   end
 
   index download_links: [:csv] do
+    column :id
     column 'Date of Lead', sortable: :created_at do |record|
-      "#{record.created_at} (#{distance_of_time_in_words(record.created_at, Time.current)} ago)"
+      "#{l record.created_at, format: :short} (#{distance_of_time_in_words(record.created_at, Time.current)} ago)"
     end
     column :user, sortable: :user_id
     column :boat, sortable: :boat_id do |record|
       record.boat.try(&:manufacturer_model)
     end
     column 'Length(m)', sortable: 'boats.length_m' do |record|
-      l = record.boat.try(&:length_m)
-      l.blank? ? nil : "#{l}m"
+      "#{record.boat.try(:length_m)}m"
     end
     # column 'Length(ft in)', sortable: 'boats.length_ft' do |record|
     #   out = ""

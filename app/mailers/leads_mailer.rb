@@ -35,6 +35,15 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "Invoicing Report #{Time.current.to_date.to_s(:short)}")
   end
 
+  def invoice_notify_broker(invoice_id)
+    @invoice = Invoice.find(invoice_id)
+    @broker = @invoice.user
+    @broker_info = @broker.broker_info
+    @leads = @invoice.enquiries.includes(:boat).order('id DESC')
+
+    mail(to: @broker.email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
+  end
+
   private
 
   def attach_boat_pdf

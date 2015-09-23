@@ -5,7 +5,7 @@ class CreateInvoicesJob
     invoice_ids = leads.group_by { |lead| lead.boat.user }.map do |broker, leads|
       broker_info = broker.broker_info
       i = Invoice.new
-      i.subtotal = leads.sum { |lead| lead.boat.length_ft * broker_info.lead_rate }.round(2)
+      i.subtotal = leads.sum { |lead| (lead.boat.length_ft * broker_info.lead_rate).round(2) }
       i.discount_rate = broker_info.discount
       i.discount = (i.subtotal * broker_info.discount).round(2)
       i.total_ex_vat = i.subtotal - i.discount
@@ -19,6 +19,9 @@ class CreateInvoicesJob
       end
       i.id
     end
-    LeadsMailer.invoicing_report(invoice_ids).deliver_now
+    LeadsMailer.invoicing_report(invoice_ids).deliver_later
+    invoice_ids.each do |invoice_id|
+      LeadsMailer.invoice_notify_broker(invoice_id).deliver_later
+    end
   end
 end

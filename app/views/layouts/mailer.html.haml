@@ -1,3 +1,11 @@
-%hmtl
+!!!
+%html
+  %head
+    %title Rightboat
+    %meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
+    = stylesheet_link_tag 'mailer', media: 'all'
+    :css
+      a:visited { color: #60bbff; }
+      a:hover, a:focus { color: #60bbff; text-decoration: none; }
   %body
     = yield

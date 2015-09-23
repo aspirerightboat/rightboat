@@ -29,6 +29,7 @@ class User < ActiveRecord::Base
   has_one :broker_info, dependent: :destroy
   has_and_belongs_to_many :subscriptions
   has_many :invoices, dependent: :nullify
+  has_many :lead_trails, dependent: :nullify
 
   mount_uploader :avatar, AvatarUploader
 

@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   after_action :set_visited
 
+  before_filter :global_current_user
+
   include SessionSetting
 
   serialization_scope :view_context
@@ -95,5 +97,9 @@ class ApplicationController < ActionController::Base
     if !current_user.try(:company?) && !current_user.try(:admin?)
       redirect_to root_path, alert: 'broker user required'
     end
+  end
+
+  def global_current_user
+    $current_user = current_user
   end
 end

@@ -5,6 +5,7 @@ class Enquiry < ActiveRecord::Base
   belongs_to :user
   belongs_to :boat
   belongs_to :invoice
+  has_many :lead_trails, foreign_key: 'lead_id'
 
   validates_presence_of :title, :first_name, :surname, :email, :boat_id, :user, :token
   validates_inclusion_of :title, within: User::TITLES, allow_blank: true
@@ -15,6 +16,7 @@ class Enquiry < ActiveRecord::Base
   before_validation :add_captcha_error
 
   after_save :send_quality_check_email
+  after_update :create_lead_trail
 
   attr_accessor :captcha_correct
 
@@ -22,6 +24,10 @@ class Enquiry < ActiveRecord::Base
     "#{first_name} #{surname}".strip
   end
   alias_method :to_s, :name
+
+  def create_lead_trail(force = false)
+    LeadTrail.create!(lead: self, user: $current_user, new_status: status) if force || status_changed?
+  end
 
   private
 

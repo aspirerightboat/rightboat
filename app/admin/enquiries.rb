@@ -60,7 +60,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     f.inputs do
       f.input :user, as: :select, collection: User.where(id: f.object.user_id).map { |u| ["#{u.first_name}, #{u.last_name}", u.id] }
       f.input :boat, as: :select, collection: Boat.where(id: f.object.boat_id).map { |b| ["#{b.manufacturer.name}, #{b.name}", b.id] }
-      f.input :status, as: :select, collection: Enquiry::STATUSES.map { |s| [s.titleize, s] }
+      f.input :status, as: :select, collection: Enquiry::STATUSES.map { |s| [s.titleize, s] }, include_blank: false
       f.input :title, as: :select, collection: User::TITLES.map { |t| [t, t] }
       f.input :first_name
       f.input :surname

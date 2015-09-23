@@ -16,6 +16,7 @@ class EnquiriesController < ApplicationController
       session.delete(:captcha)
       LeadsMailer.delay.lead_created_notify_buyer(enquiry) #.deliver_now
       LeadsMailer.delay.lead_created_notify_broker(enquiry) #.deliver_now
+      enquiry.create_lead_trail(true)
       render json: enquiry, serializer: EnquirySerializer, root: false
     else
       session[:captcha] = Rightboat::Captcha.generate

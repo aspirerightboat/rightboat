@@ -100,6 +100,6 @@ class ApplicationController < ActionController::Base
   end
 
   def global_current_user
-    $current_user = current_user
+    $current_user = current_user # or store it like this: Thread.current[:current_user] = current_user
   end
 end

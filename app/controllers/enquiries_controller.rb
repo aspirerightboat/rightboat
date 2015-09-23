@@ -26,6 +26,7 @@ class EnquiriesController < ApplicationController
 
   def show
     @boat = @enquiry.boat
+    @lead_trails = @enquiry.lead_trails.includes(:user).order('id DESC')
   end
 
   def approve

@@ -1,5 +1,5 @@
 - content_for :header_text do
-  %h1 Lead for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
+  %h1 Broker Area
 
 = render 'shared/search_bar'
 
@@ -7,22 +7,44 @@
   - if (msg = notice || alert)
     %p= msg
 
+  %h1 Lead ##{@enquiry.id} for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
+
   %h2 Boat info
-  %ol
-    %li <b>Manufacturer</b>: #{@boat.manufacturer}
-    %li <b>Model</b>: #{@boat.model}
-    %li <b>Broker</b>: #{@boat.user.name}
+  %ul
+    %li Manufacturer</b>: <b>#{@boat.manufacturer}</b>
+    %li Model: <b>#{@boat.model}</b>
+    %li Broker: <b>#{@boat.user.name}</b>
 
   %h2 Requester info
-  %ol
-    %li <b>Name</b>: #{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}
-    %li <b>Email</b>: #{@enquiry.email}
-    %li <b>Phone</b>: #{@enquiry.phone}
-    %li <b>Message</b>: #{@enquiry.message}
-    %li <b>Requested</b>: #{@enquiry.created_at} (#{distance_of_time_in_words(@enquiry.created_at, Time.current)} ago)
-  %p
-    Current status – <b>#{@enquiry.status.titleize}</b>
+  %ul
+    %li Name: <b>#{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}</b>
+    %li Email: <b>#{@enquiry.email}</b>
+    - if @enquiry.phone.present?
+      %li Phone: <b>#{@enquiry.phone}</b>
+    - if @enquiry.message.present?
+      %li Message: <b>#{@enquiry.message}</b>
+    %li Requested At: <b>#{l @enquiry.created_at, format: :short} (#{distance_of_time_in_words(@enquiry.created_at, Time.current)} ago)</b>
+    %li Current status: #{lead_status_label @enquiry.status}
+
   - if @enquiry.status == 'pending' && current_user && current_user.company?
     %p.nice-buttons
       = link_to 'Request Quality Check', quality_check_path(@enquiry), class: 'transparent-button', method: 'post'
       = link_to 'Approve', lead_approve_path(@enquiry), class: 'nice-button', method: 'post'
+
+  %h2 Lead History
+  %table.rb-table(style="max-width: 600px")
+    %tr
+      %th Event Time
+      %th New Status
+      %th Changed by
+    - @lead_trails.each do |trail|
+      %tr
+        %td #{distance_of_time_in_words(trail.created_at, Time.current)} ago
+        %td #{lead_status_label trail.new_status}
+        %td
+          - if trail.user.try(:company?)
+            Broker
+          - elsif trail.user.try(:admin?)
+            RB Administrator
+          - else
+            Automatically

@@ -30,7 +30,7 @@
               - boat = lead.boat
               %td #{link_to "#{boat.manufacturer.name} #{boat.model.name} #{boat.name}".strip, boat_path(boat.slug)}
               %td #{distance_of_time_in_words(lead.created_at, Time.current)} ago
-              %td #{lead.status.titleize}
+              %td #{lead_status_label lead.status}
               %td #{link_to 'Details', lead_path(lead)}
         = paginate @pending_leads
 
@@ -50,6 +50,6 @@
               - boat = lead.boat
               %td #{boat.manufacturer.name} #{boat.model.name} #{boat.name}
               %td #{distance_of_time_in_words(lead.created_at, Time.current)} ago
-              %td #{lead.status.titleize}
+              %td #{lead_status_label lead.status}
               %td #{link_to 'Details', lead_path(lead)}
         = paginate @history_leads, param_name: :page2

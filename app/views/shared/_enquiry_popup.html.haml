@@ -4,8 +4,8 @@
       .modal-header
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} &times;
-        %h1 Request Details
       .modal-body
+        %h1 Request Details
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
         = form_tag '#', class: 'enquiry-form' do
           .row
@@ -42,17 +42,18 @@
           .row
             .col-xs-12
               = label_tag :captcha, 'Prove you are human:*'
-            .col-xs-12.col-sm-6
+            .col-xs-12.col-sm-4
               .form-group
                 .input-group.captcha-input
                   %label.input-group-addon(for="captcha")
                     %img.captcha-img
                   = hidden_field_tag :captcha_key
                   = text_field_tag :captcha, '', class: 'form-control', 'data-validetta' => 'required,number', placeholder: '?'
+            .col-xs-12.col-sm-2
+              %small *Required
             .col-xs-12.col-sm-6
               = button_tag 'Send', type: 'submit', class: 'btn-flat btn-full'
           .clearfix
-          %small *Required
 
 #enquiry-result-popup.modal.fade
   .modal-dialog

@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_one :user_alert, dependent: :destroy
   has_many :invoices, dependent: :nullify
   has_many :lead_trails, dependent: :nullify
+  has_many :saved_searches, dependent: :delete_all
 
   mount_uploader :avatar, AvatarUploader
 

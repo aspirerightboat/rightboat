@@ -12,5 +12,5 @@
         = link_to 'My Alerts', member_user_alert_path
       %li{class: nav_class_for('member/dashboard#information')}
         = link_to 'My Information', member_information_path
-      %li{class: nav_class_for('member/dashboard#search_histories')}
-        = link_to 'My Search History', member_search_histories_path
+      %li{class: ('active' if controller_name == 'saved_searches')}
+        = link_to 'My Saved Searches', member_saved_searches_path

@@ -108,6 +108,7 @@ Rails.application.routes.draw do
     get 'favourites', to: 'favourites#index', as: :favourites
     post 'favourites', to: 'favourites#create', as: :favourite, constraints: { format: :json }
     resource :user_alert, controller: :user_alert, path: 'alerts', only: [:show, :update]
+    resources :saved_searches, path: 'saved-searches', only: [:index, :create]
     controller :dashboard do
       get :enquiries
       get :information

@@ -1,0 +1,25 @@
+- content_for :header_text do
+  .navbar-h My <strong>Rightboat</strong>
+
+.member-content(data-view-layout='list')
+  %h1 My Saved Searches
+  %hr
+
+  - if @saved_searches.none?
+    %p You havent saved searches yet
+  - else
+    %p Click on the Alert button to toggle new listings alerts on/off
+
+    %table.rb-table
+      %tr
+        %th Search
+        %th Actions
+        %th New listing
+      - @saved_searches.each do |saved_search|
+        %tr
+          %td= saved_search.in_short
+          %td
+            = link_to 'Run', '#'
+            = link_to 'Delete', '#'
+          %td
+            = link_to 'Alert', '#'

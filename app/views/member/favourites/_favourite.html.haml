@@ -2,7 +2,7 @@
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12
   .boat-thumb.thumbnail{'data-boat-ref' => boat.slug, 'data-length' => boat.length_m.to_f, 'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
     .boat-img-thumb
-      = link_to manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug) do
+      = link_to boat_path(boat) do
         = image_tag boat.primary_image.file.url(:thumb)
     .caption
       %h4.text-uppercase= boat.manufacturer

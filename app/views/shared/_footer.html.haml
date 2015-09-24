@@ -8,12 +8,15 @@
           = image_tag 'logo-footer.png', alt: 'Rightboat'
       %ul.col-xs-6.col-sm-3.site-map
         %li= link_to 'About Us', root_path(anchor: 'about')
-        %li= link_to 'Support and Contact', contact_path
-        %li= link_to 'Articles and Guides', '#'
-      %ul.col-xs-6.col-sm-3.site-map
-        %li= link_to 'Marine Services', marine_services_path
-        %li= link_to 'Sell my boat', '#'
+        %li= link_to 'Contact Us', contact_path
+        %li= link_to 'Articles and Guides', 'javascript: void(0);'
         %li= link_to 'News', articles_path
+      %ul.col-xs-6.col-sm-3.site-map
+        /%li= link_to 'Marine Services', marine_services_path
+        %li= link_to 'Sell my boat', 'javascript: void(0);'
+        %li= link_to 'Berths', 'javascript: void(0);'
+        %li= link_to 'Finance', 'javascript: void(0);'
+        %li= link_to 'Insurance', 'javascript: void(0);'
       %ul.col-xs-6.col-sm-3.social-links
         %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link'
         %li= link_to '@rightboatdotcom', 'https://www.twitter.com/rightboatdotcom', class: 'tw-link'

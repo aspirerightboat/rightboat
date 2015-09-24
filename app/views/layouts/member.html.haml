@@ -33,6 +33,11 @@
             = render 'member/shared/sidebar'
 
             .col-xs-12.col-sm-9.member-right
+              - if notice
+                .alert.alert-info= notice
+              - if alert
+                .alert.alert-warning= alert
+
               = yield
 
     = render 'shared/footer'

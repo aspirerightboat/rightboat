@@ -89,3 +89,5 @@ $(document).ready ->
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
     scrollToTarget(target) if $(target).length
+
+  $('.cool-select').select2()

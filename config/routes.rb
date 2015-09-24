@@ -107,11 +107,10 @@ Rails.application.routes.draw do
     root to: 'dashboard#index'
     get 'favourites', to: 'favourites#index', as: :favourites
     post 'favourites', to: 'favourites#create', as: :favourite, constraints: { format: :json }
+    resource :user_alert, controller: :user_alert, path: 'alerts', only: [:show, :update]
     controller :dashboard do
       get :enquiries
-      get :subscriptions
       get :information
-      put :subscriptions, action: :update_subscriptions, constraints: { format: :json }
       get :search_histories
     end
   end

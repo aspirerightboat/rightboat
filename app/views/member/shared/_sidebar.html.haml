@@ -1,16 +1,16 @@
 
-#sidebar.col-xs-6.col-sm-3.sidebar-offcanvas{:role => "navigation"}
+#sidebar.col-xs-6.col-sm-3.sidebar-offcanvas(role="navigation")
   .sidebar-nav
     %ul.nav.nav-pills.nav-stacked
       %li{class: nav_class_for('member/dashboard#index')}
-        = link_to "My Details", member_root_path
-      %li{class: nav_class_for('member/favourites')}
-        = link_to "My Favourites", member_favourites_path
+        = link_to 'My Details', member_root_path
+      %li{class: ('active' if controller_name == 'favourites')}
+        = link_to 'My Favourites', member_favourites_path
       %li{class: nav_class_for('member/dashboard#enquiries')}
-        = link_to "My Requests", member_enquiries_path
-      %li{class: nav_class_for('member/dashboard#subscriptions')}
-        = link_to "My Alerts", member_subscriptions_path
+        = link_to 'My Requests', member_enquiries_path
+      %li{class: ('active' if controller_name == 'user_alert')}
+        = link_to 'My Alerts', member_user_alert_path
       %li{class: nav_class_for('member/dashboard#information')}
-        = link_to "My Information", member_information_path
+        = link_to 'My Information', member_information_path
       %li{class: nav_class_for('member/dashboard#search_histories')}
-        = link_to "My Search History", member_search_histories_path
+        = link_to 'My Search History', member_search_histories_path

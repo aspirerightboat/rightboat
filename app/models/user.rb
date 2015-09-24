@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   has_many :saved_boats, class_name: 'Boat', through: :favourites
   has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
   has_one :broker_info, dependent: :destroy
-  has_and_belongs_to_many :subscriptions
+  has_one :user_alert, dependent: :destroy
   has_many :invoices, dependent: :nullify
   has_many :lead_trails, dependent: :nullify
 
@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   validates_presence_of :company_name, :company_weburl, :company_description, if: :organization?
   validates_url :company_weburl, allow_blank: true, if: :organization?
 
-  after_create :create_subscriptions!
+  before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
 
   delegate :country, to: :address
@@ -103,10 +103,6 @@ class User < ActiveRecord::Base
     else
       where(conditions.to_h).first
     end
-  end
-
-  def create_subscriptions!
-    self.subscription_ids = Subscription.all.map(&:id)
   end
 
   def create_broker_info

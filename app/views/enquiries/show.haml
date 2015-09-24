@@ -64,7 +64,7 @@
           .row
             .form-group
               = f.label :bad_quality_reason, 'Why this lead has bad quality:'
-              = f.select :bad_quality_reason, Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, {prompt: 'Please select...'}, class: 'select-white select-sm', id: 'bad_quality_select'
+              = f.select :bad_quality_reason, Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, {prompt: 'Please select...'}, class: 'select-white select-sm cool-select', id: 'bad_quality_select'
           .row
             .form-group.hidden#bad_quality_comment
               = f.label :bad_quality_comment, 'Why you think this lead is invalid:'

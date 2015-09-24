@@ -13,6 +13,7 @@ class HomeController < ApplicationController
       Boat.featured.limit(6)
     end
     @recent_boats = Boat.where(id: Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id))
+    @newest_boats = Boat.order(created_at: :desc).limit(21)
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 

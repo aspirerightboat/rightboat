@@ -65,8 +65,25 @@
         = tel_to '0333 3222628'
     = link_to 'more...', 'javascript: void(0)', class: 'toggle-about'
 
+  - if @newest_boats.any?
+    #newest-boats.nabvar-tools
+      .container
+        %h3.text-center Newest boats
+        .slick-nav
+          - @newest_boats.each do |boat|
+            = link_to manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: true) do
+              .caption.text-center
+                %h4
+                  %strong= boat.manufacturer
+                  = boat.model
+                %p.price(data-attr-name='price')= boat_price(boat)
+                %p.boat-length
+                  %span(data-attr-name='loa')= boat_length(boat)
+                %p= boat.year_built
+                %p= boat.full_location
+
   - if @recent_tweets.any?
-    .nabvar-tools.twitter-feed-slider
+    .twitter-feed-slider
       .container
         .flexslider
           - @recent_tweets.each do |tweet|
@@ -98,4 +115,11 @@
     if (#{params[:popup_login].to_json}) {
       $('.user-login').trigger('click');
     }
+
+    $('.slick-nav').slick({
+      autoplay: true,
+      infinite: true,
+      slidesToShow: 3,
+      slidesToScroll: 3
+    });
   });

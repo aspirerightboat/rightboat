@@ -1,0 +1,14 @@
+#phone-popup.modal.modal-login.fade
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+      .modal-body
+        .text-center
+          %p.lead
+            Oops! You didn't leave your phone number.
+            %br
+            You don't have to but if you do leave it, it will help us or the broker to get in contact with you as quickly as possible.
+          %p
+            Remember, your personal information is protected by #{link_to 'Rightboat Privacy Policy', privacy_policy_path, target: '_blank'}

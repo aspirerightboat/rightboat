@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
-  TITLES = ['Mr', 'Sir', 'Miss', 'Ms', 'Mrs', 'Dr', 'Captain', 'Sheik']
+  TITLES = ['Mr', 'Sir', 'Miss', 'Ms', 'Mrs', 'Dr', 'Capt']
 
   ROLES = {
       'PRIVATE' => 0,

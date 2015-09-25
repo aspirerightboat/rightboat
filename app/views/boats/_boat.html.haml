@@ -1,4 +1,5 @@
 - back ||= false
+- enquiry_disabled ||= false
 
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12
   .boat-thumb.thumbnail{'data-boat-ref' => boat.slug, 'data-length' => boat.length_m.to_f, 'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
@@ -18,12 +19,12 @@
         %span Year: #{boat.year_built}
       .boat-location-1
         %span Location: #{boat.country.to_s}
-      /.boat-detail-item.boat-location-2
-      /  %span Location: #{boat.full_location}
-      - unless local_assigns[:disable_social_links]
-        .boat-links.boat-links-bottom
-          = favourite_link_to boat, 'Favourite'
-          = render 'shared/social_share', boat: boat
-          = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'
+      .boat-links.boat-links-bottom
+        = favourite_link_to boat, 'Favourite'
+        = render 'shared/social_share', boat: boat
+        - unless enquiry_disabled
+          = link_to 'Request Details', '#', class: 'btn-flat pull-right btn-black request-details'
+        - else
+          = link_to 'View Boat Details', manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: back), class: 'btn-flat pull-right btn-black'
       = yield if block_given?
       .clearfix

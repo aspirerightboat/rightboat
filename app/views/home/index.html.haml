@@ -10,7 +10,7 @@
       %h3.toolbar-title Featured Boats
     .container
       .row(data-view-layout="gallery")
-        = render @featured_boats, back: true
+        = render @featured_boats, back: true, enquiry_disabled: true
 
   - if @recent_boats.any?
     #recent-boats
@@ -118,6 +118,7 @@
 
     $('.slick-nav').slick({
       autoplay: true,
+      autoplaySpeed: 30000,
       infinite: true,
       slidesToShow: 3,
       slidesToScroll: 3

@@ -61,6 +61,8 @@ class @BoatView
 ######## Enquiry form
 $ ->
   $(document).ready ->
+    phoneModalOpened = false
+
     $('[data-boat-ref]').each ->
       new BoatView(this)
 
@@ -73,6 +75,13 @@ $ ->
     onSubmit = (e)->
       e.preventDefault()
       $this = $(e.target) # form
+      phoneNumber = $this.find('#phone').val()
+
+      if phoneNumber == '' && !phoneModalOpened
+        $('#phone-popup').modal('show')
+        phoneModalOpened = true
+        return false
+
       $this.find('.alert').remove()
       url = $this.attr('action')
       $.ajax

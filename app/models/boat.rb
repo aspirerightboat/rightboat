@@ -49,18 +49,12 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  has_many :favourites, inverse_of: :boat, dependent: :destroy
-  has_many :liked, class_name: 'User', through: :favourites, source: :user
+  has_many :favourites, dependent: :delete_all
   has_many :enquiries, inverse_of: :boat, dependent: :destroy
   has_many :boat_specifications, inverse_of: :boat, dependent: :destroy
   has_many :boat_images, inverse_of: :boat, dependent: :destroy
-  has_one :primary_image,
-          -> { order(:position) },
-          class_name: 'BoatImage'
-  has_many :slave_images,
-          -> { order(:position).offset(1) },
-          class_name: 'BoatImage'
-
+  has_one :primary_image, -> { order(:position) }, class_name: 'BoatImage'
+  has_many :slave_images, -> { order(:position).offset(1) }, class_name: 'BoatImage'
   belongs_to :user,          inverse_of: :boats
   belongs_to :import,        inverse_of: :boats
   belongs_to :office,        inverse_of: :boats
@@ -175,16 +169,6 @@ class Boat < ActiveRecord::Base
     end
   end
 
-  def favourited_at_by(user)
-    self.booked_by(user).try(&:display_ts)
-  end
-
-  def booked_by(user)
-    return false unless user
-    user_id = user.respond_to?(:id) ? user.id : user.to_i
-    favourites.where(user_id: user_id).first
-  end
-
   def live?
     return false if self.deleted?
 
@@ -201,8 +185,9 @@ class Boat < ActiveRecord::Base
     _l == location.to_s.downcase ? true : false
   end
 
-  def booked_by?(user)
-    !!self.booked_by(user)
+  def favourited_by?(user)
+    return false unless user
+    favourites.where(user: user).exists?
   end
 
   def valid_price?

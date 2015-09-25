@@ -23,8 +23,7 @@ class User < ActiveRecord::Base
   has_many :enquiries, inverse_of: :user, dependent: :nullify
   has_many :imports, inverse_of: :user, dependent: :destroy
   has_many :boats, inverse_of: :user, dependent: :destroy
-  has_many :favourites, inverse_of: :user, dependent: :destroy
-  has_many :saved_boats, class_name: 'Boat', through: :favourites
+  has_many :favourites, dependent: :delete_all
   has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
   has_one :broker_info, dependent: :destroy
   has_one :user_alert, dependent: :destroy

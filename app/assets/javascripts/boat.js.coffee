@@ -1,67 +1,42 @@
-class @BoatView
-  constructor: (el, options)->
-    @element = el
-    @options = options || {}
-    @boat_id = @$().data('boat-ref')
+initBoatView = (el) ->
+  boat_id = $(el).data('boat-ref')
 
-    @$('.request-details').click (e) =>
-      e.preventDefault()
-      return if requireLogin(e, true)
-      @requestDetails()
-
-    @$('.fav-link').click (e) =>
-      e.preventDefault()
-      return if requireLogin(e, true)
-
-      $this = $(e.target)
-      $this.attr('disabled', 'disabled')
-
-      $.ajax
-        url: '/my-rightboat/favourites'
-        dataType: 'JSON'
-        data: { boat_id: @boat_id }
-        method: 'POST'
-      .success (response) ->
-        if response.active
-          $this.addClass('active')
-          $this.attr('title', 'Unfavourite')
-               .tooltip('fixTitle')
-               .data('bs.tooltip')
-               .$tip.find('.tooltip-inner')
-               .text('Unfavourite')
-        else
-          $this.removeClass('active')
-          $this.attr('title', 'Favourite')
-               .tooltip('fixTitle')
-               .data('bs.tooltip')
-               .$tip.find('.tooltip-inner')
-               .text('Favourite')
-          if $this.parents('#favourites').length > 0
-            $this.parents('.boat-thumb-container').fadeOut()
-      .error ->
-        alert('Sorry, Unexpected error occurred.')
-      .always ->
-        $this.removeAttr('disabled')
-
-
-  requestDetails: ->
-    url = '/boats/' + @boat_id + '/request-details'
+  $('.request-details', el).click (e) ->
+    return false if requireLogin(e, true)
+    url = '/boats/' + boat_id + '/request-details'
     $('.enquiry-form').attr('action', url)
     $('.enquiry-form').find('#message, #captcha').val('')
     $('.enquiry-result-container').hide()
     $('.enquiry-form-container').show()
     $('#enquiry-popup').modal('show')
+    false
 
-  $: (selector)->
-    if !selector
-      $(@element)
-    else
-      $(@element).find(selector)
+  $('.fav-link', el).click (e) ->
+    return false if requireLogin(e, true)
+
+    $link = $(@).attr('disabled', 'disabled')
+
+    $.ajax
+      url: '/my-rightboat/favourites'
+      dataType: 'JSON'
+      data: {boat_id: boat_id}
+      method: 'POST'
+    .success (response) ->
+      active = response.active
+      title = if active then 'Unfavourite' else 'Favourite'
+      $link.toggleClass('active', active).attr('title', title).tooltip('fixTitle').tooltip('show')
+      if !response.active && $link.parents('#favourites').length > 0
+        $link.closest('.boat-view').fadeOut()
+    .error ->
+      alert('Sorry, unexpected error occurred')
+    .always ->
+      $link.removeAttr('disabled')
+    false
 
 ######## Enquiry form
 $ ->
-  $('[data-boat-ref]').each ->
-    new BoatView(this)
+  $('.boat-view').each ->
+    initBoatView(this)
 
   $('#enquiry-popup').modal(show: false)
   $('#enquiry-result-popup').modal(show: false)

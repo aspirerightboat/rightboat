@@ -13,7 +13,20 @@
 #= require jquery
 #= require jquery_ujs
 # require turbolinks
-#= require twitter/bootstrap
+
+#= require twitter/bootstrap/transition.js
+#= require twitter/bootstrap/alert.js
+#= require twitter/bootstrap/button.js
+#= require twitter/bootstrap/carousel.js
+#= require twitter/bootstrap/collapse.js
+#= require twitter/bootstrap/dropdown.js
+#= require twitter/bootstrap/modal.js
+#= require twitter/bootstrap/tooltip.js
+#= require twitter/bootstrap/popover.js
+#= require twitter/bootstrap/scrollspy.js
+#= require twitter/bootstrap/tab.js
+#= require twitter/bootstrap/affix.js
+
 #= require jquery-ui/slider
 #= require jquery.ui.touch-punch
 #= require select2
@@ -43,8 +56,7 @@ window.requireLogin = (e, disable_history)->
 
     $loginBtn.trigger('click')
     return true
-
-  false;
+  false
 
 scrollToTarget = (target) ->
   $('html, body').animate

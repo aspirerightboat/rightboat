@@ -26,9 +26,9 @@
         %li= image_tag boat_img.file.url(:thumb)
 
   #main-content
-    .container(data-boat-ref="#{@boat.slug}"
-               data-length="#{@boat.length_m.to_f}"
-               data-price="#{Currency.convert(@boat.price, @boat.currency, Currency.default) if !@boat.poa?}")
+    .container.boat-view(data-boat-ref="#{@boat.slug}"
+                         data-length="#{@boat.length_m.to_f}"
+                         data-price="#{Currency.convert(@boat.price, @boat.currency, Currency.default) if !@boat.poa?}")
       .boat-social-links.pull-left
         .share-link
           %span Share
@@ -41,7 +41,7 @@
               %i.icon.icon-twitter-squared
             = link_to "mailto:?subject=I want you to see this site&body=Check out this site #{cur_boat_url}", target: '_blank', title: 'Share by email' do
               %i.icon.icon-mail
-        = favourite_link_to @boat, 'Favourite'
+        = favourite_link_to @boat
       .pull-right
         = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'
       .clearfix
@@ -70,25 +70,25 @@
 :javascript
   $(function() {
     // The slider being synced must be initialized first
-    $('#carousel').flexslider({
-      animation: "slide",
-      controlNav: false,
-      animationLoop: false,
-      slideshow: false,
-      itemWidth: 210,
-      itemMargin: 5,
-      asNavFor: '#slider',
-      nextText: '',
-      prevText: ''
-    }).disableSelection();
-
-    $('#slider').flexslider({
-      animation: "slide",
-      controlNav: false,
-      animationLoop: false,
-      slideshow: false,
-      sync: "#carousel",
-      nextText: '',
-      prevText: ''
-    }).disableSelection();
+    //$('#carousel').flexslider({
+    //  animation: "slide",
+    //  controlNav: false,
+    //  animationLoop: false,
+    //  slideshow: false,
+    //  itemWidth: 210,
+    //  itemMargin: 5,
+    //  asNavFor: '#slider',
+    //  nextText: '',
+    //  prevText: ''
+    //}).disableSelection();
+    //
+    //$('#slider').flexslider({
+    //  animation: "slide",
+    //  controlNav: false,
+    //  animationLoop: false,
+    //  slideshow: false,
+    //  sync: "#carousel",
+    //  nextText: '',
+    //  prevText: ''
+    //}).disableSelection();
   });

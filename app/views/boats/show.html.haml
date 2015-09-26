@@ -23,16 +23,14 @@
 
 %div{'data-boat-ref' => @boat.slug, 'data-length' => @boat.length_m.to_f, 'data-price' => @boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}
   .container
-    %h1.pull-left
+    %h1.clearfix
       %strong.text-nowrap= @boat.manufacturer
       %span.text-nowrap
         = @boat.model
       - unless @boat.year_built.blank?
         %span.text-nowrap (#{@boat.year_built})
 
-    = link_to "Request Details", '#', class: 'btn-flat btn-black request-details pull-right'
-
-  .clearfix
+      = link_to "Request Details", '#', class: 'btn-flat btn-black btn-lg request-details pull-right'
 
   #slider.slick-for
     - @boat.boat_images.each do |boat_img|
@@ -45,12 +43,11 @@
 
   #main-content
     .container
-      .boat-links.pull-left
+      .clearfix
         = favourite_link_to @boat, 'Favourite'
         = render 'shared/social_share', boat: @boat
-      .pull-right
-        = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'
-      .clearfix
+        .pull-right
+          = link_to 'Request Details', '#', class: 'btn-flat btn-black btn-lg request-details pull-right'
 
       .row.boat-description
         .col-sm-5.col-md-7.col-xs-12.pull-right

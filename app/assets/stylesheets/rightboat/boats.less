@@ -93,11 +93,15 @@
     .transition(all .25s ease-out);
   }
   &.thumbnail:hover {
-    background: @rb-color-dark;
+    background: @rb-color-primary;
     .caption {
       color: #FFF;
       .btn-flat.btn-black {
-        background: @rb-color-primary;
+        background: white;
+        color: @rb-color-dark;
+      }
+      .fav-link, .share-link {
+        color: white;
       }
     }
   }
@@ -127,22 +131,21 @@
   }
 }
 
-a.fav-link, .share-link {
+.fav-link, .share-link {
   &:before {
     display: inline-block;
-    content: ' ';
-    background: image-url('sprites.png') no-repeat;
-    width: 27px;
-    height: 27px;
+    font-family: 'fontello';
+    font-size: 25px;
+    margin-right: 3px;
     vertical-align: middle;
   }
 }
 
 a.fav-link:before {
-  background-position: 0 -66px;
+  content: '\e807';
 }
 a.fav-link.active:before {
-  background-position: 0 -94px;
+  content: '\e809';
 }
 
 .share-link {
@@ -151,7 +154,7 @@ a.fav-link.active:before {
   display: inline-block;
   position: relative;
 
-  &:before { background-position: 0 -118px; }
+  &:before { content: '\e808'; }
   &:hover {
     .share-platforms {
       opacity: 1;

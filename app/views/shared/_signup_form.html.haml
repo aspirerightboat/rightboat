@@ -3,7 +3,7 @@
     = label_tag :name
     .row
       .col-md-2.col-xs-12
-        = select_tag :title, options_for_select(User::TITLES), class: 'select-white select-sm'
+        = text_field_tag :title, '', class: 'select-white select-sm'
       .col-md-5.col-xs-12
         = text_field_tag :first_name, '', placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
       .col-md-5.col-xs-12
@@ -28,8 +28,11 @@
 :javascript
   $(function() {
     $(document).ready(function() {
-      $('.register-form select').select2({
-        minimumResultsForSearch: Infinity
+      $('#title').select2({
+        tags: #{User::TITLES},
+        tokenSeparators: [],
+        maximumSelectionSize: 1,
+        formatSelectionTooBig: function() { return ''; }
       })
     });
   });

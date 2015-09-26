@@ -15,7 +15,7 @@
                   .rb-control-group-addon
                     = label_tag :title, 'Title:*'
                     %br
-                    = select_tag :title, options_for_select(User::TITLES, selected: current_user.try(:title)), class: 'select-white select-sm'
+                    = text_field_tag :title, current_user.try(:title), class: 'select-white select-sm'
                   .rb-control
                     = label_tag :title, 'First Name:*'
                     = text_field_tag :first_name, current_user.try(:first_name), class: 'form-control', 'data-validetta' => 'required'

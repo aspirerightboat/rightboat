@@ -66,6 +66,7 @@ Rails.application.routes.draw do
 
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
   resources :articles, only: [:show], path: :news
+  resources :buyer_guides, only: [:index, :show]
 
   resources :manufacturers, only: [] do
     resources :models, only: [] do

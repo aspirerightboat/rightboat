@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150919932124) do
+ActiveRecord::Schema.define(version: 20150927145853) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -174,6 +174,26 @@ ActiveRecord::Schema.define(version: 20150919932124) do
   add_index "boats", ["source_id"], name: "index_boats_on_source_id", using: :btree
   add_index "boats", ["user_id"], name: "index_boats_on_user_id", using: :btree
   add_index "boats", ["vat_rate_id"], name: "index_boats_on_vat_rate_id", using: :btree
+
+  create_table "buyer_guides", force: :cascade do |t|
+    t.integer  "article_author_id", limit: 4
+    t.integer  "manufacturer_id",   limit: 4
+    t.integer  "model_id",          limit: 4
+    t.string   "slug",              limit: 255
+    t.text     "body",              limit: 65535
+    t.string   "short_description", limit: 255
+    t.text     "zcard_desc",        limit: 65535
+    t.string   "photo",             limit: 255
+    t.string   "thumbnail",         limit: 255
+    t.boolean  "published",         limit: 1,     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "buyer_guides", ["article_author_id"], name: "index_buyer_guides_on_article_author_id", using: :btree
+  add_index "buyer_guides", ["manufacturer_id"], name: "index_buyer_guides_on_manufacturer_id", using: :btree
+  add_index "buyer_guides", ["model_id"], name: "index_buyer_guides_on_model_id", using: :btree
+  add_index "buyer_guides", ["slug"], name: "index_buyer_guides_on_slug", using: :btree
 
   create_table "countries", force: :cascade do |t|
     t.string   "iso",          limit: 255

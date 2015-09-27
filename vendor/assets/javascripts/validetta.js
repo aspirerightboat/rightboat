@@ -281,6 +281,8 @@
           val = trim ( $( el ).val() ), //current field's value
           methods = el.getAttribute('data-validetta').split(','), //current field's control methods
           state; // Validation state
+        // Hack skip validation for hidden fields
+        if (!$(el).is(':visible')) { continue; }
         // Create tmp
         this.tmp = {};
         // store el and val variables in tmp

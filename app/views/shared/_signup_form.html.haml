@@ -1,13 +1,19 @@
 = form_tag user_registration_path, class: 'register-form' do
-  .form-group
-    = label_tag :name
-    .row
-      .col-md-2.col-xs-12
-        = text_field_tag :title, '', class: 'select-white select-sm'
-      .col-md-5.col-xs-12
-        = text_field_tag :first_name, '', placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
-      .col-md-5.col-xs-12
-        = text_field_tag :last_name, '', placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
+  .row
+    .col-sm-6.col-xs-12
+      .form-group
+        .rb-control-group
+          .rb-control-group-addon
+            = label_tag :title, 'Title:'
+            %br
+            = text_field_tag :title, nil, class: 'select-white select-sm select-title'
+          .rb-control
+            = label_tag :title, 'First Name:*'
+            = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
+    .col-sm-6.col-xs-12
+      .form-group
+        = label_tag :surname, 'Surname:*'
+        = text_field_tag :surname, nil, class: 'form-control', 'data-validetta' => 'required'
   #signup-email.form-group
     = label_tag :email
     = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
@@ -24,15 +30,3 @@
     = button_tag 'Create Account', type: 'submit', class: 'btn-flat'
     &nbsp;Or&nbsp;
     = link_to 'Cancel', '#', "aria-label" => "Close", "data-dismiss" => "modal", class: 'text-white'
-
-:javascript
-  $(function() {
-    $(document).ready(function() {
-      $('#title').select2({
-        tags: #{User::TITLES},
-        tokenSeparators: [],
-        maximumSelectionSize: 1,
-        formatSelectionTooBig: function() { return ''; }
-      })
-    });
-  });

@@ -41,6 +41,15 @@ class SearchController < ApplicationController
   end
 
   def results
+    if params[:save_search]
+      ctl = Member::SavedSearchesController.new
+      ctl.request = request
+      ctl.response = response
+      ctl.create
+      redirect_to member_saved_searches_path, notice: 'Your search was saved'
+      return
+    end
+
     params.delete(:page) unless request.xhr?
 
     search_params = params.clone

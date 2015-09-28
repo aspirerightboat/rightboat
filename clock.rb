@@ -33,6 +33,10 @@ module DBBackedClockwork
     LeadsApproveJob.new.perform
   end
 
+  every 1.day, 'send saved search notifications', at: '22:00' do
+    SavedSearchNoticesJob.new.perform
+  end
+
   # get the manager object
   def self.manager
     Clockwork.instance_variable_get(:@manager)

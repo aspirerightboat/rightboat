@@ -15,11 +15,12 @@
         %th Search
         %th Actions
         %th New listing
-      - @saved_searches.each do |saved_search|
+      - @saved_searches.each do |ss|
         %tr
-          %td= saved_search.in_short
+          %td= ss.search_title
           %td
-            = link_to 'Run', '#'
-            = link_to 'Delete', '#'
+            = link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'
+            = link_to 'Delete', member_saved_search_path(ss), class: 'label label-danger', method: :delete
           %td
-            = link_to 'Alert', '#'
+            = link_to (ss.alert ? 'Alert' : 'No Alert'), toggle_member_saved_search_path(ss),
+                      class: "label label-#{ss.alert ? 'success' : 'default'}", method: :post

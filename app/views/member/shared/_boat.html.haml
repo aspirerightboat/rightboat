@@ -4,14 +4,15 @@
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
     .boat-img-thumb
-      = link_to boat_path(boat) do
+      = link_to boat_path(boat, back: true) do
         = image_tag boat.primary_image.file.url(:thumb)
     .caption
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-detail-item.boat-links.pull-right
         = favourite_link_to boat
-        = render 'shared/social_share', boat: boat
+        - if share_enabled
+          = render 'shared/social_share', boat: boat
       .boat-detail-item.boat-length
         %span Length:
         %span(data-attr-name='loa')= boat_length(boat)
@@ -19,11 +20,5 @@
         %span Year: #{boat.year_built}
       .boat-location-1
         %span Location: #{boat.country.to_s}
-      /.boat-detail-item.boat-location-2
-      /  %span Location: #{boat.full_location}
-      .boat-links.boat-links-bottom
-        .boat-price
-          %span(data-attr-name='price')= boat_price(boat)
-          %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
-        = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'
+      = yield if block_given?
       .clearfix

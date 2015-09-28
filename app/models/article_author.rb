@@ -4,6 +4,7 @@ class ArticleAuthor < ActiveRecord::Base
   friendly_id :name, use: [:slugged, :finders]
 
   has_many :articles, inverse_of: :author, dependent: :restrict_with_error
+  has_many :buyer_guides, inverse_of: :author, dependent: :destroy
 
   mount_uploader :photo, AvatarUploader
 

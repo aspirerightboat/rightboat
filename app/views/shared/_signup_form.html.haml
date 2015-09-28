@@ -1,26 +1,32 @@
 = form_tag user_registration_path, class: 'register-form' do
-  .form-group
-    = label_tag :name
-    .row
-      .col-md-2.col-xs-12
-        = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'form-control'
-      .col-md-5.col-xs-12
-        = text_field_tag :first_name, '', placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
-      .col-md-5.col-xs-12
-        = text_field_tag :last_name, '', placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
+  .row
+    .col-sm-6.col-xs-12
+      .form-group
+        .rb-control-group
+          .rb-control-group-addon
+            = label_tag :title, 'Title:'
+            %br
+            = text_field_tag :title, nil, class: 'select-white select-sm select-title'
+          .rb-control
+            = label_tag :title, 'First Name:*'
+            = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
+    .col-sm-6.col-xs-12
+      .form-group
+        = label_tag :last_name, 'Last name:*'
+        = text_field_tag :last_name, nil, class: 'form-control', 'data-validetta' => 'required'
   #signup-email.form-group
-    = label_tag :email
+    = label_tag :email, 'Email*'
     = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
   .form-group
-    = label_tag :username
+    = label_tag :username, 'Username:*'
     = text_field_tag :username, '', class: 'form-control', 'data-validetta' => 'required,custom[username]'
   .form-group
-    = label_tag :password
+    = label_tag :password, 'Password:*'
     = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
   .form-group
-    = label_tag :password_confirmation
+    = label_tag :password_confirmation, 'Password confirmation:*'
     = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
   .form-group
-    = button_tag 'Create Account', type: 'submit', class: 'btn btn-flat btn-primary'
+    = button_tag 'Create Account', type: 'submit', class: 'btn-flat'
     &nbsp;Or&nbsp;
     = link_to 'Cancel', '#', "aria-label" => "Close", "data-dismiss" => "modal"

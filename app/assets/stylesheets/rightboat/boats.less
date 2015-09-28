@@ -93,11 +93,15 @@
     .transition(all .25s ease-out);
   }
   &.thumbnail:hover {
-    background: @rb-color-dark;
+    background: @rb-color-primary;
     .caption {
       color: #FFF;
-      .btn-flat.request-details, .btn-flat.search-similar {
-        background: @rb-color-primary;
+      .btn-flat.btn-black {
+        background: white;
+        color: @rb-color-dark;
+      }
+      .fav-link, .share-link {
+        color: white;
       }
     }
   }
@@ -115,9 +119,6 @@
     font-size: 16px;
     line-height: 26px;
   }
-  > a {
-    margin-right: 13px;
-  }
   a:hover {
     text-decoration: none;
   }
@@ -127,22 +128,23 @@
   }
 }
 
-a.fav-link, .share-link {
+.fav-link, .share-link {
+  margin-right: 13px;
+
   &:before {
     display: inline-block;
-    content: ' ';
-    background: image-url('sprites.png') no-repeat;
-    width: 27px;
-    height: 27px;
+    font-family: 'fontello';
+    font-size: 25px;
+    margin-right: 3px;
     vertical-align: middle;
   }
 }
 
 a.fav-link:before {
-  background-position: 0 -66px;
+  content: '\e807';
 }
 a.fav-link.active:before {
-  background-position: 0 -94px;
+  content: '\e809';
 }
 
 .share-link {
@@ -151,7 +153,7 @@ a.fav-link.active:before {
   display: inline-block;
   position: relative;
 
-  &:before { background-position: 0 -118px; }
+  &:before { content: '\e808'; }
   &:hover {
     .share-platforms {
       opacity: 1;
@@ -176,14 +178,6 @@ a.fav-link.active:before {
     .icon-twitter-squared { color: rgb(47, 186, 253) }
     .icon-mail { color: gray }
   }
-}
-
-.btn-flat.request-details, .btn-flat.search-similar {
-  padding: 0 15px;
-  color: #FFF;
-  background: @rb-color-dark;
-  margin: 0;
-  margin-left: 10px;
 }
 
 .boat-img-thumb a {
@@ -276,20 +270,10 @@ a.pdf-link {
       font-size: 30px;
     }
   }
-  .btn-flat.request-details, .btn-flat.search-similar {
-    padding: 9px 50px;
-    font-size: 20px;
-    margin-left: 10px;
-    @media (max-width: @screen-xs-max) {
-      padding: 2px 6px;
-      font-size: 16px;
-    }
-    margin-top: 18px;
-  }
-  .boat-links { margin-top: 18px;}
+
   #slider, #carousel {
     background: @rb-color-dark;
-    margin-bottom: 18px;
+    margin-bottom: 42px;
   }
   #slider {
     .slick-slide {
@@ -349,6 +333,14 @@ a.pdf-link {
 .page-links, .display-options {
   li {
     display: inline-block;
+  }
+}
+
+.login-toggle {
+  display: none;
+
+  &.active {
+    display: block;
   }
 }
 

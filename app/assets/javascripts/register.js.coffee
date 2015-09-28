@@ -4,6 +4,10 @@ $ ->
       $('form .alert').remove()
       $('#session-popup .signin-area').hide()
       $('#session-popup .signup-area').show()
+      if $(this).hasClass 'broker-register'
+        $('.register-form').prepend('<input type="hidden" name="role" value="BROKER" class="role-broker"/>')
+      else
+        $('.role-broker').remove()
       $('#session-popup').modal()
       false
 

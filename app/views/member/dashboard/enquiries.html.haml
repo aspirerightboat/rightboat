@@ -8,4 +8,16 @@
     .alert.alert-info
       %h4.no-margin You have no requests yet.
   - else
-    .row= render partial: 'enquiry', collection: @enquiries, as: :enquiry
+    .row
+      - @enquiries.each do |enquiry|
+        - if boat = enquiry.boat
+          = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: false} do
+            .boat-links.boat-links-bottom
+              .boat-price
+                %span(data-attr-name='price')= boat_price(boat)
+                %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
+              .text-nowrap.pull-right
+                = link_to manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, format: :pdf), class: 'pdf-link', target: :blank do
+                  %i
+                = link_to 'Search Similar', similar_link(boat), class: 'btn-flat btn-black search-similar'
+                = link_to 'Enquire Again', '#', class: 'btn-flat btn-black request-details'

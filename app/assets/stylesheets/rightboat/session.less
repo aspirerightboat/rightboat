@@ -1,7 +1,6 @@
 .modal-login {
   h2 { margin-bottom: 18px;}
   .trader-hint a, #forgot-link {
-    color: #FFF;
     text-decoration: underline;
   }
   ul {
@@ -21,6 +20,14 @@
   [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
     & + label:before {
       background-color: white;
+    }
+  }
+
+  .btn-flat.user-register {
+    color: @rb-color-primary;
+
+    &:hover {
+      color: @rb-color-dark;
     }
   }
 }

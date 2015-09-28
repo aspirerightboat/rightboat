@@ -146,9 +146,43 @@ body#home-index {
   }
 }
 
+#newest-boats {
+  .slick-nav {
+    padding-right: 60px;
+    padding-left: 60px;
+  }
+
+  .slick-track > a {
+    height: 100%;
+    text-decoration: none;
+  }
+
+  .caption {
+    color: @rb-color-dark;
+    padding: 6px;
+
+    p {
+      margin-bottom: 6px;
+    }
+
+    &:hover, &:active, &:focus {
+      background-color: @rb-color-dark;
+      color: white;
+    }
+  }
+}
+
 .twitter-feed-slider {
-  padding: 23px 0;
-  &, a {font-size: 20px; color: #FFF;}
+  padding: 35px 0;
+
+  &, a {font-size: 20px; color: @rb-color-dark;}
+
+  .slick-prev, .slick-next {
+    &:before {
+      color: black;
+    }
+  }
+
   .small {font-size: 16px;}
   .flexslider {
     margin-bottom: 0;
@@ -162,7 +196,7 @@ body#home-index {
       left: 7%;
       line-height: 80px;
       top: 0;
-      color: rgba(255, 255, 255, 0.1);
+      color: rgba(0, 0, 0, 0.02);
     }
 
     li p a.tweet-source-link {

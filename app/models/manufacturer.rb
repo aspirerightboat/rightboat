@@ -7,6 +7,7 @@ class Manufacturer < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
+  has_many :buyer_guides, class_name: 'BuyerGuide', inverse_of: :manufacturer, dependent: :destroy
 
   # solr_update_association :models, :boats, fields: [:active, :name]
   mount_uploader :logo, AvatarUploader

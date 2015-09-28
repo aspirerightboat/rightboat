@@ -67,4 +67,12 @@ module ApplicationHelper
     link_to text, "tel:#{groups.join('-')}"
   end
 
+  def meta_description(body)
+    safe_text = body.gsub(/<[^>]*>/,'').gsub(/[\r\n\s\t]+/, ' ')
+    size = 0
+    safe_text.split.reject do |token|
+      size += token.size
+      size >= 160
+    end.join(" ") + (safe_text.size >= 160 ? " ..." : "")
+  end
 end

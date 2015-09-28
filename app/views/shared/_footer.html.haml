@@ -3,24 +3,39 @@
     %h1.text-center.no-margin
       %strong The &nbsp; global &nbsp; choice &nbsp; of &nbsp; boats &nbsp; for &nbsp; sale
     .row.rb-links
-      .col-xs-6.col-sm-2.no-divider
+      .col-xs-12.col-sm-2.no-divider
         = link_to root_path do
           = image_tag 'logo-footer.png', alt: 'Rightboat'
-      %ul.col-xs-6.col-sm-3.site-map
-        %li= link_to 'About Us', root_path(anchor: 'about')
-        %li= link_to 'Support and Contact', contact_path
-        %li= link_to 'Articles and Guides', '#'
-      %ul.col-xs-6.col-sm-3.site-map
-        %li= link_to 'Marine Services', marine_services_path
-        %li= link_to 'Sell my boat', '#'
-        %li= link_to 'News', articles_path
-      %ul.col-xs-6.col-sm-3.social-links
-        %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link'
-        %li= link_to '@rightboatdotcom', 'https://www.twitter.com/rightboatdotcom', class: 'tw-link'
-        %li= link_to 'Rightboat', 'https://plus.google.com/+Rightboat', class: 'gplus-link'
-        %li= link_to '/rightboat', 'https://www.pinterest.com/rightboat', class: 'pint-link'
-        /%li= link_to '/rightboat-ltd', 'https://instagram.com/rightboat', class: 'ig-link'
-      .clearfix
+      .col-xs-12.col-sm-10
+        .row
+          %ul.col-xs-12.col-sm-3.site-map
+            %li= link_to 'About Us', root_path(anchor: 'about')
+            %li= link_to 'Contact Us', contact_path
+            %li= link_to 'Articles and Guides', buyer_guides_path
+            %li= link_to 'News', articles_path
+          %ul.col-xs-12.col-sm-3.site-map
+            /%li= link_to 'Marine Services', marine_services_path
+            %li= link_to 'Sell my boat', 'javascript: void(0);'
+            %li= link_to 'Berths', 'javascript: void(0);'
+            %li= link_to 'Finance', 'javascript: void(0);'
+            %li= link_to 'Insurance', 'javascript: void(0);'
+          %ul.col-xs-12.col-sm-3.social-links
+            %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link'
+            %li= link_to '@rightboatdotcom', 'https://www.twitter.com/rightboatdotcom', class: 'tw-link'
+            %li= link_to 'Rightboat', 'https://plus.google.com/+Rightboat', class: 'gplus-link'
+            %li= link_to '/rightboat', 'https://www.pinterest.com/rightboat', class: 'pint-link'
+            /%li= link_to '/rightboat-ltd', 'https://instagram.com/rightboat', class: 'ig-link'
+          %ul.col-xs-12.col-sm-3
+            %li= link_to "Register as Broker", '#', class: 'user-register broker-register'
+            - unless false#Rails.env.development?
+              %li
+                #google_translate_element
+                :javascript
+                  function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                  }
+                %script{src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit", type: "text/javascript"}
+
     .row.company-info
       = link_to 'javascript: void(0);', class: 'no-divider' do
         %span &copy;#{Date.today.year}&nbsp;&nbsp;&nbsp;Rightboat Ltd - All Rights Reserved

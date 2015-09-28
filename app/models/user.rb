@@ -2,12 +2,13 @@ class User < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
-  TITLES = %w(Mr Sir Miss Ms Mrs Dr Captain Sheik)
+  TITLES = %w(Mr Sir Miss Ms Mrs Dr Capt)
 
   ROLES = {
       'PRIVATE' => 0,
       'MANUFACTURER' => 1,
       'COMPANY' => 2,
+      'BROKER' => 3,
       'ADMIN' => 99
   }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
@@ -39,7 +40,7 @@ class User < ActiveRecord::Base
   validates_presence_of :username
   validates_uniqueness_of :username, allow_blank: true
   validates_format_of :username, with: /\A[a-zA-Z][\w@.-]+\z/, allow_blank: true
-  validates_inclusion_of :title, within: TITLES, allow_blank: true
+  # validates_inclusion_of :title, within: TITLES, allow_blank: true
 
   validates_presence_of :first_name, :last_name, unless: :organization?
   validates_presence_of :company_name, :company_weburl, :company_description, if: :organization?

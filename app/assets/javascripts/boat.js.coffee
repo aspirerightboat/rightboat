@@ -35,6 +35,8 @@ initBoatView = (el) ->
 
 ######## Enquiry form
 $ ->
+  phoneModalOpened = false
+
   $('.boat-view').each ->
     initBoatView(this)
 
@@ -47,6 +49,13 @@ $ ->
   onSubmit = (e) ->
     e.preventDefault()
     $this = $(e.target) # form
+    phoneNumber = $this.find('#phone').val()
+
+    if phoneNumber == '' && !phoneModalOpened
+      $('#phone-popup').modal('show')
+      phoneModalOpened = true
+      return false
+
     $this.find('.alert').remove()
     url = $this.attr('action')
     $.ajax

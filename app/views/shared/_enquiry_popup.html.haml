@@ -4,18 +4,18 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
-        %h1 Request Details
       .modal-body
+        %h1 Request Details
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
         = form_tag '#', class: 'enquiry-form' do
-          .row
+          .row.login-toggle.active
             .col-sm-6.col-xs-12
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = label_tag :title, 'Title:*'
+                    = label_tag :title, 'Title:'
                     %br
-                    = select_tag :title, options_for_select(User::TITLES, selected: current_user.try(:title)), class: 'select-white select-sm'
+                    = text_field_tag :title, current_user.try(:title), class: 'select-white select-sm select-title'
                   .rb-control
                     = label_tag :title, 'First Name:*'
                     = text_field_tag :first_name, current_user.try(:first_name), class: 'form-control', 'data-validetta' => 'required'
@@ -36,23 +36,34 @@
                 .col-xs-6
                   = label_tag :phone, 'Tel/Mobile:'
                   = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
+          - unless current_user
+            .row
+              .col-sm-6.col-xs-12.login-toggle
+                .form-group
+                  = label_tag :password, 'Password:*'
+                  = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
           .form-group
             = label_tag :message, 'Comments:'
             = text_area_tag :message, '', class: 'form-control'
+          - unless current_user
+            .form-group
+              = check_box_tag :have_account
+              = label_tag :have_account, 'I have an account'
           .row
             .col-xs-12
               = label_tag :captcha, 'Prove you are human:*'
-            .col-xs-12.col-sm-6
+            .col-xs-12.col-sm-4
               .form-group
                 .input-group.captcha-input
                   %label.input-group-addon(for="captcha")
                     %img.captcha-img
                   = hidden_field_tag :captcha_key
                   = text_field_tag :captcha, '', class: 'form-control', 'data-validetta' => 'required,number', placeholder: '?'
+            .col-xs-12.col-sm-2
+              %small *Required
             .col-xs-12.col-sm-6
-              = button_tag 'Send', type: 'submit', class: 'btn-flat btn-full'
+              = button_tag 'Send', type: 'submit', class: 'btn-flat btn-block'
           .clearfix
-          %small *Required
 
 #enquiry-result-popup.modal.fade
   .modal-dialog
@@ -88,6 +99,17 @@
     $(document).ready(function() {
       $('#enquiry-popup select').select2({
         minimumResultsForSearch: Infinity
-      })
+      });
+
+      $('.select-title').select2({
+        tags: #{User::TITLES},
+        tokenSeparators: [],
+        maximumSelectionSize: 1,
+        formatSelectionTooBig: function() { return ''; }
+      });
+
+      $('#have_account').change(function() {
+        $('.login-toggle').toggleClass('active');
+      });
     });
   });

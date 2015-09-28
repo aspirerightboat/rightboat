@@ -27,6 +27,6 @@
         - unless enquiry_disabled
           = link_to 'Request Details', '#', class: 'btn-flat pull-right btn-black request-details'
         - else
-          = link_to 'View Boat Details', manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: back), class: 'btn-flat pull-right btn-black'
+          = link_to 'View Boat Details', boat_path(boat, back: back), class: 'btn-flat pull-right btn-black'
       = yield if block_given?
       .clearfix

@@ -71,7 +71,7 @@
         %h3.text-center Newest boats
         .slick-nav
           - @newest_boats.each do |boat|
-            = link_to manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: true) do
+            = link_to boat_path(boat, back: true) do
               .caption.text-center
                 %h4
                   %strong= boat.manufacturer

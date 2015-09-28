@@ -1,54 +1,61 @@
+- if session[:boats_count] && @back_url
+  - content_for :header_text do
+    %h1 &nbsp;
+    %h3
+      Search Results:
+      %strong #{session[:boats_count]}
+      %span.hidden-sm boats for sale
+
+- if params[:back].present? && params[:back] == 'true'
+  - content_for :header_text do
+    %h1
+      %span.hidden-sm Find your
+      %strong Rightboat
+    %h3
+      = link_to 'Back', :back, class: 'text-white'
+
+- if @back_url
+  %nav.navbar.navbar-default.nabvar-tools
+    .container
+      %ul.nav.navbar-nav
+        %li
+          = link_to '< Back to Results', @back_url
+
+
 - content_for :header_text do
   .navbar-h Boats <strong>For Sale</strong>
 
-%div
+.boat-view{'data-boat-ref' => @boat.slug, 'data-length' => @boat.length_m.to_f, 'data-price' => @boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}
   .container
-    %h1.pull-left
+    %h1.clearfix
       %strong.text-nowrap= @boat.manufacturer
       %span.text-nowrap
         = @boat.model
       - unless @boat.year_built.blank?
         %span.text-nowrap (#{@boat.year_built})
 
-    = link_to 'Request Details', '#', class: 'btn-flat request-details pull-right'
+      = link_to "Request Details", '#', class: 'btn-flat btn-black btn-lg request-details pull-right'
 
-  .clearfix
-
-  #slider.flexslider
-    %ul.slides
-      - @boat.boat_images.each do |boat_img|
-        %li
-          .dummy
-          = image_tag boat_img.file.url(:main)
-  #carousel.flexslider
-    %ul.slides
-      - @boat.boat_images.each do |boat_img|
-        %li= image_tag boat_img.file.url(:thumb)
+  #slider.slick-for
+    - @boat.boat_images.each do |boat_img|
+      .item
+        .dummy
+        = image_tag boat_img.file.url(:main)
+  #carousel.slick-nav
+    - @boat.boat_images.each do |boat_img|
+      %nav-item= image_tag boat_img.file.url(:thumb)
 
   #main-content
-    .container.boat-view(data-boat-ref="#{@boat.slug}"
-                         data-length="#{@boat.length_m.to_f}"
-                         data-price="#{Currency.convert(@boat.price, @boat.currency, Currency.default) if !@boat.poa?}")
-      .boat-social-links.pull-left
-        .share-link
-          %span Share
-          %span.share-platforms
-            - cur_boat_url = boat_url(@boat.slug)
-            - cur_boat_escaped_url = URI::escape(cur_boat_url)
-            = link_to "https://www.facebook.com/sharer.php?u=#{cur_boat_escaped_url}", target: '_blank', title: 'Share with facebook' do
-              %i.icon.icon-facebook-squared
-            = link_to "https://www.twitter.com/intent/tweet?url=#{cur_boat_escaped_url}", target: '_blank', title: 'Share with twitter' do
-              %i.icon.icon-twitter-squared
-            = link_to "mailto:?subject=I want you to see this site&body=Check out this site #{cur_boat_url}", target: '_blank', title: 'Share by email' do
-              %i.icon.icon-mail
-        = favourite_link_to @boat
-      .pull-right
-        = link_to 'Request Details', '#', class: 'btn-flat pull-right request-details'
+    .container
       .clearfix
+        = favourite_link_to @boat
+        = render 'shared/social_share', boat: @boat
+        .pull-right
+          = link_to 'Request Details', '#', class: 'btn-flat btn-black btn-lg request-details pull-right'
 
       .row.boat-description
         .col-sm-5.col-md-7.col-xs-12.pull-right
-          %h1 Details
+          %br
           .row
             - @boat.spec_attributes(self).each_slice(2).each do |spec_group|
               - spec_group.each do |spec|
@@ -56,7 +63,7 @@
                   %dl.dl-horizontal
                     %dt= spec[0]
                     - if spec[2]
-                      %dd(data-attr-name="#{spec[2]}")= spec[1]
+                      %dd{ 'data-attr-name' => spec[2] }= spec[1]
                     - else
                       %dd= spec[1]
         -# unless @boat.owners_comment.blank?
@@ -69,26 +76,21 @@
 
 :javascript
   $(function() {
-    // The slider being synced must be initialized first
-    //$('#carousel').flexslider({
-    //  animation: "slide",
-    //  controlNav: false,
-    //  animationLoop: false,
-    //  slideshow: false,
-    //  itemWidth: 210,
-    //  itemMargin: 5,
-    //  asNavFor: '#slider',
-    //  nextText: '',
-    //  prevText: ''
-    //}).disableSelection();
-    //
-    //$('#slider').flexslider({
-    //  animation: "slide",
-    //  controlNav: false,
-    //  animationLoop: false,
-    //  slideshow: false,
-    //  sync: "#carousel",
-    //  nextText: '',
-    //  prevText: ''
-    //}).disableSelection();
+    $(document).ready(function() {
+      $('.slick-for').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        fade: true,
+        asNavFor: '.slick-nav'
+      });
+
+      $('.slick-nav').slick({
+        slidesToShow: 5,
+        asNavFor: '.slick-for',
+        //dots: true,
+        centerMode: true,
+        focusOnSelect: true
+      });
+    });
   });

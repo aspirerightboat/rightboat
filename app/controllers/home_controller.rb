@@ -14,7 +14,7 @@ class HomeController < ApplicationController
     end
     recently_viewed_boat_ids = Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id)
     @recent_boats = Boat.where(id: recently_viewed_boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
-    @newest_boats = Boat.order('id DESC').limit(21)
+    @newest_boats = Boat.order('id DESC').limit(21).includes(:manufacturer, :model, :currency, :country)
     @recent_tweets = Rightboat::TwitterFeed.all
   end
 

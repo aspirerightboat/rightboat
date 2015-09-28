@@ -12,21 +12,21 @@
             = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
     .col-sm-6.col-xs-12
       .form-group
-        = label_tag :surname, 'Surname:*'
-        = text_field_tag :surname, nil, class: 'form-control', 'data-validetta' => 'required'
+        = label_tag :last_name, 'Last name:*'
+        = text_field_tag :last_name, nil, class: 'form-control', 'data-validetta' => 'required'
   #signup-email.form-group
-    = label_tag :email
+    = label_tag :email, 'Email*'
     = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
   .form-group
-    = label_tag :username
+    = label_tag :username, 'Username:*'
     = text_field_tag :username, '', class: 'form-control', 'data-validetta' => 'required,custom[username]'
   .form-group
-    = label_tag :password
+    = label_tag :password, 'Password:*'
     = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
   .form-group
-    = label_tag :password_confirmation
+    = label_tag :password_confirmation, 'Password confirmation:*'
     = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
   .form-group
     = button_tag 'Create Account', type: 'submit', class: 'btn-flat'
     &nbsp;Or&nbsp;
-    = link_to 'Cancel', '#', "aria-label" => "Close", "data-dismiss" => "modal", class: 'text-white'
+    = link_to 'Cancel', '#', "aria-label" => "Close", "data-dismiss" => "modal"

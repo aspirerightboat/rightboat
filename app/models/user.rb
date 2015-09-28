@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
       'PRIVATE' => 0,
       'MANUFACTURER' => 1,
       'COMPANY' => 2,
+      'BROKER' => 3,
       'ADMIN' => 99
   }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }

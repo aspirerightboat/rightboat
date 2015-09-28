@@ -30,7 +30,7 @@
                 .form-group
                   = button_tag 'Login', type: 'submit', class: 'btn-flat btn-block'
                 .form-group
-                  = link_to "Forgotten your password?", '#', id: 'forgot-link'
+                  = link_to 'Forgotten your password?', new_user_password_path, id: 'forgot-link'
             .col-sm-6
               %h2 Join for free
               %p Sign up now for free and discover how easy it is to keep up to date with THE latest boats for sale. Find your right boat, and tailor your voyage to becoming a boat owner.
@@ -42,4 +42,4 @@
                 %li Keep tabs on your favourite boats
               = link_to "Register", '#', class: 'btn-flat btn-block user-register'
           .row
-            %p.trader-hint Are you a trader? Register in our Broker Area #{link_to 'Broker Area', broker_path, class: 'user-register broker-register'}
+            %p.trader-hint Are you a trader? Register in our #{link_to 'Broker Area', broker_path, class: 'user-register broker-register'}

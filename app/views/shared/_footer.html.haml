@@ -26,6 +26,7 @@
             %li= link_to '/rightboat', 'https://www.pinterest.com/rightboat', class: 'pint-link'
             /%li= link_to '/rightboat-ltd', 'https://instagram.com/rightboat', class: 'ig-link'
           %ul.col-xs-12.col-sm-3
+            %li= link_to 'Browse boats for sale', boats_path
             %li= link_to "Register as Broker", '#', class: 'user-register broker-register'
             - unless false#Rails.env.development?
               %li

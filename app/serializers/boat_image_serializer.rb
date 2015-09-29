@@ -1,5 +1,5 @@
 class BoatImageSerializer < ActiveModel::Serializer
-  attributes :thumb, :main, :mini, :origin
+  attributes :thumb, :mini, :origin
 
   def thumb
     object.file_url(:thumb)
@@ -7,10 +7,6 @@ class BoatImageSerializer < ActiveModel::Serializer
 
   def mini
     object.file_url(:mini)
-  end
-
-  def main
-    object.file_url(:main)
   end
 
   def origin

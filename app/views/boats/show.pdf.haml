@@ -28,7 +28,7 @@
   .clearfix
 
 - if @boat.primary_image
-  = wicked_pdf_image_tag @boat.primary_image.file_url(:main)
+  = wicked_pdf_image_tag @boat.primary_image.file_url(:thumb)
   %hr
 
 .row

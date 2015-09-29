@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150927145853) do
+ActiveRecord::Schema.define(version: 20150929160334) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -94,6 +94,8 @@ ActiveRecord::Schema.define(version: 20150927145853) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.datetime "deleted_at"
+    t.integer  "width",              limit: 4
+    t.integer  "height",             limit: 4
   end
 
   add_index "boat_images", ["boat_id"], name: "index_boat_images_on_boat_id", using: :btree

@@ -20,6 +20,8 @@
 #= require jquery.multiple.select
 #= require utils
 #= require slick.min
+#= require photoswipe.min
+#= require photoswipe-ui-default.min
 #= require validetta
 #= require_self
 #= require_tree .

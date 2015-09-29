@@ -15,7 +15,7 @@
                   .rb-control-group-addon
                     = label_tag :title, 'Title:'
                     %br
-                    = text_field_tag :title, current_user.try(:title), class: 'select-white select-sm select-title'
+                    = select_tag :title, options_for_select(User::TITLES), prompt: ' ', class: 'select-title'
                   .rb-control
                     = label_tag :title, 'First Name:*'
                     = text_field_tag :first_name, current_user.try(:first_name), class: 'form-control', 'data-validetta' => 'required'
@@ -97,15 +97,13 @@
 :javascript
   $(function() {
     $(document).ready(function() {
-      $('#enquiry-popup select').select2({
-        minimumResultsForSearch: Infinity
+      $('#enquiry-popup .country-code-select').selectize({
+        allowEmptyOption: true
       });
 
-      $('.select-title').select2({
-        tags: #{User::TITLES},
-        tokenSeparators: [],
-        maximumSelectionSize: 1,
-        formatSelectionTooBig: function() { return ''; }
+      $('.select-title').selectize({
+        create: true,
+        allowEmptyOption: true
       });
 
       $('#have_account').change(function() {

@@ -1,12 +1,11 @@
 class SavedSearchNoticesJob
   def perform
-    all_searches = SavedSearch.where(alert: true).all
+    all_searches = SavedSearch.where(alert: true)
+                       .joins('JOIN user_alerts ON saved_searches.user_id = user_alerts.user_id')
+                       .where(user_alerts: {saved_searches: true}).all
     all_searches_grouped = all_searches.group_by(&:user_id)
     sent_mails = 0
     all_searches_grouped.each do |user_id, saved_searches|
-      user = User.find_by(id: user_id)
-      next if !user
-
       searches = saved_searches.map do |ss|
         search = Rightboat::BoatSearch.new(ss.to_search_params)
         found_boats = search.retrieve_boats([], 5)

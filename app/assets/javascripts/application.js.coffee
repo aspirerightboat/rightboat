@@ -33,7 +33,7 @@ Rightboat.validetta_options =
   display: 'inline'
 
 window.requireLogin = (e, disable_history)->
-  $loginBtn = $('.user-login')
+  $loginBtn = $('.login-top')
   if $loginBtn.length > 0
     e.preventDefault()
     unless disable_history

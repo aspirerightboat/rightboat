@@ -14,6 +14,10 @@ $(document).ready ->
     $('form .alert').remove()
     $('#session-popup .signin-area').show()
     $('#session-popup .signup-area').hide()
+    if $(this).hasClass 'broker-login'
+      $('.login-form-title').html('Broker Area')
+    else
+      $('.login-form-title').html('Sign In')
     $('#session-popup').modal()
 
   onSubmit = (e) ->

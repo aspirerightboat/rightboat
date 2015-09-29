@@ -9,4 +9,6 @@
   %li= link_to "Register", 'javascript: void(0);', class: 'user-register'
 - if user_signed_in?
   %li= link_to "My Rightboat", '/my-rightboat', 'data-require-login' => true
-%li= link_to "Broker Area", '#'
+  %li= link_to "Broker Area", 'javascript: void(0);'
+- else
+  %li= link_to "Broker Area", 'javascript: void(0);', class: 'user-login broker-login'

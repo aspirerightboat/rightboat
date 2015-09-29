@@ -91,12 +91,12 @@ Rails.application.routes.draw do
   resources :boats, path: 'boats-for-sale', only: [:index, :show] do
     get :pdf
   end
-  get 'manufacturer/:slug', to: 'boats#manufacturer_boats', as: :manufacturer_boats_explicit
-  get 'manufacturers-by-letter/:letter', to: 'boats#manufacturers_by_letter', as: :manufacturers_by_letter
-  get 'boat-type', to: 'boats#boats_by_type_index', as: :boats_by_type_index
-  get 'boat-type/:boat_type', to: 'boats#boats_by_type', as: :boats_by_type
-  get 'location', to: 'boats#boats_by_location_index', as: :boats_by_location_index
-  get 'location/:country', to: 'boats#boats_by_location', as: :boats_by_location
+  resources :manufacturers, path: 'manufacturer', only: [:index, :show]
+  get 'manufacturers-by-letter/:id', to: 'manufacturers#by_letter', as: :manufacturers_by_letter
+  resources :boat_types, path: 'boat-type', only: [:index, :show]
+  resources :countries, path: 'location', only: [:index, :show]
+  resources :models, only: [:index, :show]
+
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
   post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check

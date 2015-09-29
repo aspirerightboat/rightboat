@@ -5,7 +5,4 @@
 
 #main-content.container
   = render 'shared/boats_for_sale_tabs'
-  %h1 Boat Types
-  %ol
-    - @boat_types.each do |bt|
-      %li #{link_to bt.name, boats_by_type_path(bt.name)}
+  = yield

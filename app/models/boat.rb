@@ -87,6 +87,8 @@ class Boat < ActiveRecord::Base
 
   before_destroy :remove_activities
 
+  def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
+
   def self.similar_boats(boat, options = {})
     # TODO: need confirmation from RB
     return [] unless boat.manufacturer

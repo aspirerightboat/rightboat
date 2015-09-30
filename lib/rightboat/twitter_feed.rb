@@ -92,7 +92,7 @@ class Rightboat::TwitterFeed
     manufacturer = boat.manufacturer.name rescue nil
     model        = boat.model.name rescue nil
     year         = boat.year_built rescue nil
-    url          = Shorturl.find_or_create_by_url(Rails.application.routes.url_helpers.boat_slug_url(boat.slug, host:"www.rightboat.com")).shorturl
+    url          = Shorturl.find_or_create_by_url(Rails.application.routes.url_helpers.manufacturer_model_boat_path(boat.id, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, host:"www.rightboat.com")).shorturl
     pc           = "#{boat.reduced_percentage}%" rescue nil
     age          = Time.now.year - boat.year_built rescue nil
     age_human    = pluralize(age, "year")

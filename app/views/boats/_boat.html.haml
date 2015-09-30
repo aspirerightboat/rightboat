@@ -2,9 +2,9 @@
 - enquiry_disabled ||= false
 
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12
-  .boat-thumb.thumbnail{'data-boat-ref' => boat.slug, 'data-length' => boat.length_m.to_f, 'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
+  .boat-thumb.thumbnail{'data-boat-ref' => boat.id, 'data-length' => boat.length_m.to_f, 'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
     .boat-img-thumb
-      = link_to manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: back) do
+      = link_to manufacturer_model_boat_path(boat.id, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: back) do
         = image_tag boat.primary_image.file.url(:thumb)
     .caption
       %h4.text-uppercase= boat.manufacturer
@@ -25,6 +25,6 @@
         - unless enquiry_disabled
           = link_to 'Request Details', '#', class: 'btn-flat pull-right btn-black request-details'
         - else
-          = link_to 'View Boat Details', manufacturer_model_boat_path(boat.slug, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: back), class: 'btn-flat pull-right btn-black'
+          = link_to 'View Boat Details', manufacturer_model_boat_path(boat.id, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: back), class: 'btn-flat pull-right btn-black'
       = yield if block_given?
       .clearfix

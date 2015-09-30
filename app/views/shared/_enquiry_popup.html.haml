@@ -10,13 +10,14 @@
         = form_tag '#', class: 'enquiry-form' do
           .row.login-toggle.active
             .col-sm-6.col-xs-12
-              .form-group.row
-                .col-xs-6
-                  = label_tag :title
-                  = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'select-title select-sm'
-                .col-xs-6
-                  = label_tag :first_name
-                  = text_field_tag :first_name, current_user.try(:first_name), class: 'form-control', 'data-validetta' => 'required'
+              .form-group
+                .rb-control-group
+                  .rb-control-group-addon
+                    = label_tag :title
+                    = select_tag :title, options_for_select(User::TITLES), prompt: ' ', class: 'select-title'
+                  .rb-control
+                    = label_tag :first_name
+                    = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
                 = label_tag :surname
@@ -27,13 +28,14 @@
                 = label_tag :email
                 = email_field_tag :email, current_user.try(:email), class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
-              .form-group.row
-                .col-xs-6
-                  = label_tag :country_code
-                  = select_tag :country_code, options_for_country_code, prompt: 'Please select...', placeholder: 'Please select...', class: 'select-white select-sm country-code-select'
-                .col-xs-6
-                  = label_tag :phone
-                  = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
+              .form-group
+                .rb-control-group
+                  .rb-control-group-addon
+                    = label_tag :country_code
+                    = select_tag :country_code, options_for_country_code, prompt: 'Please select...', placeholder: 'Please select...', class: 'select-white select-sm country-code-select'
+                  .rb-control
+                    = label_tag :phone
+                    = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
           - unless current_user
             .row
               .col-sm-6.col-xs-12.login-toggle

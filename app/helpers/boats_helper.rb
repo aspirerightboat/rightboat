@@ -41,14 +41,15 @@ module BoatsHelper
 
   def similar_link(boat)
     options = {
-      price_min: boat.price * 8 /10,
-      price_max:boat.price * 12 /10
+      currency: boat.currency.name,
+      price_min: boat.price * 8 / 10,
+      price_max: boat.price * 12 / 10
     }
 
     if length = boat.length_m
       options = options.merge(
-        length_min: length * 8 /10,
-        length_max: length * 12 /10
+        length_min: length * 8 / 10,
+        length_max: length * 12 / 10
       )
     end
 

@@ -80,8 +80,8 @@
   };
 
   var hidePswpTumbnail = function(index) {
-    if (index && !isNaN(parseInt(index)))
-      gallery.goTo(index);
+    if (index === 0 || (index && !isNaN(parseInt(index)))) {
+      gallery.goTo(index); }
     $('.pswp').removeClass('thumbnail-mode');
     $('.pswp__button--grid-off').hide();
     $('.pswp__button--grid-on, .pswp__button--zoom, .pswp__button--fs, .pswp__counter').show();

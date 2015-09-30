@@ -73,6 +73,61 @@
   var gallery = null;
   var galleryItems = [];
 
+  // parse slide data (url, title, size ...) from DOM elements
+  // (children of gallerySelector)
+  var parseThumbnailElements = function(el) {
+    var thumbElements = el.childNodes,
+      numNodes = thumbElements.length,
+      items = [],
+      figureEl,
+      linkEl,
+      size,
+      item;
+
+    for(var i = 0; i < numNodes; i++) {
+
+      figureEl = thumbElements[i]; // <figure> element
+
+      // include only element nodes
+      if(figureEl.nodeType !== 1) {
+        continue;
+      }
+
+      linkEl = figureEl.children[0]; // <a> element
+
+      size = linkEl.getAttribute('data-size').split('x');
+
+      // create slide object
+      item = {
+        src: linkEl.getAttribute('href'),
+        w: parseInt(size[0], 10),
+        h: parseInt(size[1], 10)
+      };
+
+      if(figureEl.children.length > 1) {
+        // <figcaption> content
+        item.title = figureEl.children[1].innerHTML;
+      }
+
+      if(linkEl.children.length > 0) {
+        // <img> thumbnail element, retrieving thumbnail url
+        item.msrc = linkEl.children[0].getAttribute('src');
+        // Add to thumbnail list
+        $('.pswp__thumbnail-viewer__container').append('<div class="pswp-thumbnail" data-index="' + i + '"><img src="' + item.msrc + '"/></div>');
+      }
+
+      item.el = figureEl; // save link to element for getThumbBoundsFn
+      items.push(item);
+    }
+
+    $('.pswp-thumbnail').click(function () {
+      var index = $(this).data('index');
+      hidePswpTumbnail(index);
+    });
+
+    return items;
+  };
+
   var showPswpTumbnail = function() {
     $('.pswp').addClass('thumbnail-mode');
     $('.pswp__button--grid-off').show();
@@ -89,69 +144,15 @@
 
   $(function() {
     $(document).ready(function() {
+      galleryItems = parseThumbnailElements(document.getElementById('slider'));
+
       $('#slider').slick({
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        arrows: true,
-        infinite: false
+        centerMode: true,
+        centerPadding: '60px',
+        slidesToShow: 3
       });
 
       var initPhotoSwipeFromDOM = function(gallerySelector) {
-        // parse slide data (url, title, size ...) from DOM elements
-        // (children of gallerySelector)
-        var parseThumbnailElements = function(el) {
-          var thumbElements = el.childNodes,
-            numNodes = thumbElements.length,
-            items = [],
-            figureEl,
-            linkEl,
-            size,
-            item;
-
-          for(var i = 0; i < numNodes; i++) {
-
-            figureEl = thumbElements[i]; // <figure> element
-
-            // include only element nodes
-            if(figureEl.nodeType !== 1) {
-              continue;
-            }
-
-            linkEl = figureEl.children[0]; // <a> element
-
-            size = linkEl.getAttribute('data-size').split('x');
-
-            // create slide object
-            item = {
-              src: linkEl.getAttribute('href'),
-              w: parseInt(size[0], 10),
-              h: parseInt(size[1], 10)
-            };
-
-            if(figureEl.children.length > 1) {
-              // <figcaption> content
-              item.title = figureEl.children[1].innerHTML;
-            }
-
-            if(linkEl.children.length > 0) {
-              // <img> thumbnail element, retrieving thumbnail url
-              item.msrc = linkEl.children[0].getAttribute('src');
-              // Add to thumbnail list
-              $('.pswp__thumbnail-viewer__container').append('<div class="pswp-thumbnail" data-index="' + i + '"><img src="' + item.msrc + '"/></div>');
-            }
-
-            item.el = figureEl; // save link to element for getThumbBoundsFn
-            items.push(item);
-          }
-
-          $('.pswp-thumbnail').click(function () {
-            var index = $(this).data('index');
-            hidePswpTumbnail(index);
-          });
-
-          return items;
-        };
-
         // find nearest parent element
         var closest = function closest(el, fn) {
           return el && ( fn(el) ? el : closest(el.parentNode, fn) );
@@ -232,14 +233,7 @@
           hidePswpTumbnail();
           var pswpElement = document.querySelectorAll('.pswp')[0],
             options,
-            items;
-
-          if (galleryItems.length > 0) {
             items = galleryItems;
-          } else {
-            items = parseThumbnailElements(galleryElement);
-            galleryItems = items;
-          }
 
           // define options (if needed)
           options = {

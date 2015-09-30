@@ -112,7 +112,7 @@
 .selectize-input input {
   color: #303030;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 18px;
   -webkit-font-smoothing: inherit;
 }
@@ -335,7 +335,7 @@
 }
 .selectize-control.single .selectize-input,
 .selectize-dropdown.single {
-  border-color: black;
+  /*border-color: black;*/
 }
 .selectize-dropdown .optgroup-header {
   padding-top: 7px;

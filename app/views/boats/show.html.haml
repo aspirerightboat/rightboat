@@ -70,17 +70,33 @@
           .truncated-description= reduced_description(@boat.description)
 
 :javascript
+  var gallery = null;
+  var galleryItems = [];
+
+  var showPswpTumbnail = function() {
+    $('.pswp').addClass('thumbnail-mode');
+    $('.pswp__button--grid-off').show();
+    $('.pswp__button--grid-on, .pswp__button--zoom, .pswp__button--fs, .pswp__counter').hide();
+  };
+
+  var hidePswpTumbnail = function(index) {
+    if (index && !isNaN(parseInt(index)))
+      gallery.goTo(index);
+    $('.pswp').removeClass('thumbnail-mode');
+    $('.pswp__button--grid-off').hide();
+    $('.pswp__button--grid-on, .pswp__button--zoom, .pswp__button--fs, .pswp__counter').show();
+  };
+
   $(function() {
     $(document).ready(function() {
       $('#slider').slick({
         slidesToShow: 3,
         slidesToScroll: 1,
         arrows: true,
-        infinite: true
+        infinite: false
       });
 
       var initPhotoSwipeFromDOM = function(gallerySelector) {
-
         // parse slide data (url, title, size ...) from DOM elements
         // (children of gallerySelector)
         var parseThumbnailElements = function(el) {
@@ -112,8 +128,6 @@
               h: parseInt(size[1], 10)
             };
 
-
-
             if(figureEl.children.length > 1) {
               // <figcaption> content
               item.title = figureEl.children[1].innerHTML;
@@ -122,11 +136,18 @@
             if(linkEl.children.length > 0) {
               // <img> thumbnail element, retrieving thumbnail url
               item.msrc = linkEl.children[0].getAttribute('src');
+              // Add to thumbnail list
+              $('.pswp__thumbnail-viewer__container').append('<div class="pswp-thumbnail" data-index="' + i + '"><img src="' + item.msrc + '"/></div>');
             }
 
             item.el = figureEl; // save link to element for getThumbBoundsFn
             items.push(item);
           }
+
+          $('.pswp-thumbnail').click(function () {
+            var index = $(this).data('index');
+            hidePswpTumbnail(index);
+          });
 
           return items;
         };
@@ -208,12 +229,17 @@
         };
 
         var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+          hidePswpTumbnail();
           var pswpElement = document.querySelectorAll('.pswp')[0],
-            gallery,
             options,
             items;
 
-          items = parseThumbnailElements(galleryElement);
+          if (galleryItems.length > 0) {
+            items = galleryItems;
+          } else {
+            items = parseThumbnailElements(galleryElement);
+            galleryItems = items;
+          }
 
           // define options (if needed)
           options = {
@@ -282,5 +308,8 @@
 
       // execute above function
       initPhotoSwipeFromDOM('#slider');
+
+      $('.pswp__button--grid-off').click(hidePswpTumbnail);
+      $('.pswp__button--grid-on').click(showPswpTumbnail);
     });
   });

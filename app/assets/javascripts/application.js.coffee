@@ -103,3 +103,19 @@ $(document).ready ->
     scrollToTarget(target) if $(target).length
 
   $('.cool-select').select2()
+
+$.fn.initTitleSelect = ->
+  @.each ->
+    $(@).select2(tags: $(@).data('titles').split(','),
+      tokenSeparators: [],
+      maximumSelectionSize: 1,
+      formatSelectionTooBig: -> return '')
+$ ->
+  $('input.select-title').initTitleSelect()
+
+$.fn.showPopup = ->
+  window.curPopup.modal('hide') if window.curPopup
+  window.curPopup = @
+  @.modal('show')
+$ ->
+  window.curPopup = null

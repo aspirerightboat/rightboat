@@ -27,15 +27,15 @@
             /%li= link_to '/rightboat-ltd', 'https://instagram.com/rightboat', class: 'ig-link'
           %ul.col-xs-12.col-sm-3
             %li= link_to 'Browse boats for sale', boats_path
-            %li= link_to "Register as Broker", '#', class: 'user-register broker-register'
-            - unless false#Rails.env.development?
-              %li
-                #google_translate_element
-                :javascript
-                  function googleTranslateElementInit() {
-                    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-                  }
-                %script{src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit", type: "text/javascript"}
+            - if !current_user || !current_user.company?
+              %li= link_to 'Register as Broker', register_broker_path, class: 'register-broker-link', rel: 'nofollow'
+            %li
+              #google_translate_element
+              :javascript
+                function googleTranslateElementInit() {
+                  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                }
+              %script(src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript")
 
     .row.company-info
       = link_to 'javascript: void(0);', class: 'no-divider' do

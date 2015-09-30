@@ -8,7 +8,7 @@ initBoatView = (el) ->
     $('.enquiry-form').find('#message, #captcha').val('')
     $('.enquiry-result-container').hide()
     $('.enquiry-form-container').show()
-    $('#enquiry-popup').modal('show')
+    $('#enquiry-popup').showPopup()
     false
 
   $('.fav-link', el).click (e) ->
@@ -40,11 +40,8 @@ $ ->
   $('.boat-view').each ->
     initBoatView(this)
 
-  $('#enquiry-popup').modal(show: false)
-  $('#enquiry-result-popup').modal(show: false)
-
   $('#enquiry-popup').on 'show.bs.modal', ->
-    $('#enquiry-popup form').renderCaptcha()
+    $('form', @).renderCaptcha()
 
   onSubmit = (e) ->
     e.preventDefault()
@@ -67,11 +64,7 @@ $ ->
       $('#enquiry-result-popup #signup-email').hide()
       $('#enquiry-result-popup #signup-email input').val(enquiry.email)
 
-      # hide form and show message
-      $('#enquiry-popup').off('hidden.bs.modal').one 'hidden.bs.modal', ->
-        $('#enquiry-result-popup').modal('show')
-
-      $('#enquiry-popup').modal('hide')
+      $('#enquiry-result-popup').showPopup()
 
       # signup form
       if enquiry.user_registered
@@ -102,13 +95,13 @@ $ ->
         $('#enquiry-result-popup .similar-boats-link').hide()
         $('#enquiry-result-popup .similar-boats').hide()
     .error (resp)->
-      $('#enquiry-popup form').renderCaptcha()
+      $this.renderCaptcha()
       errors = resp.responseJSON.errors
       $errors = $('<div class="alert alert-danger">')
       $.each errors, (k, v)->
         $errors.append(k + ' ' + v + '<br>')
       $this.prepend($errors)
 
-  validetta_options = $.extend Rightboat.validetta_options, onValid: onSubmit
+  validetta_options = $.extend({onValid: onSubmit}, Rightboat.validetta_options)
   $('.enquiry-form').validetta(validetta_options)
 

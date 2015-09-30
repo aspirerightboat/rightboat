@@ -51,8 +51,8 @@ $(document).ready ->
   $('.mail-subsctiption-form input[type="submit"]').click (e) ->
     subscriptionSubmit = $(this).val()
 
-  validetta_options = $.extend Rightboat.validetta_options, onValid: onContactSubmit
+  validetta_options = $.extend({onValid: onContactSubmit}, Rightboat.validetta_options)
   $('.contact-form').validetta validetta_options
 
-  validetta_options = $.extend Rightboat.validetta_options, onValid: onSubscriptionSubmit
+  validetta_options = $.extend({onValid: onSubscriptionSubmit}, Rightboat.validetta_options)
   $('.mail-subsctiption-form').validetta validetta_options

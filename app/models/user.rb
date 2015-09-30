@@ -8,7 +8,6 @@ class User < ActiveRecord::Base
       'PRIVATE' => 0,
       'MANUFACTURER' => 1,
       'COMPANY' => 2,
-      'BROKER' => 3,
       'ADMIN' => 99
   }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
@@ -43,7 +42,7 @@ class User < ActiveRecord::Base
   # validates_inclusion_of :title, within: TITLES, allow_blank: true
 
   validates_presence_of :first_name, :last_name, unless: :organization?
-  validates_presence_of :company_name, :company_weburl, :company_description, if: :organization?
+  validates_presence_of :company_name, if: :organization?
   validates_url :company_weburl, allow_blank: true, if: :organization?
 
   before_create { build_user_alert } # will create user_alert
@@ -86,6 +85,12 @@ class User < ActiveRecord::Base
 
   def organization?
     self.company? || self.manufacturer?
+  end
+
+  def generate_username
+    str = "#{first_name} #{last_name}".downcase.squeeze.gsub(' ', '-').gsub(/[^\w@.-]/, '')
+    str = "u-#{str}" if str !~ /\A[a-zA-Z]/
+    self.username = str
   end
 
   private

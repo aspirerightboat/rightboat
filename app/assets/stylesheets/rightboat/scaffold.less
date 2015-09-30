@@ -49,6 +49,8 @@ label {
 
 .close {
   .opacity(1);
+  position: relative;
+  z-index: 100;
   font-size: 42px;
   line-height: 26px;
   font-weight: normal;
@@ -236,4 +238,28 @@ ul.list-disc {
       text-decoration: none;
     }
   }
+}
+
+@-webkit-keyframes rotating {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+@keyframes rotating {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.inline-loading::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 1px solid @rb-color-primary;
+  background-color: white;
+  margin-left: 1ex;
+  -webkit-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+}
+
+.or {
+  margin: 0 1ex;
 }

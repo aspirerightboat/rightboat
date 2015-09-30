@@ -41,6 +41,7 @@ module BoatsHelper
 
   def similar_link(boat)
     options = {
+      exclude: boat.ref_no,
       currency: boat.currency.name,
       price_min: boat.price * 8 / 10,
       price_max: boat.price * 12 / 10

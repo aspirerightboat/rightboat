@@ -22,6 +22,7 @@
       }
     }
   }
+  ul { margin-bottom: 10px; }
   ul, ul li {list-style: outside none;}
   a {color: #FFF;}
   a:hover, a:active, a:focus {
@@ -70,8 +71,12 @@
   .company-info a:first-child {margin-left: 0;}
   .company-info a:last-child {margin-right: 0;}
   .rb-links ul {
-    @media (min-width: @screen-sm-min) {
-      min-height: 120px;
-    }
+    min-height: 120px;
+  }
+}
+
+@media(max-width: @screen-md-min) {
+  .footer-logo-wrap {
+    text-align: center;
   }
 }

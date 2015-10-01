@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
   has_many :boats, inverse_of: :user, dependent: :destroy
   has_many :favourites, inverse_of: :user, dependent: :destroy
   has_many :saved_boats, class_name: 'Boat', through: :favourites
+  has_many :berth_enquiries, inverse_of: :user, dependent: :destroy
   has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
   has_and_belongs_to_many :subscriptions
 

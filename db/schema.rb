@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150929160334) do
+ActiveRecord::Schema.define(version: 20150930173789) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "line1",            limit: 255
@@ -73,6 +73,24 @@ ActiveRecord::Schema.define(version: 20150929160334) do
   add_index "articles", ["article_author_id"], name: "index_articles_on_article_author_id", using: :btree
   add_index "articles", ["article_category_id"], name: "index_articles_on_article_category_id", using: :btree
   add_index "articles", ["slug"], name: "index_articles_on_slug", using: :btree
+
+  create_table "berth_enquiries", force: :cascade do |t|
+    t.integer  "user_id",     limit: 4
+    t.boolean  "buy",         limit: 1,   default: false
+    t.boolean  "rent",        limit: 1,   default: false
+    t.boolean  "home",        limit: 1,   default: false
+    t.boolean  "short_term",  limit: 1,   default: false
+    t.float    "length_min",  limit: 24,  default: 0.0
+    t.float    "length_max",  limit: 24
+    t.string   "length_unit", limit: 255
+    t.string   "location",    limit: 255
+    t.float    "latitude",    limit: 24
+    t.float    "longitude",   limit: 24
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "berth_enquiries", ["user_id"], name: "index_berth_enquiries_on_user_id", using: :btree
 
   create_table "boat_categories", force: :cascade do |t|
     t.string   "name",       limit: 255

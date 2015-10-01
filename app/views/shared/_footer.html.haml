@@ -35,6 +35,8 @@
                   }
                 %script{src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit", type: "text/javascript"}
             %li= link_to "Register as Broker", '#', class: 'user-register broker-register'
+            - if user_signed_in?
+              %li= link_to "My Rright Berths", '#', data: {toggle: 'modal', target: '#berths-popup'}
 
     .row.company-info
       = link_to 'javascript: void(0);', class: 'no-divider' do

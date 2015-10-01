@@ -1,0 +1,123 @@
+#berths-popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+      .modal-body
+        %h3.text-center My Rright Berths
+        %br
+        = form_for BerthEnquiry.new, html: { class: 'berth-enquiry-form' } do |f|
+          = hidden_field_tag :length_min
+          = hidden_field_tag :length_max
+          = hidden_field_tag :location
+          = hidden_field_tag :latitude
+          = hidden_field_tag :longitude
+          .form-group.row
+            .col-md-6.col-xs-12 1. I am looking to buy a berth
+            .col-md-6.col-xs-12
+              = radio_button_tag :buy, 'true', (f.object.buy == true)
+              = label_tag :buy_true, 'Y'
+              = radio_button_tag :buy, 'false', (f.object.buy != true)
+              = label_tag :buy_false, 'N'
+          .form-group.row
+            .col-md-6.col-xs-12 2. I am looking to rent a berth
+            .col-md-6.col-xs-12
+              = radio_button_tag :rent, 'true', (f.object.rent == true)
+              = label_tag :rent_true, 'Y'
+              = radio_button_tag :rent, 'false', (f.object.rent != true)
+              = label_tag :rent_false, 'N'
+          .form-group.row
+            .col-md-6.col-xs-12 3. I am looking for a home berth
+            .col-md-6.col-xs-12
+              = radio_button_tag :home, 'true', (f.object.home == true)
+              = label_tag :home_true, 'Y'
+              = radio_button_tag :home, 'false', (f.object.home != true)
+              = label_tag :home_false, 'N'
+          .form-group.row
+            .col-md-6.col-xs-12 4. I am looking for a short term berth
+            .col-md-6.col-xs-12
+              = radio_button_tag :short_term, 'true', (f.object.short_term == true)
+              = label_tag :short_term_true, 'Y'
+              = radio_button_tag :short_term, 'false', (f.object.short_term != true)
+              = label_tag :short_term_false, 'N'
+          .form-group.row
+            .col-md-6.col-xs-12 5. The size of the birth I am look for is:
+            .col-md-6.col-xs-12
+              .rb-control-group
+                .rb-control
+                  = slider_tag(:length, min: 0, max: 1000, unit: current_length_unit, html: { 'data-convert' => 'convertLength' })
+                .rb-control-group-addon
+                  = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm'
+          .form-group.row
+            .col-md-6.col-xs-12
+              6. I am looking for a berth here:
+              %br
+              %small &nbsp; (click on map to indicate)
+              %br
+              #location-address
+            .col-md-6.col-xs-12
+              #select-map
+
+          .form-group.row
+            .col-md-3.col-xs-12
+              = f.submit 'Submit a Request', class: 'btn-flat'
+            .col-md-9.col-xs-12
+              We will send your enquiry to Rightboat selected partners to assist in your search.
+
+:javascript
+  var map, marker;
+
+  function initMap() {
+    var map = new google.maps.Map(document.getElementById('select-map'), {
+      zoom: 5,
+      center: {lat: 51.5286416, lng: -0.1015987 },
+      disableDoubleClickZoom: true,
+      mapTypeControll: false,
+      navigationControl: false,
+      streetViewControl: false
+    });
+
+    map.addListener('click', function(e) {
+      placeMarkerAndPanTo(e.latLng, map);
+    });
+  }
+
+  function placeMarkerAndPanTo(latLng, map) {
+    if (marker) marker.setMap(null);
+
+    var geocorder = new (google.maps.Geocoder);
+    geocorder.geocode({location: latLng}, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          var location = results[0].formatted_address;
+          $('#location').val(location);
+          $('#location-address').html(location);
+          $('#latitude').val(latLng.lat());
+          $('#longitude').val(latLng.lng());
+
+          marker = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            title: location
+          });
+          map.panTo(latLng);
+        } else {
+          alert('No result found.');
+        }
+      } else {
+        alert('Geocoder failed due to: ' + status);
+      }
+    });
+  }
+
+  $(function() {
+    $("#berths-popup select").select2({
+      minimumResultsForSearch: Infinity
+      //templateResult: formatState
+    });
+
+    $('#berths-popup').on('shown.bs.modal', function () {
+      initMap();
+    });
+  });

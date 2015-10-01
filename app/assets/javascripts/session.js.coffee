@@ -6,7 +6,7 @@ $(document).ready ->
       $(this).removeClass 'open'
 
   $('[data-require-login]').click (e) ->
-    requireLogin(e, true)
+    requireLogin(e)
     true
 
   $('.user-login').click (e) ->
@@ -34,7 +34,10 @@ $(document).ready ->
     .success (response)->
       # TODO: update page using ajax result instead of page refresh
       return_to = response.return_to
-      window.location = (return_to || window.location)
+      if return_to
+        location = return_to
+      else
+        window.location.reload()
     .error (response)->
       errors = response.responseJSON.errors
       $errors = $('<div class="alert alert-danger">')

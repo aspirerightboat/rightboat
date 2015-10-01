@@ -3,6 +3,7 @@
 
   .form-control {
     border-color: white;
+    .box-shadow(none);
     height: auto;
   }
 
@@ -196,19 +197,17 @@ ul.list-disc {
   position: relative;
   background: #FFF;
   .input-group-addon {
+    padding-left: 6px;
     padding-right: 0;
-    padding-top: 2px;
+    padding-top: 4px;
+
+    .captcha-img {
+      display: none;
+    }
   }
   input, input:focus, input:active {
-    border: 0;
     .box-shadow(none);
   }
-
-  input::-webkit-input-placeholder { color: @rb-color-primary; }
-  input:-moz-placeholder { color: @rb-color-primary; }
-  input::-moz-placeholder { color: @rb-color-primary; }
-  input:-ms-input-placeholder { color: @rb-color-primary; }
-
 }
 
 .tooltip.in {
@@ -243,9 +242,7 @@ ul.list-disc {
 
 .panel-zcard {
   border: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
+  .box-shadow(none);
 
   .panel-heading {
     font-weight: bold;

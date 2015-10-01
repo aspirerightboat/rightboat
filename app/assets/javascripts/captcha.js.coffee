@@ -1,4 +1,7 @@
 $ ->
+  $('#captcha').focus ->
+    $('.captcha-img').show()
+
   $.fn.renderCaptcha = ->
     # jquery object should be form
     $this = $(this)

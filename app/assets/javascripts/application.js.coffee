@@ -40,7 +40,7 @@ window.requireLogin = (e, disable_history)->
   if $loginBtn.length > 0
     e.preventDefault()
     unless disable_history
-      href = $(e.target).prop('href')
+      href = $(e.target).data('target')
       if history.pushState && window.location.href != href
         history.pushState({}, '', href)
 
@@ -74,7 +74,11 @@ $(document).ready ->
       $extended.slideDown('slow')
 
   target = window.location.hash
-  scrollToTarget(target) if $(target).length
+  if $(target).length
+    if $(target).hasClass 'modal'
+      $(target).modal('show')
+    else
+      scrollToTarget(target)
 
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')

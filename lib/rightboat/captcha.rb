@@ -20,7 +20,7 @@ module Rightboat
       draw.pointsize = 12
       draw.font_weight = Magick::NormalWeight
       draw.font_style = Magick::ItalicStyle
-      draw.fill = '#60bbff'
+      draw.fill = '#999999'
       x = draw.get_type_metrics question
 
       img = Magick::Image.new(x.width, x.height) do

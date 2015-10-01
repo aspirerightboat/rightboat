@@ -102,7 +102,18 @@ Rails.application.routes.draw do
   post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check
   get 'test-email', to: 'testing#test_email'
 
-  resource :broker_area, controller: :broker_area, path: 'broker-area', only: [:show]
+  resource :broker_area, controller: :broker_area, path: 'broker-area', only: [:show] do
+    get :getting_started
+    get :details
+    post :update_details
+    get :preferences
+    post :update_preferences
+    get :charges
+    get :messages
+    get :boats_overview
+    get :boats_manager
+    get :my_leads
+  end
   resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:show, :create]
 
   namespace :member, path: 'my-rightboat' do

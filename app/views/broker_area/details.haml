@@ -1,0 +1,34 @@
+= render layout: 'broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
+  %h1 Business Details
+
+  = form_for current_user, url: update_preferences_broker_area_path, method: :put, html: { class: 'profile-form' } do |f|
+    .row
+      .col-sm-6.col-xs-12
+        .form-group
+          = f.label :company_name
+          = f.text_field :company_name, class: 'form-control'
+        = fields_for :address do |ff|
+          .form-group
+            = ff.label :line1, 'Address Line 1'
+            = ff.text_field :line1, class: 'form-control'
+          .form-group
+            = ff.label :line2, 'Address Line 2'
+            = ff.text_field :line2, class: 'form-control'
+          .form-group
+            = ff.label :county, 'Region/County'
+            = ff.text_field :county, class: 'form-control'
+          .form-group
+            = ff.label :zip, 'Post Code/Zip'
+            = ff.text_field :zip, class: 'form-control'
+          .form-group
+            = ff.label :country_id
+            = ff.text_field :country_id, class: 'form-control'
+        .form-group
+          = f.label :phone, 'Tel/Mobile'
+          = f.email_field :phone, class: 'form-control'
+        .form-group
+          = f.label :company_weburl, 'Website'
+          = f.email_field :company_weburl, class: 'form-control'
+    .row
+      .col-sm-6.col-xs-12.form-actions
+        %button.btn-flat.btn-block(type="submit") Save Changes

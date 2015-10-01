@@ -13,40 +13,31 @@
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = label_tag :title
-                    = select_tag :title, options_for_select(User::TITLES), prompt: ' ', class: 'select-title'
+                    = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'select-title'
                   .rb-control
-                    = label_tag :first_name
-                    = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
+                    = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :surname
-                = text_field_tag :surname, current_user.try(:last_name), class: 'form-control', 'data-validetta' => 'required'
+                = text_field_tag :surname, current_user.try(:last_name), placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
           .row
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :email
-                = email_field_tag :email, current_user.try(:email), class: 'form-control', 'data-validetta' => 'required,email'
+                = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = label_tag :country_code
-                    = select_tag :country_code, options_for_country_code, prompt: 'Please select...', placeholder: 'Please select...', class: 'select-white select-sm country-code-select'
+                    = select_tag :country_code, options_for_country_code, prompt: 'Country', placeholder: 'Country', class: 'select-white select-sm country-code-select'
                   .rb-control
-                    = label_tag :phone
-                    = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), class: 'form-control'
+                    = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), placeholder: 'Phone', class: 'form-control'
           - unless current_user
             .row
               .col-sm-6.col-xs-12.login-toggle
                 .form-group
-                  .hide
-                    = text_field_tag :uname
-                  = label_tag :password
-                  = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
+                  .hide= text_field_tag :uname
+                  = password_field_tag :password, '', placeholder: 'Password', class: 'form-control', 'data-validetta' => 'required'
           .form-group
-            = label_tag :message, 'Comments'
-            = text_area_tag :message, '', class: 'form-control'
+            = text_area_tag :message, '', placeholder: 'Comments', class: 'form-control'
           - unless current_user
             .form-group
               = check_box_tag :have_account

@@ -4,27 +4,20 @@
       .form-group
         .rb-control-group
           .rb-control-group-addon
-            = label_tag :title
-            = select_tag :title, options_for_select(User::TITLES), prompt: ' ', class: 'select-title'
+            = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'select-title'
           .rb-control
-            = label_tag :first_name
-            = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
+            = text_field_tag :first_name, nil, placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
     .col-sm-6.col-xs-12
       .form-group
-        = label_tag :last_name
-        = text_field_tag :last_name, nil, class: 'form-control', 'data-validetta' => 'required'
+        = text_field_tag :last_name, nil, placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
   #signup-email.form-group
-    = label_tag :email
-    = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
+    = email_field_tag :email, '', placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
   .form-group
-    = label_tag :username
-    = text_field_tag :username, '', class: 'form-control', 'data-validetta' => 'required,custom[username]'
+    = text_field_tag :username, '', placeholder: 'Username', class: 'form-control', 'data-validetta' => 'required,custom[username]'
   .form-group
-    = label_tag :password
-    = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
+    = password_field_tag :password, '', placeholder: 'Password', class: 'form-control', 'data-validetta' => 'required'
   .form-group
-    = label_tag :password_confirmation
-    = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
+    = password_field_tag :password_confirmation, '', placeholder: 'Password confirmation', class: 'form-control', 'data-validetta' => 'required'
   .form-group
     = button_tag 'Create Account', type: 'submit', class: 'btn-flat'
     &nbsp;Or&nbsp;

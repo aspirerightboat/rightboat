@@ -10,7 +10,7 @@
       %h3.toolbar-title Featured Boats
     .container
       .row(data-view-layout="gallery")
-        = render @featured_boats, back: true, enquiry_disabled: true
+        = render @featured_boats, back: true
 
   - if @recent_boats.any?
     #recent-boats

@@ -74,12 +74,14 @@ $ ->
     onSubmit = (e)->
       e.preventDefault()
       $this = $(e.target) # form
-      phoneNumber = $this.find('#phone').val()
+      $phone = $this.find('#phone')
 
-      if phoneNumber == '' && !phoneModalOpened
-        $('#phone-popup').modal('show')
-        phoneModalOpened = true
-        return false
+      if $phone.is(':visible')
+        phoneNumber = $phone.val()
+        if phoneNumber == '' && !phoneModalOpened
+          $('#phone-popup').modal('show')
+          phoneModalOpened = true
+          return false
 
       $this.find('.alert').remove()
       url = $this.attr('action')

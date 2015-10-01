@@ -41,6 +41,7 @@ class Enquiry < ActiveRecord::Base
           self.title = existing_user.try(:title)
           self.first_name = existing_user.try(:first_name)
           self.surname = existing_user.try(:last_name)
+          self.phone = existing_user.try(:phone) || existing_user.try(:mobile)
           self.user = existing_user
         else
           errors.add :password, 'is invalid'

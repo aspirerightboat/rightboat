@@ -23,15 +23,14 @@
             .col-sm-6.col-xs-12
               .form-group
                 = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
-            .col-sm-6.col-xs-12
+            .col-sm-6.col-xs-12.login-toggle.active
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
                     = select_tag :country_code, options_for_country_code, prompt: 'Country', placeholder: 'Country', class: 'select-white select-sm country-code-select'
                   .rb-control
                     = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), placeholder: 'Phone', class: 'form-control'
-          - unless current_user
-            .row
+            - unless current_user
               .col-sm-6.col-xs-12.login-toggle
                 .form-group
                   .hide= text_field_tag :uname

@@ -13,12 +13,14 @@ class BrokerAreaController < ApplicationController
   end
 
   def update_details
+    redirect_to({action: :details}, notice: 'coming soon')
   end
 
   def preferences
   end
 
   def update_preferences
+    redirect_to({action: :details}, notice: 'coming soon')
   end
 
   def charges

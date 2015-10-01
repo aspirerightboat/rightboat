@@ -1,7 +1,7 @@
 = render layout: 'broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
   %h1 Business Details
 
-  = form_for current_user, url: update_preferences_broker_area_path, method: :put, html: { class: 'profile-form' } do |f|
+  = form_for current_user, url: update_details_broker_area_path do |f|
     .row
       .col-sm-6.col-xs-12
         .form-group

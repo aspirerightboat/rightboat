@@ -6,7 +6,7 @@ $(document).ready ->
       $(this).removeClass 'open'
 
   $('[data-require-login]').click (e) ->
-    requireLogin(e)
+    requireLogin(e, true)
     true
 
   $('.user-login').click (e) ->

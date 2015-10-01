@@ -8,7 +8,18 @@
         .row
           %h3 Register as Broker
           %hr
+          %p To register as a Broker and be able to list boats for sale on Rightboat, you must be a professional yacht broker.
+
           = form_tag register_broker_path, class: 'register-form', remote: true, data: {type: :json} do
+            .row
+              .col-sm-12
+                %p
+                  Please confirm:<br>
+                  %input(type="checkbox" name="agree" id="agree")
+                  %label(for="agree")
+                    I am a professional boat broker and wish to register for FREE as a lifetime member of Rightboat.com.
+                    and I acknowledge that by registering and using Rightboat.com, I agree to be bound by the
+                    Rightboat.com terms and conditions
             .row
               .col-sm-6.col-xs-12
                 .form-group
@@ -40,8 +51,14 @@
               = label_tag :password, 'Password:*'
               = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
             .form-group
-              = label_tag :password_confirmation, 'Password confirmation:*'
+              = label_tag :password_confirmation, 'Repeat Password:*'
               = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
+            .row
+              .col-sm-12
+                %p
+                  FREE membership is the first step to listing your boats on Rightboat.com.
+                  We do not charge for listing boats, only for leads supplied.
+                  Register now for FREE membership and to find out more.
             .form-group
               %button.btn-flat(type="submit") Create Account
               %span.or Or

@@ -263,3 +263,11 @@ ul.list-disc {
 .or {
   margin: 0 1ex;
 }
+
+.modal {
+  [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+    & + label:before {
+      background-color: white;
+    }
+  }
+}

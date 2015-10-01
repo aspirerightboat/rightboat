@@ -14,8 +14,7 @@ $.fn.initRegisterBrokerPopup = ->
   .validetta(Rightboat.validetta_options)
   .on 'ajax:before', (e) -> $submit.addClass('inline-loading')
   .on 'ajax:complete', (e) -> $submit.removeClass('inline-loading')
-  .on 'ajax:success', (e, xhr) ->
-    window.location = xhr.responseJSON.location
+  .on 'ajax:success', (e, data, status, xhr) -> window.location = xhr.responseJSON.location
   .on 'ajax:error', (e, xhr) ->
     if xhr.status == 422
       $('.alert', e.target).remove()

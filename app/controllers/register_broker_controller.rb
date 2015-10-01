@@ -9,7 +9,10 @@ class RegisterBrokerController < ApplicationController
     user.role = 'COMPANY'
     user.generate_username
 
-    if user.save
+    user.validate
+    user.errors.add(:base, 'You must agree with terms and conditions') if params[:agree].blank?
+
+    if user.errors.none? && user.save
       env['warden'].set_user(user)
       render json: {location: broker_area_url}
     else

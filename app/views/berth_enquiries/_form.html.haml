@@ -5,7 +5,7 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} &times;
       .modal-body
-        %h3.text-center My Rright Berths
+        %h3.text-center My Right Berths
         %br
         = form_for BerthEnquiry.new, html: { class: 'berth-enquiry-form' } do |f|
           = hidden_field_tag :length_min
@@ -46,9 +46,9 @@
             .col-md-6.col-xs-12
               .rb-control-group
                 .rb-control
-                  = slider_tag(:length, min: 0, max: 1000, unit: current_length_unit, html: { 'data-convert' => 'convertLength' })
+                  = slider_tag(:length, min: 0, max: 300, unit: 'm', html: { 'data-convert' => 'convertLength' })
                 .rb-control-group-addon
-                  = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm'
+                  = select_tag :length_unit, options_for_select(['ft', 'm'], 'm'), class: 'select-sm'
           .form-group.row
             .col-md-6.col-xs-12
               6. I am looking for a berth here:

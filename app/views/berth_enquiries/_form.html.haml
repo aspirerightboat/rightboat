@@ -4,9 +4,8 @@
       .modal-header
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} &times;
+        .h My Right Berths
       .modal-body
-        %h3.text-center My Right Berths
-        %br
         = form_for BerthEnquiry.new, html: { class: 'berth-enquiry-form' } do |f|
           = hidden_field_tag :length_min
           = hidden_field_tag :length_max

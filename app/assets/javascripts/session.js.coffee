@@ -9,9 +9,7 @@ $ ->
 
   $(document).on 'click', '.user-login', ->
     $('form .alert').remove()
-    $('#session-popup .signin-area').show()
-    $('#session-popup .signup-area').hide()
-    $('#session-popup').showPopup()
+    $('#login_popup').displayPopup()
     false
 
   onSubmit = (e) ->

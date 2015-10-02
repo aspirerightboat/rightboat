@@ -4,10 +4,9 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
+        .h Email Activation
       .modal-body
         .row
-          %h3 Email Activation
-          %hr
           %p Confirmation instructions was sent to your email <b>#{current_user.email}</b>.
           %p If you haven’t received e-mail, click Resend.
           = form_tag resend_confirmation_path, class: 'form-inline' do

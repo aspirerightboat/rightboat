@@ -58,7 +58,7 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
-        %h1 Reason for Quality Check Request
+        .h Reason for Quality Check Request
       .modal-body
         = form_for @enquiry, url: quality_check_path(@enquiry), method: :post do |f|
           .row

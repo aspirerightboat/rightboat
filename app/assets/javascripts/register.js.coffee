@@ -1,9 +1,7 @@
 $ ->
   $(document).on 'click', '.user-register', ->
     $('form .alert').remove()
-    $('#session-popup .signin-area').hide()
-    $('#session-popup .signup-area').show()
-    $('#session-popup').showPopup()
+    $('#register_popup').displayPopup()
     false
 
   $('.register-form').each ->

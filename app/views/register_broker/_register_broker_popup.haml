@@ -4,10 +4,9 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
+        .h Register as Broker
       .modal-body
         .row
-          %h3 Register as Broker
-          %hr
           %p To register as a Broker and be able to list boats for sale on Rightboat, you must be a professional yacht broker.
 
           = form_tag register_broker_path, class: 'register-form', remote: true, data: {type: :json} do
@@ -47,12 +46,15 @@
             .form-group
               = label_tag :password, 'Company Name:*'
               = text_field_tag :company_name, '', class: 'form-control', 'data-validetta' => 'required'
-            .form-group
-              = label_tag :password, 'Password:*'
-              = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
-            .form-group
-              = label_tag :password_confirmation, 'Repeat Password:*'
-              = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
+            .row
+              .col-sm-6.col-xs-12
+                .form-group
+                  = label_tag :password, 'Password:*'
+                  = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
+              .col-sm-6.col-xs-12
+                .form-group
+                  = label_tag :password_confirmation, 'Repeat Password:*'
+                  = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
             .row
               .col-sm-12
                 %p

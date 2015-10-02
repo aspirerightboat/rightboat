@@ -10,7 +10,7 @@ initBoatView = (el) ->
     $('.enquiry-form').find('#message, #captcha').val('')
     $('.enquiry-result-container').hide()
     $('.enquiry-form-container').show()
-    $('#enquiry-popup').showPopup()
+    $('#enquiry-popup').displayPopup()
     false
 
   $('.fav-link', el).click (e) ->
@@ -73,7 +73,7 @@ $ ->
         $('#enquiry-result-popup #signup-email').hide()
         $('#enquiry-result-popup #signup-email input').val(enquiry.email)
   
-        $('#enquiry-result-popup').showPopup()
+        $('#enquiry-result-popup').displayPopup()
 
         # signup form
         if enquiry.user_registered

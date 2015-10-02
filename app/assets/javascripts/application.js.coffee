@@ -117,13 +117,13 @@ $.fn.initTitleSelect = ->
 $ ->
   $('.select-title').initTitleSelect()
 
-$.fn.showPopup = ->
-  window.curPopup.modal('hide') if window.curPopup
-  window.curPopup = @
-  @.modal('show')
 $ ->
-  window.curPopup = null
+  curPopup = null
+  $.fn.displayPopup = ->
+    curPopup.modal('hide') if curPopup
+    curPopup = @
+    @.modal('show')
 
 $ ->
   $('#confirm_email_popup').each ->
-    $(@).showPopup()
+    $(@).displayPopup()

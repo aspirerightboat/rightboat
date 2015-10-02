@@ -4,8 +4,8 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
+        .h Request Details
       .modal-body
-        %h1 Request Details
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
         = form_tag '#', class: 'enquiry-form' do
           .row.login-toggle.active
@@ -59,7 +59,7 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
-        %h1 Message Sent
+        .h Message Sent
       .modal-body
         %h1.text-center Thank you for your enquiry
         %h4.text-center

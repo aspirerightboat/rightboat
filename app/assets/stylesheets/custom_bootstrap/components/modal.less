@@ -1,15 +1,30 @@
 .modal { color: #FFF; }
 .modal-header {
-  padding: 15px 15px 15px @modal-title-padding;
+  padding: 30px @modal-title-padding 0;
   min-height: (30px + @modal-title-line-height);
+  position: relative;
 
   @media(max-width: @screen-md-max) {
-    padding: 15px 15px 15px @modal-title-padding-md;
+    padding: 15px @modal-title-padding-md;
   }
   @media(max-width: @screen-xs-max) {
-    padding: 15px 15px 15px @modal-title-padding-sm;
+    padding: 15px @modal-title-padding-sm;
   }
   h1, h2, h3 { margin: 0; }
+  //hr {
+  //  width: 80%;
+  //  margin: 0;
+  //}
+  .h {
+    font-size: 28px;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0 -15px;
+  }
+  .close {
+    right: 40px;
+    top: 35px;
+  }
 }
 
 .modal-body, .modal-footer {

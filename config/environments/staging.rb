@@ -22,7 +22,7 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.serve_static_files = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.serve_static_files = false # ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
@@ -77,6 +77,16 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.action_controller.default_url_options = { host: '52.28.195.70' }
-  config.action_mailer.default_url_options = { host: '52.28.195.70' }
+  config.action_controller.default_url_options = { host: '52.28.247.128' }
+  config.action_mailer.default_url_options = { host: '52.28.247.128' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      authentication: :plain,
+      address: 'smtp.gmail.com',
+      port: 587,
+      domain: 'rightboat.com',
+      user_name: 'boats@rightboat.com',
+      password: 'V6rB763-Zy',
+      enable_starttls_auto: true
+  }
 end

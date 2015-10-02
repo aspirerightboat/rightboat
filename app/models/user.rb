@@ -2,13 +2,12 @@ class User < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
-  TITLES = ['Mr', 'Sir', 'Miss', 'Ms', 'Mrs', 'Dr', 'Capt']
+  TITLES = %w(Mr Sir Miss Ms Mrs Dr Capt)
 
   ROLES = {
       'PRIVATE' => 0,
       'MANUFACTURER' => 1,
       'COMPANY' => 2,
-      'BROKER' => 3,
       'ADMIN' => 99
   }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
@@ -24,11 +23,14 @@ class User < ActiveRecord::Base
   has_many :enquiries, inverse_of: :user, dependent: :nullify
   has_many :imports, inverse_of: :user, dependent: :destroy
   has_many :boats, inverse_of: :user, dependent: :destroy
-  has_many :favourites, inverse_of: :user, dependent: :destroy
-  has_many :saved_boats, class_name: 'Boat', through: :favourites
-  has_many :berth_enquiries, inverse_of: :user, dependent: :destroy
+  has_many :favourites, dependent: :delete_all
+  has_many :berth_enquiries, dependent: :destroy
   has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
-  has_and_belongs_to_many :subscriptions
+  has_one :broker_info, dependent: :destroy
+  has_one :user_alert, dependent: :destroy
+  has_many :invoices, dependent: :nullify
+  has_many :lead_trails, dependent: :nullify
+  has_many :saved_searches, dependent: :delete_all
 
   mount_uploader :avatar, AvatarUploader
 
@@ -37,14 +39,15 @@ class User < ActiveRecord::Base
 
   validates_presence_of :username
   validates_uniqueness_of :username, allow_blank: true
-  validates_format_of :username, with: /\A[a-zA-Z][\w\d\-\@\._]+\z/, allow_blank: true
+  validates_format_of :username, with: /\A[a-zA-Z][\w@.-]+\z/, allow_blank: true
   # validates_inclusion_of :title, within: TITLES, allow_blank: true
 
   validates_presence_of :first_name, :last_name, unless: :organization?
-  validates_presence_of :company_name, :company_weburl, :company_description, if: :organization?
+  validates_presence_of :company_name, if: :organization?
   validates_url :company_weburl, allow_blank: true, if: :organization?
 
-  after_create :create_subscriptions!
+  before_create { build_user_alert } # will create user_alert
+  before_save :create_broker_info
 
   delegate :country, to: :address
 
@@ -85,6 +88,12 @@ class User < ActiveRecord::Base
     self.company? || self.manufacturer?
   end
 
+  def generate_username
+    str = "#{first_name} #{last_name}".downcase.squeeze.gsub(' ', '-').gsub(/[^\w@.-]/, '')
+    str = "u-#{str}" if str !~ /\A[a-zA-Z]/
+    self.username = str
+  end
+
   private
   def slug_candidates
     [
@@ -103,7 +112,13 @@ class User < ActiveRecord::Base
     end
   end
 
-  def create_subscriptions!
-    self.subscription_ids = Subscription.all.map(&:id)
+  def create_broker_info
+    if role_changed?
+      if company?
+        BrokerInfo.find_or_create_by(user_id: id)
+      else
+        BrokerInfo.where(user_id: id).delete_all
+      end
+    end
   end
 end

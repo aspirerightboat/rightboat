@@ -8,8 +8,8 @@ ActiveAdmin.register Boat do
   filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Free'
   filter :id
   filter :user
-  filter :country, as: :select, collection: Country.order(name: :asc)
-  filter :manufacturer, as: :select, collection: Manufacturer.order(name: :asc)
+  filter :country, as: :select, collection: Country.order(:name)
+  filter :manufacturer, as: :select, collection: Manufacturer.order(:name)
   filter :model, collection: []
   filter :featured
   filter :recently_reduced
@@ -32,8 +32,12 @@ ActiveAdmin.register Boat do
     column :country, :country, sortable: 'countries.name'
     column :location
     actions do |boat|
-      item "Statistics", statistics_admin_boat_path(boat)
+      item 'Statistics', statistics_admin_boat_path(boat)
     end
+  end
+
+  index as: :grid do |boat|
+    link_to image_tag(boat.primary_image.file.url(:thumb)), admin_boat_path(boat)
   end
 
   form do |f|
@@ -60,7 +64,16 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:manufacturer, :model, :user, :country, :office)
+      end_of_association_chain.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
+    end
+  end
+
+  if !Rails.env.production?
+    sidebar 'Tools', only: [:index] do
+      res = link_to('Delete All Boats', {action: :delete_all_boats}, method: :post, class: 'button', style: 'margin-bottom: 10px',
+              data: {confirm: 'Are you sure you want to delete all boat data?', disable_with: 'Deleting...'})
+      res << link_to('Activate All Models', {action: :activate_all_models}, method: :post, class: 'button')
+      res
     end
   end
 
@@ -68,5 +81,35 @@ ActiveAdmin.register Boat do
     @boat = Boat.find(params[:id])
     @page_title = @boat.name
     @monthly = Rightboat::Statistics.monthly_boat_stats(@boat)
+  end
+
+  collection_action :delete_all_boats, method: :post do
+    if !Rails.env.production?
+      Boat.unscoped.each do |boat|
+        boat.destroy
+      end
+      flash.notice = 'All the boats were deleted'
+    end
+    redirect_to({action: :index})
+  end
+
+  collection_action :activate_all_models, method: :post do
+    Boat.update_all(deleted_at: nil); Boat.reindex
+    BoatCategory.update_all(active: true); BoatCategory.reindex
+    BoatType.update_all(active: true); BoatType.reindex
+    Country.update_all(active: true); Country.reindex
+    Currency.update_all(active: true)
+    DriveType.update_all(active: true)
+    EngineManufacturer.update_all(active: true)
+    EngineModel.update_all(active: true)
+    FuelType.update_all(active: true); FuelType.reindex
+    Import.update_all(active: true)
+    Manufacturer.update_all(active: true); Manufacturer.reindex
+    Model.update_all(active: true); Model.reindex
+    Specification.update_all(active: true)
+    VatRate.update_all(active: true)
+    Sunspot.commit
+
+    redirect_to({action: :index}, {notice: 'All models was activated'})
   end
 end

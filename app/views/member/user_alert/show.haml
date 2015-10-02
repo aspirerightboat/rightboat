@@ -1,0 +1,22 @@
+- content_for :header_text do
+  .navbar-h My <strong>Rightboat</strong>
+
+.member-content(data-view-layout='list')
+  %h1 My Alerts
+  %hr
+  = form_for [:member, @user_alert] do |f|
+    .form-group
+      = f.check_box :favorites
+      = f.label :favorites, 'Email me if my favourites change status'
+    .form-group
+      = f.check_box :saved_searches
+      = f.label :saved_searches, 'Email me if new listings match my saved searches'
+    .form-group
+      = f.check_box :suggestions, disabled: true
+      = f.label :suggestions, 'Email me suggestions'
+    .form-group
+      = f.check_box :newsletter, disabled: true
+      = f.label :newsletter, 'Email me the Rightboat newsletter'
+    .row
+      .col-xs-6.col-sm-4
+        %button.btn-flat.btn-full(type="submit") Save Changes

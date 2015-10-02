@@ -1,0 +1,20 @@
+- content_for :header_text do
+  .navbar-h My Rightboat
+
+#main-content.container(style="max-width: 600px")
+  - if notice
+    .alert.alert-info= notice
+  - if alert
+    .alert.alert-warning= alert
+
+  %h1 Forgot your password?
+
+  = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+    - if resource.errors.any?
+      .alert.alert-warning
+        = resource.errors.full_messages.to_sentence
+    .form-group
+      = f.label :email
+      = f.email_field :email, autofocus: true, class: 'form-control'
+    .nice-buttons(style="text-align: center")
+      %button.nice-button(type="submit") Send me reset password instructions

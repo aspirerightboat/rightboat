@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   after_action :set_visited
 
+  before_filter :global_current_user
+
   include SessionSetting
 
   serialization_scope :view_context
@@ -19,15 +21,15 @@ class ApplicationController < ActionController::Base
   end
 
   def current_length_unit
-    @_current_length_unit ||= cookies[:length_unit] ? cookies[:length_unit] : 'ft'
+    @_current_length_unit ||= cookies[:length_unit] || 'ft'
   end
 
   def current_view_layout
-    @_current_view_layout ||= cookies[:view_layout] ? cookies[:view_layout] : 'gallery'
+    @_current_view_layout ||= cookies[:view_layout] || 'gallery'
   end
 
   def current_order_field
-    @_current_order_field ||= cookies[:order_field] ? cookies[:order_field] : 'score'
+    @_current_order_field ||= cookies[:order_field] || 'score'
   end
   helper_method :current_currency, :current_view_layout,
                 :current_order_field, :current_length_unit
@@ -37,13 +39,12 @@ class ApplicationController < ActionController::Base
   def authenticate_admin_user!
     authenticate_user!
     unless current_user.admin?
-      flash[:error] = "You need admin privilege to continue. Please login as admin and try again."
+      flash[:error] = 'You need admin privilege to continue. Please login as admin and try again.'
       redirect_to root_path
     end
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:title, :username, :email, :first_name, :last_name, :phone, :password, :password_confirmation, :role) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :remember_me) }
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:title, :username, :email, :first_name, :last_name, :phone, :password, :password_confirmation, :current_password,
       information_attributes: [:id, :require_finance, :list_boat_for_sale, :buy_this_season, :looking_for_berth]) }
@@ -89,5 +90,15 @@ class ApplicationController < ActionController::Base
 
   def set_visited
     cookies[:visited] = true if cookies[:visited].nil?
+  end
+
+  def require_broker_user
+    if !current_user.try(:company?) && !current_user.try(:admin?)
+      redirect_to root_path, alert: 'broker user required'
+    end
+  end
+
+  def global_current_user
+    $current_user = current_user # or store it like this: Thread.current[:current_user] = current_user
   end
 end

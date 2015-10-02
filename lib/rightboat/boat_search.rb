@@ -16,18 +16,19 @@ module Rightboat
       @params = preprocess_param(params)
     end
 
-    def retrieve_boats
+    def retrieve_boats(includes = nil, per_page = 30)
       match_conidtion = Proc.new do |q, field, param_field|
         param_field ||= field
         q.with field, @params[param_field] unless @params[param_field].blank?
       end
 
-      search = Sunspot.search(Boat) do |q|
+      includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country] if !includes
+      search = Boat.solr_search(include: includes) do |q|
         q.without :ref_no, @params[:exclude] unless @params[:exclude].blank?
         q.with :ref_no, @params[:ref_no] unless @params[:ref_no].blank?
         q.with :live, true
         q.fulltext @params[:q] unless @params[:q].blank?
-        q.paginate page: @params[:page].to_i, per_page: 30
+        q.paginate page: @params[:page].to_i, per_page: per_page
 
         q.order_by @params[:order].to_sym, @params[:order_dir].to_sym if @params[:order]
 

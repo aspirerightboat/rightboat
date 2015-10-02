@@ -1,0 +1,45 @@
+%p
+  Dear #{@enquiry.first_name},
+
+%p
+  Thank you for requesting details of the following boat:
+
+%ul
+  %li <b>Ref No:</b> #{@boat.ref_no}
+  %li <b>Manufacturer:</b> #{@boat.manufacturer}
+  %li <b>Model:</b> #{@boat.model}
+  - boat_url = boat_url(@boat.slug)
+  %li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>
+
+%p
+  Please find attached a PDF with the full information we hold on this boat.
+
+%p
+  The seller’s broker has been notified. If you wish to contact the broker for this boat, their contact details are:
+
+%ul
+  - if @office
+    - if @office.name.present?
+      %li <b>Broker Office Name:</b> #{@office.name}
+    - if @office.contact_name.present?
+      %li <b>Contact Name:</b> #{@office.contact_name}
+    - if @office.daytime_phone.present?
+      %li <b>Daytime Phone:</b> #{@office.daytime_phone}
+    - if @office.evening_phone.present?
+      %li <b>Evening Phone:</b> #{@office.evening_phone}
+    - if @office.mobile.present?
+      %li <b>Mobile:</b> #{@office.mobile}
+    - if @office.fax.present?
+      %li <b>Fax:</b> #{@office.fax}
+    - if @office.email.present?
+      %li <b>Email:</b> <a href="mailto:#{@office.email}">#{@office.email}</a>
+    - if @office.website.present?
+      %li <b>Website:</b> #{@office.website}
+  - if @office.try(:email) != @boat.user.email
+    %li <b>Broker Email:</b> <a href="mailto:#{@boat.user.email}">#{@boat.user.email}</a>
+
+%p
+  %a(href="#{lead_url(@enquiry)}") Check status of Lead
+
+%p
+  Thanks for using Rightboat!

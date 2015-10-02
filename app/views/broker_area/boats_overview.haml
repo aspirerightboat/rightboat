@@ -1,0 +1,19 @@
+= render layout: 'broker_layout', locals: {tab: :boats, sidebar: render('boats_sidebar')} do
+  %h1 Boats Overview
+
+  %ul
+    %li You have <b>0 boats live</b>
+    %li You have <b>0 boats pending</b>
+    %li You have <b>0 boats deleted</b> (shd be able to record deleted boats to re-instate later if required)
+
+  %p
+    Last feed update timestamp: 2015/mm/dd hh:mm:ss
+
+  %p
+    You are a manual/automatic feed
+  %p
+    Do you wish to make a change?
+  %p
+    Upload new feed URL, format and credentials (triggers email to RB to action
+  %p
+    Start manually uploading (triggers email to RB to action)

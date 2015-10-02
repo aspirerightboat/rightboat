@@ -49,18 +49,12 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  has_many :favourites, inverse_of: :boat, dependent: :destroy
-  has_many :liked, class_name: 'User', through: :favourites, source: :user
+  has_many :favourites, dependent: :delete_all
   has_many :enquiries, inverse_of: :boat, dependent: :destroy
   has_many :boat_specifications, inverse_of: :boat, dependent: :destroy
   has_many :boat_images, inverse_of: :boat, dependent: :destroy
-  has_one :primary_image,
-          -> { order(:position) },
-          class_name: 'BoatImage'
-  has_many :slave_images,
-          -> { order(:position).offset(1) },
-          class_name: 'BoatImage'
-
+  has_one :primary_image, -> { order(:position) }, class_name: 'BoatImage'
+  has_many :slave_images, -> { order(:position).offset(1) }, class_name: 'BoatImage'
   belongs_to :user,          inverse_of: :boats
   belongs_to :import,        inverse_of: :boats
   belongs_to :office,        inverse_of: :boats
@@ -76,7 +70,7 @@ class Boat < ActiveRecord::Base
   belongs_to :currency,      inverse_of: :boats
   belongs_to :country,       inverse_of: :boats
 
-  solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
+  # solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
   validates_presence_of :manufacturer, :model
   validate :model_inclusion_of_manufacturer
   validate :require_price
@@ -93,12 +87,14 @@ class Boat < ActiveRecord::Base
 
   before_destroy :remove_activities
 
+  def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
+
   def self.similar_boats(boat, options = {})
     # TODO: need confirmation from RB
     return [] unless boat.manufacturer
-    search = Sunspot.search Boat do |q|
+    search = Boat.solr_search(include: [:manufacturer, :model, :primary_image]) do |q|
       q.with :live, true
-      q.without :ref_no, [boat.ref_no]
+      q.without :ref_no, boat.ref_no
       q.with :manufacturer_id, boat.manufacturer_id
       q.any_of do |q|
         q.all_of do |q|
@@ -127,8 +123,8 @@ class Boat < ActiveRecord::Base
   def spec_attributes(context = nil, full_spec = false)
     ret = full_spec ? [['Seller', user.name]] : []
 
-    currency = context ? context.current_currency : nil
-    l_unit = context ? context.current_length_unit : nil
+    currency = (context.current_currency if context && context.respond_to?(:current_currency))
+    l_unit = (context.current_length_unit if context && context.respond_to?(:current_length_unit))
 
     ret += [
       ['Price', display_price(currency), 'price'],
@@ -142,7 +138,7 @@ class Boat < ActiveRecord::Base
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
     ]
-    specs = boat_specifications.active
+    specs = boat_specifications.includes(:specification).active
     specs = specs.front unless full_spec
     ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
     ret << ['RB Boat Ref', self.ref_no]
@@ -154,11 +150,15 @@ class Boat < ActiveRecord::Base
   end
 
   def display_length(unit = nil)
+    return '' if length_m <= 0
     unit ||= 'm'
     length = self.length_m.to_f
-    return '' if length == 0
-    length = unit.to_s =~ /ft/i ? (length * 3.2808399).round : length.round
+    length = unit.to_s =~ /ft/i ? length_ft.round : length.round
     "#{length} #{unit}"
+  end
+
+  def length_ft
+    (length_m * 3.2808399 * 100).round / 100.0
   end
 
   def display_price(currency = nil)
@@ -169,16 +169,6 @@ class Boat < ActiveRecord::Base
       price = Currency.convert(self.price, self.currency, currency)
       number_to_currency(price, unit: currency.symbol.html_safe, precision: 0)
     end
-  end
-
-  def favourited_at_by(user)
-    self.booked_by(user).try(&:display_ts)
-  end
-
-  def booked_by(user)
-    return false unless user
-    user_id = user.respond_to?(:id) ? user.id : user.to_i
-    favourites.where(user_id: user_id).first
   end
 
   def live?
@@ -197,8 +187,9 @@ class Boat < ActiveRecord::Base
     _l == location.to_s.downcase ? true : false
   end
 
-  def booked_by?(user)
-    !!self.booked_by(user)
+  def favourited_by?(user)
+    return false unless user
+    favourites.where(user: user).exists?
   end
 
   def valid_price?

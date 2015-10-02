@@ -67,12 +67,6 @@ Rails.application.routes.draw do
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
   resources :articles, only: [:show], path: :news
   resources :buyer_guides, only: [:index, :show]
-
-  resources :manufacturers, only: [] do
-    resources :models, only: [] do
-      resources :boats, only: [:show]
-    end
-  end
   resources :feedbacks, only: [:create]
   resources :mail_subscriptions, only: [:create]
   resources :marine_enquiries, only: [:create]
@@ -83,27 +77,57 @@ Rails.application.routes.draw do
   get 'captcha', to: 'captcha#image'
   get 'captcha/new', to: 'captcha#new'
 
-  get 'contact' => 'home#contact', as: :contact
-  get 'toc' => 'home#toc', as: :toc
-  get 'marine_services' => 'home#marine_services', as: :marine_services
-  get 'privacy_policy' => 'home#privacy_policy', as: :privacy_policy
-  get 'cookies_policy' => 'home#cookies_policy', as: :cookies_policy
+  get 'contact', to: 'home#contact', as: :contact
+  get 'toc', to: 'home#toc', as: :toc
+  get 'marine_services', to: 'home#marine_services', as: :marine_services
+  get 'privacy_policy', to: 'home#privacy_policy', as: :privacy_policy
+  get 'cookies_policy', to: 'home#cookies_policy', as: :cookies_policy
 
-  namespace :api, constraints: { format: :json } do
+  namespace :api, defaults: {format: :json}, constraints: {format: :json} do
     controller :manufacturers, path: 'manufacturers' do
       get ':id/models', action: :models
     end
   end
 
+  resources :boats, path: 'boats-for-sale', only: [:index, :show] do
+    get :pdf
+  end
+  resources :manufacturers, path: 'manufacturer', only: [:index, :show]
+  get 'manufacturers-by-letter/:id', to: 'manufacturers#by_letter', as: :manufacturers_by_letter
+  resources :boat_types, path: 'boat-type', only: [:index, :show]
+  resources :countries, path: 'location', only: [:index, :show]
+  resources :models, only: [:index, :show]
+
+  get 'leads/:id', to: 'enquiries#show', as: :lead
+  post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
+  post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check
+  get 'test-email', to: 'testing#test_email'
+
+  resource :broker_area, controller: :broker_area, path: 'broker-area', only: [:show] do
+    get :getting_started
+    get :details
+    post :update_details
+    get :preferences
+    post :update_preferences
+    get :charges
+    get :messages
+    get :boats_overview
+    get :boats_manager
+    get :my_leads
+  end
+  resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:show, :create]
+
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index'
     get 'favourites', to: 'favourites#index', as: :favourites
     post 'favourites', to: 'favourites#create', as: :favourite, constraints: { format: :json }
+    resource :user_alert, controller: :user_alert, path: 'alerts', only: [:show, :update]
+    resources :saved_searches, path: 'saved-searches', only: [:index, :create, :destroy] do
+      post :toggle, on: :member
+    end
     controller :dashboard do
       get :enquiries
-      get :subscriptions
       get :information
-      put :subscriptions, action: :update_subscriptions, constraints: { format: :json }
       get :search_histories
     end
   end

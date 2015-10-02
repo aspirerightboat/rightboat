@@ -1,11 +1,11 @@
 class CaptchaController < ApplicationController
   def new
-    captcha = Rightboat::Captcha.new
-    render json: { key: captcha.encrypt }, status: 200
+    session[:captcha] = Rightboat::Captcha.generate
+    head :ok
   end
 
   def image
-    captcha = Rightboat::Captcha.decrypt(params[:key])
-    send_data captcha.image, disposition: :inline, type: 'image/png'
+    return head(:not_found) if !session[:captcha]
+    send_data Rightboat::Captcha.image(session[:captcha].with_indifferent_access), disposition: :inline, type: 'image/png'
   end
 end

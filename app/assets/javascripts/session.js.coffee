@@ -1,24 +1,18 @@
-$(document).ready ->
+$ ->
   $('.rb-dropdown')
-    .on 'mouseenter', ->
-      $(this).addClass 'open'
-    .on 'mouseleave', ->
-      $(this).removeClass 'open'
+    .on 'mouseenter', -> $(@).addClass 'open'
+    .on 'mouseleave', -> $(@).removeClass 'open'
 
   $('[data-require-login]').click (e) ->
     requireLogin(e)
     true
 
-  $('.user-login').click (e) ->
-    e.preventDefault()
+  $(document).on 'click', '.user-login', ->
     $('form .alert').remove()
     $('#session-popup .signin-area').show()
     $('#session-popup .signup-area').hide()
-    if $(this).hasClass 'broker-login'
-      $('.login-form-title').html('Broker Area')
-    else
-      $('.login-form-title').html('Sign In')
-    $('#session-popup').modal()
+    $('#session-popup').showPopup()
+    false
 
   onSubmit = (e) ->
     e.preventDefault()
@@ -47,5 +41,5 @@ $(document).ready ->
     .always =>
       $this.find('button[type=submit]').removeAttr('disabled')
 
-  validetta_options = $.extend Rightboat.validetta_options, onValid: onSubmit
+  validetta_options = $.extend({onValid: onSubmit}, Rightboat.validetta_options)
   $('.session-form').validetta validetta_options

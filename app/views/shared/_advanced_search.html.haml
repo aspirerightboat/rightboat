@@ -105,7 +105,9 @@
             = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
             = label_tag :new_used_used, 'Used'
         .form-group.row
-          .col-xs-push-4.col-xs-8
+          .col-xs-4
+            %button.btn-flat(type="submit" name="save_search") Save this Search
+          .col-xs-8
             = button_tag 'Search', type: 'submit', class: 'btn-flat'
       .result-info.col-sm-12.col-md-6.col-md-offset-6
         - if @boats

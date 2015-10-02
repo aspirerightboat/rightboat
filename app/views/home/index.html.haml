@@ -22,7 +22,7 @@
   #about.rb-brief.container.text-center
     %h3 About Us
     %p.lead Rightboat.com was launched in 2005 with the aim of being the quickest, easiest place to buy and sell boats on the internet.
-    %p If you want to have unlimited access to a global marine marketplace, then you have come to the right place! With over 20,000 boats and yachts for sale, reaching 500 international boat brokers, our growing inventory offers the latest search and mobile technology to ensure your boat search is as easy as 1, 2, 3!
+    %p if you want to #{link_to 'browse', boats_path} and have unlimited access to a global marine marketplace, then you have come to the right place! With over 20,000 boats and yachts for sale, reaching 500 international boat brokers, our growing inventory offers the latest search and mobile technology to ensure your boat search is as easy as 1, 2, 3!
     %p Every boat you visit at Rightboat.com is fully available or ready to order, via a reputable brokerage agent or new boat dealer.
     .rb-extended{style: 'display: none;'}
       %p
@@ -71,7 +71,7 @@
         %h3.text-center Newest boats
         .slick-nav
           - @newest_boats.each do |boat|
-            = link_to manufacturer_model_boat_path(boat.id, manufacturer_id: boat.manufacturer.slug, model_id: boat.model.slug, back: true) do
+            = link_to boat_path(boat, back: true) do
               .caption.text-center
                 %h4
                   %strong= boat.manufacturer

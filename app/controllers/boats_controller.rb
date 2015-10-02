@@ -1,17 +1,22 @@
 class BoatsController < ApplicationController
-  before_filter :set_back_link
-  after_filter :store_recent
+  before_filter :set_back_link, only: [:show]
+  after_filter :store_recent, only: [:show]
+
+  def index
+    redirect_to manufacturers_path
+  end
 
   def show
     @boat = Boat.find(params[:id])
+  end
 
-    respond_to do |format|
-      format.html
-      format.pdf { render pdf: 'show', layout: 'application' }
-    end
+  def pdf
+    @boat = Boat.find(params[:boat_id])
+    render pdf: 'pdf', layout: 'pdf'
   end
 
   private
+
   def set_back_link
     if request.referer =~ /^([^\?]+)?\/search(\?.*)?$/
       @back_url = request.referer.to_s
@@ -21,7 +26,7 @@ class BoatsController < ApplicationController
   def store_recent
     attrs = { target_id: @boat.id, action: :show, ip: request.remote_ip }
 
-    if activity = Activity.where(attrs).first
+    if (activity = Activity.where(attrs).first)
       activity.inc(count: 1)
     else
       Activity.create(attrs.merge(user_id: current_user.try(:id)))

@@ -13,7 +13,20 @@
 #= require jquery
 #= require jquery_ujs
 # require turbolinks
-#= require twitter/bootstrap
+
+#= require twitter/bootstrap/transition.js
+#= require twitter/bootstrap/alert.js
+#= require twitter/bootstrap/button.js
+#= require twitter/bootstrap/carousel.js
+#= require twitter/bootstrap/collapse.js
+#= require twitter/bootstrap/dropdown.js
+#= require twitter/bootstrap/modal.js
+#= require twitter/bootstrap/tooltip.js
+#= require twitter/bootstrap/popover.js
+#= require twitter/bootstrap/scrollspy.js
+#= require twitter/bootstrap/tab.js
+#= require twitter/bootstrap/affix.js
+
 #= require jquery-ui/slider
 #= require jquery.ui.touch-punch
 #= require select2
@@ -31,7 +44,7 @@ window.Rightboat = {}
 Rightboat.validetta_options =
   custom :
     username :
-      pattern : /^[a-zA-Z][\w\d\-\@\._]+$/,
+      pattern : /^[a-zA-Z][\w@.-]+$/,
       errorMessage : "Only include a-z, A-Z, digits and underline."
   display: 'inline'
 
@@ -46,8 +59,7 @@ window.requireLogin = (e, disable_history)->
 
     $loginBtn.trigger('click')
     return true
-
-  false;
+  false
 
 scrollToTarget = (target) ->
   $('html, body').animate
@@ -61,6 +73,19 @@ $(document).ready ->
       $(this).find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left')
     else
       $(this).find('.glyphicon').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-right')
+
+  $('.reset-search-form').click ->
+    form = this.form
+    form.q.value = ''
+    form.boat_type[0].checked = true
+    $(form.currency).val('GBP').trigger('change')
+    $(form.length_unit).val('ft').trigger('change')
+    $('#price-slider, #length-slider').each ->
+      opts = $(this).slider('option')
+      $slider = $(this)
+      $slider.slider('option', 'values', [opts.min, opts.max])
+      alignSliderLabelPosition($slider)
+    false
 
   $('[data-toggle="tooltip"]').tooltip()
   $('.toggle-about').click ->
@@ -83,3 +108,17 @@ $(document).ready ->
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
     scrollToTarget(target) if $(target).length
+
+  $('.cool-select').select2()
+
+$.fn.initTitleSelect = ->
+  @.selectize(create: true)
+$ ->
+  $('.select-title').initTitleSelect()
+
+$.fn.showPopup = ->
+  window.curPopup.modal('hide') if window.curPopup
+  window.curPopup = @
+  @.modal('show')
+$ ->
+  window.curPopup = null

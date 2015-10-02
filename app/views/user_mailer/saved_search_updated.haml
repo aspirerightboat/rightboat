@@ -1,0 +1,19 @@
+%p
+  Dear #{@user.name},
+
+%p
+  New listings have been posted to Rightboat that match your following saved #{t('search_plural', count: @searches.size)}:
+
+- @searches.each do |saved_search, new_boats|
+  %p
+    Search for #{saved_search.search_title}:
+  %ul
+    - new_boats.each do |boat|
+      %li #{link_to boat.manufacturer_model, boat_url(boat)}
+  %p
+    #{link_to 'Rerun the search', search_url(saved_search.to_search_params)}
+    <br>#{link_to 'Turn this search alert off', member_saved_searches_url}
+
+%p
+  Please note that boat data is changing all the time as new listings are made
+  and boats are sold, so the result may change at any time

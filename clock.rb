@@ -18,7 +18,7 @@ module DBBackedClockwork
     config[:max_threads] = 15
   end
 
-  every 1.minute, "update jobs" do
+  every 1.minute, 'update jobs' do
     db_events.each do |event|
       event.update_from_db
     end
@@ -27,6 +27,14 @@ module DBBackedClockwork
     Import.active.each do |e|
       events << DBBackedEvent.new(e) unless db_events.map(&:id).include?(e.id)
     end
+  end
+
+  every 1.minute, 'approve old pending leads' do
+    LeadsApproveJob.new.perform
+  end
+
+  every 1.day, 'send saved search notifications', at: '22:00' do
+    SavedSearchNoticesJob.new.perform
   end
 
   # get the manager object

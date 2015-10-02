@@ -1,0 +1,10 @@
+#development:
+#  address: localhost
+#  port: 1025
+
+staging:
+  address: smtp.gmail.com
+  port: 587
+  authentication: plain
+  user_name: rightboat.info@gmail.com
+  password: xxxxx

@@ -1,0 +1,3 @@
+.letter-index
+  - ('a'..'z').each do |letter|
+    = link_to_unless_current letter.upcase, manufacturers_by_letter_path(letter)

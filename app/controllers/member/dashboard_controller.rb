@@ -1,11 +1,12 @@
 module Member
   class DashboardController < BaseController
-    def enquiries
-      @enquiries = current_user.enquiries
+    skip_before_action :require_user_login!, only: [:index]
+
+    def index
     end
 
-    def subscriptions
-      @subscriptions = current_user.subscriptions
+    def enquiries
+      @enquiries = current_user.enquiries
     end
 
     def information

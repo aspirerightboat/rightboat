@@ -1,0 +1,9 @@
+- qr = RQRCode::QRCode.new(url, size: size)
+%table.qr-code
+  - qr.modules.each_index do |x|
+    %tr
+      - qr.modules.each_index do |y|
+        - if qr.dark?(x, y)
+          %th
+        - else
+          %td

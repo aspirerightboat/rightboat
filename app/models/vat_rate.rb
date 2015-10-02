@@ -3,7 +3,7 @@ class VatRate < ActiveRecord::Base
   include AdvancedSolrIndex
   include BoatOwner
 
-  solr_update_association :boats, fields: [:active, :name]
+  # solr_update_association :boats, fields: [:active, :name]
 
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true

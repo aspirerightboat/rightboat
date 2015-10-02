@@ -41,6 +41,15 @@ class SearchController < ApplicationController
   end
 
   def results
+    if params[:save_search]
+      ctl = Member::SavedSearchesController.new
+      ctl.request = request
+      ctl.response = response
+      ctl.create
+      redirect_to member_saved_searches_path, notice: 'Your search was saved'
+      return
+    end
+
     params.delete(:page) unless request.xhr?
 
     search_params = params.clone
@@ -80,7 +89,7 @@ class SearchController < ApplicationController
     attrs = params.except(:utf8, :controller, :action, :button)
     return if attrs.values.all?(&:blank?)
 
-    if activity = Activity.search.where(parameters: attrs).first
+    if (activity = Activity.search.where(parameters: attrs).first)
       activity.inc(count: 1)
     else
       Activity.create(parameters: attrs, action: :search)

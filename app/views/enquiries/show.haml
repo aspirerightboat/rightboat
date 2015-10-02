@@ -1,0 +1,73 @@
+- content_for :header_text do
+  .navbar-h Broker Area
+
+= render 'shared/search_bar'
+
+#main-content.container
+  - if notice
+    .alert.alert-info= notice
+  - if alert
+    .alert.alert-warning= alert
+
+  %h1 Lead ##{@enquiry.id} for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
+
+  %h2 Boat info
+  %ul
+    %li Manufacturer</b>: <b>#{@boat.manufacturer}</b>
+    %li Model: <b>#{@boat.model}</b>
+    %li Broker: <b>#{@boat.user.name}</b>
+
+  %h2 Requester info
+  %ul
+    %li Name: <b>#{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}</b>
+    %li Email: <b>#{@enquiry.email}</b>
+    - if @enquiry.phone.present?
+      %li Phone: <b>#{@enquiry.phone}</b>
+    - if @enquiry.message.present?
+      %li Message: <b>#{@enquiry.message}</b>
+    %li Requested At: <b>#{l @enquiry.created_at, format: :short} (#{distance_of_time_in_words(@enquiry.created_at, Time.current)} ago)</b>
+    %li Current status: #{lead_status_label @enquiry.status}
+
+  - if @enquiry.status == 'pending' && current_user && current_user.company?
+    %p.nice-buttons(style="margin-top: 1em")
+      %a#request_qc_button.transparent-button(href="#") Request Quality Check
+      -#= link_to 'Request Quality Check', quality_check_path(@enquiry), class: 'transparent-button', method: 'post'
+      = link_to 'Approve', lead_approve_path(@enquiry), class: 'nice-button', method: 'post'
+
+  %h2 Lead History
+  %table.rb-table(style="max-width: 600px")
+    %tr
+      %th Event Time
+      %th New Status
+      %th Changed by
+    - @lead_trails.each do |trail|
+      %tr
+        %td #{distance_of_time_in_words(trail.created_at, Time.current)} ago
+        %td #{lead_status_label trail.new_status}
+        %td
+          - if trail.user.try(:company?)
+            Broker
+          - elsif trail.user.try(:admin?)
+            RB Administrator
+          - else
+            Automatically
+
+#qc_reason_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+        %h1 Reason for Quality Check Request
+      .modal-body
+        = form_for @enquiry, url: quality_check_path(@enquiry), method: :post do |f|
+          .row
+            .form-group
+              = f.label :bad_quality_reason, 'Why this lead has bad quality:'
+              = f.select :bad_quality_reason, Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, {prompt: 'Please select...'}, class: 'select-white select-sm cool-select', id: 'bad_quality_select'
+          .row
+            .form-group.hidden#bad_quality_comment
+              = f.label :bad_quality_comment, 'Why you think this lead is invalid:'
+              = f.text_area :bad_quality_comment, class: 'form-control'
+          .row
+            %button.btn-flat.btn-full(type="submit") Send

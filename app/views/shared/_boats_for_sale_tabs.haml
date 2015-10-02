@@ -1,0 +1,7 @@
+= link_to_unless_current 'Manufacturer', boats_path, style: ('font-weight:bold' if controller_name == 'manufacturers')
+\|
+= link_to_unless_current 'Model', models_path, style: ('font-weight:bold' if controller_name == 'models')
+\|
+= link_to_unless_current 'Type', boat_types_path, style: ('font-weight:bold' if controller_name == 'boat_types')
+\|
+= link_to_unless_current 'Location', countries_path, style: ('font-weight:bold' if controller_name == 'countries')

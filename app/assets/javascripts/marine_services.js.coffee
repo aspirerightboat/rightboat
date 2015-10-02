@@ -25,5 +25,5 @@ $(document).ready ->
       $this.find('button[type=submit]').removeAttr('disabled');
 
 
-  validetta_options = $.extend Rightboat.validetta_options, onValid: onMarineServiceSubmit
+  validetta_options = $.extend({onValid: onMarineServiceSubmit}, Rightboat.validetta_options)
   $('.marine-enquiry-form').validetta validetta_options

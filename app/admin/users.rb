@@ -56,6 +56,18 @@ ActiveAdmin.register User do
       f.input :company_name
       f.input :company_weburl
       f.input :company_description, as: :text
+      f.input :phone
+      f.input :mobile
+      f.input :fax
+
+      f.has_many :address, allow_destroy: true do |addr_f|
+        addr_f.input :line1
+        addr_f.input :line2
+        addr_f.input :town_city
+        addr_f.input :county
+        addr_f.input :country
+        addr_f.input :zip
+      end
     end
     f.actions
   end

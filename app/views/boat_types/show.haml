@@ -1,0 +1,7 @@
+= render layout: 'shared/boats_for_sale' do
+  %h1 Boats of type "#{@boat_type.name}"
+  .row(data-view-layout="list")
+    - @boats.each do |b|
+      = render layout: 'boats/boat', locals: {boat: b} do
+        -#
+    = paginate @boats

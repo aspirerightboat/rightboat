@@ -2,8 +2,8 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} &times;
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
       .modal-body
         %h1 Request Details
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
@@ -13,7 +13,7 @@
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'select-title'
+                    = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
                   .rb-control
                     = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
@@ -57,8 +57,8 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} &times;
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
         %h1 Message Sent
       .modal-body
         %h1.text-center Thank you for your enquiry
@@ -79,7 +79,7 @@
           .col-sm-12.col-xs-12
             = render 'shared/signup_form'
         .row
-          %h4.similar-boats-link= link_to "Similar Boats (click for more details)", '#'
+          %h4.similar-boats-link= link_to 'Similar Boats (click for more details)', '#'
           .similar-boats.row
 
 :javascript
@@ -87,10 +87,6 @@
     $(document).ready(function() {
       $('#enquiry-popup .country-code-select').selectize({
         allowEmptyOption: true
-      });
-
-      $('.select-title').selectize({
-        create: true,
       });
 
       $('#have_account').change(function() {

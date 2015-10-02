@@ -122,3 +122,7 @@ $.fn.showPopup = ->
   @.modal('show')
 $ ->
   window.curPopup = null
+
+$ ->
+  $('#confirm_email_popup').each ->
+    $(@).showPopup()

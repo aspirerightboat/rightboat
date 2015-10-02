@@ -29,7 +29,7 @@
             %li= link_to 'Browse boats for sale', boats_path
             - if !current_user || !current_user.company?
               %li= link_to 'Register as Broker', register_broker_path, class: 'register-broker-link', rel: 'nofollow'
-            - if Rails.env.production?
+            - if !Rails.env.development?
               %li
                 #google_translate_element
                 :javascript

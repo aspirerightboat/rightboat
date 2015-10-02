@@ -48,6 +48,8 @@ class User < ActiveRecord::Base
 
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
+  before_save :deconfirm_email_if_changed
+  after_create :send_email_confirmation
 
   delegate :country, to: :address
 
@@ -94,6 +96,10 @@ class User < ActiveRecord::Base
     self.username = str
   end
 
+  def confirm_email_token
+    Digest:: MD5.hexdigest("#{email}RightBoatSalt")
+  end
+
   private
   def slug_candidates
     [
@@ -115,10 +121,22 @@ class User < ActiveRecord::Base
   def create_broker_info
     if role_changed?
       if company?
-        BrokerInfo.find_or_create_by(user_id: id)
+        new_record? ? build_broker_info : BrokerInfo.find_or_create_by(user_id: id)
       else
         BrokerInfo.where(user_id: id).delete_all
       end
     end
+    true
+  end
+
+  def send_email_confirmation
+    UserMailer.email_confirmation(id).deliver_now
+  end
+
+  def deconfirm_email_if_changed
+    if email_changed?
+      self.email_confirmed = false
+    end
+    true
   end
 end

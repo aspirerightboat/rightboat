@@ -8,7 +8,7 @@ $ ->
     false
 
 $.fn.initRegisterBrokerPopup = ->
-  $('input.select-title', @).initTitleSelect()
+  $('.select-title', @).initTitleSelect()
   $submit = $('button[type="submit"]', @)
   @
   .validetta(Rightboat.validetta_options)

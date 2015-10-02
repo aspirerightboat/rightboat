@@ -4,7 +4,7 @@ class RegisterBrokerController < ApplicationController
   end
 
   def create
-    user = User.new(params.permit(:title, :first_name, :last_name, :email,
+    user = User.new(params.permit(:title, :first_name, :last_name, :email, :phone,
                                   :company_name, :password, :password_confirmation))
     user.role = 'COMPANY'
     user.generate_username

@@ -28,3 +28,6 @@
     = render 'shared/phone_popup'
     - if user_signed_in?
       = render 'berth_enquiries/form'
+    - if user_signed_in? && !current_user.email_confirmed
+      = render 'shared/confirm_email_popup'
+    -#= yield :body_scripts

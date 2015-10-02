@@ -13,4 +13,11 @@ class UserMailer < ApplicationMailer
     mail(to: @user.email, subject: 'New Search Listings Alert - Rightboat')
   end
 
+  def email_confirmation(user_id)
+    @user = User.find(user_id)
+    @confirm_href = confirm_email_url(user: user_id, token: @user.confirm_email_token)
+
+    mail(to: @user.email, subject: 'Confirm your email - Rightboat')
+  end
+
 end

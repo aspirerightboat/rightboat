@@ -1,0 +1,18 @@
+#confirm_email_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+      .modal-body
+        .row
+          %h3 Email Activation
+          %hr
+          %p Confirmation instructions was sent to your email <b>#{current_user.email}</b>.
+          %p If you haven’t received e-mail, click Resend.
+          = form_tag resend_confirmation_path, class: 'form-inline' do
+            .form-group
+              = label_tag :email, 'Email'
+              = text_field_tag :email, params[:email] || current_user.try(:email), class: 'form-control', 'data-validetta' => 'required,email'
+            .form-group
+              %button.btn-flat(type="submit") Resend

@@ -53,7 +53,8 @@ window.requireLogin = (e, disable_history)->
   if $loginBtn.length > 0
     e.preventDefault()
     unless disable_history
-      href = $(e.target).data('target')
+      href = $(e.target).attr('href')
+      href = $(e.target).data('target') if href == '#'
       if history.pushState && window.location.href != href
         history.pushState({}, '', href)
 

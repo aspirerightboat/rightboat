@@ -4,7 +4,7 @@ $ ->
     .on 'mouseleave', -> $(@).removeClass 'open'
 
   $('[data-require-login]').click (e) ->
-    requireLogin(e)
+    requireLogin(e, false)
     true
 
   $(document).on 'click', '.user-login', ->

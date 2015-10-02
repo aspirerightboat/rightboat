@@ -4,7 +4,7 @@
       .form-group
         .rb-control-group
           .rb-control-group-addon
-            = text_field_tag :title, prompt: 'Title', class: 'select-white select-sm select-title', data: {titles: User::TITLES.join(',')}
+            = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
           .rb-control
             = text_field_tag :first_name, nil, placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
     .col-sm-6.col-xs-12

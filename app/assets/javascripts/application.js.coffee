@@ -112,13 +112,9 @@ $(document).ready ->
   $('.cool-select').select2()
 
 $.fn.initTitleSelect = ->
-  @.each ->
-    $(@).select2(tags: $(@).data('titles').split(','),
-      tokenSeparators: [],
-      maximumSelectionSize: 1,
-      formatSelectionTooBig: -> return '')
+  @.selectize(create: true)
 $ ->
-  $('input.select-title').initTitleSelect()
+  $('.select-title').initTitleSelect()
 
 $.fn.showPopup = ->
   window.curPopup.modal('hide') if window.curPopup

@@ -13,7 +13,7 @@
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = select_tag :title, options_for_select(User::TITLES), prompt: 'Title', class: 'select-title'
+                    = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
                   .rb-control
                     = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
@@ -87,10 +87,6 @@
     $(document).ready(function() {
       $('#enquiry-popup .country-code-select').selectize({
         allowEmptyOption: true
-      });
-
-      $('.select-title').selectize({
-        create: true,
       });
 
       $('#have_account').change(function() {

@@ -4,7 +4,7 @@ $ ->
     .on 'mouseleave', -> $(@).removeClass 'open'
 
   $('[data-require-login]').click (e) ->
-    requireLogin(e)
+    requireLogin(e, false)
     true
 
   $(document).on 'click', '.user-login', ->
@@ -29,7 +29,7 @@ $ ->
       # TODO: update page using ajax result instead of page refresh
       return_to = response.return_to
       if return_to
-        location = return_to
+        window.location = return_to
       else
         window.location.reload()
     .error (response)->

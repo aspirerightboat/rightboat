@@ -39,8 +39,8 @@
   #slider
     - @boat.boat_images.each do |boat_img|
       %figure
-        = link_to boat_img.file_url, 'item-prop' => 'contentUrl', 'data-size' => "#{boat_img.width}x#{boat_img.height}" do
-          = image_tag boat_img.file_url(:thumb), 'item-prop' => 'thumbnail'
+        = link_to boat_img.file_url, 'data-size' => "#{boat_img.width}x#{boat_img.height}" do
+          = image_tag boat_img.file_url
 
   = render 'shared/pswp'
 
@@ -97,7 +97,8 @@
         centerMode: true,
         initialSlide: 2,
         focusOnSelect: true,
-        slidesToShow: 2,
+        slidesToShow: 1,
+        variableWidth: true,
         infinite: false
       });
 
@@ -142,7 +143,7 @@
               // <img> thumbnail element, retrieving thumbnail url
               item.msrc = linkEl.children[0].getAttribute('src');
               // Add to thumbnail list
-              $('.pswp__thumbnail-viewer__container').append('<div class="pswp-thumbnail" data-index="' + i + '"><img src="' + item.msrc + '"/></div>');
+              $('.pswp__thumbnail-viewer__container').append('<div class="pswp-thumbnail" data-index="' + i + '"><div class="img-wrap-outer"><div class="img-wrap-inner"><img src="' + item.msrc + '"/></div></div></div>');
             }
 
             item.el = figureEl; // save link to element for getThumbBoundsFn

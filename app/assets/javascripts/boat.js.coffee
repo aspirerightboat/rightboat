@@ -1,8 +1,10 @@
 initBoatView = (el) ->
   boat_id = $(el).data('boat-ref')
 
+  $('#captcha').focus ->
+    $('.captcha-img').show()
+
   $('.request-details', el).click (e) ->
-    return false if requireLogin(e, true)
     url = '/boats/' + boat_id + '/request-details'
     $('.enquiry-form').attr('action', url)
     $('.enquiry-form').find('#message, #captcha').val('')

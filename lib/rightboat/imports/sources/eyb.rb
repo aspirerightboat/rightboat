@@ -32,16 +32,8 @@ module Rightboat
         )
 
         def enqueue_jobs
-          file_name = Rails.root.join('tmp', 'eyb.xml')
-
-          puts "parsing #{file_name}"
-          f = File.open(file_name)
-          doc = Nokogiri::XML(f) do |config|
-            config.strict.noblanks
-          end
-          f.close
-
-          doc.search('AD').each do |ad|
+          doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+          doc.search("//AD").each do |ad|
             job = { ad: ad }
             enqueue_job(job)
           end

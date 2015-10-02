@@ -8,12 +8,12 @@ class Model < ActiveRecord::Base
 
   belongs_to :manufacturer, inverse_of: :models
 
-  solr_update_association :boats, fields: [:active, :name, :manufacturer_id]
+  # solr_update_association :boats, fields: [:active, :name, :manufacturer_id]
 
   validates_presence_of :manufacturer, :name
   validates_uniqueness_of :name, scope: :manufacturer_id
 
-  scope :active, -> { where("active = ?", true)}
+  scope :active, -> { where(active: true)}
 
   searchable do
     string :name do |model|

@@ -24,14 +24,16 @@ gem 'open_uri_redirections'
 gem 'select2-rails'
 gem 'kaminari'
 gem 'friendly_id'
-gem 'rmagick'
+# This project needs imagemagick to generate captcha!
+# on Mac Os run: brew install imagemagick & brew install gs
+# on Ubuntu run: sudo apt-get install imagemagick
 gem 'carrierwave'
+gem 'rmagick' # needed by carrierwave
 gem 'fog'
 gem 'twitter'
 gem 'twitter-text'
 gem 'figaro'
 gem 'validate_url'
-gem 'ezcrypto'
 gem 'truncate_html'
 
 # deleted_at
@@ -41,6 +43,7 @@ gem 'permanent_records'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'progress_bar', require: false
+gem 'sunspot-queue'
 
 # for detecting country
 gem 'geocoder'
@@ -62,6 +65,8 @@ gem 'mongo'
 gem 'mongoid'
 gem 'bson_ext'
 
+gem 'premailer-rails'
+
 group :development, :test do
   # gem 'byebug'
   # gem 'web-console', '~> 2.0'
@@ -71,7 +76,10 @@ group :development, :test do
   gem 'capistrano-passenger'
   gem 'capistrano-rails'
   gem 'pry-rails'
-  gem 'mailcatcher'
+#  gem 'mailcatcher'
+  gem 'letter_opener'
+  gem 'quiet_assets'
+  gem 'bullet'
 end
 
 group :production, :staging do

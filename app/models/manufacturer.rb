@@ -9,13 +9,13 @@ class Manufacturer < ActiveRecord::Base
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
   has_many :buyer_guides, class_name: 'BuyerGuide', inverse_of: :manufacturer, dependent: :destroy
 
-  solr_update_association :models, :boats, fields: [:active, :name]
+  # solr_update_association :models, :boats, fields: [:active, :name]
   mount_uploader :logo, AvatarUploader
 
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
 
-  scope :active, -> { where("active = ?", true)}
+  scope :active, -> { where(active: true)}
 
   searchable do
     string :name

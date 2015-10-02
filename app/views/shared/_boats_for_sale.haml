@@ -1,0 +1,8 @@
+- content_for :header_text do
+  .navbar-h Boats <strong>For Sale</strong>
+
+= render 'shared/search_bar'
+
+#main-content.container
+  = render 'shared/boats_for_sale_tabs'
+  = yield

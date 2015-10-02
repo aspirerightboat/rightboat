@@ -1,4 +1,30 @@
-#enquiry-popup, #enquiry-result-popup {
+#enquiry-popup, #enquiry-result-popup, #qc_reason_popup {
+  .modal-dialog { max-width: 632px; }
+
+  .form-control {
+    height: auto;
+  }
+  .select2-container.select-sm > a {
+    font-size: 14px;
+    font-weight: 300;
+  }
+  .select2-container {
+    margin: 1px 0 15px 0;
+
+    &.country-code-select {
+      min-width: 135px;
+    }
+
+    .select2-choice {
+      height: 30px;
+      text-decoration: none;
+    }
+  }
+
+  .btn-flat {
+    width: 100%;
+    padding: 4px 0;
+  }
   textarea.form-control {
     height: 120px;
     resize: none;

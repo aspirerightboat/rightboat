@@ -1,0 +1,34 @@
+%p
+  New lead from Right Boat!
+
+%p
+  Client details are as follows:
+
+%ul
+  %li <b>Name:</b> #{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}
+  - if @enquiry.message.present?
+    %li <b>Message:</b> #{@enquiry.message}
+
+%p
+  Boat details:
+
+%ul
+  %li <b>Ref No:</b> #{@boat.ref_no}
+  %li <b>Manufacturer:</b> #{@boat.manufacturer}
+  %li <b>Model:</b> #{@boat.model}
+  - boat_url = boat_url(@boat.slug)
+  %li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>
+
+%p
+  Enquiry received at: #{@enquiry.created_at}
+
+%p
+  This lead is supplied subject to Rightboat Ltd standard terms and conditions.
+
+%p
+  %a(href="#{lead_url(@enquiry)}") Manage Lead
+
+%p
+  Yours,
+  <br>Rightboat
+  <br>+44 333 322 2628

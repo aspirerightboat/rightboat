@@ -8,9 +8,7 @@ module Member
     private
 
     def require_user_login!
-      unless user_signed_in?
-        render 'member/dashboard/index'
-      end
+      redirect_to member_root_path unless user_signed_in?
     end
 
     def load_search_facets_if_needed

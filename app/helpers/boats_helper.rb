@@ -7,23 +7,12 @@ module BoatsHelper
     boat.display_price(currency)
   end
 
-  def fav_class(boat = @boat)
-    return 'fav-link' unless user_signed_in?
+  def favourite_link_to(boat)
+    favourited = boat.favourited_by?(current_user)
+    fav_class = favourited ? 'fav-link active' : 'fav-link'
+    fav_title = favourited ? 'Unfavourite' : 'Favourite'
 
-    boat.booked_by?(current_user) ? 'fav-link active' : 'fav-link'
-  end
-
-  def fav_label(boat)
-    return 'Favourite' unless user_signed_in?
-    boat.booked_by?(current_user) ? "Favourited on #{boat.favourited_at_by(current_user)}" : 'Favourite'
-  end
-
-  def fav_title(boat)
-    boat.booked_by?(current_user) ? 'Unfavourite' : 'Favourite'
-  end
-
-  def favourite_link_to(boat, label = nil)
-    link_to label || fav_label(boat), '#', class: fav_class(boat), title: fav_title(boat), data: { toggle: 'tooltip', placement: 'top' }
+    link_to 'Favourite', '#', class: fav_class, title: fav_title, data: {toggle: 'tooltip', placement: 'top'}
   end
 
   def reduced_description(description=nil)

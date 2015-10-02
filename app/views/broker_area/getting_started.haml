@@ -1,0 +1,25 @@
+= render layout: 'broker_layout', locals: {tab: :getting_started, sidebar: render('my_account_sidebar')} do
+  %h1 Getting Started
+
+  %ol
+    %li
+      Visit #{link_to 'My account', details_broker_area_path} and complete your company details.
+      Here you can decide where the leads are emailed to and set multiple offices.
+    %li
+      Set up your #{link_to 'payment details', '#'} and pay the one off set-up fee of €99
+      (or #{link_to 'enter promo code', '#'})
+    %li Feeds: Tell us #{link_to 'how to receive your feeds', '#'}
+    %li Call your account manager [Name and phone number here] with any questions.
+
+  %p
+    Great to welcome you onboard.
+    <br>Rightboat team.
+
+  %p
+    = link_to 'link to Video', '#'
+    &nbsp; &nbsp;
+    = link_to 'Charges page', '#'
+    &nbsp; &nbsp;
+    = link_to 'Link to T/C`s', '#'
+    &nbsp; &nbsp;
+    = link_to 'faq', '#'

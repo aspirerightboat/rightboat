@@ -87,3 +87,5 @@ end
   record = Subscription.where(name: name).first_or_initialize
   record.update_attributes(description: description)
 end
+
+RBConfig.repair

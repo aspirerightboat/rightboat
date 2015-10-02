@@ -21,3 +21,6 @@
 
 en:
   poa: "P.O.A."
+  search_plural:
+    one: "search"
+    many: "searches"

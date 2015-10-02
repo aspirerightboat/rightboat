@@ -1,22 +1,23 @@
 module Member
   class FavouritesController < BaseController
     def index
-      @favourites = current_user.favourites
+      @favourites = current_user.favourites.includes(boat: [:currency, :primary_image, :manufacturer, :model, :country, :vat_rate])
     end
 
     def create
       boat = Boat.find(params[:boat_id])
-      attrs = { boat_id: boat.id, user_id: current_user.id }
 
-      if boat.booked_by?(current_user)
-        Favourite.where(attrs).delete_all
+      favorite = boat.favourites.where(user: current_user)
+
+      if boat.favourited_by?(current_user)
+        favorite.delete_all
         active = false
       else
-        favourite = Favourite.create!(attrs)
+        favorite.create!
         active = true
       end
 
-      render json: { active: active, ts: active ? favourite.display_ts : nil }
+      render json: {active: active}
     end
   end
 end

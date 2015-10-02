@@ -1,107 +1,139 @@
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!! AUTOMATICALLY GENERATED FILE. DO NOT MODIFY !!!
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-// Core variables and mixins
-@import "twitter/bootstrap/variables.less";
-@grid-gutter-width:     15px;
-@rb-color-primary:      #60bbff;
-
-@import "twitter/bootstrap/mixins.less";
-@import "custom_bootstrap/mixins.less"; // Modify this for custom mixins
-
-@import "twitter/bootstrap/scaffolding.less";
-@import "twitter/bootstrap/type.less";
-@import "twitter/bootstrap/code.less";
-@import "twitter/bootstrap/grid.less";
-@import "twitter/bootstrap/tables.less";
-@import "twitter/bootstrap/forms.less";
-@import "twitter/bootstrap/buttons.less";
-
-@import "twitter/bootstrap/utilities.less";
-@import "twitter/bootstrap/responsive-utilities.less";
-
 @import "pdf/fonts";
+@import "rightboat/qr_code.less";
 
 html, body {
-  color: #000;
-  font-family: "Freight Sans", arial, sans-serif;
+  color: black;
+  font-family: "Freight Sans", sans-serif;
   font-size: 18px;
   font-weight: normal;
   line-height: 1.4em;
-  vertical-align: top;
+}
+
+.ClearFix() {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+.broker-info-block {
+  border: solid 2px #60bbff;
+  margin-bottom: 20px;
+  padding: 20px;
+  position: relative;
+  box-sizing: border-box;
+  max-height: 150px;
+  .ClearFix();
+}
+.broker-logo {
+  float: left;
+  width: 30%;
+  //text-align: center;
+  img {
+    height: 75px;
+  }
 }
 .broker-info {
-  border: solid 1px @rb-color-primary;
-  vertical-align: top;
+  float: left;
+  width: 35%;
+}
+
+.boat-main-image {
+  height: 400px;
+  overflow: hidden;
+  position: relative;
   margin-bottom: 20px;
-  padding: 5px;
-  .box-sizing(border-box);
-}
-img {
-  max-width: 100%;
-  display: inline-block;
-}
-.pull-right { float: right;}
-.pull-left { float: left;}
-h1, h2 {
-  font-weight: 300;
-  b, strong { font-weight: bold; }
-  margin: 0;
-}
-
-hr { border-top: 2px solid @rb-color-primary; }
-
-.column {
-  vertical-align: top;
-  .box-sizing(border-box);
-  padding: 0 @grid-gutter-width;
-}
-a { display: inline-block; vertical-align: top;}
-.top-text { padding: 10px; vertical-align: top; text-transform: uppercase; text-align: center; font-size: 12px;}
-.two-columns .column {
-  width: 50%;
-  float: left;
-}
-p {margin: 0 0 1em 0;}
-
-.three-columns .column {
-  width: 33.33%;
-  float: left;
-}
-
-.small { line-height: 1.2em;}
-
-table.qrcode {
-  border-width: 0;
-  border-collapse: collapse;
-  margin-bottom: 15px;
-
-  td {
-    border-width: 0;
-    border-collapse: collapse;
-    padding: 0;
-    margin: 0;
-    width: 3px;
-    height: 3px;
-
-    &.black { background-color: #000;}
-    &.white { background-color: #FFF;}
+  clear: both;
+  img {
+    width: 100%;
   }
 }
 
-.spec-container {
-  & > *:first-child { padding-right: 0 !important; }
-  & > *:last-child { padding-left: 0 !important; }
+.hr {
+  border-top: 2px solid #60bbff;
+  margin: 10px 0;
 }
+
+.boat-title-block {
+  clear: both;
+  position: relative;
+  min-height: 140px;
+
+  .qr-code-block {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .qr-code-hint {
+    font-size: 13px;
+    line-height: 16px;
+    margin-top: 5px;
+    text-align: center;
+  }
+}
+
+h1, h2 {
+  font-weight: normal;
+  line-height: 1;
+  color: #13022c;
+  margin: 0 0 18px;
+}
+h1 {
+  font-size: 34px;
+}
+h2 {
+  font-size: 30px;
+}
+
+p {
+  margin: 0 0 1em;
+  &:last-child {
+    margin: 0;
+  }
+}
+b { font-weight: 300; }
+strong, .boat-description b { font-weight: bold; }
+
 .spec-table {
+  width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  tr:not(:last-child) td { border-bottom: 1px solid rgba(96, 187, 255, 0.3); }
-  tr, td, th, tbody, thead, tfoot, td div {
+  tr:not(:last-child) {
+    td, th { border-bottom: 1px solid #60bbff; }
+  }
+  tr, td, th, tbody {
     page-break-inside: avoid !important;
   }
-  margin: 0 @grid-gutter-width / 2;
-  margin-bottom: 20px;
 }
 
-.thumbnail { margin-bottom: 15px; }
+h3 {
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 1.4;
+  color: #13022c;
+  margin: 0 0 18px;
+  border-bottom: 2px solid #60bbff;
+  page-break-before: always;
+}
+
+.boat-thumbs {
+  position: relative;
+
+  .thumbs-row {
+    margin-bottom: 10px;
+    .ClearFix();
+
+    .thumb:first-child {
+      padding-right: 2%;
+    }
+  }
+  .thumb {
+    float: left;
+    width: 49%;
+    position: relative;
+  }
+  img {
+    width: 100%;
+  }
+}

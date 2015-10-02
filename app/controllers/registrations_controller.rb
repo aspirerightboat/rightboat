@@ -1,15 +1,17 @@
 class RegistrationsController < Devise::RegistrationsController
-  clear_respond_to
-  respond_to :json
-  before_filter :ensure_role, only: [:create]
-
   def update_resource(resource, params)
     resource.update_without_password(params)
   end
 
-  private
+  def create
+    user = User.new(params.permit(:title, :first_name, :last_name, :email, :username, :password, :password_confirmation))
+    user.role = 'PRIVATE'
 
-  def ensure_role
-    params[:user][:role] = 'PRIVATE' if params[:user][:role].present? && params[:user][:role] != 'BROKER'
+    if user.save
+      env['warden'].set_user(user)
+      render json: {}
+    else
+      render json: user.errors.full_messages, root: false, status: 422
+    end
   end
 end

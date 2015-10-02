@@ -1,14 +1,12 @@
 - if user_signed_in?
   %li.dropdown.rb-dropdown
-    = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expaned' => false do
+    %a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false")
       Welcome #{current_user.first_name}
     %ul.dropdown-menu
-      %li.text-center= link_to "Log Out", destroy_user_session_path, method: :delete
+      %li.text-center= link_to 'Log Out', destroy_user_session_path, method: :delete
 - else
-  %li= link_to "Sign In", 'javascript: void(0);', class: 'user-login login-top'
-  %li= link_to "Register", 'javascript: void(0);', class: 'user-register'
-- if user_signed_in?
-  %li= link_to "My Rightboat", member_root_path
-  %li= link_to "Broker Area", 'javascript: void(0);'
-- else
-  %li= link_to "Broker Area", 'javascript: void(0);', class: 'user-login broker-login'
+  %li= link_to 'Sign In', '#', class: 'user-login login-top'
+  %li= link_to 'Register', '#', class: 'user-register'
+%li= link_to 'My Rightboat', member_root_path, 'data-require-login' => true
+- if user_signed_in? && current_user.company?
+  %li= link_to 'Broker Area', broker_area_path

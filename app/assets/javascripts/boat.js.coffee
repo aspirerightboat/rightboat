@@ -2,7 +2,6 @@ initBoatView = (el) ->
   boat_id = $(el).data('boat-ref')
 
   $('.request-details', el).click (e) ->
-    return false if requireLogin(e, true)
     url = '/boats/' + boat_id + '/request-details'
     $('.enquiry-form').attr('action', url)
     $('.enquiry-form').find('#message, #captcha').val('')

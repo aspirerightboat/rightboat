@@ -289,7 +289,8 @@ a.pdf-link {
 
       img {
         display: block;
-        width: 100%;
+        width: auto;
+        max-height: 360px;
       }
     }
   }
@@ -407,12 +408,27 @@ a.pdf-link {
 .pswp-thumbnail {
   display: inline-block;
   padding: 8px;
-  position: relative;
   width: 12.5%;
 
-  img {
-    display: block;
+  .img-wrap-outer {
     width: 100%;
+    height: 0;
+    padding-bottom: 66.6668%;
+    position: relative;
+  }
+
+  .img-wrap-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  img {
+    height: 100%;
+    width: auto;
   }
 }
 

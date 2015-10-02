@@ -136,6 +136,7 @@ class User < ActiveRecord::Base
   def deconfirm_email_if_changed
     if email_changed?
       self.email_confirmed = false
+      send_email_confirmation
     end
     true
   end

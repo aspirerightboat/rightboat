@@ -150,7 +150,7 @@ class Boat < ActiveRecord::Base
   end
 
   def display_length(unit = nil)
-    return '' if length_m <= 0
+    return '' if (length_m.nil? || length_m <= 0)
     unit ||= 'm'
     length = self.length_m.to_f
     length = unit.to_s =~ /ft/i ? length_ft.round : length.round

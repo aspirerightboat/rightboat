@@ -7,7 +7,13 @@
     .boat-img-thumb
       = link_to boat_path(boat.slug) do
         = image_tag boat.primary_image.file.url(:thumb)
-    .caption
+        .overlay
+          %h4.text-uppercase= boat.manufacturer
+          %h5= boat.model
+          .boat-price
+            %span(data-attr-name='price')= boat_price(boat)
+            %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
+    .caption{href: boat_path(boat.slug)}
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-detail-item.boat-price.pull-right.text-right
@@ -16,9 +22,9 @@
       .boat-detail-item.boat-length
         %span Length:
         %span(data-attr-name='loa')= boat_length(boat)
-      .boat-detail-item
+      .boat-detail-item.boat-year
         %span Year: #{boat.year_built}
-      .boat-location-1
+      .boat-location
         %span Location: #{boat.country.to_s}
       .boat-links.boat-links-bottom
         = favourite_link_to boat

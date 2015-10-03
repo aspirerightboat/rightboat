@@ -21,7 +21,7 @@ module SessionSetting
     end
 
     def set_view_layout(mode)
-      return if mode.blank? || !['gallery', 'list'].include?(mode.to_s.downcase)
+      return if mode.blank? || !['gallery', 'list', 'thumbnail'].include?(mode.to_s.downcase)
       cookies[:view_layout] = mode.to_s.downcase
     end
 

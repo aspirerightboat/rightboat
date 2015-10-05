@@ -25,7 +25,7 @@
             %li= link_to 'Rightboat', 'https://plus.google.com/+Rightboat', class: 'gplus-link'
             %li= link_to '/rightboat', 'https://www.pinterest.com/rightboat', class: 'pint-link'
             /%li= link_to '/rightboat-ltd', 'https://instagram.com/rightboat', class: 'ig-link'
-          %ul.col-xs-12.col-sm-3
+          %ul.col-xs-6.col-sm-3
             %li= link_to 'Browse boats for sale', boats_path
             - if !current_user || !current_user.company?
               %li= link_to 'Register as Broker', register_broker_path, class: 'register-broker-link', rel: 'nofollow'

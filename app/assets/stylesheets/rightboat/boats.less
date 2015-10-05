@@ -8,15 +8,45 @@
   }
 
   .boat-thumb.thumbnail {
-    .boat-location-1 {
+    .boat-location {
       height: 54px;
     }
   }
 }
 *[data-view-layout="thumbnail"] {
-  .caption {
-    display: none;
+  .boat-img-thumb a {
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      .overlay {
+        bottom: 0;
+      }
+    }
+
+    .overlay {
+      background: rgba(255, 255, 255, 0.6);
+      color: @rb-color-dark;
+      cursor: pointer;
+      display: block;
+      font-size: 85%;
+      height: 100%;
+      left: 0;
+      padding: 15px;
+      position: absolute;
+      bottom: -100%;
+      text-align: center;
+      width: 100%;
+      .transition(all .25s ease-out);
+
+      h4, h5 {
+        font-size: 85%;
+        margin: 0;
+      }
+    }
   }
+
+  .caption { display: none; }
 
   @media(min-width: @screen-md-min) {
     .boat-thumb-container {
@@ -49,8 +79,7 @@
     h4, h5 {font-size: 18px; display: inline-block; margin-bottom: 2px;}
     h4 {margin-right: 8px;}
 
-    .boat-location-1 { display: block; margin-right: 0 !important; .clearfix-now(); }
-    .boat-location-2 { display: none; }
+    .boat-location { display: block; margin-right: 0 !important; .clearfix-now(); }
     .boat-links-bottom { position: absolute; left: 0; bottom: 0; width: 100%; padding: 15px }
 
     @media(max-width: @screen-sm-max) {
@@ -69,7 +98,7 @@
 .boat-thumb.thumbnail {
   .assign-gutter(margin-bottom);
   border: 1px solid @rb-color-primary;
-  font-size: 19px;
+  font-size: 18px;
 
   h4, h5 {
     font-size: 26px;
@@ -112,19 +141,15 @@
 }
 
 .boat-links {
-  .clearfix-now();
-  @media(min-width: @screen-xs-min) {margin-top: 8px;}
-
   > a, > div {
     font-size: 16px;
-    line-height: 26px;
   }
   a:hover {
     text-decoration: none;
   }
 
   .boat-price {
-    font-size: 19px;
+    font-size: 18px;
   }
 }
 
@@ -184,13 +209,13 @@ a.fav-link.active:before {
   &:extend(.embed-responsive);
   padding-bottom: 66.6667%;
   background: @rb-color-dark;
+  .overlay { display: none; }
+  &:hover {
+    img { transform: scale(1.2); }
+  }
   img {
     width: 100%;
     .transition(all .25s ease-out);
-
-    &:hover {
-      transform: scale(1.2);
-    }
   }
 }
 

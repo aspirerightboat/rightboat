@@ -102,7 +102,7 @@ $ ->
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()
       $('select[name="length_unit"]').select2('val', unit)
-      $('[data-slide-name="length"]').each ->
+      $(this).parents('.length-input-group').find('[data-slide-name="length"]').each ->
         $slider = $(this)
         $slider.data('unit', unit)
         alignSliderLabelPosition($slider)
@@ -132,7 +132,7 @@ $ ->
     $('.toggle-adv-search').click (e)->
       e.preventDefault()
 
-      $('#home-search-form, #normal-navbar').slideUp
+      $('#home-search-form, #top-navbar').slideUp
         duration: 200
         progress: setupSliderLabelPosition
         complete: ->
@@ -148,7 +148,7 @@ $ ->
         duration: 200
         progress: setupSliderLabelPosition
         complete: ->
-          $('#home-search-form, #normal-navbar').slideDown
+          $('#home-search-form, #top-navbar').slideDown
             duration: 200
             progress: setupSliderLabelPosition
             complete: setupSliderLabelPosition

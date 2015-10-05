@@ -82,4 +82,8 @@ Rails.application.configure do
   #
   # config.action_controller.default_url_options = { host: 'www.rightboat.com' }
   # config.action_mailer.default_url_options = { host: 'www.rightboat.com' }
+
+  # Disable actual deliveries
+  # Remove later
+  config.action_mailer.delivery_method = false
 end

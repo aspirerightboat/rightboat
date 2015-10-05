@@ -17,7 +17,7 @@
         %span(data-attr-name='loa')= boat_length(boat)
       .boat-detail-item
         %span Year: #{boat.year_built}
-      .boat-location-1
+      .boat-location
         %span Location: #{boat.country.to_s}
       = yield if block_given?
       .clearfix

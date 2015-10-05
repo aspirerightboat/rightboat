@@ -5,27 +5,27 @@
 
 #main-content.container
   .row
-    #sidebar.col-xs-6.col-sm-3.sidebar-offcanvas(role="navigation")
-      .sidebar-nav
-        %ul.nav.nav-pills.nav-stacked
-          = sidebar
+    .col-xs-12
+      %ul.top-tabs
+        %li= link_to_unless tab  == :my_account, 'My Account', details_broker_area_path
+        %li= link_to_unless tab  == :boats, 'Boats', boats_overview_broker_area_path
+        %li= link_to_unless tab  == :leads, 'Leads', my_leads_broker_area_path
+        %li= link_to_unless tab  == :getting_started, 'Getting Started', getting_started_broker_area_path
+  .row
+    - if sidebar.present?
+      #sidebar.col-xs-6.col-sm-3.sidebar-offcanvas(role="navigation")
+        .sidebar-nav
+          %ul.nav.nav-pills.nav-stacked
+            = sidebar
     .col-xs-12.col-sm-9.member-right
       - if notice
         .alert.alert-info= notice
       - if alert
         .alert.alert-warning= alert
 
-      .top-tabs
-        = link_to_unless tab  == :my_account, 'My Account', details_broker_area_path
-        \|
-        = link_to_unless tab  == :boats, 'Boats', boats_overview_broker_area_path
-        \|
-        = link_to_unless tab  == :leads, 'Leads', my_leads_broker_area_path
-        \|
-        = link_to_unless tab  == :getting_started, 'Getting Started', getting_started_broker_area_path
-
       = yield
   .row
-    Need help?
-    <br>Call <b>+44 (0) 333 322 2628</b>
-    <br>Email: #{mail_to 'info@rightboat.com'}
+    .col-xs-12
+      Need help?
+      <br>Call <b>+44 (0) 333 322 2628</b>
+      <br>Email: #{mail_to 'info@rightboat.com'}

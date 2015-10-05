@@ -55,7 +55,7 @@ ActiveAdmin.register Boat do
       f.input :fuel_type
       f.input :drive_type
       f.input :location
-      f.input :country
+      f.input :country, as: :select, collection: Country.order(:name)
       f.input :featured, as: :boolean
       f.input :under_offer, as: :boolean
       f.input :recently_reduced, as: :boolean

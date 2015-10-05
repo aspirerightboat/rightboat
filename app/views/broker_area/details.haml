@@ -29,6 +29,22 @@
         .form-group
           = f.label :company_weburl, 'Website'
           = f.text_field :company_weburl, class: 'form-control'
+        %table.rb-table
+          %tr
+            %th Name
+            %th Email
+            %th Address
+            %th Daytime Phone
+            %th
+          - current_user.offices.each do |o|
+            %tr= o.name
+            %tr= o.email
+            %tr= o.address.to_s
+            %tr= o.daytime_phone
+            %tr
+              %button(type="button") edit
+              %button(type="button") del
+        %button.btn-flat.btn-block(type="button") Add Office
     .row
       .col-sm-6.col-xs-12.form-actions
         %button.btn-flat.btn-block(type="submit") Save Changes

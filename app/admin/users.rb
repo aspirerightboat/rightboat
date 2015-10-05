@@ -72,4 +72,23 @@ ActiveAdmin.register User do
     f.actions
   end
 
+  sidebar 'Tools', only: [:show, :edit] do
+    boats_count = user.boats.count
+    inactive_count = Boat.unscoped.where(user: user).where('deleted_at IS NOT NULL').count
+    s = "<p>Boats: <b>#{boats_count} active</b>, <b>#{inactive_count} inactive</b></p>"
+    if boats_count > 0 || inactive_count > 0
+      s << '<p>'
+      s << link_to('Activate all boats', {action: :activate_boats, id: user, do: :activate}, method: :post, class: 'button', style: 'margin-bottom: 8px', data: {disable_with: 'working...'}) if inactive_count > 0
+      s << link_to('Deactivate all boats', {action: :activate_boats, id: user, do: :deactivate}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
+      s << '</p>'
+    end
+    s.html_safe
+  end
+
+  member_action :activate_boats, method: :post do
+    active = params[:do] == 'activate'
+    Boat.unscoped.where(user: resource).update_all(deleted_at: active ? nil : Time.current)
+    redirect_to (request.referer || {action: :index}), notice: "All boats of #{resource.name} was #{active ? 'activated' : 'deactivated'}"
+  end
+
 end

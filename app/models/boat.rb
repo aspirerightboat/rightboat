@@ -227,11 +227,11 @@ class Boat < ActiveRecord::Base
   # featured and reduced attrs are used without solr in some queries
   # so it should be set as true only for live boats
   def active_of
-    return if self.deleted?
+    return if deleted?
 
     [:featured, :recently_reduced].each do |attr_name|
-      if send(attr_name) and !self.live?
-        self.errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
+      if send(attr_name) and !live?
+        errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
       end
     end
   end

@@ -22,7 +22,7 @@ ActiveAdmin.register Boat do
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
     column :status do |boat|
-      boat.live? ? 'Active' : 'Inactive'
+      boat.deleted? ? 'Inactive' : 'Active'
     end
     column :user, :user, sortable: 'users.first_name'
     column :office, :office, sortable: 'offices.name'
@@ -32,7 +32,8 @@ ActiveAdmin.register Boat do
     column :country, :country, sortable: 'countries.name'
     column :location
     actions do |boat|
-      item 'Statistics', statistics_admin_boat_path(boat)
+      item 'Statistics', statistics_admin_boat_path(boat), class: 'member_link'
+      item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link'
     end
   end
 
@@ -64,7 +65,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
+      Boat.unscoped.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
     end
   end
 
@@ -77,10 +78,22 @@ ActiveAdmin.register Boat do
     end
   end
 
+  sidebar 'Tools', only: [:show, :edit] do
+    link_to boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat)
+  end
+
   member_action :statistics, method: :get do
-    @boat = Boat.find(params[:id])
+    @boat = Boat.unscoped.find_by(slug: params[:id])
     @page_title = @boat.name
     @monthly = Rightboat::Statistics.monthly_boat_stats(@boat)
+  end
+
+  member_action :toggle_active, method: :get do
+    boat = Boat.unscoped.find_by(slug: params[:id])
+    active = boat.deleted_at.present?
+    boat.deleted_at = active ? nil : Time.current
+    boat.save!
+    redirect_to (request.referer || {action: :index}), notice: "boat #{boat.slug} was #{active ? 'activated' : 'deactivated'}"
   end
 
   collection_action :delete_all_boats, method: :post do
@@ -90,7 +103,7 @@ ActiveAdmin.register Boat do
       end
       flash.notice = 'All the boats were deleted'
     end
-    redirect_to({action: :index})
+    redirect_to(action: :index)
   end
 
   collection_action :activate_all_models, method: :post do

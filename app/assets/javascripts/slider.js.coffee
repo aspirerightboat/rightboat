@@ -102,7 +102,7 @@ $ ->
     $('select[name="length_unit"]').change (e)=>
       unit = $(e.currentTarget).val()
       $('select[name="length_unit"]').select2('val', unit)
-      $('[data-slide-name="length"]').each ->
+      $(this).parents('.length-input-group').find('[data-slide-name="length"]').each ->
         $slider = $(this)
         $slider.data('unit', unit)
         alignSliderLabelPosition($slider)

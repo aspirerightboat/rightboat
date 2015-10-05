@@ -41,7 +41,7 @@
           .range-slider-wrapper.row
             .col-xs-3= label_tag :length
             .col-xs-9
-              .rb-control-group
+              .rb-control-group.length-input-group
                 .rb-control
                   = slider_tag(:length, unit: current_length_unit, html: { 'data-convert' => 'convertLength' })
                 .rb-control-group-addon

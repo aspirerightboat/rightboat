@@ -11,6 +11,7 @@
 
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = javascript_include_tag 'https://maps.google.com/maps/api/js?sensor=false'
   %body(id="#{controller_name}-#{action_name}")
     - if content_for? :header
       = yield :header
@@ -44,3 +45,5 @@
 
     = render 'shared/session_popup' unless user_signed_in?
     = render 'shared/enquiry_popup'
+    - if user_signed_in?
+      = render 'berth_enquiries/form'

@@ -32,6 +32,9 @@ ActiveAdmin.register Boat do
     end
     column :country, :country, sortable: 'countries.name'
     column :location
+    column :images do |boat|
+      boat.boat_images.count
+    end
     actions do |boat|
       item 'Statistics', statistics_admin_boat_path(boat), class: 'member_link'
       item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link'
@@ -66,7 +69,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      Boat.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
+      Boat.includes(:manufacturer, :user, :country, :office, :boat_images, model: :manufacturer)
     end
 
     def find_resource

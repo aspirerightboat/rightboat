@@ -22,7 +22,8 @@ ActiveAdmin.register Boat do
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
     column :status do |boat|
-      boat.deleted? ? 'Inactive' : 'Active'
+      # boat.deleted? ? 'Inactive' : 'Active'
+      boat.live? ? 'Active' : 'Inactive'
     end
     column :user, :user, sortable: 'users.first_name'
     column :office, :office, sortable: 'offices.name'
@@ -66,6 +67,10 @@ ActiveAdmin.register Boat do
   controller do
     def scoped_collection
       Boat.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
+    end
+
+    def find_resource
+      Boat.find(params[:id])
     end
   end
 

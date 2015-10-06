@@ -1,4 +1,4 @@
-initBoatView = (el) ->
+window.initBoatView = (el) ->
   boat_id = $(el).data('boat-ref')
 
   $('#captcha').focus ->

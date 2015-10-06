@@ -36,10 +36,11 @@ class User < ActiveRecord::Base
 
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :information, allow_destroy: true
+  accepts_nested_attributes_for :offices, allow_destroy: true
 
   validates_presence_of :username
-  validates_uniqueness_of :username, allow_blank: true
-  validates_format_of :username, with: /\A[a-zA-Z][\w@.-]+\z/, allow_blank: true
+  validates_uniqueness_of :username, allow_blank: true, if: :username_changed?
+  validates_format_of :username, with: /\A[a-zA-Z][\w@.-]+\z/, allow_blank: true, if: :username_changed?
   # validates_inclusion_of :title, within: TITLES, allow_blank: true
 
   validates_presence_of :first_name, :last_name, unless: :organization?

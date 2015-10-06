@@ -4,18 +4,7 @@ $ ->
     $('#register_popup').displayPopup()
     false
 
-  $('.register-form').each ->
-    $submit = $('button[type="submit"]', @)
-    $(@)
-    .validetta(Rightboat.validetta_options)
-    .on 'ajax:before', (e) -> $submit.addClass('inline-loading')
-    .on 'ajax:complete', (e) -> $submit.removeClass('inline-loading')
-    .on 'ajax:success', -> window.location = window.location
-    .on 'ajax:error', (e, xhr) ->
-      $('.alert', e.target).remove()
-      $errors =  $('<div class="alert alert-danger">').prependTo(e.target)
-      $.each xhr.responseJSON, (i, msg) ->
-        $errors.append('<div>' + msg + '</div>')
+  $('.simple-ajax-form').simpleAjaxForm()
 
   onProfileSubmit = (e) ->
     e.preventDefault()

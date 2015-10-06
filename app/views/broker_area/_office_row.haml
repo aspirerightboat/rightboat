@@ -1,5 +1,5 @@
 - ind = defined?(i) ? i : '{{I}}'
-%tr
+%tr.office-item
   %td
     - if defined?(office)
       %input(type="hidden" name="user[offices_attributes][#{i}][id]" value="#{office.id}")
@@ -11,10 +11,10 @@
     %input(type="hidden" name="user[offices_attributes][#{ind}][fax]" value="#{office.fax if defined?(office)}")
     %input(type="hidden" name="user[offices_attributes][#{ind}][email]" value="#{office.email if defined?(office)}")
     %input(type="hidden" name="user[offices_attributes][#{ind}][website]" value="#{office.website if defined?(office)}")
-    = defined?(office) ? office.name : '{{name}}'
-  %td= defined?(office) ? office.email : '{{email}}'
-  %td= defined?(office) ? office.address : '{{address}}'
-  %td= defined?(office) ? office.daytime_phone : '{{daytime_phone}}'
+    .office-name= office.name if defined?(office)
+  %td.office-email= office.email if defined?(office)
+  %td.office-address= office.address if defined?(office)
+  %td.office-dphone= office.daytime_phone if defined?(office)
   %td
-    %button(type="button") edit
-    %button(type="button") del
+    %button.edt-office-btn(type="button") edit
+    %button.del-office-btn(type="button") del

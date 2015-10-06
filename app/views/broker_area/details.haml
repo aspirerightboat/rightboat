@@ -1,57 +1,56 @@
 = render layout: 'broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
   %h1 Business Details
 
-  #office_template.hidden= render 'office_row'
-  = form_for current_user, url: update_details_broker_area_path do |f|
+  %script#office_template.hidden(type="text/template")= render 'office_row'
+  = form_for current_user, url: update_details_broker_area_path, method: :post,
+             remote: true, data: {format: :json}, html: {class: 'business-info-form'} do |f|
     .row
       .col-sm-6.col-xs-12
         .form-group
           = f.label :company_name
-          = f.text_field :company_name, class: 'form-control'
-        = fields_for :address do |ff|
-          .form-group
-            = ff.label :line1, 'Address Line 1'
-            = ff.text_field :line1, class: 'form-control'
-          .form-group
-            = ff.label :line2, 'Address Line 2'
-            = ff.text_field :line2, class: 'form-control'
-          .form-group
-            = ff.label :county, 'Region/County'
-            = ff.text_field :county, class: 'form-control'
-          .form-group
-            = ff.label :zip, 'Post Code/Zip'
-            = ff.text_field :zip, class: 'form-control'
-          .form-group
-            = ff.label :country_id
-            = ff.text_field :country_id, class: 'form-control'
+          = f.text_field :company_name, class: 'form-control', 'data-validetta' => 'required'
         .form-group
           = f.label :phone, 'Tel/Mobile'
           = f.text_field :phone, class: 'form-control'
         .form-group
           = f.label :company_weburl, 'Website'
           = f.text_field :company_weburl, class: 'form-control'
-        %table.rb-table
-          %tr
-            %th Name
-            %th Email
-            %th Address
-            %th Daytime Phone
-            %th
-          - current_user.offices.each do |o|
-            %tr= o.name
-            %tr= o.email
-            %tr= o.address.to_s
-            %tr= o.daytime_phone
+        .form-group
+          %p Offices:
+          %table.rb-table#offices_table
             %tr
-              %button(type="button") edit
-              %button(type="button") del
-        %button.btn-flat.btn-block.display-office-popup(type="button") Add Office
+              %th Name
+              %th Email
+              %th Address
+              %th Daytime Phone
+              %th
+            - if @offices.none?
+              %tr.no-data-row
+                %td(colspan="5") You have no additional offices yet
+            - @offices.each_with_index do |office, i|
+              = render partial: 'office_row', locals: {office: office, i: i}
+        %button.btn-flat.btn-block.add-office-btn(type="button") Add Office
+
+      .col-sm-6.col-xs-12
+        = f.fields_for :address do |ff|
+          .form-group
+            = ff.label :line1, 'Address'
+            = ff.text_field :line1, placeholder: 'Address Line 1', class: 'form-control'
+          .form-group
+            = ff.text_field :line2, placeholder: 'Address Line 2', class: 'form-control'
+          .form-group(style="display:flex")
+            = ff.text_field :town_city, placeholder: 'City', class: 'form-control', style: 'margin-right: 5px'
+            = ff.text_field :county, placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
+            = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
+          .form-group
+            = ff.select :country_id, Country.pluck(:name, :id), {prompt: 'Country...'},
+                        class: 'cool-select', id: 'country_select', style: 'display: block'
     .row
-      .col-sm-6.col-xs-12.form-actions
+      .col-sm-6.col-xs-12.col-sm-offset-3.text-center(style="margin-top: 15px")
         %button.btn-flat.btn-block(type="submit") Save Changes
 
 
-#add_office_popup.modal.fade
+#office_form_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
@@ -98,6 +97,6 @@
                 = text_field_tag :website, '', class: 'form-control'
           .row
             .col-xs-12
-              %button.btn-flat(type="submit") Add/Edit Office
+              %button.btn-flat.upd-office-btn(type="button") Add/Edit Office
               %span.or Or
               %a(href="#" aria-label="Close" data-dismiss="modal") Cancel

@@ -6,7 +6,7 @@
           %span(aria-hidden="true") &times;
         .h Register as Broker
       .modal-body
-        = form_tag register_broker_path, remote: true, data: {type: :json} do
+        = form_tag register_broker_path, class: 'simple-ajax-form', remote: true, data: {type: :json} do
           .row
             .col-xs-12
               %p To register as a Broker and be able to list boats for sale on Rightboat, you must be a professional yacht broker.

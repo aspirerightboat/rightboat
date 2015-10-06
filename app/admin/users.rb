@@ -77,8 +77,8 @@ ActiveAdmin.register User do
   end
 
   sidebar 'Tools', only: [:show, :edit] do
-    boats_count = user.boats.count
-    inactive_count = Boat.deleted.where(user: user).count
+    boats_count = user.boats.not_deleted.count
+    inactive_count = user.boats.deleted.count
     s = "<p>Boats: <b>#{boats_count} active</b>, <b>#{inactive_count} inactive</b></p>"
     if boats_count > 0 || inactive_count > 0
       s << '<p>'
@@ -90,9 +90,11 @@ ActiveAdmin.register User do
   end
 
   member_action :activate_boats, method: :post do
-    active = params[:do] == 'activate'
-    Boat.unscoped.where(user: resource).update_all(deleted_at: active ? nil : Time.current)
-    redirect_to (request.referer || {action: :index}), notice: "All boats of #{resource.name} was #{active ? 'activated' : 'deactivated'}"
+    activate = params[:do] == 'activate'
+    resource.boats.each do |boat|
+      activate ? (boat.revive if boat.deleted?) : (boat.destroy if !boat.deleted_at)
+    end
+    redirect_to (request.referer || {action: :index}), notice: "All boats of #{resource.name} was #{activate ? 'activated' : 'deactivated'}"
   end
 
 end

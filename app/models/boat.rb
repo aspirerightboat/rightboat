@@ -81,8 +81,6 @@ class Boat < ActiveRecord::Base
   scope :recently_reduced, -> { reduced.limit(3) }
   scope :active, -> { where(deleted_at: nil) }
 
-  default_scope -> { unscoped }
-
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
   before_destroy :remove_activities

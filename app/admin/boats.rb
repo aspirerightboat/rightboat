@@ -98,16 +98,16 @@ ActiveAdmin.register Boat do
 
   member_action :toggle_active, method: :get do
     boat = Boat.find_by(slug: params[:id])
-    active = boat.deleted_at.present?
-    boat.deleted_at = active ? nil : Time.current
-    boat.save!
-    redirect_to (request.referer || {action: :index}), notice: "boat #{boat.slug} was #{active ? 'activated' : 'deactivated'}"
+    activate = boat.deleted?
+    activate ? boat.revive : boat.destroy
+
+    redirect_to (request.referer || {action: :index}), notice: "boat #{boat.slug} was #{activate ? 'activated' : 'deactivated'}"
   end
 
   collection_action :delete_all_boats, method: :post do
     if !Rails.env.production?
       Boat.each do |boat|
-        boat.destroy
+        boat.destroy(:force)
       end
       flash.notice = 'All the boats were deleted'
     end

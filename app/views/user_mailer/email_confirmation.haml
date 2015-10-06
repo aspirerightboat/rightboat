@@ -1,9 +1,13 @@
 %p
   Dear #{@user.first_name} #{@user.last_name},
-%p
-  Thank you for registering as a broker on Rightboat.com.
-  Our site is the only worldwide sales portal built specifically to ensure guaranteed results for brokers.
-  We do not charge fixed advertising fees and only earn a fee for delivering you leads.
-  We are confident you will love it. - We know your accountant will!
-%p
-  Please #{link_to 'click this link', @confirm_href} to activate your account and access your “Broker” area.
+- if @user.company?
+  %p
+    Thank you for registering as a broker on Rightboat.com.
+    Our site is the only worldwide sales portal built specifically to ensure guaranteed results for brokers.
+    We do not charge fixed advertising fees and only earn a fee for delivering you leads.
+    We are confident you will love it. - We know your accountant will!
+  %p
+    Please #{link_to 'click this link', @confirm_href} to activate your account and access your “Broker” area.
+- else
+  %p
+    Please #{link_to 'click this link', @confirm_href} to activate your account and access your “Member” area.

@@ -7,15 +7,18 @@ ActiveAdmin.register User do
   config.sort_order = 'role_asc'
   menu priority: 8
 
+  before_save do |user|
+    user.updated_by_admin = true
+  end
+
   controller do
     def update
       if params[:user][:password].blank?
-        params[:user].delete("password")
-        params[:user].delete("password_confirmation")
+        params[:user].delete('password')
+        params[:user].delete('password_confirmation')
       end
       super
     end
-
   end
 
   index do

@@ -17,23 +17,29 @@ class RegistrationsController < Devise::RegistrationsController
 
   def confirm_email
     user = User.find(params[:user])
-    path = user.company? ? getting_started_broker_area_path : member_root_path
     if !user.email_confirmed? && user.confirm_email_token == params[:token]
       user.email_confirmed = true
       user.save!
       flash.notice = 'Your email was confirmed'
     end
 
-    redirect_to path
+    redirect_to user_area_path(user)
   end
 
   def resend_confirmation
     current_user.email = params[:email]
-    current_user.save!
+    if current_user.email_changed?
+      current_user.save!
+    else
+      current_user.send_email_confirmation
+    end
 
-    path = current_user.company? ? getting_started_broker_area_path : member_root_path
-    current_user.send(:send_email_confirmation)
+    redirect_to user_area_path(current_user), notice: 'Confirmation email was sent'
+  end
 
-    redirect_to path, notice: 'Confirmation email was sent'
+  private
+
+  def user_area_path(user)
+    user.company? ? getting_started_broker_area_path : member_root_path
   end
 end

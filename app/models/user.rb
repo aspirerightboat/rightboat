@@ -48,8 +48,9 @@ class User < ActiveRecord::Base
 
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
-  before_save :deconfirm_email_if_changed
-  after_create :send_email_confirmation
+  before_save :reconfirm_email_if_changed, unless: :updated_by_admin
+  after_create :send_email_confirmation, unless: :updated_by_admin
+  attr_accessor :updated_by_admin
 
   delegate :country, to: :address
 
@@ -129,19 +130,18 @@ class User < ActiveRecord::Base
     true
   end
 
+  public
+
   def send_email_confirmation
-    return true if admin?
     UserMailer.email_confirmation(id).deliver_now
   end
 
-  def deconfirm_email_if_changed
-    if email_changed?
-      if admin?
-        self.email_confirmed = true
-      else
-        self.email_confirmed = false
-        send_email_confirmation
-      end
+  private
+
+  def reconfirm_email_if_changed
+    if email_changed? && persisted?
+      self.email_confirmed = false
+      send_email_confirmation
     end
     true
   end

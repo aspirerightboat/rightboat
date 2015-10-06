@@ -90,7 +90,7 @@
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full county-select', multiple: 'multiple'
+            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full country-select', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'
@@ -198,7 +198,7 @@
         cache: true
       }
     });
-    $('.county-select').multipleSelect({
+    $('.country-select').multipleSelect({
       placeholder: 'Select Countries...',
       selectAllText: 'Check/Uncheck All',
       selectAllDelimiter: ['', '']

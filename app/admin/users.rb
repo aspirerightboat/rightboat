@@ -1,7 +1,8 @@
 ActiveAdmin.register User do
   permit_params :username, :email, :password, :password_confirmation,
-                :first_name, :last_name, :company_name, :role,
-                :avatar, :avatar_cache, :company_weburl, :company_description
+                :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
+                :avatar, :avatar_cache, :company_weburl, :company_description,
+                address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip]
 
   config.sort_order = 'role_asc'
   menu priority: 8
@@ -65,7 +66,7 @@ ActiveAdmin.register User do
         addr_f.input :line2
         addr_f.input :town_city
         addr_f.input :county
-        addr_f.input :country
+        addr_f.input :country, as: :select, collection: Country.order(:name)
         addr_f.input :zip
       end
     end

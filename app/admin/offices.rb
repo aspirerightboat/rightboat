@@ -34,7 +34,7 @@ ActiveAdmin.register Office do
         addr_f.input :line2
         addr_f.input :town_city
         addr_f.input :county
-        addr_f.input :country
+        addr_f.input :country, as: :select, collection: Country.order(:name)
         addr_f.input :zip
       end
     end

@@ -6,65 +6,70 @@
           %span(aria-hidden="true") &times;
         .h Register as Broker
       .modal-body
-        .row
-          %p To register as a Broker and be able to list boats for sale on Rightboat, you must be a professional yacht broker.
-
-          = form_tag register_broker_path, class: 'register-form', remote: true, data: {type: :json} do
-            .row
-              .col-sm-12
-                %p
-                  Please confirm:<br>
-                  %input(type="checkbox" name="agree" id="agree")
-                  %label(for="agree")
-                    I am a professional boat broker and wish to register for FREE as a lifetime member of Rightboat.com.
-                    and I acknowledge that by registering and using Rightboat.com, I agree to be bound by the
-                    #{link_to 'Rightboat.com terms and conditions', toc_path}
-            .row
-              .col-sm-6.col-xs-12
-                .form-group
-                  .rb-control-group
-                    .rb-control-group-addon
-                      = label_tag :title, 'Title:'
-                      %br
-                      = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
-                    .rb-control
-                      = label_tag :title, 'First Name:*'
-                      = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
-              .col-sm-6.col-xs-12
-                .form-group
-                  = label_tag :last_name, 'Last name:*'
-                  = text_field_tag :last_name, nil, class: 'form-control', 'data-validetta' => 'required'
-            .row
-              .col-sm-6.col-xs-12
-                .form-group
-                  = label_tag :email, 'Email*'
-                  = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
-              .col-sm-6.col-xs-12
-                .form-group
-                  = label_tag :phone, 'Phone*'
-                  = phone_field_tag :phone, '', class: 'form-control', 'data-validetta' => 'required'
-            .form-group
-              = label_tag :password, 'Company Name:*'
-              = text_field_tag :company_name, '', class: 'form-control', 'data-validetta' => 'required'
-            .row
-              .col-sm-6.col-xs-12
-                .form-group
-                  = label_tag :password, 'Password:*'
-                  = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
-              .col-sm-6.col-xs-12
-                .form-group
-                  = label_tag :password_confirmation, 'Repeat Password:*'
-                  = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
-            .row
-              .col-sm-12
-                %p
-                  FREE membership is the first step to listing your boats on Rightboat.com.
-                  We do not charge for listing boats, only for leads supplied.
-                  Register now for FREE membership and to find out more.
-            .form-group
+        = form_tag register_broker_path, remote: true, data: {type: :json} do
+          .row
+            .col-xs-12
+              %p To register as a Broker and be able to list boats for sale on Rightboat, you must be a professional yacht broker.
+          .row
+            .col-xs-12
+              %p
+                Please confirm:<br>
+                %input(type="checkbox" name="agree" id="agree")
+                %label(for="agree")
+                  I am a professional boat broker and wish to register for FREE as a lifetime member of Rightboat.com.
+                  and I acknowledge that by registering and using Rightboat.com, I agree to be bound by the
+                  #{link_to 'Rightboat.com terms and conditions', toc_path}
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                .rb-control-group
+                  .rb-control-group-addon
+                    = label_tag :title, 'Title:'
+                    %br
+                    = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
+                  .rb-control
+                    = label_tag :title, 'First Name:*'
+                    = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :last_name, 'Last name:*'
+                = text_field_tag :last_name, nil, class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :email, 'Email*'
+                = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :phone, 'Phone*'
+                = phone_field_tag :phone, '', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-xs-12
+              .form-group
+                = label_tag :company_name, 'Company Name:*'
+                = text_field_tag :company_name, '', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :password, 'Password:*'
+                = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :password_confirmation, 'Repeat Password:*'
+                = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-xs-12
+              %p
+                FREE membership is the first step to listing your boats on Rightboat.com.
+                We do not charge for listing boats, only for leads supplied.
+                Register now for FREE membership and to find out more.
+          .row
+            .col-xs-12
               %button.btn-flat(type="submit") Create Account
               %span.or Or
               %a(href="#" aria-label="Close" data-dismiss="modal") Cancel
-          %p
-            Do you have an account already?
-            = link_to 'Login', '#', class: 'user-login'
+          .row
+            .col-xs-12
+              %p
+                Do you have an account already?
+                = link_to 'Login', '#', class: 'user-login'

@@ -21,3 +21,7 @@ $.fn.initRegisterBrokerPopup = ->
       $errors =  $('<div class="alert alert-danger">').prependTo(e.target)
       $.each xhr.responseJSON, (i, msg) ->
         $errors.append('<div>' + msg + '</div>')
+
+$ ->
+  $('.display-office-popup').click ->
+    $('#add_office_popup').displayPopup()

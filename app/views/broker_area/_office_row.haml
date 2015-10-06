@@ -1,0 +1,20 @@
+- ind = defined?(i) ? i : '{{I}}'
+%tr
+  %td
+    - if defined?(office)
+      %input(type="hidden" name="user[offices_attributes][#{i}][id]" value="#{office.id}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][name]" value="#{office.name if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][contact_name]" value="#{office.contact_name if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][daytime_phone]" value="#{office.daytime_phone if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][evening_phone]" value="#{office.evening_phone if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][mobile]" value="#{office.mobile if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][fax]" value="#{office.fax if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][email]" value="#{office.email if defined?(office)}")
+    %input(type="hidden" name="user[offices_attributes][#{ind}][website]" value="#{office.website if defined?(office)}")
+    = defined?(office) ? office.name : '{{name}}'
+  %td= defined?(office) ? office.email : '{{email}}'
+  %td= defined?(office) ? office.address : '{{address}}'
+  %td= defined?(office) ? office.daytime_phone : '{{daytime_phone}}'
+  %td
+    %button(type="button") edit
+    %button(type="button") del

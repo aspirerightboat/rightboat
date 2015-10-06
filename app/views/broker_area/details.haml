@@ -1,6 +1,7 @@
 = render layout: 'broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
   %h1 Business Details
 
+  #office_template.hidden= render 'office_row'
   = form_for current_user, url: update_details_broker_area_path do |f|
     .row
       .col-sm-6.col-xs-12
@@ -44,7 +45,59 @@
             %tr
               %button(type="button") edit
               %button(type="button") del
-        %button.btn-flat.btn-block(type="button") Add Office
+        %button.btn-flat.btn-block.display-office-popup(type="button") Add Office
     .row
       .col-sm-6.col-xs-12.form-actions
         %button.btn-flat.btn-block(type="submit") Save Changes
+
+
+#add_office_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+        .h Add/Edit Office
+      .modal-body
+        %form(method="post" action="/")
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :name, 'Office Name'
+                = text_field_tag :name, '', class: 'form-control'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :contact_name, 'Contact Name'
+                = text_field_tag :contact_name, '', class: 'form-control'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :daytime_phone, 'Daytime Phone'
+                = phone_field_tag :daytime_phone, '', class: 'form-control'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :evening_phone, 'Evening Phone'
+                = phone_field_tag :evening_phone, '', class: 'form-control'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :mobile, 'Mobile'
+                = phone_field_tag :mobile, '', class: 'form-control'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :fax, 'Fax'
+                = text_field_tag :fax, '', class: 'form-control'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :email, 'Email'
+                = email_field_tag :email, '', class: 'form-control'
+            .col-sm-6.col-xs-12
+              .form-group
+                = label_tag :website, 'Website'
+                = text_field_tag :website, '', class: 'form-control'
+          .row
+            .col-xs-12
+              %button.btn-flat(type="submit") Add/Edit Office
+              %span.or Or
+              %a(href="#" aria-label="Close" data-dismiss="modal") Cancel

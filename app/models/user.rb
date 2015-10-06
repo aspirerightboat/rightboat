@@ -130,6 +130,7 @@ class User < ActiveRecord::Base
   end
 
   def send_email_confirmation
+    return true if admin?
     UserMailer.email_confirmation(id).deliver_now
   end
 

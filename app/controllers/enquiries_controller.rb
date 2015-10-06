@@ -1,11 +1,11 @@
 class EnquiriesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:create]
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
 
   def create
-    enquiry = current_user.enquiries.new(enquiry_params)
+    enquiry = Enquiry.new(enquiry_params)
 
     if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
       enquiry.captcha_correct = false
@@ -45,7 +45,9 @@ class EnquiriesController < ApplicationController
   private
 
   def enquiry_params
-    params.require(:enquiry).permit(:title, :first_name, :surname, :email, :country_code, :phone, :message, :have_account, :password)
+    params.require(:enquiry)
+          .permit(:title, :first_name, :surname, :email, :country_code, :phone, :message, :have_account, :password)
+          .merge({user_id: current_user.try(:id), remote_ip: request.remote_ip, browser: request.env['HTTP_USER_AGENT']})
   end
 
   def load_enquiry

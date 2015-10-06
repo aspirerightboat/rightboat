@@ -48,68 +48,63 @@ $ ->
   onSubmit = (e) ->
     e.preventDefault()
     $this = $(e.target) # form
-    phoneNumber = $this.find('#phone').val()
+    $phone = $this.find('#phone')
 
-    onSubmit = (e)->
-      e.preventDefault()
-      $this = $(e.target) # form
-      $phone = $this.find('#phone')
+    if $phone.is(':visible')
+      phoneNumber = $phone.val()
+      if phoneNumber == '' && !phoneModalOpened
+        $('#phone-popup').modal('show')
+        phoneModalOpened = true
+        return false
 
-      if $phone.is(':visible')
-        phoneNumber = $phone.val()
-        if phoneNumber == '' && !phoneModalOpened
-          $('#phone-popup').modal('show')
-          phoneModalOpened = true
-          return false
+    $this.find('.alert').remove()
+    url = $this.attr('action')
+    $.ajax
+      url: url
+      method: 'POST'
+      dataType: 'JSON'
+      data: { enquiry: $this.serializeObject() }
+    .success (enquiry) ->
+      $('#enquiry-result-popup #signup-email').hide()
+      $('#enquiry-result-popup #signup-email input').val(enquiry.email)
 
-      $this.find('.alert').remove()
-      url = $this.attr('action')
-      $.ajax
-        url: url
-        method: 'POST'
-        dataType: 'JSON'
-        data: { enquiry: $this.serializeObject() }
-      .success (enquiry) ->
-        $('#enquiry-result-popup #signup-email').hide()
-        $('#enquiry-result-popup #signup-email input').val(enquiry.email)
-  
-        $('#enquiry-result-popup').displayPopup()
+      $('#enquiry-result-popup').displayPopup()
 
-        # signup form
-        if enquiry.user_registered
-          $('#enquiry-result-popup .signup-form-container').hide()
-        else
-          $('#enquiry-result-popup .signup-form-container').show()
+      # signup form
+      if enquiry.user_registered
+        $('#enquiry-result-popup .signup-form-container').hide()
+      else
+        $('#enquiry-result-popup .signup-form-container').show()
 
-        # broker info
-        $('#enquiry-result-popup #broker-name').html(enquiry.broker.name)
-        if enquiry.broker.phone && enquiry.broker.phone.length > 0
-          $('#enquiry-result-popup #broker-phone').html(', ' + enquiry.broker.phone)
+      # broker info
+      $('#enquiry-result-popup #broker-name').html(enquiry.broker.name)
+      if enquiry.broker.phone && enquiry.broker.phone.length > 0
+        $('#enquiry-result-popup #broker-phone').html(', ' + enquiry.broker.phone)
 
-        # pdf link
-        $('#enquiry-result-popup #boat-pdf').attr('href', enquiry.boat_pdf)
+      # pdf link
+      $('#enquiry-result-popup #boat-pdf').attr('href', enquiry.boat_pdf)
 
-        # similar boats
-        if enquiry.similar_boats.length > 0
-          $similar_boats = $('<div>')
-          $.each enquiry.similar_boats, ->
-            boatThumb = $('<div class="col-xs-4 col-sm-3 col-lg-2">')
-            boatLink = $('<a>').attr('href', '/boats/' + @slug)
-            boatLink.append($('<img>').attr('src', @primary_image.mini))
-            boatThumb.append(boatLink)
-            $similar_boats.append(boatThumb)
-          $('#enquiry-result-popup .similar-boats').html($similar_boats.html()).show()
-          $('#enquiry-result-popup .similar-boats-link').show()
-        else
-          $('#enquiry-result-popup .similar-boats-link').hide()
-          $('#enquiry-result-popup .similar-boats').hide()
-      .error (resp)->
-        $this.renderCaptcha()
-        errors = resp.responseJSON.errors
-        $errors = $('<div class="alert alert-danger">')
-        $.each errors, (k, v)->
-          $errors.append(k + ' ' + v + '<br>')
-        $this.prepend($errors)
+      # similar boats
+      if enquiry.similar_boats.length > 0
+        $similar_boats = $('<div>')
+        $.each enquiry.similar_boats, ->
+          boatThumb = $('<div class="col-xs-4 col-sm-3 col-lg-2">')
+          boatLink = $('<a>').attr('href', '/boats/' + @slug)
+          boatLink.append($('<img>').attr('src', @primary_image.mini))
+          boatThumb.append(boatLink)
+          $similar_boats.append(boatThumb)
+        $('#enquiry-result-popup .similar-boats').html($similar_boats.html()).show()
+        $('#enquiry-result-popup .similar-boats-link').show()
+      else
+        $('#enquiry-result-popup .similar-boats-link').hide()
+        $('#enquiry-result-popup .similar-boats').hide()
+    .error (resp)->
+      $this.renderCaptcha()
+      errors = resp.responseJSON.errors
+      $errors = $('<div class="alert alert-danger">')
+      $.each errors, (k, v)->
+        $errors.append(k + ' ' + v + '<br>')
+      $this.prepend($errors)
 
   validetta_options = $.extend({onValid: onSubmit}, Rightboat.validetta_options)
   $('.enquiry-form').validetta(validetta_options)

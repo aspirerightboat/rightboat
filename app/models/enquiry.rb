@@ -11,7 +11,8 @@ class Enquiry < ActiveRecord::Base
   has_many :lead_trails, foreign_key: 'lead_id'
 
   validate :check_user
-  validates_presence_of :title, :first_name, :surname, :email, :boat_id, :user, :token
+  validates_presence_of :email, :boat_id, :token
+  validates_presence_of :title, :first_name, :surname, :user, if: 'have_account == "0"'
   # validates_inclusion_of :title, within: User::TITLES, allow_blank: true
   validates_format_of :email, with: /\A[^@]+@[^@]+\z/, allow_blank: true
   validates_uniqueness_of :token, allow_blank: true

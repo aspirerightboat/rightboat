@@ -78,7 +78,7 @@ ActiveAdmin.register User do
 
   sidebar 'Tools', only: [:show, :edit] do
     boats_count = user.boats.count
-    inactive_count = Boat.unscoped.where(user: user).where('deleted_at IS NOT NULL').count
+    inactive_count = Boat.deleted.where(user: user).count
     s = "<p>Boats: <b>#{boats_count} active</b>, <b>#{inactive_count} inactive</b></p>"
     if boats_count > 0 || inactive_count > 0
       s << '<p>'

@@ -54,4 +54,9 @@ ActiveAdmin.register Model do
     f.actions
   end
 
+  controller do
+    def scoped_collection
+      Model.includes(:manufacturer)
+    end
+  end
 end

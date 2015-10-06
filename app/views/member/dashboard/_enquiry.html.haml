@@ -1,4 +1,4 @@
-- if (boat = Boat.unscoped.where(id: enquiry.boat_id).first)
+- if (boat = enquiry.boat)
   = render layout: 'boats/boat', locals: {boat: boat, disable_social_links: true} do
     .boat-links
       = favourite_link_to boat

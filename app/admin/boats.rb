@@ -65,7 +65,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      Boat.unscoped.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
+      Boat.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
     end
   end
 
@@ -83,13 +83,13 @@ ActiveAdmin.register Boat do
   end
 
   member_action :statistics, method: :get do
-    @boat = Boat.unscoped.find_by(slug: params[:id])
+    @boat = Boat.find_by(slug: params[:id])
     @page_title = @boat.name
     @monthly = Rightboat::Statistics.monthly_boat_stats(@boat)
   end
 
   member_action :toggle_active, method: :get do
-    boat = Boat.unscoped.find_by(slug: params[:id])
+    boat = Boat.find_by(slug: params[:id])
     active = boat.deleted_at.present?
     boat.deleted_at = active ? nil : Time.current
     boat.save!
@@ -98,7 +98,7 @@ ActiveAdmin.register Boat do
 
   collection_action :delete_all_boats, method: :post do
     if !Rails.env.production?
-      Boat.unscoped.each do |boat|
+      Boat.each do |boat|
         boat.destroy
       end
       flash.notice = 'All the boats were deleted'

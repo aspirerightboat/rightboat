@@ -10,7 +10,7 @@ module BoatOwner
     private
 
       def ensure_boats
-        unless status = Boat.unscoped.where("#{self.class.name.underscore}_id = ?", id).empty?
+        unless status = Boat.where("#{self.class.name.underscore}_id = ?", id).empty?
           errors.add :base, 'Cannot delete with boats'
         end
         status

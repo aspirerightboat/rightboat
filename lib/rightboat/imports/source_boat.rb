@@ -97,7 +97,7 @@ module Rightboat
         return unless valid?
 
         user_id = user.respond_to?(:id) ? user.id : user
-        target = Boat.unscoped.where(user_id: user_id, source_id: source_id).first_or_initialize
+        target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
         target.import = self.import
         adjust_location(target)
 

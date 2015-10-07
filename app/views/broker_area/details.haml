@@ -15,8 +15,8 @@
         .form-group
           = f.label :company_weburl, 'Website'
           = f.text_field :company_weburl, class: 'form-control'
-        .form-group
-          %p Offices:
+        #offices_table_block
+          %h2 Offices
           %table.rb-table#offices_table
             %tr
               %th Name
@@ -24,12 +24,11 @@
               %th Address
               %th Daytime Phone
               %th
-            - if @offices.none?
-              %tr.no-data-row
-                %td(colspan="5") You have no additional offices yet
             - @offices.each_with_index do |office, i|
               = render partial: 'office_row', locals: {office: office, i: i}
-        %button.btn-flat.btn-block.add-office-btn(type="button") Add Office
+          %p.text-center(style="margin: 20px;")
+            %span.no-data-text You have no additional offices yet.
+            %button.btn-like-link.add-office-btn(type="button") Add Office
 
       .col-sm-6.col-xs-12
         = f.fields_for :address do |ff|
@@ -46,7 +45,7 @@
             = ff.select :country_id, Country.pluck(:name, :id), {prompt: 'Country...'},
                         class: 'cool-select', id: 'country_select', style: 'display: block'
     .row
-      .col-sm-6.col-xs-12.col-sm-offset-3.text-center(style="margin-top: 15px")
+      .col-sm-6.col-xs-12.col-sm-offset-3.text-center(style="margin-top: 30px")
         %button.btn-flat.btn-block(type="submit") Save Changes
 
 

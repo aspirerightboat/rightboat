@@ -23,7 +23,12 @@ openOfficePopup = ($item) ->
   form.email.value = if $item then $('input[name$="email]"]', $item).val() else ''
   form.website.value = if $item then $('input[name$="website]"]', $item).val() else ''
 
+updateNoDataText = () ->
+  show = $('#offices_table tr').length <= 1
+  $('#offices_table_block .no-data-text').toggle(show)
 $ ->
+  updateNoDataText()
+
   $('.business-info-form').simpleAjaxForm ($form) ->
     $form.prevAll('.alert').remove()
     $('<div class="alert alert-info">Settings was saved</div>').insertBefore($form).hide().show(200)
@@ -34,12 +39,15 @@ $ ->
   $(document).on 'click', '.del-office-btn', ->
     $item = $(@).closest('.office-item')
     if $item.hasClass('new-item')
-      $item.hide 200, -> $(@).remove()
+      $item.hide 200, ->
+        $(@).remove()
+        updateNoDataText()
     else
       $nameInput = $('input[name$="name]"]', $item)
       name = $nameInput.attr('name').replace('[name]', '[_destroy]')
       $nameInput.prepend('<input type="text" name="'+name+'" value="1">').addClass('hidden')
       $item.hide(200)
+      updateNoDataText()
   $('.upd-office-btn').click ->
     $popup = $(@).closest('.modal')
     $item = $popup.data('office-item')
@@ -60,5 +68,5 @@ $ ->
     $('.office-email', $item).text(form.email.value)
     #$('.office-address', $item).text(form.address.value)
     $('.office-dphone', $item).text(form.daytime_phone.value)
-    $item.closest('table').find('.no-data-row').remove()
+    updateNoDataText()
     $popup.modal('hide')

@@ -29,4 +29,6 @@ class Address < ActiveRecord::Base
       lines.join(', ')
     end
   end
+
+  def display_string; to_s(:str) end
 end

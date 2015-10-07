@@ -47,10 +47,11 @@
             = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
           .form-group
             = ff.select :country_id, @countries_for_select, {prompt: 'Country...'},
-                        class: 'cool-select', id: 'country_select', style: 'display: block'
+                        class: 'cool-select', style: 'display: block'
+        = f.fields_for :broker_info do |ff|
           .form-group
-            = ff.label :logo, 'Logo <b>?</b>'.html_safe, title: 'make sure you upload your logo 300dpi - this appears on each boat specification that is required. The logo ideally should be on a transparent or white background.'
-            %div= image_tag(current_user.broker_info.logo_url) if current_user.broker_info.logo?
+            = ff.label :logo, 'Logo <b>?</b>'.html_safe, title: 'make sure you upload your logo 400x200px - this appears on each boat specification that is required. The logo ideally should be on a transparent or white background.'
+            %div= image_tag(current_user.broker_info.logo_url(:thumb)) if current_user.broker_info.logo?
             = ff.file_field :logo, class: 'form-control'
     .row
       .col-xs-12#offices_table_block
@@ -92,18 +93,30 @@
                 = text_field_tag :contact_name, '', class: 'form-control'
           .row
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :daytime_phone, 'Daytime Phone'
-                = phone_field_tag :daytime_phone, '', class: 'form-control'
+              = label_tag :daytime_phone, 'Daytime Phone'
+              .rb-control-group
+                .rb-control-group-addon
+                  = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country',
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                .rb-control
+                  = phone_field_tag :daytime_phone, '', class: 'form-control'
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :evening_phone, 'Evening Phone'
-                = phone_field_tag :evening_phone, '', class: 'form-control'
+              = label_tag :evening_phone, 'Evening Phone'
+              .rb-control-group
+                .rb-control-group-addon
+                  = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country',
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                .rb-control
+                  = phone_field_tag :evening_phone, '', class: 'form-control'
           .row
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :mobile, 'Mobile'
-                = phone_field_tag :mobile, '', class: 'form-control'
+              = label_tag :mobile, 'Mobile'
+              .rb-control-group
+                .rb-control-group-addon
+                  = select_tag :mobile_code, options_for_country_code, prompt: 'Country',
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                .rb-control
+                  = phone_field_tag :mobile, '', class: 'form-control'
             .col-sm-6.col-xs-12
               .form-group
                 = label_tag :fax, 'Fax'
@@ -130,7 +143,7 @@
                 = text_field_tag :zip, '', placeholder: 'Post Code/Zip', class: 'form-control'
               .form-group
                 = select_tag :country_id, options_for_select([['Country...', '']] + @countries_for_select),
-                             class: 'cool-select', id: 'country_select', style: 'display: block'
+                             class: 'select-white select-sm cool-select', style: 'display: block'
           .row
             .col-xs-12
               %button.btn-flat.upd-office-btn(type="button") Add/Edit Office

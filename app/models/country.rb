@@ -22,4 +22,8 @@ class Country < ActiveRecord::Base
   def to_s
     name
   end
+
+  def self.country_code_options
+    @@country_code_options ||= Country.order(:name).map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]}
+  end
 end

@@ -53,8 +53,9 @@ class BrokerAreaController < ApplicationController
     params.require(:user).permit(:company_name, :phone, :email,
                                  address_attributes: [:id, :line1, :line2, :county, :town_city, :zip, :country_id],
                                  offices_attributes: [:id, :name, :contact_name, :daytime_phone, :evening_phone, :mobile,
-                                                      :fax, :email, :website, :_destroy],
-                                 broker_info_attributes: [:additional_email, :website, :contact_name, :position,
+                                                      :fax, :email, :website, :_destroy,
+                                                      address_attributes: [:id, :line1, :line2, :county, :town_city, :zip, :country_id]],
+                                 broker_info_attributes: [:id, :additional_email, :website, :contact_name, :position,
                                                           :vat_number, :logo])
   end
 end

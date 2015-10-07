@@ -59,7 +59,7 @@ module ApplicationHelper
   end
 
   def options_for_country_code
-    options_for_select(Country.order(:name).map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]})
+    options_for_select(Country.country_code_options)
   end
 
   def tel_to(text)
@@ -74,5 +74,11 @@ module ApplicationHelper
       size += token.size
       size >= 160
     end.join(" ") + (safe_text.size >= 160 ? " ..." : "")
+  end
+
+  def nice_phone(phone_with_code)
+    return if phone_with_code.blank?
+    code, phone = phone_with_code.split('-')
+    "+(#{code}) #{phone}"
   end
 end

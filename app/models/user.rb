@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :information, allow_destroy: true
   accepts_nested_attributes_for :offices, allow_destroy: true
+  accepts_nested_attributes_for :broker_info
 
   validates_presence_of :username
   validates_uniqueness_of :username, allow_blank: true, if: :username_changed?
@@ -45,7 +46,6 @@ class User < ActiveRecord::Base
 
   validates_presence_of :first_name, :last_name, unless: :organization?
   validates_presence_of :company_name, if: :organization?
-  validates_url :company_weburl, allow_blank: true, if: :organization?
 
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info

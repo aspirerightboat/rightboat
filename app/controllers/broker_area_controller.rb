@@ -9,8 +9,9 @@ class BrokerAreaController < ApplicationController
   end
 
   def details
-    current_user.address ||= Address.new
+    current_user.build_address if !current_user.address
     @offices = current_user.offices.includes(:address).to_a
+    @countries_for_select = Country.pluck(:name, :id)
   end
 
   def update_details
@@ -49,9 +50,11 @@ class BrokerAreaController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:company_name, :phone, :company_weburl,
+    params.require(:user).permit(:company_name, :phone, :email,
                                  address_attributes: [:id, :line1, :line2, :county, :town_city, :zip, :country_id],
                                  offices_attributes: [:id, :name, :contact_name, :daytime_phone, :evening_phone, :mobile,
-                                                      :fax, :email, :website, :_destroy])
+                                                      :fax, :email, :website, :_destroy],
+                                 broker_info_attributes: [:additional_email, :website, :contact_name, :position,
+                                                          :vat_number, :logo])
   end
 end

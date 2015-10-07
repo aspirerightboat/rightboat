@@ -66,6 +66,7 @@ gem 'mongoid'
 gem 'bson_ext'
 
 gem 'premailer-rails'
+gem 'remotipart' # to upload file via ajax
 
 group :development, :test do
   # gem 'byebug'

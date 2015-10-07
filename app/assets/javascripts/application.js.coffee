@@ -37,6 +37,7 @@
 #= require photoswipe.min
 #= require photoswipe-ui-default.min
 #= require validetta
+#= require jquery.remotipart
 #= require_self
 #= require_tree .
 

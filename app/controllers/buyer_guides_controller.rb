@@ -6,9 +6,9 @@ class BuyerGuidesController < ApplicationController
     @guides = BuyerGuide
     @guides = @guides.where(manufacturer_id: params[:manufacturer_id]) if params[:manufacturer_id].present?
     @guides = @guides.includes(:manufacturer, :model).
-      order("manufacturers.name asc, models.name asc").published.limit(25)
+      order('manufacturers.name asc, models.name asc').published.limit(25)
 
-    @page_title = "Boat Buyers Guides"
+    @page_title = 'Boat Buyers Guides'
   end
 
   def show
@@ -19,8 +19,8 @@ class BuyerGuidesController < ApplicationController
   private
 
   def load_manufacturers
-    @manufacturers = Manufacturer.joins(:buyer_guides).active
-                       .where("buyer_guides.published = ?", true)
-                       .group("manufacturers.id").having("count(buyer_guides.id) > 0")
+    @manufacturers = Manufacturer.joins(:buyer_guides)
+                       .where('buyer_guides.published = ?', true)
+                       .group('manufacturers.id').having('COUNT(buyer_guides.id) > 0')
   end
 end

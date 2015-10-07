@@ -13,8 +13,6 @@ class Model < ActiveRecord::Base
   validates_presence_of :manufacturer, :name
   validates_uniqueness_of :name, scope: :manufacturer_id
 
-  scope :active, -> { where(active: true)}
-
   searchable do
     string :name do |model|
       model.full_name
@@ -23,9 +21,6 @@ class Model < ActiveRecord::Base
       model.full_name
     end
     integer :manufacturer_id
-    boolean :live do |record|
-      record.manufacturer.try(&:active?) && record.active? && record.boats.count > 0
-    end
   end
   alias_attribute :name_ngrme, :name
 

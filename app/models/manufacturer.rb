@@ -15,14 +15,9 @@ class Manufacturer < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
 
-  scope :active, -> { where(active: true)}
-
   searchable do
     string :name
     string :name_ngrme, as: :name_ngrme
-    boolean :live do |record|
-      record.active? && record.boats.count > 0
-    end
   end
   alias_attribute :name_ngrme, :name
 

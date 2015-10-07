@@ -7,8 +7,6 @@ class Specification < ActiveRecord::Base
   validates_presence_of :name, :display_name
   validates_uniqueness_of :name, allow_blank: true
 
-  scope :active, -> { where active: true }
-
   def to_s
     display_name
   end

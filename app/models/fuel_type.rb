@@ -8,16 +8,11 @@ class FuelType < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
 
-  scope :active, -> { where active: true }
-
   searchable do
     string :name do |record|
       record.name_ngrme
     end
     string :name_ngrme, as: :name_ngrme
-    boolean :live do |record|
-      record.active? && record.boats.count > 0
-    end
   end
 
   def name_stripped

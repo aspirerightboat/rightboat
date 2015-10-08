@@ -28,13 +28,15 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resend_confirmation
     current_user.email = params[:email]
-    if current_user.email_changed?
-      current_user.save!
-    else
-      current_user.send_email_confirmation
-    end
+    success = if current_user.email_changed?
+                current_user.save # email confirmation will be sent by reconfirm_email_if_changed before_save callback
+              else
+                current_user.send_email_confirmation
+                true
+              end
+    success ? flash.notice = 'Confirmation email was sent' : flash.alert = current_user.errors.full_messages.join(', ')
 
-    redirect_to user_area_path(current_user), notice: 'Confirmation email was sent'
+    redirect_to user_area_path(current_user)
   end
 
   private

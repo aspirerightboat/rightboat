@@ -14,8 +14,8 @@
     - if broker.fax.present?
       %div <b>fax:</b> #{broker.fax}
     %div #{mail_to broker.email}
-    - if broker.company_weburl.present?
-      %div #{link_to broker.company_weburl, broker.company_weburl}
+    - if broker.broker_info.website.present?
+      %div #{link_to broker.broker_info.website, broker.broker_info.website}
 
 - if @boat.primary_image
   .boat-main-image

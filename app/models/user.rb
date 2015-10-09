@@ -40,6 +40,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :information, allow_destroy: true
   accepts_nested_attributes_for :offices, allow_destroy: true
+  accepts_nested_attributes_for :broker_info
 
   validates_presence_of :username
   validates_uniqueness_of :username, allow_blank: true, if: :username_changed?
@@ -48,11 +49,10 @@ class User < ActiveRecord::Base
 
   validates_presence_of :first_name, :last_name, unless: :organization?
   validates_presence_of :company_name, if: :organization?
-  validates_url :company_weburl, allow_blank: true, if: :organization?
 
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
-  before_save :reconfirm_email_if_changed, unless: :updated_by_admin
+  after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
   attr_accessor :updated_by_admin
 
@@ -102,7 +102,7 @@ class User < ActiveRecord::Base
   end
 
   def confirm_email_token
-    Digest:: MD5.hexdigest("#{email}RightBoatSalt")
+    Digest::MD5.hexdigest("#{email}RightBoatSalt")
   end
 
   private
@@ -143,8 +143,8 @@ class User < ActiveRecord::Base
   private
 
   def reconfirm_email_if_changed
-    if email_changed? && persisted?
-      self.email_confirmed = false
+    if email_changed? && !id_changed?
+      update_attribute(:email_confirmed, false)
       send_email_confirmation
     end
     true

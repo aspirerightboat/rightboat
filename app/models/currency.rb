@@ -9,8 +9,7 @@ class Currency < ActiveRecord::Base
 
   # solr_update_association :boats, fields: [:rate]
 
-  scope :active, -> { where(active: true) }
-  default_scope -> { order(position: :asc) }
+  default_scope -> { order(:position) }
 
   def self.convert(amount, source_currency, required_currency)
     source_currency ||= Currency.default

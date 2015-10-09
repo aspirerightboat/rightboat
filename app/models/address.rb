@@ -12,7 +12,7 @@ class Address < ActiveRecord::Base
   def country=(v)
     if v.is_a?(String)
       name = (v.upcase == 'UK') ? 'GB' : v
-      country = Country.joins(:misspellings).where("misspellings.alias_string = :name OR name = :name OR iso = :name", name: name).first
+      country = Country.joins(:misspellings).where('misspellings.alias_string = :name OR name = :name OR iso = :name', name: name).first
       country ? write_attribute(:country_id, country.id) : super
     else
       super
@@ -29,4 +29,6 @@ class Address < ActiveRecord::Base
       lines.join(', ')
     end
   end
+
+  def display_string; to_s(:str) end
 end

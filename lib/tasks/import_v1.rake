@@ -341,9 +341,21 @@ end
 def find_or_create_user(v1_user)
   puts "Create User: #{v1_user.email_address}"
   user = User.where(email: v1_user.email_address).first_or_initialize
-  attrs = [:first_name, :last_name, :company_name, :username, :security_question, :security_answer, :company_description, :description]
-  attrs.each{|attr| user.send("#{attr}=", v1_user.send(attr))}
+  user.build_broker_info if !user.broker_info
+  user.first_name = v1_user.first_name
+  user.last_name = v1_user.last_name
+  user.company_name = v1_user.company_name
+  user.username = v1_user.username
+  user.security_question = v1_user.security_question
+  user.security_answer = v1_user.security_answer
+  user.description = v1_user.description
   user.role = v1_user.membership_type
+  user.mobile = v1_user.mobile_number
+  user.fax = v1_user.fax_number
+  user.phone = v1_user.telephone_number
+  user.broker_info.company_weburl = v1_user.company_website
+  user.broker_info.description = v1_user.company_description
+  user.remote_avatar_url = remote_image_url(v1_user.logo_image_reference) unless user.avatar?
   user.address_attributes = {
       id: user.address.try(&:id),
       line1: v1_user.address1,
@@ -353,11 +365,6 @@ def find_or_create_user(v1_user)
       country_id: find_or_create_country(v1_user.country).id,
       zip: v1_user.post_code
   }
-  user.mobile = v1_user.mobile_number
-  user.fax = v1_user.fax_number
-  user.phone = v1_user.telephone_number
-  user.company_weburl = v1_user.company_website
-  user.remote_avatar_url = remote_image_url(v1_user.logo_image_reference) unless user.avatar?
   user.save(validate: false)
   user
 end

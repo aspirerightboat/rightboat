@@ -405,6 +405,7 @@ GEM
       polyamorous (~> 1.2)
     rdoc (4.2.0)
     ref (2.0.0)
+    remotipart (1.2.1)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
     rmagick (2.15.4)
@@ -531,6 +532,7 @@ DEPENDENCIES
   puma
   quiet_assets
   rails (= 4.2.1)
+  remotipart
   rmagick
   rqrcode
   sdoc (~> 0.4.0)

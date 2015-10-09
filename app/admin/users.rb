@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   permit_params :username, :email, :password, :password_confirmation,
                 :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
-                :avatar, :avatar_cache, :company_weburl, :company_description,
+                :avatar, :avatar_cache,
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip]
 
   config.sort_order = 'role_asc'
@@ -58,8 +58,6 @@ ActiveAdmin.register User do
       f.input :email
       f.input :password
       f.input :company_name
-      f.input :company_weburl
-      f.input :company_description, as: :text
       f.input :phone
       f.input :mobile
       f.input :fax

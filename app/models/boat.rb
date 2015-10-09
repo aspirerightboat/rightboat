@@ -79,7 +79,6 @@ class Boat < ActiveRecord::Base
   scope :featured, -> { where(featured: true) }
   scope :reduced, -> { where(recently_reduced: true) }
   scope :recently_reduced, -> { reduced.limit(3) }
-  scope :active, -> { where(deleted_at: nil) }
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
@@ -136,7 +135,7 @@ class Boat < ActiveRecord::Base
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
     ]
-    specs = boat_specifications.includes(:specification).active
+    specs = boat_specifications.includes(:specification)
     specs = specs.front unless full_spec
     ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
     ret << ['RB Boat Ref', self.ref_no]
@@ -172,11 +171,7 @@ class Boat < ActiveRecord::Base
   def live?
     return false if self.deleted?
 
-    if self.manufacturer && self.model && self.boat_images.count > 0
-      self.manufacturer.active? && self.model.active? && self.valid_price?
-    else
-      false
-    end
+    manufacturer && model && boat_images.count > 0 && valid_price?
   end
 
   def geocoded?

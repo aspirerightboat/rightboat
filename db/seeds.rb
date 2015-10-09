@@ -21,7 +21,6 @@ end
 YAML.load_file(Rails.root.join("db/data/iso4217.yaml")).each do |code, currency_data|
   currency = Currency.where(name: code).first_or_initialize
   next unless currency.rate = currency_rates[code]
-  currency.active = true if currency.new_record?
   currency.symbol = currency_data['symbol'] || code
   currency.save!
 end
@@ -30,7 +29,6 @@ YAML.load_file(Rails.root.join("db/data/countries.yaml")).each do |code|
   country_data = YAML.load_file(Rails.root.join("db/data/countries/#{code}.yaml"))[code]
   name = country_data["names"].shift
   country = Country.where(name: name).first_or_initialize
-  country.active = true if country.new_record?
   country.iso = country_data["alpha2"]
   country.currency ||= Currency.where(name: country_data['currency']).first
   country.save!
@@ -74,7 +72,6 @@ spec_names = [
 ]
 spec_names.each do |attrs|
   spec = Specification.where(name: attrs[:name]).first_or_initialize
-  spec.active = true if spec.new_record?
   spec.update_attributes(attrs)
 end
 

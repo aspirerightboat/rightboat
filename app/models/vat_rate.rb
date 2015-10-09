@@ -8,17 +8,15 @@ class VatRate < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
 
-  scope :active, -> { where active: true }
-
   def tax_paid?(activated = nil)
-    is_activated = activated.nil? ? active? : activated
+    is_activated = activated.nil? ? true : activated
     is_activated && !!(self.name.to_s =~ /inc vat|tax paid/i)
   end
 
   def tax_status(activated = nil)
-    is_activated = activated.nil? ? active? : activated
+    is_activated = activated.nil? ? true : activated
     if is_activated
-      tax_paid?(activated) ? "Paid" : "Not Paid"
+      tax_paid?(activated) ? 'Paid' : 'Not Paid'
     else
       'NA'
     end

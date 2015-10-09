@@ -13,18 +13,17 @@ class Country < ActiveRecord::Base
   validates_presence_of :iso, :name
   validates_uniqueness_of :iso, :name, allow_blank: true
 
-  scope :active, -> { where active: true }
-
   searchable do
     string :name
     string :name_ngrme, as: :name_ngrme
-    boolean :live do |record|
-      record.active? && record.boats.count > 0
-    end
   end
   alias_attribute :name_ngrme, :name
 
   def to_s
     name
+  end
+
+  def self.country_code_options
+    @@country_code_options ||= Country.order(:name).map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]}
   end
 end

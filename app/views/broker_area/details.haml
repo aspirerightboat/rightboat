@@ -3,33 +3,37 @@
 
   %script#office_template.hidden(type="text/template")= render 'office_row'
   = form_for current_user, url: update_details_broker_area_path, method: :post,
-             remote: true, data: {format: :json}, html: {class: 'business-info-form'} do |f|
+             remote: true, data: {format: :json}, html: {class: 'business-info-form', multipart: true} do |f|
     .row
-      .col-sm-6.col-xs-12
+      .col-xs-12
         .form-group
           = f.label :company_name
           = f.text_field :company_name, class: 'form-control', 'data-validetta' => 'required'
+    %h2 Head Office Details
+    .row
+      .col-sm-6.col-xs-12
         .form-group
           = f.label :phone, 'Tel/Mobile'
-          = f.text_field :phone, class: 'form-control'
+          = f.phone_field :phone, class: 'form-control'
         .form-group
-          = f.label :company_weburl, 'Website'
-          = f.text_field :company_weburl, class: 'form-control'
-        #offices_table_block
-          %h2 Offices
-          %table.rb-table#offices_table
-            %tr
-              %th Name
-              %th Email
-              %th Address
-              %th Daytime Phone
-              %th
-            - @offices.each_with_index do |office, i|
-              = render partial: 'office_row', locals: {office: office, i: i}
-          %p.text-center(style="margin: 20px;")
-            %span.no-data-text You have no additional offices yet.
-            %button.btn-like-link.add-office-btn(type="button") Add Office
-
+          = f.label :email
+          = f.email_field :email, class: 'form-control'
+        = f.fields_for :broker_info do |ff|
+          .form-group
+            = ff.label :additional_email
+            = ff.email_field :additional_email, class: 'form-control'
+          .form-group
+            = ff.label :website
+            = ff.text_field :website, class: 'form-control'
+          .form-group
+            = ff.label :contact_name
+            = ff.text_field :contact_name, class: 'form-control'
+          .form-group
+            = ff.label :position
+            = ff.text_field :position, class: 'form-control'
+          .form-group
+            = ff.label :vat_number, 'EU VAT Number <small>(if applicable)</small>'.html_safe
+            = ff.text_field :vat_number, class: 'form-control'
       .col-sm-6.col-xs-12
         = f.fields_for :address do |ff|
           .form-group
@@ -42,8 +46,28 @@
             = ff.text_field :county, placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
             = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
           .form-group
-            = ff.select :country_id, Country.pluck(:name, :id), {prompt: 'Country...'},
-                        class: 'cool-select', id: 'country_select', style: 'display: block'
+            = ff.select :country_id, @countries_for_select, {prompt: 'Country...'},
+                        class: 'cool-select', style: 'display: block'
+        = f.fields_for :broker_info do |ff|
+          .form-group
+            = ff.label :logo, 'Logo <b>?</b>'.html_safe, title: 'make sure you upload your logo 400x200px - this appears on each boat specification that is required. The logo ideally should be on a transparent or white background.'
+            %div= image_tag(current_user.broker_info.logo_url(:thumb)) if current_user.broker_info.logo?
+            = ff.file_field :logo, class: 'form-control'
+    .row
+      .col-xs-12#offices_table_block
+        %h2 Offices
+        %table.rb-table#offices_table
+          %tr
+            %th Name
+            %th Email
+            %th Address
+            %th Daytime Phone
+            %th
+          - @offices.each_with_index do |office, i|
+            = render partial: 'office_row', locals: {office: office, i: i}
+        %p.text-center(style="margin: 20px;")
+          %span.no-data-text You have no additional offices yet.
+          %button.btn-like-link.add-office-btn(type="button") Add Office
     .row
       .col-sm-6.col-xs-12.col-sm-offset-3.text-center(style="margin-top: 30px")
         %button.btn-flat.btn-block(type="submit") Save Changes
@@ -69,18 +93,30 @@
                 = text_field_tag :contact_name, '', class: 'form-control'
           .row
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :daytime_phone, 'Daytime Phone'
-                = phone_field_tag :daytime_phone, '', class: 'form-control'
+              = label_tag :daytime_phone, 'Daytime Phone'
+              .rb-control-group
+                .rb-control-group-addon
+                  = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country',
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                .rb-control
+                  = phone_field_tag :daytime_phone, '', class: 'form-control'
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :evening_phone, 'Evening Phone'
-                = phone_field_tag :evening_phone, '', class: 'form-control'
+              = label_tag :evening_phone, 'Evening Phone'
+              .rb-control-group
+                .rb-control-group-addon
+                  = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country',
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                .rb-control
+                  = phone_field_tag :evening_phone, '', class: 'form-control'
           .row
             .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :mobile, 'Mobile'
-                = phone_field_tag :mobile, '', class: 'form-control'
+              = label_tag :mobile, 'Mobile'
+              .rb-control-group
+                .rb-control-group-addon
+                  = select_tag :mobile_code, options_for_country_code, prompt: 'Country',
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                .rb-control
+                  = phone_field_tag :mobile, '', class: 'form-control'
             .col-sm-6.col-xs-12
               .form-group
                 = label_tag :fax, 'Fax'
@@ -94,6 +130,20 @@
               .form-group
                 = label_tag :website, 'Website'
                 = text_field_tag :website, '', class: 'form-control'
+          .row
+            .col-xs-12
+              .form-group
+                = label_tag :line1, 'Address'
+                = text_field_tag :line1, '', placeholder: 'Address Line 1', class: 'form-control'
+              .form-group
+                = text_field_tag :line2, '', placeholder: 'Address Line 2', class: 'form-control'
+              .form-group(style="display:flex")
+                = text_field_tag :town_city, '', placeholder: 'City', class: 'form-control', style: 'margin-right: 5px'
+                = text_field_tag :county, '', placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
+                = text_field_tag :zip, '', placeholder: 'Post Code/Zip', class: 'form-control'
+              .form-group
+                = select_tag :country_id, options_for_select([['Country...', '']] + @countries_for_select),
+                             class: 'select-white select-sm cool-select', style: 'display: block'
           .row
             .col-xs-12
               %button.btn-flat.upd-office-btn(type="button") Add/Edit Office

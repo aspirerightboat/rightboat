@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
     length_data = search.stats(:length_m).data
 
     country_facet = search.facet(:country_id).rows
-    countries = Country.active.where(id: country_facet.map(&:value))
+    countries = Country.where(id: country_facet.map(&:value))
 
     countries.each do |country|
       country.name = "#{country.name}(#{country_facet.select { |x| x.value == country.id }.first.count})"
@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
       min_year:   (year_data && year_data['min'].floor) || 1970,
       min_length: (length_data && length_data['min'].floor) || 10,
       max_length: (length_data && length_data['max'].ceil) || 1000,
-      categories: BoatCategory.active.where(id: search.facet(:category_id).rows.map(&:value)),
+      categories: BoatCategory.where(id: search.facet(:category_id).rows.map(&:value)),
       countries: countries
     }
   end

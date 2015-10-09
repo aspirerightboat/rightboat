@@ -16,12 +16,23 @@ openOfficePopup = ($item) ->
   form = $('form', $popup)[0]
   form.name.value = if $item then $('input[name$="name]"]', $item).val() else ''
   form.contact_name.value = if $item then $('input[name$="contact_name]"]', $item).val() else ''
-  form.daytime_phone.value = if $item then $('input[name$="daytime_phone]"]', $item).val() else ''
-  form.evening_phone.value = if $item then $('input[name$="evening_phone]"]', $item).val() else ''
-  form.mobile.value = if $item then $('input[name$="mobile]"]', $item).val() else ''
+  $(form.daytime_phone_code).val(if $item then $('input[name$="daytime_phone]"]', $item).val().split('-')[0] else '').trigger('change')
+  form.daytime_phone.value = if $item then $('input[name$="daytime_phone]"]', $item).val().split('-')[1] || '' else ''
+  $(form.evening_phone_code).val(if $item then $('input[name$="evening_phone]"]', $item).val().split('-')[0] else '').trigger('change')
+  form.evening_phone.value = if $item then $('input[name$="evening_phone]"]', $item).val().split('-')[1] || '' else ''
+  $(form.mobile_code).val(if $item then $('input[name$="mobile]"]', $item).val().split('-')[0] else '').trigger('change')
+  form.mobile.value = if $item then $('input[name$="mobile]"]', $item).val().split('-')[1] || '' else ''
   form.fax.value = if $item then $('input[name$="fax]"]', $item).val() else ''
   form.email.value = if $item then $('input[name$="email]"]', $item).val() else ''
   form.website.value = if $item then $('input[name$="website]"]', $item).val() else ''
+  form.line1.value = if $item then $('input[name$="line1]"]', $item).val() else ''
+  form.line2.value = if $item then $('input[name$="line2]"]', $item).val() else ''
+  form.county.value = if $item then $('input[name$="county]"]', $item).val() else ''
+  form.town_city.value = if $item then $('input[name$="town_city]"]', $item).val() else ''
+  form.zip.value = if $item then $('input[name$="zip]"]', $item).val() else ''
+  $(form.country_id).val(if $item then $('input[name$="country_id]"]', $item).val() else '').trigger('change')
+
+  form.line1.value = if $item then $('input[name$="website]"]', $item).val() else ''
 
 updateNoDataText = () ->
   show = $('#offices_table tr').length <= 1
@@ -30,8 +41,8 @@ $ ->
   updateNoDataText()
 
   $('.business-info-form').simpleAjaxForm ($form) ->
-    $form.prevAll('.alert').remove()
-    $('<div class="alert alert-info">Settings was saved</div>').insertBefore($form).hide().show(200)
+    $('.alert', $form).remove()
+    $('<div class="alert alert-info">Settings was saved</div>').prependTo($form).hide().show(200)
 
   $('.add-office-btn').click ->
     openOfficePopup(null)
@@ -58,15 +69,26 @@ $ ->
     form = $(@).closest('form')[0]
     $('input[name$="name]"]', $item).val(form.name.value)
     $('input[name$="contact_name]"]', $item).val(form.contact_name.value)
-    $('input[name$="daytime_phone]"]', $item).val(form.daytime_phone.value)
-    $('input[name$="evening_phone]"]', $item).val(form.evening_phone.value)
-    $('input[name$="mobile]"]', $item).val(form.mobile.value)
+    dphone = form.daytime_phone_code.value + '-' + form.daytime_phone.value
+    $('input[name$="daytime_phone]"]', $item).val(dphone)
+    $('input[name$="evening_phone]"]', $item).val(form.evening_phone_code.value + '-' + form.evening_phone.value)
+    $('input[name$="mobile]"]', $item).val(form.mobile_code.value + '-' + form.mobile.value)
     $('input[name$="fax]"]', $item).val(form.fax.value)
     $('input[name$="email]"]', $item).val(form.email.value)
     $('input[name$="website]"]', $item).val(form.website.value)
+    $('input[name$="line1]"]', $item).val(form.line1.value)
+    $('input[name$="line2]"]', $item).val(form.line2.value)
+    $('input[name$="county]"]', $item).val(form.county.value)
+    $('input[name$="town_city]"]', $item).val(form.town_city.value)
+    $('input[name$="zip]"]', $item).val(form.zip.value)
+    $('input[name$="country_id]"]', $item).val(form.country_id.value)
     $('.office-name', $item).text(form.name.value)
     $('.office-email', $item).text(form.email.value)
-    #$('.office-address', $item).text(form.address.value)
-    $('.office-dphone', $item).text(form.daytime_phone.value)
+    country_name = if form.country_id.selectedIndex > 0 then form.country_id.options[form.country_id.selectedIndex].innerHTML else ''
+    address_arr = [form.line1.value, form.line2.value, form.town_city.value, form.county.value, form.zip.value, country_name]
+    address_str = $.grep(address_arr, (n) -> n).join(', ')
+    $('.office-address', $item).text(address_str)
+    dphone_str = if dphone then '+(' + dphone.split('-')[0] + ') ' + (dphone.split('-')[1] || '')
+    $('.office-dphone', $item).text(dphone_str)
     updateNoDataText()
     $popup.modal('hide')

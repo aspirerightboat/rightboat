@@ -51,7 +51,7 @@ module ApplicationHelper
 
   def currency_tag(name, selected, options = {})
     selected = selected.is_a?(Currency) ? selected.name : selected
-    select_tag name, options_from_collection_for_select(Currency.active, :name, :display_symbol, selected), options
+    select_tag name, options_from_collection_for_select(Currency.all, :name, :display_symbol, selected), options
   end
 
   def sort_options(selected = nil)
@@ -59,7 +59,7 @@ module ApplicationHelper
   end
 
   def options_for_country_code
-    options_for_select(Country.order(:name).map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]})
+    options_for_select(Country.country_code_options)
   end
 
   def tel_to(text)
@@ -74,5 +74,11 @@ module ApplicationHelper
       size += token.size
       size >= 160
     end.join(" ") + (safe_text.size >= 160 ? " ..." : "")
+  end
+
+  def nice_phone(phone_with_code)
+    return if phone_with_code.blank?
+    code, phone = phone_with_code.split('-')
+    "+(#{code}) #{phone}"
   end
 end

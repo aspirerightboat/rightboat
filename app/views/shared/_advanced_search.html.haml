@@ -85,7 +85,7 @@
           .col-xs-4
             = label_tag :category
           .col-xs-8
-            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.active, :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.all, :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :country
@@ -114,7 +114,7 @@
           Results: #{@boats.total_count} boats fit your criteria
 
 :javascript
-  window.currencyRates = #{Currency.active.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
+  window.currencyRates = #{Currency.all.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
   $(function() {
     $('select.select-general').each(function() {
       var options = {

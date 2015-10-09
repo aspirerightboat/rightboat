@@ -4,9 +4,6 @@ class BoatSpecification < ActiveRecord::Base
 
   validates_presence_of :specification, :value
 
-  scope :active, -> {
-    joins(:specification).where('specifications.active = ?', true)
-  }
   scope :front, -> {
     joins(:specification).where('specifications.visible = ?', true)
   }

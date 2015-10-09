@@ -6,10 +6,9 @@ ActiveAdmin.register Model do
 
   belongs_to :manufacturer, optional: true
 
-  permit_params :manufacturer_id, :name, :active, :sailing
+  permit_params :manufacturer_id, :name, :sailing
   filter :name
   filter :manufacturer, collection: -> { Manufacturer.active.order(:name) }
-  filter :active, as: :boolean
 
 
   index do
@@ -22,22 +21,13 @@ ActiveAdmin.register Model do
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]
     end
-    column :active do |r|
-      r.active? ? status_tag('Active', :ok) : status_tag('Inactive', :error)
-    end
     column 'Sailing?', sortable: :sailing do |r|
       r.sailing? ? status_tag('Yes', :ok) : status_tag('No')
     end
     column :updated_at
 
     actions do |record|
-      if record.active?
-        item 'Disable', [:disable, :admin, record], method: :post, class: 'job-action job-action-warning', 'data-confirm' => 'These models will not be shown. Are you sure?'
-      else
-        options = record.manufacturer.active? ? {} : {'data-confirm' => "The manufacturer is not activated. These models wil not appear until manufacturer[#{record.manufacturer}] activated."}
-        item 'Activate', [:active, :admin, record], options.merge(method: :post, class: 'job-action')
-      end
-      item 'Merge'.html_safe, 'javascript:void(0)',
+      item 'Merge', 'javascript:void(0)',
               class: 'merge-record job-action',
               'data-url' => url_for([:merge, :admin, record]),
               'data-id' => record.id

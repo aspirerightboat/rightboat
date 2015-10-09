@@ -4,9 +4,8 @@ ActiveAdmin.register Currency do
 
   menu priority: 4
 
-  permit_params :name, :symbol, :active
+  permit_params :name, :symbol
 
-  filter :active
   filter :name
 
   index as: :sortable_table do
@@ -14,20 +13,11 @@ ActiveAdmin.register Currency do
     column :name
     column :symbol
     column :rate
-    column :active
-    column "# Boats" do |r|
+    column '# Boats' do |r|
       r.boats.count
     end
 
-    actions do |record|
-      if record.active?
-        item "Disable", [:disable, :admin, record], method: :post, class: 'job-action job-action-warning',
-             'data-confirm' => "The boats belonged to #{record} will not appear. Are you sure?"
-      else
-        item "Activate", [:active, :admin, record], method: :post, class: 'job-action',
-             'data-confirm' => "The boats belonged to #{record} will appear. Are you sure?"
-      end
-    end
+    actions
   end
 
   form do |f|

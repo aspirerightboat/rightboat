@@ -100,9 +100,10 @@ $ ->
       changePriceIncrement($this)
 
     $('select[name="length_unit"]').change (e)=>
-      unit = $(e.currentTarget).val()
+      $target = $(e.currentTarget)
+      unit = $target.val()
       $('select[name="length_unit"]').select2('val', unit)
-      $(this).parents('.length-input-group').find('[data-slide-name="length"]').each ->
+      $target.parents('.length-input-group').find('[data-slide-name="length"]').each ->
         $slider = $(this)
         $slider.data('unit', unit)
         alignSliderLabelPosition($slider)

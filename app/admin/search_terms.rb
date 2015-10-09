@@ -1,6 +1,6 @@
-ActiveAdmin.register_page 'Search terms' do
+ActiveAdmin.register_page 'Search Terms' do
 
-  menu parent: "Other", priority: 11
+  menu parent: 'Other', priority: 1
 
   page_action :destroy, method: :delete do
     @activity = Activity.find params[:id]

@@ -7,7 +7,7 @@ class BoatImage < ActiveRecord::Base
 
   default_scope -> { order :position }
 
-  validates_presence_of :file, :boat_id
+  validates_presence_of :file
 
   def http_last_modified_string
     if (last_modified = read_attribute(:http_last_modified))
@@ -21,13 +21,14 @@ class BoatImage < ActiveRecord::Base
     retries = 0
     url = URI.encode(URI.decode(source_url.to_s)).gsub('[', '%5B').gsub(']', '%5D')
     uri = URI.parse(url) rescue nil
-    if !uri || ENV["SKIP_DOWNLOAD_IMAGES"]
+    if !uri || ENV['SKIP_DOWNLOAD_IMAGES']
       write_attribute :file, File.basename(uri.path)
       return
     end
 
+    puts "[#{id}] Downloading #{url}"
     begin
-      puts "[#{id}] Downloading #{url}... #{retries > 0 ? "retry #{retries}" : ''}"
+      puts "[#{id}] Retry #{retries}" if retries > 0
       open(url, "If-Modified-Since" => http_last_modified_string) do |f|
         _t_file = Tempfile.new('import', :encoding => 'binary')
         _t_file.write(f.read)
@@ -41,11 +42,12 @@ class BoatImage < ActiveRecord::Base
         if f.meta['last-modified']
           self.http_last_modified = Time.parse(f.meta['last-modified'].to_s)
         end
+        puts "[#{id}] - OK"
       end
     rescue Exception => e
       if e.is_a?(Errno::ECONNREFUSED) || e.is_a?(Net::ReadTimeout)
         if retries > 5
-          puts "Max retries reached. Failed"
+          puts "[#{id}] Max retries reached. Failed"
         else
           retries += 1
           sleep 5
@@ -53,17 +55,16 @@ class BoatImage < ActiveRecord::Base
         end
       elsif e.is_a?(OpenURI::HTTPError)
         case e.message[0,3]
-          when "404"
-            puts "[#{id}] #{url} 404 - destroying image"
+          when '404'
+            puts "[#{id}] 404 - Not found, destroy"
             self.destroy if self.persisted?
             self.file = nil
-          when "304"
-            puts "[#{id}] #{url} 304 - not modified, continuing"
+          when '304'
+            puts "[#{id}] 304 - Not modified, continue"
           else
             Rails.logger.error "[#{id}] #{url} #{e.message}"
         end
       end
-
     end
   end
 

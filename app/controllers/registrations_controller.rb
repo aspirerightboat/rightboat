@@ -9,7 +9,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     if user.save
       env['warden'].set_user(user)
-      render json: {}
+      render json: { location: user_area_path(user) }
     else
       render json: user.errors.full_messages, root: false, status: 422
     end

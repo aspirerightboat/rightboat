@@ -10,6 +10,9 @@ class User < ActiveRecord::Base
       'COMPANY' => 2,
       'ADMIN' => 99
   }
+
+  serialize :broker_ids, Array
+
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
   scope :organizations, -> { where(role: [ROLES['COMPANY'], ROLES['MANUFACTURER']]).order(:company_name) }
 

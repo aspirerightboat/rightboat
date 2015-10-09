@@ -31,10 +31,15 @@ module Rightboat
           'exhibitcomments' => :description
         )
 
+        def self.validate_param_option
+          { broker_id: [:presence, /^\d+$/]}
+        end
+
         def enqueue_jobs
           doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
-          doc.search("//AD").each do |ad|
-            job = { ad: ad }
+
+          doc.search("An_Broker[text()='#{@import.param['broker_id']}']").each do |broker|
+            job = { ad: broker.parent }
             enqueue_job(job)
           end
         end
@@ -42,23 +47,16 @@ module Rightboat
         def process_job(job)
           doc = job[:ad]
           boat = SourceBoat.new
-          office_attrs = {}
 
           doc.children.each do |node|
             key = node.name.gsub('An_', '').downcase
+            next if key =~ /^deal/i || key == 'broker'
+            val = node.children.text
+            next if val.blank?
 
             if key == 'url_photo'
               boat.images = node.children.map(&:text).reject(&:blank?)
-            elsif key =~ /^deal/i
-              key = key.gsub(/deal_/, '')
-              next if ['zipcode', 'country_name', 'country', 'contact2', 'city', 'adr1', 'adr2', 'adr3', 'pending'].include?(key)
-              val = node.children.text
-              key = 'daytime_phone' if key == 'phone'
-              key = 'contact_name' if key == 'contact1'
-              key = 'email' if key == 'email1'
-              office_attrs[key.to_sym] = val
             else
-              val = node.children.text
               if (attr = DATA_MAPPINGS[key])
                 if attr.is_a?(Proc)
                   attr.call(boat, val)
@@ -71,7 +69,6 @@ module Rightboat
             end
           end
 
-          boat.office = office_attrs
           boat
         end
       end

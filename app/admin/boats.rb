@@ -69,7 +69,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      Boat.includes(:manufacturer, :user, :country, :office, :boat_images, model: :manufacturer)
+      Boat.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
     end
 
     def find_resource

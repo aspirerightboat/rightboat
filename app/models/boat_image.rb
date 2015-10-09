@@ -7,7 +7,7 @@ class BoatImage < ActiveRecord::Base
 
   default_scope -> { order :position }
 
-  validates_presence_of :file, :boat_id
+  validates_presence_of :file
 
   def http_last_modified_string
     if (last_modified = read_attribute(:http_last_modified))

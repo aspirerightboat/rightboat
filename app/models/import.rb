@@ -10,7 +10,7 @@ class Import < ActiveRecord::Base
   validates_presence_of :user_id, :import_type
   validates_numericality_of :threads, greater_than: 0, less_than: 10, allow_blank: true
   validates_inclusion_of :import_type, in: Rightboat::Imports::Base.source_types, allow_blank: true
-  validates_uniqueness_of :import_type, scope: :user_id
+  validates_uniqueness_of :import_type, scope: :user_id, if: 'import_type != "eyb"'
 
   # scheduling options
   validates_presence_of :frequency_quantity, :frequency_unit, if: :active

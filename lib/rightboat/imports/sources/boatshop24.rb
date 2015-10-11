@@ -44,17 +44,17 @@ module Rightboat
         end
 
         def pics_url id
-          "http://search.boatshop24.co.uk/brokersfullspec.asp?btsrefno=" + id
+          "http://search.boatshop24.co.uk/brokersfullspec.asp?btsrefno=#{id}"
         end
 
         def enqueue_jobs
           url = "http://search.boatshop24.co.uk/externalbrokerlist.asp?brokercode=#{@source_id}"
 
           begin
-            while (url)
-              puts "parsing #{url}"
+            while url
+              log "Parsing #{url}"
               doc = get(url)
-              doc.search(".latest_ads .desc-top .title a").each do |a|
+              doc.search('.latest_ads .desc-top .title a').each do |a|
                 unless (detail_page = a['href']).blank?
                   job = { url: detail_page }
                   enqueue_job(job)
@@ -64,8 +64,8 @@ module Rightboat
               next_link = doc.search('.nav a.nav_next').first
               url = next_link ? next_link['href'] : nil
             end
-          rescue SocketError => se
-            puts "Inable to retrieve IDs - verify source id parameter in " + url
+          rescue SocketError => e
+            log_error "#{e.message} Error: Cannot retrieve IDs - verify source id parameter in #{url}", 'Cannot retrieve IDs'
             exit 1
           end
         end

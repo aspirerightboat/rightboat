@@ -47,10 +47,10 @@ module Rightboat
           url = "http://www.boatsandoutboards.co.uk/view-trader/permalink/#{@source_id}"
 
           begin
-            while (url)
-              puts "parsing #{url}"
+            while url
+              log "Parsing #{url}"
               doc = get(url)
-              doc.search("div.listingsv2 td .title a").each do |a|
+              doc.search('div.listingsv2 td .title a').each do |a|
                 unless (detail_page = a['href']).blank?
                   job = { url: detail_page }
                   enqueue_job(job)
@@ -60,8 +60,8 @@ module Rightboat
               next_link = doc.search('.nav a.nav_next').first
               url = next_link ? next_link['href'] : nil
             end
-          rescue SocketError => se
-            puts "Inable to retrieve IDs - verify source id parameter in " + url
+          rescue SocketError => e
+            log_error "#{e.message} Error: Cannot retrieve IDs - verify source id parameter in #{url}", 'Cannot retrieve IDs'
             exit 1
           end
         end
@@ -92,8 +92,8 @@ module Rightboat
           boat.source_url = url
           doc = get(url)
 
-          doc.search("table.other_details tr").each do |tr|
-            tr.search(".label").each do |key_td|
+          doc.search('table.other_details tr').each do |tr|
+            tr.search('.label').each do |key_td|
               key = key_td.text.strip.gsub(/((\s+)?:$|\.)/, '').gsub(/(\s+|\/)/, '_').downcase
               value = key_td.next.text.strip
               fields[key] =  value unless key.blank? || value.blank?

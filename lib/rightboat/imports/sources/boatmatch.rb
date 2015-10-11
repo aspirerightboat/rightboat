@@ -78,7 +78,7 @@ module Rightboat
             end
             @char = ""
             @tree.push(el)
-            if (el == "boat")
+            if el == "boat"
               @boat = Imports::Boat.new
             end
           end
@@ -134,7 +134,7 @@ module Rightboat
             @last_char = @char
             process
             @tree.pop
-            if (el == "boat" && @boat)
+            if el == "boat" && @boat
               @boats << @boat.dup
               @boat = nil
             end

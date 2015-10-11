@@ -38,9 +38,42 @@ module Rightboat
 
         @_queue_mutex = Mutex.new
         @_queue = Queue.new
+
+        @images_count = 0
+      end
+
+      def logger
+        @logger ||= begin
+          dir = FileUtils.mkdir_p("#{Rails.root}/log/imports").first
+          @log_path = "#{dir}/import-log-#{@import.id}-#{@import.import_type}--#{Time.current.strftime('%F--%H-%M-%S')}.log"
+          Logger.new(@log_path)
+        end
+      end
+
+      def log(str)
+        logger.info str
+        puts str if Rails.env.development?
+      end
+
+      def log_error(str, import_msg = nil)
+        log str
+        @import_trail.update_attribute(:error_msg, import_msg || str)
       end
 
       def run
+        logger # init logger
+        @import_trail = ImportTrail.create(import: @import, log_path: @log_path)
+        log "Started param=#{@import.param.inspect} threads=#{@thread_count} use_proxy=#{@use_proxy} pid=#{@import.pid}"
+
+        begin
+          threaded_run
+        rescue Exception => e
+          log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.join("\n")}", 'Unexpected error'
+          raise e
+        end
+      end
+
+      def threaded_run
         _end_q = false
         threads = []
 
@@ -61,12 +94,13 @@ module Rightboat
               end
 
               begin
-                if boat = process_job(job)
+                if (boat = process_job(job))
                   boat.user = @user
                   boat.import = @import
+                  boat.imports_base = self
                 end
               rescue Exception => e
-                @import.update(error_msg: 'process_error')
+                log_error "#{e.class.name} Error: #{e.message}", 'Process Error'
                 ImportMailer.process_error(e, @import, job).deliver_now
               end
               @_writer_mutex.synchronize {@scraped_boats << boat if boat}
@@ -79,9 +113,8 @@ module Rightboat
 
         threads.each(&:join)
 
-        unless @missing_attrs.blank?
-          puts "******* MISSING **********"
-          puts @missing_attrs
+        if @missing_attrs.present?
+          log "===> MISSING ATTRIBUTES: #{@missing_attrs.inspect}"
         end
 
         process_result unless @exit_worker
@@ -126,7 +159,7 @@ module Rightboat
         remove_old_boats
 
         if @scraped_boats.blank?
-          @import.update(error_msg: 'import_blank')
+          log_error 'Import Blank'
           ImportMailer.import_blank(@import).deliver_now
           return
         end
@@ -136,15 +169,21 @@ module Rightboat
           begin
             source_boat.save
           rescue
-            @import.update(error_msg: 'invalid_boat')
+            log_error 'Invalid Boat'
             ImportMailer.invalid_boat(source_boat).deliver_now
             next
           end
         end
 
-        @import.update_column :last_ran_at, Time.now
+        @import_trail.assign_attributes(
+            images_count: @scraped_boats.inject(0) { |sum, boat| sum + (boat.images_count || 0) },
+            finished_at: Time.current
+        )
+        @import_trail.save!
+        @import.update_attribute(:last_ran_at, Time.current)
+        log 'Finished'
       rescue Exception => e
-        @import.update(error_msg: 'process_result_error')
+        log_error "===> PROCESS RESULT ERROR. #{e.class.name}: #{e.message}", 'Process Result Error'
         ImportMailer.process_result_error(e, @import).deliver_now
       end
 
@@ -159,15 +198,15 @@ module Rightboat
           break if @exit_worker
           next if source_id.blank?
           boat = Boat.find_by_source_id(source_id)
-          puts "Deleting #{boat.id} - #{source_id}"
+          log "Deleting #{boat.id} - #{source_id}"
           boat.destroy
         end
 
-        @import.update(
-          total_count: scraped_source_ids.length,
-          new_count: new_source_ids.length,
-          updated_count: updated_source_ids.length,
-          deleted_count: deleted_source_ids.length
+        @import_trail.assign_attributes(
+            boats_count: scraped_source_ids.length,
+            new_count: new_source_ids.length,
+            updated_count: updated_source_ids.length,
+            deleted_count: deleted_source_ids.length
         )
       end
 

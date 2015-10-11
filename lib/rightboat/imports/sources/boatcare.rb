@@ -25,13 +25,13 @@ module Rightboat
         end
 
         def enqueue_jobs
-          url = "http://www.boatcareltdmalta.com/en/boats-for-sale-malta.htm"
+          url = 'http://www.boatcareltdmalta.com/en/boats-for-sale-malta.htm'
 
           begin
-            while (url)
-              puts "parsing #{url}"
+            while url
+              log "Parsing #{url}"
               doc = get(url)
-              doc.search("div.divPreview2 > a").each do |a|
+              doc.search('div.divPreview2 > a').each do |a|
                 unless (detail_page = a['href']).blank?
                   job = { url: detail_page }
                   enqueue_job(job)
@@ -41,8 +41,8 @@ module Rightboat
               next_link = doc.search('#pagination .fr a').first
               url = next_link ? next_link['href'] : nil
             end
-          rescue SocketError => se
-            puts "Inable to retrieve IDs - verify source id parameter in " + url
+          rescue SocketError => e
+            log_error "#{e.message} Error: Cannot retrieve IDs - verify source id parameter in #{url}", 'Cannot retrieve IDs'
             exit 1
           end
         end
@@ -63,7 +63,7 @@ module Rightboat
 
           boat.manufacturer_model = doc.search('div[@id="page-content2-title"]').first.text.strip rescue nil
 
-          doc.search(".brok-value").each do |value_td|
+          doc.search('.brok-value').each do |value_td|
             key = value_td.previous.previous.previous.text.strip.gsub(/((\s+)?:$|\.)/, '').gsub(/(\s+|\/)/, '_').downcase
             value = value_td.text.strip
             fields[key] =  value unless key.blank? || value.blank?

@@ -4,6 +4,7 @@ class Import < ActiveRecord::Base
   FREQUENCY_UNITS = [:hour, :day, :week, :month] # :second, :minute
 
   belongs_to :user, inverse_of: :imports
+  has_many :import_trails
 
   serialize :param, Hash
 
@@ -65,11 +66,6 @@ class Import < ActiveRecord::Base
   def run!
     self.update_column :queued_at, Time.now
     self.update_column :pid, -1
-    self.update_column :total_count, 0
-    self.update_column :new_count, 0
-    self.update_column :updated_count, 0
-    self.update_column :deleted_count, 0
-    self.update_column :error_msg, nil
     system `RAILS_ENV=#{Rails.env} bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
   end
 

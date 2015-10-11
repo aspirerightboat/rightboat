@@ -30,5 +30,10 @@ module Rightboat
     config.active_record.raise_in_transactional_callbacks = true
 
     config.active_job.queue_adapter = :delayed_job
+
+    # Log file rotation. see: https://www.youtube.com/watch?v=Hgc6LGZMMXY
+    config.logger = Logger.new(config.paths['log'].first,
+                               5, # 5 files total
+                               50*1024) # 50 megabytes each
   end
 end

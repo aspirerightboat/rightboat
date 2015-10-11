@@ -39,7 +39,7 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :user, :images, :tax_status, :update_country, :country, :location, :office
+        :import, :imports_base, :user, :images, :images_count, :tax_status, :update_country, :country, :location, :office
       ]
 
       attr_accessor :missing_spec_attrs
@@ -167,7 +167,7 @@ module Rightboat
               value = 'USD' if value == '$'
               value = klass.where("name = ? OR symbol = ?", value, value).first
               if value.nil?
-                self.import.update(error_msg: 'blank_currency')
+                self.imports_base.log_error 'Blank Currency'
                 ImportMailer.blank_currency(self).deliver_now
               end
             else
@@ -185,23 +185,26 @@ module Rightboat
           target.office = office
         end
 
+        self.images_count = 0
+        boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
+
         images.each do |url|
+          img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
+          img.cache_file_from_source_url
+          self.images_count += 1
           if target.new_record?
-            img = BoatImage.new(source_url: url, boat: target)
-            img.cache_file_from_source_url
             target.boat_images << img if img.valid?
           else
-            img = target.boat_images.where(source_url: url).first_or_initialize
-            img.cache_file_from_source_url
             img.save
           end
         end
+        imports_base.log "#{images_count} images imported"
 
         if target.boat_images.blank?
           target.destroy
         else
           unless target.save
-            puts "**** ERROR: \n#{target.errors.full_messages.join("\n")}\n****"
+            imports_base.log_error "===> SAVE BOAT ERROR: #{target.errors.full_messages.join(', ')}", 'Save Boat Error'
           end
         end
 

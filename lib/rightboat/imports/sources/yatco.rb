@@ -36,8 +36,8 @@ module Rightboat
           page_num = 0
 
           begin
-            while (url)
-              puts "parsing #{url}"
+            while url
+              log "Parsing #{url}"
               doc = get(url)
 
               doc.search(".article-2colresult a.vessel-details-link").each do |a|
@@ -56,8 +56,8 @@ module Rightboat
                 url = base_url + "&pg=#{page_num}"
               end
             end
-          rescue SocketError => se
-            puts "Inable to retrieve IDs - verify source id parameter in " + url
+          rescue SocketError => e
+            log_error "#{e.message} Error: Cannot retrieve IDs - verify source id parameter in #{url}", 'Cannot retrieve IDs'
             exit 1
           end
         end

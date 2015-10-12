@@ -39,7 +39,7 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :imports_base, :user, :images, :tax_status, :update_country, :country, :location, :office
+        :import, :error_msg, :user, :images, :images_count, :new_boat, :tax_status, :update_country, :country, :location, :office
       ]
 
       attr_accessor :missing_spec_attrs
@@ -95,7 +95,7 @@ module Rightboat
 
       def save
         if !valid?
-          imports_base.log_error "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}", 'Save Boat Error1'
+          self.error_msg = "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}"
           return false
         end
 
@@ -168,9 +168,9 @@ module Rightboat
               value = nil
             elsif attr_name.to_sym == :currency
               value = 'USD' if value == '$'
-              value = klass.where("name = ? OR symbol = ?", value, value).first
+              value = klass.where('name = ? OR symbol = ?', value, value).first
               if value.nil?
-                self.imports_base.log_error 'Blank Currency'
+                self.error_msg = 'Blank Currency'
                 ImportMailer.blank_currency(self).deliver_now
               end
             else
@@ -188,7 +188,7 @@ module Rightboat
           target.office = office
         end
 
-        images_count = 0
+        self.images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
 
         images.each do |url|
@@ -197,15 +197,13 @@ module Rightboat
           if target.new_record?
             if img.valid?
               target.boat_images << img
-              images_count += 1
+              self.images_count += 1
             end
           else
             success = img.save
-            images_count += 1 if success
+            self.images_count += 1 if success
           end
         end
-        imports_base.log "#{images_count} images imported"
-        imports_base.import_trail.images_count += images_count
 
         if target.boat_images.blank?
           target.destroy
@@ -213,9 +211,9 @@ module Rightboat
         else
           success = target.save
           if success
-            target.id_changed? ? imports_base.import_trail.new_count += 1 : imports_base.import_trail.updated_count += 1
+            self.new_boat = target.id_changed?
           else
-            imports_base.log_error "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}", 'Save Boat Error2'
+            self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
           end
           success
         end

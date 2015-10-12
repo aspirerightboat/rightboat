@@ -101,7 +101,6 @@ module Rightboat
                 if (boat = process_job(job))
                   boat.user = @user
                   boat.import = @import
-                  boat.imports_base = self
                 end
               rescue Exception => e
                 log_error "#{e.class.name} Error: #{e.message}", 'Process Error'
@@ -174,7 +173,12 @@ module Rightboat
           break if @exit_worker
           begin
             success = source_boat.save
-            if !success
+            if success
+              log "Boat saved. images_count=#{source_boat.images_count || 0}"
+              @import_trail.images_count += images_count
+              source_boat.new_boat ? @import_trail.new_count += 1 : @import_trail.updated_count += 1
+            else
+              log_error source_boat.error_msg, 'Save Boat Error'
               @import_trail.not_saved_count += 1
             end
           rescue

@@ -9,6 +9,7 @@ module Rightboat
       include Utils
 
       attr_accessor :scraped_boats, :missing_attrs, :exit_worker
+      attr_reader :import_trail
 
       def self.source_types
         %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco)
@@ -62,13 +63,16 @@ module Rightboat
 
       def run
         logger # init logger
+        Rails.logger = logger
         @import_trail = ImportTrail.create(import: @import, log_path: @log_path)
+        @import.update_attribute(:last_import_trail, @import_trail)
         log "Started param=#{@import.param.inspect} threads=#{@thread_count} use_proxy=#{@use_proxy} pid=#{@import.pid}"
 
         begin
           threaded_run
         rescue Exception => e
           log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.join("\n")}", 'Unexpected error'
+          @import_trail.touch(:finished_at)
           raise e
         end
       end
@@ -97,7 +101,6 @@ module Rightboat
                 if (boat = process_job(job))
                   boat.user = @user
                   boat.import = @import
-                  boat.imports_base = self
                 end
               rescue Exception => e
                 log_error "#{e.class.name} Error: #{e.message}", 'Process Error'
@@ -156,6 +159,8 @@ module Rightboat
       end
 
       def process_result
+        @import_trail.boats_count = @scraped_boats.size
+
         remove_old_boats
 
         if @scraped_boats.blank?
@@ -167,7 +172,15 @@ module Rightboat
         @scraped_boats.each do |source_boat|
           break if @exit_worker
           begin
-            source_boat.save
+            success = source_boat.save
+            if success
+              log "Boat saved. images_count=#{source_boat.images_count || 0}"
+              @import_trail.images_count += images_count
+              source_boat.new_boat ? @import_trail.new_count += 1 : @import_trail.updated_count += 1
+            else
+              log_error source_boat.error_msg, 'Save Boat Error'
+              @import_trail.not_saved_count += 1
+            end
           rescue
             log_error 'Invalid Boat'
             ImportMailer.invalid_boat(source_boat).deliver_now
@@ -175,12 +188,9 @@ module Rightboat
           end
         end
 
-        @import_trail.assign_attributes(
-            images_count: @scraped_boats.inject(0) { |sum, boat| sum + (boat.images_count || 0) },
-            finished_at: Time.current
-        )
+        @import_trail.finished_at = Time.current
         @import_trail.save!
-        @import.update_attribute(:last_ran_at, Time.current)
+        @import.touch(:last_ran_at)
         log 'Finished'
       rescue Exception => e
         log_error "===> PROCESS RESULT ERROR. #{e.class.name}: #{e.message}", 'Process Result Error'
@@ -189,25 +199,18 @@ module Rightboat
 
       def remove_old_boats
         old_source_ids = @user.boats.map{|b|b.source_id.to_s}
-        scraped_source_ids = @scraped_boats.map{|b|b.source_id.to_s}
-        deleted_source_ids = old_source_ids - scraped_source_ids
-        new_source_ids = scraped_source_ids - old_source_ids
-        updated_source_ids = old_source_ids & scraped_source_ids
+        scraped_source_ids = scraped_boats.map{|b|b.source_id.to_s}
+        delete_source_ids = old_source_ids - scraped_source_ids
+        delete_source_ids.reject!(&:blank?)
 
-        deleted_source_ids.each do |source_id|
+        delete_boats = @user.boats.select { |boat| boat.source_id.in?(delete_source_ids) }
+        delete_boats.each do |boat|
           break if @exit_worker
-          next if source_id.blank?
-          boat = Boat.find_by_source_id(source_id)
-          log "Deleting #{boat.id} - #{source_id}"
+          log "Deleting Boat id=#{boat.id} source_id=#{boat.source_id}"
           boat.destroy
         end
 
-        @import_trail.assign_attributes(
-            boats_count: scraped_source_ids.length,
-            new_count: new_source_ids.length,
-            updated_count: updated_source_ids.length,
-            deleted_count: deleted_source_ids.length
-        )
+        @import_trail.deleted_count = delete_boats.size
       end
 
       def advert_url(url, scheme='http')

@@ -13,20 +13,27 @@ ActiveAdmin.register_page 'Dashboard' do
     columns do
       column do
         panel 'Recent Imports runned' do
-          table_for ImportTrail.order('id DESC').includes(:import).limit(15) do |t|
+          table_for ImportTrail.order('id DESC').includes(import: :user).limit(15) do |t|
+            t.column('User') do |trail|
+              link_to trail.import.user.name, admin_user_path(trail.import.user)
+            end
             t.column('Import') { |trail| link_to trail.import.import_type, admin_import_path(trail.import) }
             t.column('Boats count') { |trail| trail.boats_count }
             t.column('New count') { |trail| trail.new_count }
             t.column('Updated count') { |trail| trail.updated_count }
             t.column('Deleted count') { |trail| trail.deleted_count }
+            t.column('Not Saved count') { |trail| trail.not_saved_count }
             t.column('Images count') { |trail| trail.images_count }
-            t.column('Status') do |trail|
-              if trail.error_msg.present?
-                status_tag(error_msg, :red)
-              elsif trail.finished_at
+            t.column('Running') do |trail|
+              if trail.finished_at
                 status_tag('finished', :green)
               else
                 status_tag('running', :orange)
+              end
+            end
+            t.column('Error') do |trail|
+              if trail.error_msg.present?
+                status_tag(trail.error_msg, :red)
               end
             end
             t.column('Time from-to (duration)') { |trail|

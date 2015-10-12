@@ -39,7 +39,7 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :imports_base, :user, :images, :images_count, :tax_status, :update_country, :country, :location, :office
+        :import, :error_msg, :user, :images, :images_count, :new_boat, :tax_status, :update_country, :country, :location, :office
       ]
 
       attr_accessor :missing_spec_attrs
@@ -94,7 +94,10 @@ module Rightboat
       end
 
       def save
-        return unless valid?
+        if !valid?
+          self.error_msg = "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}"
+          return false
+        end
 
         user_id = user.respond_to?(:id) ? user.id : user
         target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
@@ -165,9 +168,9 @@ module Rightboat
               value = nil
             elsif attr_name.to_sym == :currency
               value = 'USD' if value == '$'
-              value = klass.where("name = ? OR symbol = ?", value, value).first
+              value = klass.where('name = ? OR symbol = ?', value, value).first
               if value.nil?
-                self.imports_base.log_error 'Blank Currency'
+                self.error_msg = 'Blank Currency'
                 ImportMailer.blank_currency(self).deliver_now
               end
             else
@@ -191,23 +194,29 @@ module Rightboat
         images.each do |url|
           img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
           img.cache_file_from_source_url
-          self.images_count += 1
           if target.new_record?
-            target.boat_images << img if img.valid?
+            if img.valid?
+              target.boat_images << img
+              self.images_count += 1
+            end
           else
-            img.save
+            success = img.save
+            self.images_count += 1 if success
           end
         end
-        imports_base.log "#{images_count} images imported"
 
         if target.boat_images.blank?
           target.destroy
+          false
         else
-          unless target.save
-            imports_base.log_error "===> SAVE BOAT ERROR: #{target.errors.full_messages.join(', ')}", 'Save Boat Error'
+          success = target.save
+          if success
+            self.new_boat = target.id_changed?
+          else
+            self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
           end
+          success
         end
-
       end
 
       # boat spec that is not managed

@@ -82,7 +82,8 @@ module Rightboat
       end
 
       def enqueue_jobs
-        doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+        #doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+        doc = Nokogiri::XML(File.read("/Users/chen/work/rightboat/tmp/data.xml"))
         doc.search("//AD").each do |ad|
           job = { ad: ad }
           enqueue_job(job)
@@ -94,6 +95,7 @@ module Rightboat
         member = {
           role: 'COMPANY',
           source: 'eyb',
+          active: true,
           updated_by_admin: true,
           address_attributes: {}
         }
@@ -120,6 +122,9 @@ module Rightboat
       private
 
       def process_result
+        User.where(source: 'eyb').active.update_all(active: false)
+        Import.where(import_type: 'eyb').active.update_all(active: false)
+
         @members.each do |member|
           member[:address_attributes][:country] = 'UK' if member[:address_attributes][:country] = 'Tortola'
           unless member[:company_weburl].blank?
@@ -149,6 +154,8 @@ module Rightboat
           user.broker_ids.each do |broker_id|
             unless import = imports.select { |x| x.param['broker_id'] == broker_id.to_s }.first
               import = user.imports.create(import_type: 'eyb', active: false, param: { 'broker_id' => broker_id })
+            else
+              import.update(active: true)
             end
           end
         end

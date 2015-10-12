@@ -5,14 +5,15 @@ class Member::SavedSearchesController < Member::BaseController
 
   def create
     valid_params = params.permit(:year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                                 :length_unit, :manufacturer_model, :currency, :ref_no)
+                                 :length_unit, :manufacturer_model, :currency, :ref_no, :q, boat_type: [],
+                                 tax_status: [:paid, :unpaid], new_used: [:new, :used], country: [], category: [])
 
     ss = current_user.saved_searches.new(valid_params)
 
     search_params = params.clone
     search = Rightboat::BoatSearch.new(search_params)
-    @first_boat = search.retrieve_boats(1).first
-    ss.first_found_boat_id = @first_boat.id
+    @first_boat = search.retrieve_boats(nil, 1).first
+    ss.first_found_boat_id = @first_boat.try(:id)
 
     ss.save!
 

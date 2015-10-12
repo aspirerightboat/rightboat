@@ -7,12 +7,15 @@ ActiveAdmin.register ImportTrail do
     private
 
     def scoped_collection
-      end_of_association_chain.includes(:import)
+      end_of_association_chain.includes(import: :user)
     end
   end
 
   index do
     column :id
+    column :user do |trail|
+      link_to trail.import.user.name, admin_user_path(trail.import.user)
+    end
     column :import do |trail|
       link_to trail.import.import_type, admin_import_path(trail.import)
     end
@@ -21,6 +24,7 @@ ActiveAdmin.register ImportTrail do
     column :updated_count
     column :deleted_count
     column :images_count
+    column :not_saved_count
     column :created_at
     column :finished_at
 
@@ -38,6 +42,7 @@ ActiveAdmin.register ImportTrail do
       row :updated_count
       row :deleted_count
       row :images_count
+      row :not_saved_count
       row :error_msg
       row :created_at
       row :finished_at

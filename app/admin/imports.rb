@@ -29,7 +29,7 @@ ActiveAdmin.register Import do
     end
 
     def scoped_collection
-      end_of_association_chain.includes(:user)
+      end_of_association_chain.includes(:user, :last_import_trail)
     end
   end
 
@@ -50,8 +50,10 @@ ActiveAdmin.register Import do
     column :last_ran_at, sortable: :last_ran_at do |import|
       import.last_ran_at.blank? ? "never" : l(import.last_ran_at, format: :long)
     end
-    column :created_at
-    column :updated_at
+    column :last_log do |import|
+      link_to('view log', admin_import_trail_path(import.last_import_trail)) if import.last_import_trail
+    end
+
     actions do |job|
       if job.running?
         # only show Stop button when rake task gets started

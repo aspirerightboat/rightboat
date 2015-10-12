@@ -5,6 +5,7 @@ class Import < ActiveRecord::Base
 
   belongs_to :user, inverse_of: :imports
   has_many :import_trails
+  belongs_to :last_import_trail, class_name: 'ImportTrail'
 
   serialize :param, Hash
 

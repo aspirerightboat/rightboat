@@ -39,7 +39,7 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :imports_base, :user, :images, :images_count, :tax_status, :update_country, :country, :location, :office
+        :import, :imports_base, :user, :images, :tax_status, :update_country, :country, :location, :office
       ]
 
       attr_accessor :missing_spec_attrs
@@ -94,7 +94,10 @@ module Rightboat
       end
 
       def save
-        return unless valid?
+        if !valid?
+          imports_base.log_error "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}", 'Save Boat Error1'
+          return false
+        end
 
         user_id = user.respond_to?(:id) ? user.id : user
         target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
@@ -185,29 +188,37 @@ module Rightboat
           target.office = office
         end
 
-        self.images_count = 0
+        images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
 
         images.each do |url|
           img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
           img.cache_file_from_source_url
-          self.images_count += 1
           if target.new_record?
-            target.boat_images << img if img.valid?
+            if img.valid?
+              target.boat_images << img
+              images_count += 1
+            end
           else
-            img.save
+            success = img.save
+            images_count += 1 if success
           end
         end
         imports_base.log "#{images_count} images imported"
+        imports_base.import_trail.images_count += images_count
 
         if target.boat_images.blank?
           target.destroy
+          false
         else
-          unless target.save
-            imports_base.log_error "===> SAVE BOAT ERROR: #{target.errors.full_messages.join(', ')}", 'Save Boat Error'
+          success = target.save
+          if success
+            target.id_changed? ? imports_base.import_trail.new_count += 1 : imports_base.import_trail.updated_count += 1
+          else
+            imports_base.log_error "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}", 'Save Boat Error2'
           end
+          success
         end
-
       end
 
       # boat spec that is not managed

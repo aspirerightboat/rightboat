@@ -10,4 +10,8 @@ namespace :import do
     end
   end
 
+  desc "Run importing eyb members and create import"
+  task :eyb_members => :environment do
+    Rightboat::Imports::EybMembers.new.run
+  end
 end

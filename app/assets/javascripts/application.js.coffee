@@ -54,14 +54,18 @@ window.requireLogin = (e, disable_history)->
   if $loginBtn.length > 0
     e.preventDefault()
     unless disable_history
-      href = $(e.target).attr('href')
-      href = $(e.target).data('target') if href == '#'
+      $target = $(e.target)
+      if $target.data('method') == 'post'
+        href = location.href + '#' + $target.attr('id')
+      else
+        href = $target.attr('href')
+        href = $target.data('target') if href == '#'
       if history.pushState && window.location.href != href
         history.pushState({}, '', href)
 
     $loginBtn.trigger('click')
-    return true
-  false
+    return false
+  true
 
 scrollToTarget = (target) ->
   $('html, body').animate
@@ -104,6 +108,8 @@ $(document).ready ->
   if $(target).length
     if $(target).hasClass 'modal'
       $(target).modal('show')
+    else if $(target).data('method') == 'post'
+      $(target).click()
     else
       scrollToTarget(target)
 

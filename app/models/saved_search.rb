@@ -1,10 +1,19 @@
 class SavedSearch < ActiveRecord::Base
+
+  serialize :country, Array
+  serialize :category, Array
+  serialize :tax_status, Hash
+  serialize :new_used, Hash
+  serialize :boat_type, Array
+
   belongs_to :user
 
   def search_title
     not_defined = '..'
     currency_sym = Currency.find_by(name: currency).try(:symbol)
     res = ''
+    res << " Keyword=#{q}" if q.present?
+    res << " BoatType=#{boat_type}" if boat_type.present?
     res << " Boat=#{manufacturer_model}" if manufacturer_model
     res << " Year=#{year_min.presence || not_defined}-#{year_max.presence || not_defined}" if year_min.present? || year_max.present?
     res << " Price=#{price_min.presence || not_defined}-#{price_max.presence || not_defined}#{currency_sym}" if price_min.present? || price_max.present?
@@ -15,17 +24,7 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def to_search_params
-    {
-        year_min: year_min,
-        year_max: year_max,
-        price_min: price_min,
-        price_max: price_max,
-        length_min: length_min,
-        length_max: length_max,
-        length_unit: length_unit,
-        manufacturer_model: manufacturer_model,
-        currency: currency,
-        ref_no: ref_no,
-    }
+    attributes
+      .except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at')
   end
 end

@@ -12,15 +12,30 @@
 
     %table.rb-table
       %tr
-        %th Search
-        %th Actions
-        %th New listing
+        %th keyword
+        %th manufacturer / model
+        %th boat type
+        %th category
+        %th country
+        %th new / used
+        %th year
+        %th price
+        %th length
+        %th run
+        %th delete
+        %th alert
       - @saved_searches.each do |ss|
         %tr
-          %td= ss.search_title
-          %td
-            = link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'
-            = link_to 'Delete', member_saved_search_path(ss), class: 'label label-danger', method: :delete
-          %td
-            = link_to (ss.alert ? 'Alert' : 'No Alert'), toggle_member_saved_search_path(ss),
+          %td= ss.q
+          %td= ss.manufacturer_model
+          %td= ss.boat_type.join(', ')
+          %td= BoatCategory.where(id: ss.category).pluck(:name).join(', ')
+          %td= Country.where(id: ss.country).pluck(:name).join(', ')
+          %td= ss.new_used.values.join(' / ')
+          %td= "#{ss.year_min} ~ #{ss.year_max}"
+          %td= "#{ss.price_min} ~ #{ss.price_max} #{ss.currency}"
+          %td= "#{ss.length_min} ~ #{ss.length_max} #{ss.length_unit}"
+          %td= link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'
+          %td= link_to 'Delete', member_saved_search_path(ss), class: 'label label-danger', method: :delete
+          %td= link_to (ss.alert ? 'Alert' : 'No Alert'), toggle_member_saved_search_path(ss),
                       class: "label label-#{ss.alert ? 'success' : 'default'}", method: :post

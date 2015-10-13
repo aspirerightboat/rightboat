@@ -5,7 +5,6 @@ $ ->
 
   $('[data-require-login]').click (e) ->
     requireLogin(e, false)
-    true
 
   $(document).on 'click', '.user-login', ->
     $('form .alert').remove()

@@ -1,18 +1,16 @@
-An error occured while processing.
+An error occurred while processing
 
 %p
-  %b Error message:
-  %br
-  = @error.inspect
-
+  %b #{@error.class.name} Error: #{@error.message}
+  %div(style="background-color: lightgray")
+    - @error.backtrace.each do |line|
+      %div= line
 %p
   %b Import:
-  %br
-  = @import.inspect
+  %div= @import.inspect
+%p
+  %b Job:
+  %div= @job.inspect
 
 %p
-  %b Job
-  %br
-  = @job.inspect
-
-Rightboat.com
+  = link_to 'Rightboat Admin', admin_root_url

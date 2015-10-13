@@ -14,14 +14,14 @@ module Rightboat
 
         def self.cleanup_string(source)
           if source.is_a?(String) && !source.blank?
-            source.encode('UTF-8').gsub(nbsp_char, ' ').gsub(/[\s\r\t\n]+/, ' ').strip
+            source.encode('UTF-8').gsub(nbsp_char, ' ').gsub(/[\s]+/, ' ').strip
           else
             source
           end
         end
 
         def self.nbsp_char
-          Nokogiri::HTML('&nbsp;').text
+          '&nbsp;'
         end
 
         def self.convert_unit(value, unit)

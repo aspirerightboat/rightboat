@@ -102,7 +102,7 @@ module Rightboat
                   boat.user = @user
                   boat.import = @import
                 end
-              rescue Exception => e
+              rescue StandardError => e
                 log_error "#{e.class.name} Error: #{e.message}", 'Process Error'
                 ImportMailer.process_error(e, @import, job).deliver_now
               end
@@ -175,12 +175,13 @@ module Rightboat
             success = source_boat.save
             if success
               log "Boat saved. images_count=#{source_boat.images_count || 0}"
-              @import_trail.images_count += images_count
+              @import_trail.images_count += source_boat.images_count
               source_boat.new_boat ? @import_trail.new_count += 1 : @import_trail.updated_count += 1
             else
               log_error source_boat.error_msg, 'Save Boat Error'
               @import_trail.not_saved_count += 1
             end
+            @import_trail.save
           rescue
             log_error 'Invalid Boat'
             ImportMailer.invalid_boat(source_boat).deliver_now

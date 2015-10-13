@@ -34,6 +34,6 @@ module Rightboat
     # Log file rotation. see: https://www.youtube.com/watch?v=Hgc6LGZMMXY
     config.logger = Logger.new(config.paths['log'].first,
                                5, # 5 files total
-                               50*1024) # 50 megabytes each
+                               50*1024*1024) # 50 megabytes each
   end
 end

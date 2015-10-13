@@ -35,7 +35,7 @@ module Rightboat
       ]
 
       RELATION_ATTRIBUTES = [
-        :engine_model, :drive_type, :currency, :manufacturer, :model, :fuel_type, :vat_rate, :engine_manufacturer, :engine_model, :boat_type, :category
+        :engine_model, :drive_type, :currency, :manufacturer, :model, :fuel_type, :vat_rate, :engine_manufacturer, :boat_type, :category
       ]
 
       DYNAMIC_ATTRIBUTES = [
@@ -167,10 +167,9 @@ module Rightboat
             if value.blank? || value.to_s =~ /^[\.0]+$/
               value = nil
             elsif attr_name.to_sym == :currency
-              value = 'USD' if value == '$'
               value = klass.where('name = ? OR symbol = ?', value, value).first
               if value.nil?
-                self.error_msg = 'Blank Currency'
+                self.error_msg = "Currency Not Found: #{value}"
                 ImportMailer.blank_currency(self).deliver_now
               end
             else

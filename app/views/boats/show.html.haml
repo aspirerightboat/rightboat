@@ -34,8 +34,6 @@
       - unless @boat.year_built.blank?
         %span.text-nowrap (#{@boat.year_built})
 
-      = link_to "Request Details", '#', class: 'btn-flat btn-black btn-lg request-details pull-right'
-
   #slider
     - @boat.boat_images.each do |boat_img|
       %figure

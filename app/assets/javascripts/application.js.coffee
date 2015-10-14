@@ -112,10 +112,12 @@ $(document).ready ->
     else if $(target).data('method') == 'post'
       $(target).click()
     else
+      $('.rb-extended').slideDown() if target == '#about'
       scrollToTarget(target)
 
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
+    $('.rb-extended').slideDown() if target == '#about'
     scrollToTarget(target) if $(target).length
 
   $('.cool-select').select2()

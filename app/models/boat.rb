@@ -177,7 +177,7 @@ class Boat < ActiveRecord::Base
   def live?
     return false if self.deleted?
 
-    manufacturer && model && boat_images.count > 0 && valid_price?
+    manufacturer && model && valid_price?
   end
 
   def geocoded?

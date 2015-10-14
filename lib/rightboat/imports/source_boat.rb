@@ -207,17 +207,12 @@ module Rightboat
           end
         end
 
-        if target.boat_images.blank?
-          target.destroy
-          false
-        else
-          self.new_record = target.new_record?
-          success = target.save
-          if !success
-            self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
-          end
-          success
+        self.new_record = target.new_record?
+        success = target.save
+        if !success
+          self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
         end
+        success
       end
 
       # boat spec that is not managed

@@ -56,9 +56,9 @@ module Rightboat
         puts str if Rails.env.development?
       end
 
-      def log_error(str, import_msg = nil)
-        log str
-        @import_trail.update_attribute(:error_msg, import_msg || str)
+      def log_error(error_msg, short_msg = nil)
+        log error_msg
+        @import_trail.update_attribute(:error_msg, short_msg || error_msg)
       end
 
       def run
@@ -117,9 +117,10 @@ module Rightboat
         threads.each(&:join)
 
         if @missing_attrs.present?
-          log "===> MISSING ATTRIBUTES: #{@missing_attrs.inspect}"
+          log "MISSING ATTRIBUTES: #{@missing_attrs.inspect}"
         end
 
+        log "Scraped #{@scraped_boats.size} boats. Saving them"
         process_result unless @exit_worker
       end
 
@@ -174,17 +175,17 @@ module Rightboat
           begin
             success = source_boat.save
             if success
-              log "Boat saved. images_count=#{source_boat.images_count || 0}"
+              log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} images_count=#{source_boat.images_count || 0}"
               @import_trail.images_count += source_boat.images_count
-              source_boat.new_boat ? @import_trail.new_count += 1 : @import_trail.updated_count += 1
+              source_boat.new_record ? @import_trail.new_count += 1 : @import_trail.updated_count += 1
             else
               log_error source_boat.error_msg, 'Save Boat Error'
               @import_trail.not_saved_count += 1
             end
             @import_trail.save
-          rescue
-            log_error 'Invalid Boat'
-            ImportMailer.invalid_boat(source_boat).deliver_now
+          rescue StandardError => e
+            log_error "Save boat error. #{e.class.name}: #{e.message}\n#{e.backtrace.first(8).join("\n")}", 'Save boat Error'
+            # ImportMailer.invalid_boat(source_boat).deliver_now
             next
           end
         end

@@ -9,7 +9,7 @@ module Rightboat
       include Utils
 
       validates_presence_of :user, :source_id, :manufacturer, :model
-      validate :require_price, :require_location
+      validate :require_location
 
       NORMAL_ATTRIBUTES = [
         :source_id, :name, :description, :poa, :price, :year_built, :under_offer, :length_m, :new_boat, :source_url, :owners_comment
@@ -39,7 +39,7 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :error_msg, :user, :images, :images_count, :new_boat, :tax_status, :update_country, :country, :location, :office
+        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location, :office, :target
       ]
 
       attr_accessor :missing_spec_attrs
@@ -100,7 +100,7 @@ module Rightboat
         end
 
         user_id = user.respond_to?(:id) ? user.id : user
-        target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
+        self.target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
         target.import = self.import
         adjust_location(target)
 
@@ -180,7 +180,7 @@ module Rightboat
           target.send "#{attr_name}=", value
         end
 
-        unless @office.blank?
+        if @office.present?
           office_attrs = @office.symbolize_keys
           office = Office.where(user_id: @user.id, name: office_attrs[:name]).first_or_initialize
           office.update_attributes!(@office)
@@ -208,14 +208,15 @@ module Rightboat
           target.destroy
           false
         else
+          self.new_record = target.new_record?
           success = target.save
-          if success
-            self.new_boat = target.id_changed?
-          else
+          if !success
             self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
           end
           success
         end
+
+        self.poa = true if price.present? && price.to_i <= 0
       end
 
       # boat spec that is not managed
@@ -229,11 +230,6 @@ module Rightboat
       end
 
       private
-      def require_price
-        if !(poa || price.to_i > 0)
-          self.errors.add :price, "can't be blank"
-        end
-      end
 
       def require_location
         if location.blank? && country.blank?

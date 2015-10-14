@@ -7,7 +7,7 @@ module FixSpelling
 
     scope :query_with_aliases, lambda { |name|
       q = self.joins("LEFT JOIN misspellings ON source_type = '#{self.name}' AND source_id = #{self.table_name}.id")
-      q = q.where("name = :name OR misspellings.alias_string = :name", name: name)
+      q = q.where('name = :name OR misspellings.alias_string = :name', name: name)
       q.create_with(name: name)
     }
 

@@ -3,7 +3,10 @@ module Rightboat::Imports
     include ActionView::Helpers::TextHelper # for simple_format
 
     def enqueue_jobs
+      log 'Loading XML file'
       doc = get('http://ancanet.com/webfiles/DailyBoatExport/BoatExport.xml')
+
+      log 'Scraping boats'
       doc.xml.root.element_children.each do |boat_node|
         enqueue_job(boat_node)
       end
@@ -30,7 +33,7 @@ module Rightboat::Imports
       boat.location = boat_nodes['Located'].text
       boat.country = boat_nodes['Country'].text.presence
       boat.price = boat_nodes['Price'].text
-      boat.currency = CURRENCIES[boat_nodes['Currency'].text]
+      boat.currency = CURRENCIES[boat_nodes['Currency'].text] || (log "Unexpected currency: #{boat_nodes['Currency'].text}"; nil)
       boat.vat_rate = boat_nodes['Tax'].text
       boat.bridge = boat_nodes['Bridge'].text
       boat.boat_type = boat_nodes['Type'].text
@@ -43,15 +46,21 @@ module Rightboat::Imports
           daytime_phone: boat_nodes['Phone'].text,
           email: boat_nodes['Email'].text,
       }
-      boat.description = simple_format boat_nodes['Description'].text
+      descr = fix_whitespace(boat_nodes['Description'].inner_html)
+      descr = simple_format(descr.gsub('<br />', "\n").strip) if !descr['<p>']
+      boat.description = descr
       boat_node.element_children.select { |n| n.name.start_with?('Text') }.map do |node|
         if node.text.present?
           header = node.name.sub('Text', '')
-          text = node.text.gsub(/[\s]+|&nbsp;/, ' ').squeeze.gsub('/n', "\n").strip
+          text = fix_whitespace(node.inner_html)
           boat.description << "<h3>#{header}</h3>#{simple_format text}"
         end
       end
       boat
+    end
+
+    def fix_whitespace(str)
+      str.gsub(/[\s]+|&nbsp;/, ' ').squeeze.gsub('/n', "\n").strip
     end
   end
 end

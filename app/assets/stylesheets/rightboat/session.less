@@ -24,6 +24,8 @@
       color: @rb-color-dark;
     }
   }
+
+
 }
 
 @media (max-width: @screen-xs-max) {
@@ -37,11 +39,26 @@
 }
 
 @media (min-width: @screen-sm-min) {
-  #split-row > div:first-child {
+  #split-row > .col-sm-6:first-child {
     padding-right: 55px;
     border-right: 1px solid @rb-color-primary;
+    border-right: 1px solid white;
+    position: relative;
+
+    &:after {
+      background: @rb-color-primary;
+      content: 'OR';
+      color: white;
+      position: absolute;
+      right: -20px;
+      top: 0;
+      width: 40px;
+      text-align: center;
+      font-size: 31px;
+      padding: 20px 0;
+    }
   }
-  #split-row > div:last-child {
+  #split-row > .col-sm-6:last-child {
     padding-left: 55px;
   }
 }

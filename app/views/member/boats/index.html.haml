@@ -1,0 +1,21 @@
+- content_for :header_text do
+  .navbar-h Sell My Boats
+
+.member-content(data-view-layout='list')
+  = link_to 'Create New', new_member_boat_path, class: 'btn-flat pull-right btn-black'
+  %h1 Sell My Boats
+  %hr
+  - if @my_boats.empty?
+    .alert.alert-info
+      You have no boats registered yet.
+  - else
+    .row
+      - @my_boats.each do |boat|
+        = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: true} do
+          .boat-links.boat-links-bottom
+            .boat-price
+              %span(data-attr-name='price')= boat_price(boat)
+              %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
+            .pull-right
+              = link_to 'Edit', edit_member_boat_path(boat), class: 'btn-flat btn-black'
+              = link_to 'Delete', member_boat_path(boat), method: :delete, class: 'btn-flat btn-black'

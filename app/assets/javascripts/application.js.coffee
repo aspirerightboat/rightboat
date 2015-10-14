@@ -38,6 +38,7 @@
 #= require photoswipe-ui-default.min
 #= require validetta
 #= require jquery.remotipart
+#= require cocoon
 #= require_self
 #= require_tree .
 
@@ -49,12 +50,17 @@ Rightboat.validetta_options =
       errorMessage : "Only include a-z, A-Z, digits and underline."
   display: 'inline'
 
+window.myRightboatClicked = false
+
 window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')
   if $loginBtn.length > 0
     e.preventDefault()
+    $target = $(e.target)
+    if $target.html() is 'My Rightboat'
+      window.myRightboatClicked = true
+
     unless disable_history
-      $target = $(e.target)
       if $target.data('method') == 'post'
         href = location.href + '#' + $target.attr('id')
       else

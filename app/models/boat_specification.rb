@@ -2,7 +2,7 @@ class BoatSpecification < ActiveRecord::Base
   belongs_to :specification, inverse_of: :boat_specifications
   belongs_to :boat
 
-  validates_presence_of :specification, :value
+  validates_presence_of :specification
 
   scope :front, -> {
     joins(:specification).where('specifications.visible = ?', true)

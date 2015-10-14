@@ -96,6 +96,7 @@ GEM
     clockwork (1.2.0)
       activesupport
       tzinfo
+    cocoon (1.2.6)
     coderay (1.1.0)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
@@ -503,6 +504,7 @@ DEPENDENCIES
   capistrano-rvm
   carrierwave
   clockwork
+  cocoon
   coffee-rails (~> 4.1.0)
   daemons
   delayed_job_active_record

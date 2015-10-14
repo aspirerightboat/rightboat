@@ -166,12 +166,16 @@ ul, ul li {
   list-style: none;
 }
 
-ul.list-disc {
+ul.list-disc, ul.list-decimal {
   padding-left: 30px;
+}
 
-  li {
-    list-style: disc;
-  }
+ul.list-disc > li {
+  list-style: disc;
+}
+
+ul.list-decimal > li {
+  list-style: decimal;
 }
 
 .vertical-align-wrapper {
@@ -319,4 +323,8 @@ ul.list-disc {
 }
 .or {
   margin: 0 1ex;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value span {
+  color: gray;
 }

@@ -167,6 +167,7 @@ module Rightboat
             if value.blank? || value.to_s =~ /^[\.0]+$/
               value = nil
             elsif attr_name.to_sym == :currency
+              value = 'USD' if value == '$'
               value = klass.where('name = ? OR symbol = ?', value, value).first
               if value.nil?
                 self.error_msg = "Currency Not Found: #{value}"

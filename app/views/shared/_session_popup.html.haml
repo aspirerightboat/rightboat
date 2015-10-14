@@ -21,7 +21,7 @@
       .modal-body
         .row#split-row
           .col-sm-6
-            %h2.login-form-title Sign In
+            %h2.text-center Sign In
             %p If you already have an account, please enter your details:
             = form_tag user_session_path, class: 'session-form' do
               .form-group
@@ -38,7 +38,7 @@
               .form-group
                 = link_to 'Forgotten your password?', new_user_password_path, id: 'forgot-link'
           .col-sm-6
-            %h2 Join for free
+            %h2.text-center Join for free
             %p Sign up now for free and discover how easy it is to keep up to date with THE latest boats for sale. Find your right boat, and tailor your voyage to becoming a boat owner.
             %p Benefits of becoming a member:
             %ul
@@ -46,6 +46,6 @@
               %li Personalise your experience
               %li Download full specifications and broker details
               %li Keep tabs on your favourite boats
-            = link_to 'Register', '#', class: 'btn-flat btn-block user-register'
+            = link_to 'Join', '#', class: 'btn-flat btn-block user-register'
         .row
           %p.trader-hint Are you a trader? Register in our #{link_to 'Broker Area', register_broker_path, class: 'register-broker-link', rel: 'nofollow'}

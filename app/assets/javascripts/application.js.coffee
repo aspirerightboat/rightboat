@@ -50,16 +50,15 @@ Rightboat.validetta_options =
       errorMessage : "Only include a-z, A-Z, digits and underline."
   display: 'inline'
 
+window.myRightboatClicked = false
+
 window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')
   if $loginBtn.length > 0
     e.preventDefault()
     $target = $(e.target)
     if $target.html() is 'My Rightboat'
-      unless $('.register-notice').length > 0
-        $('#login_popup #split-row').prepend('<h5 class="text-center register-notice">To use my Rightboat, you must first Register as a Member</h5>')
-    else
-      $('.register-notice').remove()
+      window.myRightboatClicked = true
 
     unless disable_history
       if $target.data('method') == 'post'

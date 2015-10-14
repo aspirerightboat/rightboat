@@ -37,7 +37,7 @@
                 .rb-control
                   = slider_tag(:price, html: { 'data-convert' => 'convertCurrency' })
                 .rb-control-group-addon
-                  = currency_tag :currency, current_currency, class: 'select-sm'
+                  = currency_tag :currency, current_currency, class: 'select-sm select-currency'
           .range-slider-wrapper.row
             .col-xs-3= label_tag :length
             .col-xs-9
@@ -57,10 +57,3 @@
           %h3
             Find your<br/>
             <strong>Rightboat</strong>
-:javascript
-  $(function() {
-    $("#home-search select").select2({
-      minimumResultsForSearch: Infinity
-      //templateResult: formatState
-    });
-  });

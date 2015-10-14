@@ -5,6 +5,8 @@ class Boat < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
+  attr_accessor :tax_paid, :accept_toc, :agree_privacy_policy
+
   searchable do
     text :ref_no,               boost: 5
     text :name,                 boost: 4
@@ -75,6 +77,10 @@ class Boat < ActiveRecord::Base
   validate :model_inclusion_of_manufacturer
   validate :require_price
   validate :active_of
+  validate :violation
+
+  accepts_nested_attributes_for :boat_specifications, reject_if: 'value.blank?'
+  accepts_nested_attributes_for :boat_images, reject_if: :all_blank
 
   scope :featured, -> { where(featured: true) }
   scope :reduced, -> { where(recently_reduced: true) }
@@ -197,6 +203,10 @@ class Boat < ActiveRecord::Base
     Activity.where(target_id: id, action: :show)
   end
 
+  def tax_paid=(status)
+    self.vat_rate_id = VatRate.first.id if status && status == 'true'
+  end
+
   private
   def slug_candidates
     [
@@ -231,5 +241,15 @@ class Boat < ActiveRecord::Base
 
   def remove_activities
     activities.destroy_all
+  end
+
+  def violation
+    if accept_toc && accept_toc != '1'
+      errors.add :base, 'You should accept Rightboat terms and conditions'
+    end
+
+    if agree_privacy_policy && agree_privacy_policy != '1'
+      errors.add :base, 'You should agree Rightboat private advert pricing policy.'
+    end
   end
 end

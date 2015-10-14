@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   get 'marine_services', to: 'home#marine_services', as: :marine_services
   get 'privacy_policy', to: 'home#privacy_policy', as: :privacy_policy
   get 'cookies_policy', to: 'home#cookies_policy', as: :cookies_policy
+  get 'sell_my_boats', to: 'home#sell_my_boats', as: :sell_my_boats
 
   namespace :api, defaults: {format: :json}, constraints: {format: :json} do
     controller :manufacturers, path: 'manufacturers' do
@@ -127,6 +128,7 @@ Rails.application.routes.draw do
     resources :saved_searches, path: 'saved-searches', only: [:index, :create, :destroy] do
       post :toggle, on: :member
     end
+    resources :boats, except: [:show]
     controller :dashboard do
       get :enquiries
       get :information

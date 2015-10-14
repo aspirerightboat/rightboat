@@ -38,6 +38,7 @@
 #= require photoswipe-ui-default.min
 #= require validetta
 #= require jquery.remotipart
+#= require cocoon
 #= require_self
 #= require_tree .
 

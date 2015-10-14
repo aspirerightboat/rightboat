@@ -13,3 +13,5 @@
         = link_to 'My Information', member_information_path
       %li{class: ('active' if controller_name == 'saved_searches')}
         = link_to 'My Saved Searches', member_saved_searches_path
+      %li{class: ('active' if controller_name == 'boats')}
+        = link_to 'Sell My Boat', member_boats_path

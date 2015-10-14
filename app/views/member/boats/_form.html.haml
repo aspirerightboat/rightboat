@@ -1,0 +1,99 @@
+= form_for [:member, @boat] do |f|
+  - if @boat.errors.any?
+    %ul.alert.alert-danger
+      - @boat.errors.full_messages.each do |msg|
+        %li= msg
+  %fieldset
+    %h5 1. Boat Type:
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :manufacturer
+      .col-md-8.col-xs-12= f.select :manufacturer_id, Manufacturer.all.collect { |x| [ x.name, x.id ] }, include_blank: false
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :model
+      .col-md-8.col-xs-12= f.select :model_id, Model.all.collect { |x| [ x.name, x.id ] }, include_blank: false
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :year_built
+      .col-md-8.col-xs-12= f.select :year_built, ((Date.today.year - 40)..Date.today.year)
+  %fieldset
+    %h5 2. Boat Specifics:
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :location
+      .col-md-8.col-xs-12= f.text_field :location, class: 'form-control'
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :price, 'Price(£):'
+      .col-md-8.col-xs-12= f.text_field :price, class: 'form-control'
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :tax_paid, 'Tax paid?'
+      .col-md-8.col-xs-12
+        = f.radio_button :tax_paid, true, checked: f.object.tax_paid?
+        = label_tag :boat_tax_paid_true, 'Yes'
+        = f.radio_button :tax_paid, false, checked: !f.object.tax_paid?
+        = label_tag :boat_tax_paid_false, 'No'
+  %fieldset
+    %h5 3. Boat Details:
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :length_m, 'LOA:'
+      .col-md-8.col-xs-12= f.text_field :length_m, class: 'form-control'
+    = f.fields_for :boat_specifications do |bs|
+      .form-group.nested-fields.clearfix
+        = bs.hidden_field :specification_id
+        .col-md-4.col-xs-12= bs.label :value, bs.object.specification.display_name
+        .col-md-8.col-xs-12= bs.text_field :value, class: 'form-control'
+  %fieldset
+    %h5 4. Additional Information:
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :description
+      .col-md-8.col-xs-12= f.text_area :description, class: 'form-control'
+    .form-group.clearfix
+      .col-md-4.col-xs-12= f.label :owners_comment
+      .col-md-8.col-xs-12= f.text_area :owners_comment, class: 'form-control'
+  %fieldset
+    %h5 5. Boat images:
+    .form-group
+      .col-md-4.col-xs-12= label_tag 'Please upload at least 1 image:'
+      .col-md-8.col-xs-12
+        #boat-images
+          = f.fields_for :boat_images do |boat_image|
+            = render 'boat_image_fields', f: boat_image
+          .links
+            = link_to_add_association 'Add Image', f, :boat_images
+  %fieldset
+    %h5 6. Confirmation:
+    .form-group.clearfix
+      .col-xs-12
+        = f.check_box :accept_toc, checked: @boat.persisted?
+        = f.label :accept_toc, "I have read and accept Rightboat #{link_to 'Terms and Conditions', toc_path, target: '_blank'}".html_safe
+    .form-group.clearfix
+      .col-xs-12
+        = f.check_box :agree_privacy_policy, checked: @boat.persisted?
+        = f.label :agree_privacy_policy, "I understand our #{link_to 'Private Advert Pricing Policy', privacy_policy_path, target: '_blank'}".html_safe
+  %fieldset
+    %h5 7. Payment:
+    .form-group.clearfix
+      .col-xs-12
+        = f.check_box :secure_payment
+        = f.label :secure_payment, "I wish to make a secure online #{link_to 'payment', 'javascript: void(0);'}.".html_safe
+  .form-group
+    %button.btn-flat.btn-black(type="submit") Save Changes
+
+:javascript
+  $(function() {
+    function loadPreview(el) {
+      el.find('input[type="file"]').change(function(e) {
+        $this = $(this);
+        var reader = new FileReader;
+        reader.onload = function() {
+          var img = new Image;
+          img.src = reader.result;
+          $this.parents('.nested-fields').find('img').attr('src', img.src);
+        }
+        reader.readAsDataURL(this.files[0]);
+      });
+    }
+
+    loadPreview($('#boat-images'));
+
+    $('#boat-images').bind('cocoon:after-insert', function(e, insertedItem) {
+      loadPreview(insertedItem);
+    });
+  })

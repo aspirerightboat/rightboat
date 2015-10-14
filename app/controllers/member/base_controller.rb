@@ -12,7 +12,7 @@ module Member
     end
 
     def load_search_facets_if_needed
-      load_search_facets if request.get? && !request.xhr?
+      load_search_facets if !request.xhr?
     end
   end
 end

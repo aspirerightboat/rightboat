@@ -69,6 +69,9 @@ spec_names = [
   {name: 'head_room',           display_name: 'Head Room'},
   {name: 'builder',             display_name: 'Builder'},
   {name: 'length_on_deck',      display_name: 'Length on Deck'},
+  {name: 'hull_type',           display_name: 'Hull Type'},
+  {name: 'number_on_cabins',    display_name: 'Number on Cabins'},
+  {name: 'number_on_berths',    display_name: 'Number on Berths'},
 ]
 spec_names.each do |attrs|
   spec = Specification.where(name: attrs[:name]).first_or_initialize

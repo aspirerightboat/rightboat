@@ -199,9 +199,13 @@ body#home-index {
   }
 }
 
-.enquiry_types {
+.enquiry_types, .member-content {
   input[type="radio"]:not(:checked) + label:before, input[type="radio"]:checked + label:before {
-    border-color: gray;
+    border-color: @rb-color-primary !important;
+  }
+
+  input[type="radio"]:not(:checked) + label:after, input[type="radio"]:checked + label:after {
+    background: @rb-color-primary;
   }
 }
 

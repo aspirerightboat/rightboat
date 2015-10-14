@@ -7,7 +7,8 @@ class LeadsMailer < ApplicationMailer
     @office = @boat.office
     attach_boat_pdf
 
-    mail(to: enquiry.email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
+    to_email = STAGING_EMAIL || enquiry.email
+    mail(to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
   def lead_created_notify_broker(enquiry_id)
@@ -15,7 +16,7 @@ class LeadsMailer < ApplicationMailer
     @boat = @enquiry.boat
     @office = @boat.office
     attach_boat_pdf
-    to_email = @office.try(:email) || @boat.user.email
+    to_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
     mail_params = {to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}"}
     mail_params[:cc] = @boat.user.email if to_email != @boat.user.email
 
@@ -41,13 +42,15 @@ class LeadsMailer < ApplicationMailer
     @broker_info = @broker.broker_info
     @leads = @invoice.enquiries.includes(:boat).order('id DESC')
 
-    mail(to: @broker.email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
+    to_email = STAGING_EMAIL || @broker.email
+    mail(to: to_email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
   def lead_reviewed_notify_broker(enquiry_id)
     @lead = Enquiry.find(enquiry_id)
 
-    mail(to: @lead.boat.user.email, subject: "Lead reviewed Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
+    to_email = STAGING_EMAIL || @lead.boat.user.email
+    mail(to: to_email, subject: "Lead reviewed Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
   private

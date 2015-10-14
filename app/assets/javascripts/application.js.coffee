@@ -54,8 +54,14 @@ window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')
   if $loginBtn.length > 0
     e.preventDefault()
+    $target = $(e.target)
+    if $target.html() is 'My Rightboat'
+      unless $('.register-notice').length > 0
+        $('#login_popup #split-row').prepend('<h5 class="text-center register-notice">To use my Rightboat, you must first Register as a Member</h5>')
+    else
+      $('.register-notice').remove()
+
     unless disable_history
-      $target = $(e.target)
       if $target.data('method') == 'post'
         href = location.href + '#' + $target.attr('id')
       else

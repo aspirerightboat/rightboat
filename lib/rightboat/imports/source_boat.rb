@@ -188,6 +188,8 @@ module Rightboat
           target.office = office
         end
 
+        self.poa = true if price.present? && price.to_i <= 0
+
         self.images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
 
@@ -216,8 +218,6 @@ module Rightboat
           end
           success
         end
-
-        self.poa = true if price.present? && price.to_i <= 0
       end
 
       # boat spec that is not managed

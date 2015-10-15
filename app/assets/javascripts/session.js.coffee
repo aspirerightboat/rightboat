@@ -21,7 +21,7 @@ $ ->
       $('.register-notice').remove()
     .on 'shown.bs.modal', ->
       if myRightboatClicked && !$('.register-notice').length > 0
-        $('#login_popup .modal-body').prepend('<h5 class="text-center register-notice">To use my Rightboat, you must first Register as a Member</h5>')
+        $('#login_popup .modal-body').prepend('<h5 class="text-center register-notice">To use my Rightboat, you must first Join as a Member</h5>')
 
   onSubmit = (e) ->
     e.preventDefault()

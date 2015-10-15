@@ -184,7 +184,7 @@ module Rightboat
         if office.present?
           office_attrs = office.symbolize_keys
           office = Office.where(user_id: user_id, name: office_attrs[:name]).first_or_initialize
-          office.update_attributes!(office)
+          office.update_attributes!(office_attrs)
           target.office = office
         end
 

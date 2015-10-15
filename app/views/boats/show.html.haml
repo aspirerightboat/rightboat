@@ -25,17 +25,18 @@
 - content_for :header_text do
   .navbar-h Boats <strong>For Sale</strong>
 
-.boat-view{'data-boat-ref' => @boat.slug, 'data-length' => @boat.length_m.to_f, 'data-price' => @boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}
+.boat-view(data-boat-ref="#{@boat.slug}"
+data-length="#{@boat.length_m.to_f}"
+data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}")
   .container
     %h1.clearfix
       %strong.text-nowrap= @boat.manufacturer
-      %span.text-nowrap
-        = @boat.model
-      - unless @boat.year_built.blank?
+      %span.text-nowrap= @boat.model
+      - if @boat.year_built.present?
         %span.text-nowrap (#{@boat.year_built})
 
   #slider
-    - @boat.boat_images.each do |boat_img|
+    - @boat.boat_images.not_deleted.each do |boat_img|
       %figure
         = link_to boat_img.file_url, 'data-size' => "#{boat_img.width}x#{boat_img.height}" do
           = image_tag boat_img.file_url

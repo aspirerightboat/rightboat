@@ -177,7 +177,7 @@ class Boat < ActiveRecord::Base
   def live?
     return false if self.deleted?
 
-    manufacturer && model && boat_images.count > 0 && valid_price?
+    manufacturer && model && valid_price?
   end
 
   def geocoded?
@@ -210,8 +210,8 @@ class Boat < ActiveRecord::Base
   private
   def slug_candidates
     [
-        name,
-        manufacturer_model
+      name,
+      manufacturer_model
     ]
   end
 

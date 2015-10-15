@@ -9,7 +9,7 @@ module Rightboat
       include Utils
 
       validates_presence_of :user, :source_id, :manufacturer, :model
-      validate :require_price, :require_location
+      validate :require_location
 
       NORMAL_ATTRIBUTES = [
         :source_id, :name, :description, :poa, :price, :year_built, :under_offer, :length_m, :new_boat, :source_url, :owners_comment
@@ -19,8 +19,8 @@ module Rightboat
         :hull_type, :hull_shape, :hull_material, :hull_color, :cockpit_type,
         :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig,
         :range, :lwl_m, :draft_m,
-        :engine_count, :engine_type, :engine_location, :beam_m, :engine_horse_power, :engine_hours, :max_speed, :cruising_speed,
-        :displacement_kgs, :ballast, :electrical_circuit,
+        :engine_count, :engine_type, :engine_location, :engine_horse_power, :engine_hours, :engine, :engine_code,
+        :displacement_kgs, :ballast, :electrical_circuit, :max_speed, :cruising_speed, :beam_m,
         :heads, :berths, :single_berths, :double_berths, :cabins, :keel, :fresh_water_tanks, :holding_tanks,
         :fuel_tanks, :designer, :head_room, :builder, :length_on_deck, :propeller, :dry_weight, :passengers,
         :gps, :vhf, :plotter, :radar, :battery_charger, :generator, :inverter, :bimini,
@@ -35,11 +35,11 @@ module Rightboat
       ]
 
       RELATION_ATTRIBUTES = [
-        :engine_model, :drive_type, :currency, :manufacturer, :model, :fuel_type, :vat_rate, :engine_manufacturer, :boat_type, :category
+        :drive_type, :currency, :manufacturer, :model, :fuel_type, :vat_rate, :engine_manufacturer, :engine_model, :boat_type, :category
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :error_msg, :user, :images, :images_count, :new_boat, :tax_status, :update_country, :country, :location, :office
+        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location, :office, :target
       ]
 
       attr_accessor :missing_spec_attrs
@@ -100,14 +100,15 @@ module Rightboat
         end
 
         user_id = user.respond_to?(:id) ? user.id : user
-        target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
-        target.import = self.import
+        self.target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
+        target.import = import
+
         adjust_location(target)
 
         NORMAL_ATTRIBUTES.each do |attr_name|
           value = instance_variable_get("@#{attr_name}".to_sym)
           value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
-          if attr_name.to_sym == :description and !value.nil?
+          if attr_name == :description && value
             # Remove contact information
             # including email
             value = value.gsub(/\s+[^.,?!]*(email)?[^.,?!]*[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}[^.?!]*[.?!]/i, '')
@@ -122,9 +123,8 @@ module Rightboat
 
         spec_proc = Proc.new do |attr_name, value|
           value ||= instance_variable_get("@#{attr_name}".to_sym)
-          value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
-          value = nil if value =~ /^false$/i
-          value = 'Yes' if value =~ /^true|1|yes$/i
+          value = nil if value.blank? || value.to_s =~ /^[\.0]+$/ || value =~ /^false$/i
+          value = 'Yes' if value =~ /^(true|1|yes)$/i
 
           is_blank_value = value.blank? || value.to_s =~ /^[\.0]+$/
 
@@ -140,7 +140,7 @@ module Rightboat
           else
             boat_spec = target.boat_specifications.where(specification_id: spec.id).first_or_initialize
             if is_blank_value
-              boat_spec.destroy unless boat_spec.new_record?
+              boat_spec.destroy if boat_spec.persisted?
             else
               boat_spec.value = value
               boat_spec.save!
@@ -149,7 +149,7 @@ module Rightboat
         end
 
         SPEC_ATTRS.each { |attr_name| spec_proc.call(attr_name) }
-        unless @missing_spec_attrs.blank?
+        if @missing_spec_attrs.present?
           @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
         end
 
@@ -157,13 +157,6 @@ module Rightboat
           klass = Boat.reflections[attr_name.to_s].klass
           value = instance_variable_get("@#{attr_name}".to_sym)
           unless value.is_a?(ActiveRecord::Base)
-            if attr_name.to_sym == :model
-              query_option = { manufacturer_id: target.manufacturer_id }
-            elsif attr_name.to_sym == :engine_model
-              query_option = { engine_manufacturer_id: target.engine_manufacturer_id }
-            else
-              query_option = {}
-            end
             if value.blank? || value.to_s =~ /^[\.0]+$/
               value = nil
             elsif attr_name.to_sym == :currency
@@ -174,6 +167,13 @@ module Rightboat
                 ImportMailer.blank_currency(self).deliver_now
               end
             else
+              if attr_name == :model
+                query_option = { manufacturer_id: target.manufacturer_id }
+              elsif attr_name == :engine_model
+                query_option = { engine_manufacturer_id: target.engine_manufacturer_id }
+              else
+                query_option = {}
+              end
               value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!
             end
           end
@@ -181,12 +181,14 @@ module Rightboat
           target.send "#{attr_name}=", value
         end
 
-        unless @office.blank?
-          office_attrs = @office.symbolize_keys
-          office = Office.where(user_id: @user.id, name: office_attrs[:name]).first_or_initialize
-          office.update_attributes!(@office)
+        if office.present?
+          office_attrs = office.symbolize_keys
+          office = Office.where(user_id: user_id, name: office_attrs[:name]).first_or_initialize
+          office.update_attributes!(office_attrs)
           target.office = office
         end
+
+        self.poa = true if price.present? && price.to_i <= 0
 
         self.images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
@@ -205,18 +207,12 @@ module Rightboat
           end
         end
 
-        if target.boat_images.blank?
-          target.destroy
-          false
-        else
-          success = target.save
-          if success
-            self.new_boat = target.id_changed?
-          else
-            self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
-          end
-          success
+        self.new_record = target.new_record?
+        success = target.save
+        if !success
+          self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
         end
+        success
       end
 
       # boat spec that is not managed
@@ -230,11 +226,6 @@ module Rightboat
       end
 
       private
-      def require_price
-        if !(poa || price.to_i > 0)
-          self.errors.add :price, "can't be blank"
-        end
-      end
 
       def require_location
         if location.blank? && country.blank?
@@ -247,17 +238,20 @@ module Rightboat
           self.location = ''
         end
 
-        if country.to_s.downcase == "uk"
-          self.country = "GB"
+        if country.to_s.downcase == 'uk'
+          self.country = 'GB'
         end
-        full_location = [location.to_s, country.to_s].reject(&:blank?).join(', ')
-        if full_location.downcase != target.geo_location
-          if !country.blank?
-            _country = Country.joins(:misspellings).where("misspellings.alias_string = :name OR name = :name OR iso = :name", name: country).first
+        full_location = [location.to_s, country.to_s].reject(&:blank?).join(', ').downcase.strip
+        if full_location != target.geo_location
+          _country = nil
+          if country.present?
+            q = Country.joins("LEFT JOIN misspellings ON misspellings.source_id = countries.id AND misspellings.source_type = 'Country'")
+            q = q.where('misspellings.alias_string = :name OR countries.name = :name OR countries.iso = :name', name: country)
+            _country = q.first
           end
           if _country
             target.country = _country
-            target.geo_location = full_location.downcase
+            target.geo_location = full_location
           else
             # Geocoder.configure(
             #   http_proxy: 'http://uk.proxymesh.com:31280',
@@ -268,25 +262,25 @@ module Rightboat
             if geo_result && geo_result.country
               self.country = geo_result.country_code
               rcc = "#{Regexp.escape(geo_result.country_code)}|#{Regexp.escape(geo_result.country)}"
-              self.location = full_location.strip.gsub(/([\s,]+)?(#{rcc})([^\w])?$/i, '')
-              target.geo_location = full_location.downcase
+              self.location = full_location.gsub(/[\s,]*(#{rcc})[^\w]*$/i, '')
+              target.geo_location = full_location
               self.update_country = true
             end
           end
 
           if update_country
-            target.country = Country.find_by_iso(country) unless country.blank?
-            unless target.country || !country.blank?
-              target.country = Country.where("name LIKE ?", "#{country}%").first
+            target.country = Country.find_by_iso(country) if country.present?
+            if !target.country && country.present?
+              target.country = Country.where('name LIKE ?', "#{country}%").first
             end
           end
 
           target.location = location
           if target.country
-            rcc = ("#{Regexp.escape(target.country.iso)}|#{Regexp.escape(target.country.name)}")
-            target.location = location.to_s.gsub(/([\s,]+)?(#{rcc})?([^\w])?$/i, '')
+            rcc = "#{Regexp.escape(target.country.iso)}|#{Regexp.escape(target.country.name)}"
+            target.location = location.to_s.gsub(/[\s,]*(#{rcc})[^\w]*$/i, '')
           else
-            target.location.gsub!(/[\s,]+$/, '')
+            target.location = location.to_s.gsub(/[\s,]+$/, '')
           end
         end
       end

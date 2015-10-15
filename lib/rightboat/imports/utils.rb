@@ -13,7 +13,7 @@ module Rightboat
         end
 
         def self.cleanup_string(source)
-          if source.is_a?(String) && !source.blank?
+          if source.present? && source.is_a?(String)
             source.encode('UTF-8').gsub(nbsp_char, ' ').gsub(/[\s]+/, ' ').strip
           else
             source

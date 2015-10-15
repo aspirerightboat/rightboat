@@ -5,10 +5,10 @@ module FixSpelling
 
     has_many :misspellings, as: :source, dependent: :destroy
 
-    scope :query_with_aliases, lambda { |name|
-      q = self.joins("LEFT JOIN misspellings ON source_type = '#{self.name}' AND source_id = #{self.table_name}.id")
-      q = q.where('name = :name OR misspellings.alias_string = :name', name: name)
-      q.create_with(name: name)
+    scope :query_with_aliases, -> (value) {
+      q = joins("LEFT JOIN misspellings ON source_type = '#{name}' AND source_id = #{table_name}.id")
+      q = q.where("#{table_name}.name = :name OR misspellings.alias_string = :name", name: value)
+      q.create_with(name: value)
     }
 
     def merge_into(target)

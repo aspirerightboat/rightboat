@@ -12,13 +12,6 @@ module Rightboat::Imports
       end
     end
 
-    CURRENCIES = {
-        'U.S. Dollars' => 'USD',
-        'Pounds Sterling' => 'GBP',
-        'Euro' => 'EUR',
-        'Australian Dollars' => 'AUD',
-    }
-
     def process_job(boat_node)
       boat_nodes = boat_node.element_children.index_by(&:name)
       boat = SourceBoat.new
@@ -28,12 +21,13 @@ module Rightboat::Imports
       boat.model = boat_nodes['Model'].text
       boat.length_m = boat_nodes['Lengthmt'].text
       boat.hull_material = boat_nodes['HullMaterial'].text
-      boat.engine_manufacturer, boat.engine_model = boat_nodes['Engine'].text.split(' ', 2)
+      boat.engine = boat_nodes['Engine'].text
+      boat.engine_code = boat_nodes['EngineCode'].text
       boat.category = boat_nodes['Class'].text
       boat.location = boat_nodes['Located'].text
       boat.country = boat_nodes['Country'].text.presence
       boat.price = boat_nodes['Price'].text
-      boat.currency = CURRENCIES[boat_nodes['Currency'].text] || (log "Unexpected currency: #{boat_nodes['Currency'].text}"; nil)
+      boat.currency = read_currency(boat_nodes['Currency'].text)
       boat.vat_rate = boat_nodes['Tax'].text
       boat.bridge = boat_nodes['Bridge'].text
       boat.boat_type = boat_nodes['Type'].text
@@ -57,6 +51,17 @@ module Rightboat::Imports
         end
       end
       boat
+    end
+
+    CURRENCIES = {
+        'U.S. Dollars' => 'USD',
+        'Pounds Sterling' => 'GBP',
+        'Euro' => 'EUR',
+        'Australian Dollars' => 'AUD',
+    }
+
+    def read_currency(str)
+      CURRENCIES[str] || (log "Unexpected currency: #{str}"; nil)
     end
 
     def fix_whitespace(str)

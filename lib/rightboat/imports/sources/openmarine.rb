@@ -131,7 +131,7 @@ module Rightboat
           asking_price = feature_nodes['asking_price']
           boat.price = asking_price.text
           boat.currency = asking_price['currency']
-          boat.poa = read_poa(asking_price['poa'])
+          boat.poa = boat.price.blank? || boat.price.to_i == 0 ? true : read_poa(asking_price['poa'])
           if (vat_rate = asking_price['vat_included'])
             boat.vat_rate = read_vat_rate(vat_rate)
           end
@@ -160,16 +160,12 @@ module Rightboat
         end
 
         def handle_boat_features(boat, boat_features)
-          boat_features.css('item').each do |item|
+          (boat_features.css('item') + boat_features.css('rb:item')).each do |item|
             attr = DATA_MAPPINGS[item['name']]
 
             value = item.text.strip
-            if item['rb:description']
-              if value =~ /true/i
-                value = item['rb:description'].strip
-              else
-                next
-              end
+            if item['rb:description'].present?
+              value = item['rb:description'].strip if value =~ /true/i
             end
             if (unit = (item['unit'] || item['units']))
               value = convert_unit(value, unit)
@@ -186,7 +182,7 @@ module Rightboat
         end
 
         def read_poa(str)
-          return true if str.blank?
+          return if str.blank?
           case
           when str =~ /true|1|yes/i then true
           when str =~ /false|0|no/i then false
@@ -195,6 +191,7 @@ module Rightboat
         end
 
         def read_vat_rate(str)
+          return if str.blank?
           case
           when str =~ /true|inc vat|1/i then 'Inc VAT'
           when str =~ /false|ex vat|0/i then 'Ex VAT'
@@ -203,6 +200,7 @@ module Rightboat
         end
 
         def read_new_or_used(str)
+          return if str.blank?
           case
           when str =~ /new|N/i then 'new'
           when str =~ /used|U/i then 'used'

@@ -8,120 +8,111 @@ module Rightboat
 
       include Utils
 
-      attr_accessor :scraped_boats, :missing_attrs, :exit_worker
-      attr_reader :import_trail
-
-      def self.source_types
-        %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco)
-      end
+      SOURCE_TYPES = %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco)
 
       def initialize(import)
-        import.param.each do |key, value|
-          instance_variable_set "@#{key}", value
-        end
-        @user = import.user
         @import = import
-        @use_proxy = import.use_proxy?
-
-        @_agent = Mechanize.new
-        @_agent.user_agent_alias = 'Windows IE 7'
-        @_agent.ssl_version = 'SSLv3'
-        @_agent.keep_alive = false
-        @_agent.max_history = 3
-        @_agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        @_agent.read_timeout = 120
-        @_agent.open_timeout = 120
-
-        @scraped_boats = []
-        @thread_count = import.threads
-
-        @_writer_mutex = Mutex.new
-
-        @_queue_mutex = Mutex.new
-        @_queue = Queue.new
-
-        @images_count = 0
-      end
-
-      def logger
-        @logger ||= begin
-          dir = FileUtils.mkdir_p("#{Rails.root}/log/imports").first
-          @log_path = "#{dir}/import-log-#{@import.id}-#{@import.import_type}--#{Time.current.strftime('%F--%H-%M-%S')}.log"
-          Logger.new(@log_path)
-        end
-      end
-
-      def log(str)
-        logger.info str
-        puts str if Rails.env.development?
-      end
-
-      def log_error(error_msg, short_msg = nil)
-        log error_msg
-        @import_trail.update_attribute(:error_msg, short_msg || error_msg)
+        init_logger
+        @import_trail = ImportTrail.create(import: @import, log_path: @log_path)
+        @import.update(last_import_trail: @import_trail, pid: Process.pid)
       end
 
       def run
-        logger # init logger
-        Rails.logger = logger
-        @import_trail = ImportTrail.create(import: @import, log_path: @log_path)
-        @import.update_attribute(:last_import_trail, @import_trail)
-        log "Started param=#{@import.param.inspect} threads=#{@thread_count} use_proxy=#{@use_proxy} pid=#{@import.pid}"
+        starting
+        threaded_run
+        finishing
+      rescue StandardError => e # SystemExit, Interrupt
+        log_ex e, 'Unexpected error'
+        raise e
+      ensure
+        @import_trail.touch(:finished_at)
+        @import.touch(:last_ran_at)
+      end
 
-        begin
-          threaded_run
-        rescue Exception => e
-          log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.join("\n")}", 'Unexpected error'
-          @import_trail.touch(:finished_at)
-          raise e
-        end
+      def starting
+        @import.param.each { |key, value| instance_variable_set("@#{key}", value) }
+
+        @agent = Mechanize.new
+        @agent.user_agent_alias = 'Mechanize'
+        @agent.ssl_version = 'SSLv3'
+        @agent.keep_alive = false
+        @agent.max_history = 3
+        @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        @agent.read_timeout = 120
+        @agent.open_timeout = 120
+
+        @jobs_queue = Queue.new
+        @jobs_mutex = Mutex.new
+
+        @user = @import.user
+        @old_source_ids = @user.boats.pluck(:source_id)
+        @scraped_source_ids = []
+
+        Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
+
+        log "Started param=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
       end
 
       def threaded_run
-        _end_q = false
-        threads = []
+        trap('SIGINT') { @exit_worker = true }
 
-        # trap('SIGINT') { @exit_worker = true; _end_q = true; @_queue.clear }
+        threads = safe_threads_count.times.map do
+          Thread.new do
+            begin
+              loop do
+                job = (@jobs_queue.pop(true) rescue nil)
 
-        @thread_count.to_i.times do
-          threads << Thread.new do
-            while true
-              job = nil
-              @_queue_mutex.synchronize do
-                job = @_queue.pop(true) rescue nil
+                parse_and_save_boat(job) if job
+
+                break if @exit_worker || (@all_jobs_enqueued && !job)
+                sleep(2.seconds) if !job
               end
-
-              break if @exit_worker || (_end_q && !job)
-              unless job
-                sleep 3
-                next
-              end
-
-              begin
-                if (boat = process_job(job))
-                  boat.user = @user
-                  boat.import = @import
-                end
-              rescue StandardError => e
-                log_error "#{e.class.name} Error: #{e.message}", 'Process Error'
-                ImportMailer.process_error(e, @import, job).deliver_now
-              end
-              @_writer_mutex.synchronize {@scraped_boats << boat if boat}
+            rescue StandardError => e
+              log_ex e, 'Thread error'
+              raise e # exception will be swallowed by thread and not passed to main thread
+            ensure
+              ActiveRecord::Base.connection.close
             end
           end
         end
 
         enqueue_jobs
-        _end_q = true
+        @all_jobs_enqueued = true
 
         threads.each(&:join)
+      end
+
+      def finishing
+        (log 'Terminated'; return) if @exit_worker
 
         if @missing_attrs.present?
           log "MISSING ATTRIBUTES: #{@missing_attrs.inspect}"
         end
 
-        log "Scraped #{@scraped_boats.size} boats. Saving them"
-        process_result unless @exit_worker
+        if @scraped_source_ids.none?
+          log_error 'Import Blank'
+          ImportMailer.import_blank(@import).deliver_now
+          return
+        end
+
+        if @jobs_queue.empty? # all jobs processed
+          remove_old_boats
+        end
+
+        log 'Finished'
+      end
+
+      def safe_threads_count
+        threads_count = @import.threads.to_i
+        available_db_conn_count = ActiveRecord::Base.connection_pool.size - ActiveRecord::Base.connection_pool.connections.size
+        raise 'No free DB connections left' if available_db_conn_count <= 0
+
+        if available_db_conn_count < threads_count
+          log "Not enough DB connections (#{available_db_conn_count} < #{threads_count}). Please increase pool size in database.yml"
+          available_db_conn_count
+        else
+          threads_count
+        end
       end
 
       # set validate options for each param
@@ -138,16 +129,14 @@ module Rightboat
       private
 
       def enqueue_job(job)
-        @_queue_mutex.synchronize do
-          @_queue.push(job.clone)
-        end
+        @jobs_queue.push(job.clone)
       end
 
       def get(url, params = [], referer = nil, headers = {})
         retry_cnt = 0
         begin
-          @_agent.cookie_jar.clear!
-          @_agent.get(url, params, referer, headers)
+          @agent.cookie_jar.clear!
+          @agent.get(url, params, referer, headers)
         rescue Mechanize::ResponseCodeError => e
           retry_cnt += 1
           retry if retry_cnt < MAX_RETRIES
@@ -156,63 +145,75 @@ module Rightboat
       end
 
       def basic_auth(user, password)
-        @_agent.auth(user, password)
+        @agent.auth(user, password)
       end
 
-      def process_result
-        @import_trail.boats_count = @scraped_boats.size
+      def parse_and_save_boat(job)
+        boat = safe_parse_boat(job)
+        (log 'Not saved. Move to next'; return) if !boat
+        @jobs_mutex.synchronize { @scraped_source_ids << boat.source_id }
+        safe_save_boat(boat)
+      end
 
-        remove_old_boats
+      def safe_parse_boat(job)
+        process_job(job)
+      rescue StandardError => e
+        log_ex e, 'Parse Error'
+        ImportMailer.process_error(e, @import, job).deliver_now
+        nil
+      end
 
-        if @scraped_boats.blank?
-          log_error 'Import Blank'
-          ImportMailer.import_blank(@import).deliver_now
-          return
+      def safe_save_boat(source_boat)
+        increment_stats = []
+        source_boat.user = @user
+        source_boat.import = @import
+        
+        success = source_boat.save
+        if success
+          log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} images_count=#{source_boat.images_count || 0}"
+          increment_stats << [source_boat.new_record ? 'new_count' : 'updated_count', 1]
+          increment_stats << ['images_count', source_boat.images_count]
+        else
+          log_error source_boat.error_msg, 'Save Boat Error'
+          increment_stats << ['not_saved_count', 1]
         end
 
-        @scraped_boats.each do |source_boat|
-          break if @exit_worker
-          begin
-            success = source_boat.save
-            if success
-              log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} images_count=#{source_boat.images_count || 0}"
-              @import_trail.images_count += source_boat.images_count
-              source_boat.new_record ? @import_trail.new_count += 1 : @import_trail.updated_count += 1
-            else
-              log_error source_boat.error_msg, 'Save Boat Error'
-              @import_trail.not_saved_count += 1
-            end
-            @import_trail.save
-          rescue StandardError => e
-            log_error "Save boat error. #{e.class.name}: #{e.message}\n#{e.backtrace.first(8).join("\n")}", 'Save boat Error'
-            # ImportMailer.invalid_boat(source_boat).deliver_now
-            next
-          end
-        end
-
-        @import_trail.finished_at = Time.current
-        @import_trail.save!
-        @import.touch(:last_ran_at)
-        log 'Finished'
-      rescue Exception => e
-        log_error "===> PROCESS RESULT ERROR. #{e.class.name}: #{e.message}", 'Process Result Error'
+        increment_stats << ['boats_count', 1]
+        ImportTrail.where(id: @import_trail.id).update_all(increment_stats.map { |col, cnt| "#{col} = #{col} + #{cnt}" }.join(', '))
+      rescue StandardError => e
+        log_ex e, 'Save Error'
         ImportMailer.process_result_error(e, @import).deliver_now
       end
 
       def remove_old_boats
-        old_source_ids = @user.boats.map{|b|b.source_id.to_s}
-        scraped_source_ids = scraped_boats.map{|b|b.source_id.to_s}
-        delete_source_ids = old_source_ids - scraped_source_ids
-        delete_source_ids.reject!(&:blank?)
-
-        delete_boats = @user.boats.select { |boat| boat.source_id.in?(delete_source_ids) }
+        delete_source_ids = (@old_source_ids - @scraped_source_ids).reject(&:blank?)
+        delete_boats = @user.boats.where(source_id: delete_source_ids).to_a
         delete_boats.each do |boat|
-          break if @exit_worker
           log "Deleting Boat id=#{boat.id} source_id=#{boat.source_id}"
           boat.destroy
         end
 
-        @import_trail.deleted_count = delete_boats.size
+        @import_trail.update_attribute(:deleted_count, delete_boats.size)
+      end
+
+      def init_logger
+        dir = FileUtils.mkdir_p("#{Rails.root}/log/imports").first
+        @log_path = "#{dir}/import-log-#{@import.id}-#{@import.import_type}--#{Time.current.strftime('%F--%H-%M-%S')}.log"
+        @logger = Logger.new(@log_path)
+      end
+
+      def log(str)
+        @logger.info str
+        puts str if Rails.env.development?
+      end
+
+      def log_error(error_msg, short_msg = nil)
+        log error_msg
+        @import_trail.update_attribute(:error_msg, short_msg || error_msg)
+      end
+
+      def log_ex(e, short_msg)
+        log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(8).join("\n")}", short_msg
       end
 
       def advert_url(url, scheme='http')

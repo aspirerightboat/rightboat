@@ -11,7 +11,7 @@ class Import < ActiveRecord::Base
 
   validates_presence_of :user_id, :import_type
   validates_numericality_of :threads, greater_than: 0, less_than: 10, allow_blank: true
-  validates_inclusion_of :import_type, in: Rightboat::Imports::Base.source_types, allow_blank: true
+  validates_inclusion_of :import_type, in: Rightboat::Imports::Base::SOURCE_TYPES, allow_blank: true
   validates_uniqueness_of :import_type, scope: :user_id, if: 'import_type != "eyb"'
 
   # scheduling options
@@ -65,9 +65,8 @@ class Import < ActiveRecord::Base
   end
 
   def run!
-    self.update_column :queued_at, Time.now
-    self.update_column :pid, -1
-    system `RAILS_ENV=#{Rails.env} bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
+    update_attributes!(queued_at: Time.current, pid: -1)
+    `RAILS_ENV=#{Rails.env} bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
   end
 
   def stop!(nonblock = true)

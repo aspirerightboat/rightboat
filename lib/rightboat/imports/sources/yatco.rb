@@ -21,10 +21,10 @@ module Rightboat
           'mfg_length' => Proc.new { |boat, val| boat.set_missing_attr(:mfg_length_m, get_value_m(val)) }
         )
 
-        def initialize(import)
-          super
-          @_agent.user_agent_alias = 'Mac Safari'
-        end
+        # def initialize(import)
+        #   super
+        #   @agent.user_agent_alias = 'Mac Safari'
+        # end
 
         def host
           'www.yatco.com'

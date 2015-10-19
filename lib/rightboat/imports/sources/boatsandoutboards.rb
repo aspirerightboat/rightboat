@@ -52,8 +52,7 @@ module Rightboat
               doc = get(url)
               doc.search('div.listingsv2 td .title a').each do |a|
                 unless (detail_page = a['href']).blank?
-                  job = { url: detail_page }
-                  enqueue_job(job)
+                  enqueue_job(url: detail_page)
                 end
               end
 
@@ -87,7 +86,7 @@ module Rightboat
           url = job[:url]
           boat = SourceBoat.new
           fields = {}
-          boat.source_id = url[/\d+$/].to_s
+          boat.source_id = url[/\d+$/]
           url = advert_url(url)
           boat.source_url = url
           doc = get(url)

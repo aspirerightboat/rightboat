@@ -56,8 +56,7 @@ module Rightboat
               doc = get(url)
               doc.search('.latest_ads .desc-top .title a').each do |a|
                 unless (detail_page = a['href']).blank?
-                  job = { url: detail_page }
-                  enqueue_job(job)
+                  enqueue_job(url: detail_page)
                 end
               end
 

@@ -65,9 +65,9 @@ module DBBackedClockwork
             import = Import.find(id)
             unless import.running?
               Rails.logger.info("[IMPORT] --- Start importing #{job} at #{time}")
-              import.run! # Rake::Task['import:run'].invoke(import.id)
+              import.run!
             end
-          rescue Exception => e
+          rescue StandardError => e
             Rails.logger.info("[IMPORT] --- Error #{e.message}")
           end
         end

@@ -10,7 +10,7 @@ ActiveAdmin.register Import do
 
     def import_params
       permitted_param_names = [
-        :import_type, :active, :use_proxy, :user_id,
+        :import_type, :active, :use_proxy, :user_id, :threads,
         :frequency_unit, :frequency_quantity, :at, :tz
       ]
 

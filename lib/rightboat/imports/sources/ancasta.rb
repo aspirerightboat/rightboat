@@ -8,11 +8,12 @@ module Rightboat::Imports
 
       log 'Scraping boats'
       doc.xml.root.element_children.each do |boat_node|
-        enqueue_job(boat_node)
+        enqueue_job(boat_node: boat_node)
       end
     end
 
-    def process_job(boat_node)
+    def process_job(job)
+      boat_node = job[:boat_node]
       boat_nodes = boat_node.element_children.index_by(&:name)
       boat = SourceBoat.new
       boat.source_id = boat_node['Id']

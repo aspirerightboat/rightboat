@@ -51,11 +51,12 @@ module Rightboat
           log 'Loading XML file'
           doc = get(@url)
 
-          log 'Scraping boats'
+          log 'Scraping'
           broker_nodes = doc.xml.root.element_children
           broker_nodes.select { |node| @broker_id == node['code'] } if @broker_id != 'all'
 
           broker_nodes.each do |broker_node|
+            log 'Scraping broker info'
             inner_nodes = broker_node.element_children.index_by(&:name)
 
             office_info_by_id = inner_nodes['offices'].element_children.each_with_object({}) do |office_node, h|
@@ -81,7 +82,9 @@ module Rightboat
               }
             end
 
-            inner_nodes['adverts'].element_children.each do |advert_node|
+            advert_nodes = inner_nodes['adverts'].element_children
+            log "Found #{advert_nodes.size} boats"
+            advert_nodes.each do |advert_node|
               office = office_info_by_id[advert_node['office_id']]
               enqueue_job(advert_node: advert_node, office: office)
             end
@@ -91,7 +94,7 @@ module Rightboat
         def process_job(job)
           advert_node = job[:advert_node]
           if advert_node['status'] =~ /sold/i
-            log 'Boat Sold. Move to next'
+            log 'Boat Sold'
             return
           end
 

@@ -1,7 +1,7 @@
 = semantic_form_for [:admin, @import] do |f|
   = f.inputs "Import" do
     = f.input :user, as: :select, collection: User.companies, label_method: :name, value_method: :id, include_blank: false
-    = f.input :import_type, collection: Rightboat::Imports::Base.source_types, include_blank: false
+    = f.input :import_type, collection: Rightboat::Imports::Base::SOURCE_TYPES, include_blank: false
     = f.input :threads
     = f.input :active
     = f.input :use_proxy, as: :boolean
@@ -21,7 +21,7 @@
       &nbsp;&nbsp;1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
   = f.actions
 
-- j_params = Rightboat::Imports::Base.source_types.inject({}) { |h, import_type| h[import_type] = Import.source_class(import_type).params.map{|x| [x, x.to_s.titleize]}; h}
+- j_params = Rightboat::Imports::Base::SOURCE_TYPES.inject({}) { |h, import_type| h[import_type] = Import.source_class(import_type).params.map{|x| [x, x.to_s.titleize]}; h}
 :javascript
   $(document).ready(function() {
     var current_param = #{resource.param.to_json},

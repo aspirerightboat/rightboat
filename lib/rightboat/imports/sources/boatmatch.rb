@@ -31,16 +31,15 @@ module Rightboat
         def enqueue_jobs
           basic_auth('rightboat', 'bo4t_fe3d_rB')
           doc = get('http://www.boatmatch.com/xml_feed')
-          doc.search("//boat").each do |item|
-            enqueue_job(item.clone)
+          doc.xml.root.element_children.each do |item|
+            enqueue_job(item: item)
           end
         end
 
-        def process_job(item)
+        def process_job(job)
           boat = SourceBoat.new
 
-          item.children.each do |c|
-            next unless c.is_a?(Nokogiri::XML::Element)
+          job[:item].element_children.each do |c|
             attr = DATA_MAPPINGS[c.name]
             value = cleanup_string(c.text)
             if c.name =~ /unit$/

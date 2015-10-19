@@ -14,7 +14,7 @@ module Rightboat
         @import = import
         init_logger
         @import_trail = ImportTrail.create(import: @import, log_path: @log_path)
-        @import.update(last_import_trail: @import_trail, pid: Process.pid)
+        @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
       end
 
       def run
@@ -26,7 +26,6 @@ module Rightboat
         raise e
       ensure
         @import_trail.touch(:finished_at)
-        @import.touch(:last_ran_at)
       end
 
       def starting

@@ -210,8 +210,8 @@ class Boat < ActiveRecord::Base
   private
   def slug_candidates
     [
-        name,
-        manufacturer_model
+      name,
+      manufacturer_model
     ]
   end
 

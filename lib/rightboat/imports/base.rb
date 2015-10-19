@@ -167,7 +167,7 @@ module Rightboat
         increment_stats = []
         source_boat.user = @user
         source_boat.import = @import
-        
+
         success = source_boat.save
         if success
           log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} images_count=#{source_boat.images_count || 0}"

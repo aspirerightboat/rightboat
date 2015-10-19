@@ -31,16 +31,16 @@
             .col-xs-12= text_field_tag :q, '', placeholder: 'Search', class: 'form-control', id: 'search-input'
 
           .range-slider-wrapper.row
-            .col-xs-3= label_tag :price
-            .col-xs-9
+            .col-xs-2= label_tag :price
+            .col-xs-10
               .rb-control-group
                 .rb-control
                   = slider_tag(:price, html: { 'data-convert' => 'convertCurrency' })
                 .rb-control-group-addon
                   = currency_tag :currency, current_currency, class: 'select-sm select-currency'
           .range-slider-wrapper.row
-            .col-xs-3= label_tag :length
-            .col-xs-9
+            .col-xs-2= label_tag :length
+            .col-xs-10
               .rb-control-group.length-input-group
                 .rb-control
                   = slider_tag(:length, unit: current_length_unit, html: { 'data-convert' => 'convertLength' })

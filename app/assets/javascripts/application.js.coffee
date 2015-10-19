@@ -117,12 +117,16 @@ $(document).ready ->
     else if $(target).data('method') == 'post'
       $(target).click()
     else
-      $('.rb-extended').slideDown() if target == '#about'
+      if target == '#about'
+        $('.rb-extended').slideDown()
+        $('.toggle-about').html 'less...'
       scrollToTarget(target)
 
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
-    $('.rb-extended').slideDown() if target == '#about'
+    if target == '#about'
+      $('.rb-extended').slideDown()
+      $('.toggle-about').html 'less...'
     scrollToTarget(target) if $(target).length
 
   $('.cool-select').select2()

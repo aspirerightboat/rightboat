@@ -21,3 +21,4 @@ db/schema.rb
 # uploaded files
 public/rb-assets
 public/uploads
+import_data

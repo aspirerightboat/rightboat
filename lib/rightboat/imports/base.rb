@@ -8,7 +8,7 @@ module Rightboat
 
       include Utils
 
-      SOURCE_TYPES = %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco)
+      SOURCE_TYPES = %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco boat_stream)
 
       def initialize(import)
         @import = import
@@ -125,11 +125,11 @@ module Rightboat
         self.validate_param_option.keys
       end
 
-      private
-
       def enqueue_job(job)
         @jobs_queue.push(job.clone)
       end
+
+      private
 
       def get(url, params = [], referer = nil, headers = {})
         retry_cnt = 0
@@ -155,7 +155,7 @@ module Rightboat
       end
 
       def safe_parse_boat(job)
-        process_job(job)
+        @skip_thread_parsing_boat ? job : process_job(job)
       rescue StandardError => e
         log_ex e, 'Parse Error'
         ImportMailer.process_error(e, @import, job).deliver_now

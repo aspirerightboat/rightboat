@@ -29,7 +29,9 @@ ActiveAdmin.register Misspelling do
 
   form do |f|
     f.inputs do
-      f.input :alias_string, label: "Name"
+      f.input :alias_string, label: 'Name'
+      f.input :source_id
+      f.input :source_type
     end
     f.actions
   end

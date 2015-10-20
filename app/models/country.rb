@@ -8,6 +8,12 @@ class Country < ActiveRecord::Base
 
   belongs_to :currency, inverse_of: :countries
 
+  scope :query_with_aliases, -> (value) {
+    q = joins("LEFT JOIN misspellings ON source_type = '#{name}' AND source_id = #{table_name}.id")
+    q = q.where("#{table_name}.name = :name OR misspellings.alias_string = :name OR #{table_name}.iso = :name", name: value)
+    q.create_with(name: value)
+  }
+
   # solr_update_association :boats
 
   validates_presence_of :iso, :name

@@ -19,10 +19,10 @@ module Rightboat
         :hull_type, :hull_shape, :hull_material, :hull_color, :cockpit_type,
         :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig,
         :range, :lwl_m, :draft_m,
-        :engine_count, :engine_type, :engine_location, :engine_horse_power, :engine_hours, :engine, :engine_code,
+        :engine_count, :engine_type, :engine_location, :engine_horse_power, :engine_hours, :engine, :engine_code, :engine_year,
         :displacement_kgs, :ballast, :electrical_circuit, :max_speed, :cruising_speed, :beam_m,
-        :heads, :berths, :single_berths, :double_berths, :cabins, :keel, :fresh_water_tanks, :holding_tanks,
-        :fuel_tanks, :designer, :head_room, :builder, :length_on_deck, :propeller, :dry_weight, :passengers,
+        :heads, :berths, :single_berths, :double_berths, :twin_berths, :cabins, :keel, :fresh_water_tanks, :holding_tanks,
+        :fuel_tanks, :designer, :head_room, :builder, :length_on_deck, :propeller, :dry_weight, :passengers, :bathrooms,
         :gps, :vhf, :plotter, :radar, :battery_charger, :generator, :inverter, :bimini,
         :television, :cd_player, :dvd_player, :cylinders, :gearbox,
         :known_defects, :last_serviced, :air_draft, :hull_construction, :hull_number,
@@ -31,7 +31,7 @@ module Rightboat
         :litres_per_hour, :propeller_type, :starting_type, :cooling_system, :navigation_lights, :compass,
         :depth_instrument, :wind_instrument, :autopilot, :speed_instrument, :toilet, :shower, :bath, :life_raft,
         :epirb, :bilge_pump, :fire_extinguisher, :mob_system, :genoa, :spinnaker, :tri_sail, :storm_jib,
-        :main_sail, :winches, :battery, :shorepower, :fenders, :anchor
+        :main_sail, :winches, :battery, :shorepower, :fenders, :anchor, :seating_capacity, :drive_transmission_description,
       ]
 
       RELATION_ATTRIBUTES = [
@@ -109,17 +109,11 @@ module Rightboat
           value = instance_variable_get("@#{attr_name}".to_sym)
           value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
           if attr_name == :description && value
-            # Remove contact information
-            # including email
-            value = value.gsub(/\s+[^.,?!]*(email)?[^.,?!]*[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}[^.?!]*[.?!]/i, '')
-            # including phone number
-            value = value.gsub(/\s+[^.,?!]*(call)?[^.,?!]*[\d\-\s\(\)]{9,20}[^.?!]*[.?!]/i, '')
-            # including url
-            value = value.gsub(/\s+[^.,?!]*(http|https|ftp)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?\/?([a-zA-Z0-9\-\._\?\,\'\\+&amp;%\$#\=~])*/i, '')
+            remove_contact_info!(value)
           end
           target.send "#{attr_name}=", value
         end
-        target.revive(true) if target.deleted?
+        # target.revive(true) if target.deleted?
 
         spec_proc = Proc.new do |attr_name, value|
           value ||= instance_variable_get("@#{attr_name}".to_sym)
@@ -128,7 +122,7 @@ module Rightboat
 
           is_blank_value = value.blank? || value.to_s =~ /^[\.0]+$/
 
-          spec = Specification.query_with_aliases(attr_name).first_or_initialize
+          spec = Specification.where(name: attr_name).first_or_initialize
           if spec.new_record?
             spec.display_name = attr_name.to_s.titleize
             spec.save! unless is_blank_value
@@ -159,9 +153,9 @@ module Rightboat
           unless value.is_a?(ActiveRecord::Base)
             if value.blank? || value.to_s =~ /^[\.0]+$/
               value = nil
-            elsif attr_name.to_sym == :currency
-              value = 'USD' if value == '$'
-              value = klass.where('name = ? OR symbol = ?', value, value).first
+            elsif attr_name == :currency
+              value = 'USD' if value == '$' # there are other currencies with $ symbol: AUD, CAD, HKD, NZD, SGD but USD is by default
+              value = Currency.where('name = ? OR symbol = ?', value, value).first
               if value.nil?
                 self.error_msg = "Currency Not Found: #{value}"
                 ImportMailer.blank_currency(self).deliver_now
@@ -188,7 +182,7 @@ module Rightboat
           target.office = office
         end
 
-        self.poa = true if price.present? && price.to_i <= 0
+        self.poa = price.blank? || price.to_i <= 0
 
         self.images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
@@ -283,6 +277,16 @@ module Rightboat
             target.location = location.to_s.gsub(/[\s,]+$/, '')
           end
         end
+      end
+
+      def remove_contact_info!(str)
+        # email
+        str.gsub!(/\s+[^.,?!]*(email)?[^.,?!]*[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}[^.?!]*[.?!]/i, '')
+        # phone number
+        str.gsub!(/\s+[^.,?!]*(call)?[^.,?!]*[\d\-\s\(\)]{9,20}[^.?!]*[.?!]/i, '')
+        # url
+        str.gsub!(/\s+[^.,?!]*(:?http|https|ftp):\/\/[a-z0-9.-]+\.[a-z]{2,4}(:[a-z0-9]*)?\/?([a-z0-9._\?,'\\+&;%\$#=~"-])*/i, '')
+        str
       end
 
     end

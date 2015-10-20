@@ -57,8 +57,6 @@ window.requireLogin = (e, disable_history)->
   if $loginBtn.length > 0
     e.preventDefault()
     $target = $(e.target)
-    if $target.html() is 'My Rightboat'
-      window.myRightboatClicked = true
 
     unless disable_history
       if $target.data('method') == 'post'

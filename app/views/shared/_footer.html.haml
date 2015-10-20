@@ -38,7 +38,7 @@
             - if !current_user || !current_user.company?
               %li= link_to 'Register as Broker', register_broker_path, class: 'register-broker-link', rel: 'nofollow'
             - unless current_user
-              %li= link_to 'Broker Login', '#', class: 'user-login login-top'
+              %li= link_to 'Broker Login', '#', class: 'user-login'
 
     .row.company-info
       = link_to 'javascript: void(0);', class: 'no-divider' do

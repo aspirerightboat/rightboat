@@ -8,7 +8,7 @@ ActiveAdmin.register Model do
 
   permit_params :manufacturer_id, :name, :sailing
   filter :name
-  filter :manufacturer, collection: -> { Manufacturer.active.order(:name) }
+  filter :manufacturer, collection: -> { Manufacturer.order(:name) }
 
 
   index do

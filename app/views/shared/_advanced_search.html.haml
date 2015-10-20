@@ -55,7 +55,7 @@
               .rb-control
                 = label_tag :price
               .rb-control-group-addon
-                = currency_tag :currency, current_currency, class: 'select-white select-sm select-general'
+                = currency_tag :currency, current_currency, class: 'select-white select-sm select-currency'
           .col-xs-7.col-sm-8
             = slider_tag(:price, html: { 'data-convert' => 'convertCurrency' })
         .form-group.row
@@ -115,92 +115,3 @@
 
 :javascript
   window.currencyRates = #{Currency.all.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
-  $(function() {
-    $('select.select-general').each(function() {
-      var options = {
-        //templateResult: formatState,
-        minimumResultsForSearch: Infinity
-      };
-      if ($(this).hasClass('select-white')) {
-        options = $.extend(options, {dropdownCssClass: 'select-white'});
-      }
-      $(this).select2(options).on('change', function() {
-        var $allOption = $(this).find("option[value='']");
-        if ($allOption.length && $allOption.text().match(/^all$/i)) {
-          if ($allOption.is(':selected')) {
-            $(this).select2("val", '');
-          }
-        }
-      });
-    });
-    $('#manufacturer_model').select2({
-      tags: true,
-      minimumInputLength: 0,
-      tokenSeparators: [','],
-      initSelection: function(el, callback) {
-        var tags = $(el).val().split(','),
-        data = $.map(tags, function(token) {
-          return {id: token, text: token};
-        });
-        callback(data);
-      },
-      ajax: {
-        url: "/manufacturer-model",
-        dataType: 'JSON',
-        delay: 150,
-        data: function (term, page) {
-          return { q: term, page: page};
-        },
-        results: function (data, page) {
-          return {
-            results: $.map(data.search, function(item) {
-              return { id: item, text: item }
-            })
-          };
-        },
-        cache: true
-      }
-    });
-    $('#keywords').select2({
-      tags: true,
-      minimumInputLength: 1,
-      tokenSeparators: [','],
-      initSelection: function(el, callback) {
-        var tags = $(el).val().split(','),
-        data = $.map(tags, function(token) {
-          return {id: token, text: token};
-        });
-        callback(data);
-      },
-      ajax: {
-        url: "/suggestion",
-        dataType: 'JSON',
-        delay: 150,
-        data: function (term, page) {
-          return {
-            q: term, // search term
-            page: page
-          };
-        },
-        results: function (data, page) {
-          // parse the results into the format expected by Select2.
-          // since we are using custom formatting functions we do not need to
-          // alter the remote JSON data
-          return {
-            results: $.map(data.search, function(item) {
-              return {
-                id: item,
-                text: item
-              }
-            })
-          };
-        },
-        cache: true
-      }
-    });
-    $('.country-select').multipleSelect({
-      placeholder: 'Select Countries...',
-      selectAllText: 'Check/Uncheck All',
-      selectAllDelimiter: ['', '']
-    });
-  });

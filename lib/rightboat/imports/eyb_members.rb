@@ -82,7 +82,7 @@ module Rightboat
       end
 
       def enqueue_jobs
-        doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+        doc = @_agent.get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
         doc.search("//AD").each do |ad|
           job = { ad: ad }
           enqueue_job(job)
@@ -119,6 +119,12 @@ module Rightboat
       end
 
       private
+
+      def enqueue_job(job)
+        @_queue_mutex.synchronize do
+          @_queue.push(job.clone)
+        end
+      end
 
       def process_result
         User.where(source: 'eyb').active.update_all(active: false)

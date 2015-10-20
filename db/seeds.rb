@@ -78,6 +78,7 @@ spec_names.each do |attrs|
   spec.update_attributes(attrs)
 end
 
+=begin
 {
   fav_change: 'Email me if my favourites change status',
   matching_search: 'Email me if new listings that match my searches',
@@ -87,5 +88,5 @@ end
   record = Subscription.where(name: name).first_or_initialize
   record.update_attributes(description: description)
 end
-
+=end
 RBConfig.repair

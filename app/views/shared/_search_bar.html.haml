@@ -14,35 +14,8 @@
         %li
           .navbar-text
             %span Sort by
-            = select_tag :sort, sort_options, class: 'rb-select2-md', id: 'sort-field'
+            = select_tag :sort, sort_options, class: 'rb-select2-md select-general', id: 'sort-field'
         %li
           .navbar-text
             %span View
             = select_tag :sort, options_for_select([['Thumbnail', 'thumbnail'], ['Gallery', 'gallery'], ['List', 'list']], current_view_layout), id: 'view-mode'
-.clearfix
-
-:javascript
-  $(function() {
-    function formatViewMode(viewMode, container, escapeMarkup) {
-      var $icon = $('<img>')
-      .attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png')
-      .addClass('view-mode-icon');
-      //return $('<div>').append(viewMode.text + ' ').append($icon)
-      return $('<div>').append($icon)
-    }
-    function formatSimpleViewMode(viewMode, container, escapeMarkup) {
-      return $('<img>')
-      .attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png')
-      .addClass('view-mode-icon');
-    }
-
-    $(document).ready(function() {
-      $('select#sort-field').select2({minimumResultsForSearch: Infinity});
-      $('select#view-mode').select2({
-        minimumResultsForSearch: Infinity,
-        formatSelection: formatSimpleViewMode,
-        formatResult: formatViewMode,
-        dropdownCssClass: 'view-mode-dropdown'
-      });
-    });
-  });

@@ -77,7 +77,6 @@ module Rightboat
             model = tokens[(i + 1)..-1].join(' ')
             search = Sunspot.search(Manufacturer) do |q|
               q.with :name, manufacturer
-              q.order_by :live, :desc
               q.paginate per_page: 1
             end
             break if search.raw_results.first

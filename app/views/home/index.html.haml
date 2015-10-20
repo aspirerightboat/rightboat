@@ -91,17 +91,13 @@
     //  return $currency;
     //};
 
-    $(".navbar select").select2({
-      minimumResultsForSearch: Infinity
-    });
-
     $('.flexslider').slick({
       slidesToShow: 1,
       arrows: true
     });
 
     if (#{params[:popup_login].to_json}) {
-      $('.login-top').trigger('click');
+      $('#login_popup').modal('show');
     }
 
     $('.slick-nav').slick({

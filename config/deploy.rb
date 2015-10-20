@@ -25,7 +25,7 @@ set :passenger_restart_command, 'bundle exec passenger-config restart-app'
 set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
 
 set :rvm_type, :user
-set :rvm_ruby_version, '2.2.2'
+set :rvm_ruby_version, '2.2.3'
 
 namespace :deploy do
   after :check,   :'workers:delayed_job:setup'

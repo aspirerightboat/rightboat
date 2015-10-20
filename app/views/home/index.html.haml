@@ -101,7 +101,7 @@
     });
 
     if (#{params[:popup_login].to_json}) {
-      $('.login-top').trigger('click');
+      $('#login_popup').modal('show');
     }
 
     $('.slick-nav').slick({

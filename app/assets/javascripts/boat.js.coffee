@@ -14,7 +14,7 @@ window.initBoatView = (el) ->
     false
 
   $('.fav-link', el).click (e) ->
-    return false if requireLogin(e, true)
+    return false unless requireLogin(e, true)
 
     $link = $(@).attr('disabled', 'disabled')
 

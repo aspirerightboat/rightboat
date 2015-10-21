@@ -2,7 +2,8 @@ ActiveAdmin.register User do
   permit_params :username, :email, :password, :password_confirmation,
                 :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
                 :avatar, :avatar_cache,
-                address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip]
+                address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip],
+                broker_info_attributes: [:contact_name, :position, :description, :lead_rate, :discount, :website, :additional_email, :vat_number, :logo, :copy_to_head_office]
 
   config.sort_order = 'role_asc'
   menu priority: 8
@@ -62,13 +63,26 @@ ActiveAdmin.register User do
       f.input :mobile
       f.input :fax
 
-      f.has_many :address, allow_destroy: true do |addr_f|
-        addr_f.input :line1
-        addr_f.input :line2
-        addr_f.input :town_city
-        addr_f.input :county
-        addr_f.input :country, as: :select, collection: Country.order(:name)
-        addr_f.input :zip
+      f.has_many :address, allow_destroy: true do |ff|
+        ff.input :line1
+        ff.input :line2
+        ff.input :town_city
+        ff.input :county
+        ff.input :country, as: :select, collection: Country.order(:name)
+        ff.input :zip
+      end
+
+      f.has_many :broker_info, allow_destroy: true do |ff|
+        ff.input :contact_name
+        ff.input :position
+        ff.input :description
+        ff.input :lead_rate
+        ff.input :discount
+        ff.input :website
+        ff.input :additional_email
+        ff.input :vat_number
+        ff.input :logo
+        ff.input :copy_to_head_office
       end
     end
     f.actions

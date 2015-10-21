@@ -212,7 +212,8 @@ module Rightboat
       end
 
       def log_ex(e, short_msg)
-        log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(8).join("\n")}", short_msg
+        backtrace_lines_count = Rails.env.development? ? 50 : 8
+        log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}", short_msg
       end
 
       def advert_url(url, scheme='http')

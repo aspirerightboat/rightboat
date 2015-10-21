@@ -19,7 +19,7 @@
 
 - if @boat.primary_image
   .boat-main-image
-    = wicked_pdf_image_tag @boat.primary_image.file_url(:main)
+    = wicked_pdf_image_tag @boat.primary_image.file_url
 
 .boat-title-block
   %h1 <b>#{@boat.manufacturer}</b> #{@boat.model}
@@ -27,7 +27,7 @@
   %h2 #{@boat.year_built} year
   .qr-code-block
     - boat_url = boat_url(@boat.slug)
-    = render partial: 'shared/qr_code', locals: {url: boat_url, size: 6}
+    = render partial: 'shared/qr_code', locals: {url: boat_url, size: 7}
     .qr-code-hint Scan to view boat online
 .hr
 

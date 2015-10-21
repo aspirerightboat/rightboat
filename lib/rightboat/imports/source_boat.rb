@@ -9,7 +9,6 @@ module Rightboat
       include Utils
 
       validates_presence_of :user, :source_id, :manufacturer, :model
-      validate :require_location
 
       NORMAL_ATTRIBUTES = [
         :source_id, :name, :description, :poa, :price, :year_built, :under_offer, :length_m, :new_boat, :source_url, :owners_comment
@@ -220,13 +219,22 @@ module Rightboat
 
       private
 
-      def require_location
-        if location.blank? && country.blank?
-          self.errors.add :location, "can't be blank"
-        end
-      end
-
       def adjust_location(target)
+        if location.blank? && country.blank?
+          # take info from office
+          if office.present?
+            target.country_id = office[:address_attributes].try(:[], :country_id)
+            target.geo_location = office[:address_attributes].try(:[], :town_city)
+          end
+          # otherwise take info from user itself
+          if target.geo_location.blank? && target.country_id.blank?
+            broker_address = user.address
+            target.country_id = broker_address.try(:country_id)
+            target.geo_location = broker_address.try(:city_town)
+          end
+          return
+        end
+
         if country.to_s.downcase == location.to_s.downcase
           self.location = ''
         end

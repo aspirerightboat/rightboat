@@ -76,7 +76,7 @@ module Rightboat
                       line1: nodes['address'].text,
                       town_city: nodes['town'].text,
                       county: nodes['county'].text,
-                      country_id: country.id,
+                      country_id: country.try(:id) || @user.address.try(:country_id),
                       zip: nodes['postcode'].text,
                   }
               }

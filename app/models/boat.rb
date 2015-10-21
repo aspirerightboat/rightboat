@@ -143,7 +143,7 @@ class Boat < ActiveRecord::Base
     ]
     specs = boat_specifications.includes(:specification)
     specs = specs.front unless full_spec
-    ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
+    ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, (bs.value.blank? ? 'N/A' : bs.value)]; arr}
     ret << ['RB Boat Ref', self.ref_no]
     ret.reject{|_, v| v.blank? }
   end

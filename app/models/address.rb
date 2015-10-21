@@ -4,7 +4,7 @@ class Address < ActiveRecord::Base
   belongs_to :country
   belongs_to :addressible, polymorphic: true
 
-  validates_presence_of :country_id, :line1, :town_city
+  # validates_presence_of :country_id, :line1, :town_city
   alias_attribute :address, :line1
   alias_attribute :postcode, :zip
   alias_attribute :town, :town_city

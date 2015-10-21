@@ -1,6 +1,6 @@
 class ImportMailer < ApplicationMailer
 
-  default to: %w(xmpolaris@gmail.com)
+  default to: %w(xmpolaris@hotmail.com)
 
   def process_error(error, import, job)
     @error = error

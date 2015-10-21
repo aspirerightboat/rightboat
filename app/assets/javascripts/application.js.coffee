@@ -50,8 +50,6 @@ Rightboat.validetta_options =
       errorMessage : "Only include a-z, A-Z, digits and underline."
   display: 'inline'
 
-window.myRightboatClicked = false
-
 window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')
   if $loginBtn.length > 0

@@ -27,7 +27,6 @@ $ ->
     changeSliderValue = ($slider, handleIndex=0) ->
       value = $slider.slider('values', handleIndex)
       selector = if handleIndex == 0 then 'min' else 'max'
-      console.log $slider.data(selector)
       if value == $slider.data(selector)
         html = if handleIndex == 0 then 'Min' else 'Max'
       else

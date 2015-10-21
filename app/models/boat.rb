@@ -141,11 +141,17 @@ class Boat < ActiveRecord::Base
       ['Engine make/model', self.engine_model],
       ['Fuel', self.fuel_type]
     ]
-    specs = boat_specifications.includes(:specification)
-    specs = specs.front unless full_spec
-    ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, (bs.value.blank? ? 'N/A' : bs.value)]; arr}
+
+    if full_spec
+      specs = boat_specifications.includes(:specification)
+      specs = specs.front
+      ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
+    else
+      specs = Specification.front
+      ret = specs.inject(ret) {|arr, s| arr << [s.to_s, s.boat_specifications.where(boat_id: id).first.try(:value)]; arr}
+    end
     ret << ['RB Boat Ref', self.ref_no]
-    ret.reject{|_, v| v.blank? }
+    ret.map{|k, v| [k, (v.blank? ? 'N/A' : v)] }
   end
 
   def full_location

@@ -19,7 +19,7 @@
 
 - if @boat.primary_image
   .boat-main-image
-    = wicked_pdf_image_tag @boat.primary_image.file_url(:main)
+    = wicked_pdf_image_tag @boat.primary_image.file_url
 
 .boat-title-block
   %h1 <b>#{@boat.manufacturer}</b> #{@boat.model}

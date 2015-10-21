@@ -44,7 +44,7 @@ module Rightboat
         )
 
         def self.validate_param_option
-          { url: :presence, broker_id: [:presence, /^all|\d+$/]}
+          {url: :presence, broker_id: [:presence, /^all|\d+$/]}
         end
 
         def enqueue_jobs
@@ -63,10 +63,11 @@ module Rightboat
               nodes = office_node.element_children.index_by(&:name)
               country_name = (nodes['country'] || nodes['counrty']).text # counrty misspelling is here: http://81.143.47.18/boat/boats-xml/p/2/b/6/k/b987de2d33b17e6ca8aa874d58e51a6c/pk/c93422dd21571cc120a928c6ab047768
               country = country_name == 'United States' ? Country.find_by(iso: 'US') : Country.query_with_aliases(country_name).first
-              h[office_node['id']] = {
-                  name: nodes['office_name'].text,
-                  contact_name: nodes['name'].element_children.map { |node| node.text }.join(' ').strip,
-                  email: nodes['email'].text,
+              contact_name = (nodes['name'].element_children.map { |node| node.text }.join(' ').strip if nodes['name'])
+              office_info = {
+                  name: nodes['office_name'].text.presence || @user.company_name,
+                  contact_name: contact_name,
+                  email: nodes['email'].text.presence,
                   daytime_phone: nodes['daytime_phone'].text,
                   evening_phone: nodes['evening_phone'].text,
                   fax: nodes['fax'].text,
@@ -76,10 +77,20 @@ module Rightboat
                       line1: nodes['address'].text,
                       town_city: nodes['town'].text,
                       county: nodes['county'].text,
-                      country_id: country.try(:id) || @user.address.try(:country_id),
+                      country_id: country.try(:id),
                       zip: nodes['postcode'].text,
                   }
               }
+              if office_info[:address_attributes][:line1].blank?
+                office_info[:address_attributes] = {
+                    line1: @user.address.try(:line1),
+                    town_city: @user.address.try(:town_city),
+                    county: @user.address.try(:county),
+                    country_id: @user.address.try(:country_id),
+                    zip: @user.address.try(:zip),
+                }
+              end
+              h[office_node['id']] = office_info
             end
 
             advert_nodes = inner_nodes['adverts'].element_children

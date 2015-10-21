@@ -51,7 +51,11 @@ module ApplicationHelper
 
   def currency_tag(name, selected, options = {})
     selected = selected.is_a?(Currency) ? selected.name : selected
-    select_tag name, options_from_collection_for_select(Currency.all, :name, :display_symbol, selected), options
+    currencies = Rails.cache.fetch "rb.currencies", expires_in: 1.hour do
+      ret = Currency.where(name: %w(GBP EUR USD))
+      ret += Currency.where('id NOT IN (?)', ret.map(&:id)).order(:name)
+    end
+    select_tag name, options_from_collection_for_select(currencies, :name, :display_symbol, selected), options
   end
 
   def sort_options(selected = nil)

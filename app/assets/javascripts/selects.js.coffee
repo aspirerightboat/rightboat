@@ -16,7 +16,9 @@ $ ->
       formatSelection: (viewMode, container, escapeMarkup) ->
         viewMode.text
       formatResult: (viewMode, container, escapeMarkup) ->
-        viewMode.text + '(' + viewMode.id + ')'
+        ret = '<span'
+        ret += ' class="priority-last"' if viewMode.id is 'USD'
+        ret += '>' + viewMode.text + '<small>(' + viewMode.id + ')</small></span>'
 
   $('#manufacturer_model').select2
     tags: true

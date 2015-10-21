@@ -18,7 +18,7 @@ set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/rb-
 # Default value for keep_releases is 5
 set :keep_releases, 3
 
-set :passenger_in_gemfile, true
+set :passenger_in_gemfile, false
 set :passenger_roles, :app
 set :passenger_restart_with_sudo, true
 set :passenger_restart_command, 'bundle exec passenger-config restart-app'

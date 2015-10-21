@@ -76,7 +76,7 @@ module Rightboat
                       line1: nodes['address'].text,
                       town_city: nodes['town'].text,
                       county: nodes['county'].text,
-                      country_id: country.id,
+                      country_id: country.try(:id) || @user.address.try(:country_id),
                       zip: nodes['postcode'].text,
                   }
               }
@@ -120,6 +120,7 @@ module Rightboat
 
           image_urls = media_nodes.map(&:text)
           boat.images = image_urls.map do |url|
+            url.strip!
             url = URI.encode(url)
             url = url.gsub('[', '%5B').gsub(']', '%5D') if url =~ /[\[\]]/
             url = URI.parse(@url).merge(url).to_s if !url.start_with?('http:')

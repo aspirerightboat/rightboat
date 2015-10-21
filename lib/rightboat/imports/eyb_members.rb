@@ -107,9 +107,9 @@ module Rightboat
             member[:broker_id] = val
           elsif key =~ /^deal/i
             key = key.gsub(/deal_/, '')
-            if attr = USER_DATA_MAPPINGS[key]
+            if (attr = USER_DATA_MAPPINGS[key])
               member[attr.to_sym] = val
-            elsif attr = ADDRESS_DATA_MAPPINGS[key]
+            elsif (attr = ADDRESS_DATA_MAPPINGS[key])
               member[:address_attributes][attr.to_sym] = val
             end
           end
@@ -131,8 +131,8 @@ module Rightboat
         Import.where(import_type: 'eyb').active.update_all(active: false)
 
         @members.each do |member|
-          member[:address_attributes][:country] = 'UK' if member[:address_attributes][:country] = 'Tortola'
-          unless member[:company_weburl].blank?
+          member[:address_attributes][:country] = 'UK' if member[:address_attributes][:country] == 'Tortola'
+          if member[:company_weburl].present?
             member[:company_weburl] = 'http://' + member[:company_weburl] unless member[:company_weburl] =~ /http/
           end
 
@@ -142,7 +142,7 @@ module Rightboat
             member[:email] = member[:email].split(/;/).first.strip
           end
 
-          if user = User.find_by(email: member[:email])
+          if (user = User.find_by(email: member[:email]))
             member[:broker_ids] = user.broker_ids << member[:broker_id] unless user.broker_ids.include?(member[:broker_id])
             user.update(member.except(:broker_id))
           else
@@ -157,10 +157,10 @@ module Rightboat
           imports = user.imports.where(import_type: 'eyb')
 
           user.broker_ids.each do |broker_id|
-            unless import = imports.select { |x| x.param['broker_id'] == broker_id.to_s }.first
-              import = user.imports.create(import_type: 'eyb', active: false, param: { 'broker_id' => broker_id })
-            else
+            if (import = imports.select { |x| x.param['broker_id'] == broker_id.to_s }.first)
               import.update(active: true)
+            else
+              user.imports.create(import_type: 'eyb', active: false, param: { 'broker_id' => broker_id })
             end
           end
         end

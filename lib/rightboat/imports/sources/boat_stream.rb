@@ -5,11 +5,17 @@ module Rightboat
         def enqueue_jobs
           @skip_thread_parsing_boat = true
           file = "#{Rails.root}/import_data/boat_stream.xml"
-          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self)).parse_file(file)
+          log "Parsing file #{file}"
+          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_id)).parse_file(file)
+        end
+
+        def self.validate_param_option
+          {party_id: :presence}
         end
 
         class BoatStreamParser < Nokogiri::XML::SAX::Document
-          def initialize(source)
+          def initialize(source, party_id)
+            @party_id = party_id
             @source = source
             @tree = []
             @country_id_by_iso = Country.pluck(:iso, :id).each_with_object({}) { |(iso, id), h| h[iso] = id }
@@ -29,7 +35,6 @@ module Rightboat
 
           def characters(str)
             return if !@boat || str.blank?
-            # @prev_char = @char
             @char = str.strip
           end
 
@@ -46,9 +51,14 @@ module Rightboat
           def process
             return if !@boat
             c = @char.to_s
-            if @tree.size == 7 && @el == 'DocumentID'
-              @boat.source_id = c
+
+            if @el == 'PartyID'
+              if @party_id != c
+                @boat = nil
+                return
+              end
             end
+
             if @tree.length > 2
               case @tree[-2]
               when 'DocumentIdentification'

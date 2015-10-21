@@ -7,8 +7,8 @@
         .h Email Activation
       .modal-body
         .row
-          %p Confirmation instructions was sent to your email <b>#{current_user.email}</b>.
-          %p If you haven’t received e-mail, click Resend.
+          %p Confirmation instructions were sent to your email <b>#{current_user.email}</b>.
+          %p If you didn't receive the email, click Resend.
           = form_tag resend_confirmation_path, class: 'form-inline' do
             .form-group
               = label_tag :email, 'Email'

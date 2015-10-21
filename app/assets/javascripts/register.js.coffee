@@ -1,7 +1,8 @@
 $ ->
   $(document).on 'click', '.user-register', ->
-    $('form .alert').remove()
-    $('#register_popup').displayPopup()
+    $('#login-content').hide()
+    $('#register-content').show()
+    $('#login_popup').modal('show') unless $('#login_popup').is(':visible')
     false
 
   $('.simple-ajax-form').simpleAjaxForm()

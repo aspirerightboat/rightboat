@@ -2,7 +2,9 @@
   = image_tag 'anchor.png', class: 'anchor-img', alt: ''
   #advanced-search.container
     %button.close{"aria-label" => "Close", :type => "button"}
-      %span{"aria-hidden" => "true"} &times;
+      %span{"aria-hidden" => "true"}
+        %small Close
+        &times;
     %h2 Refine Search
 
     = form_tag search_path, method: :get, class: 'row' do

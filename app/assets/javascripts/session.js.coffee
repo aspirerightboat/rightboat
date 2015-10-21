@@ -11,12 +11,14 @@ $ ->
     requireLogin(e, false)
 
   $(document).on 'click', '.user-login', ->
-    $('form .alert').remove()
-    $('#login_popup').displayPopup()
+    $('#login-content').show()
+    $('#register-content').hide()
+    $('#login_popup').modal('show') unless $('#login_popup').is(':visible')
     false
 
   $('#login_popup')
     .on 'hidden.bs.modal', ->
+      $('form .alert').remove()
       myRightboatClicked = false
       $('.register-notice').remove()
     .on 'shown.bs.modal', ->

@@ -27,8 +27,9 @@ $ ->
     changeSliderValue = ($slider, handleIndex=0) ->
       value = $slider.slider('values', handleIndex)
       selector = if handleIndex == 0 then 'min' else 'max'
+      console.log $slider.data(selector)
       if value == $slider.data(selector)
-        html = ''
+        html = if handleIndex == 0 then 'Min' else 'Max'
       else
         value = Math.floor(convertValue(value, $slider))
         html = value + ' ' + ($slider.data('unit') || '')
@@ -37,12 +38,12 @@ $ ->
 
       $sliderContainer.find('.' + selector + '-label')
       .html(html)
-      .position
-          my: 'center top'
-          at: 'center bottom'
-          of: $sliderContainer.find('.ui-slider-handle:eq(' + handleIndex + ')')
-          collision: 'flip none'
-          offset: "0, 10"
+      #.position
+      #    my: 'center top'
+      #    at: 'center bottom'
+      #    of: $sliderContainer.find('.ui-slider-handle:eq(' + handleIndex + ')')
+      #    collision: 'flip none'
+      #    offset: "0, 10"
 
       updateValues($slider)
       changePriceIncrement($slider)
@@ -98,6 +99,7 @@ $ ->
 
       changeLengthIncrement($this)
       changePriceIncrement($this)
+      alignSliderLabelPosition($this)
 
     $('select[name="length_unit"]').change (e)=>
       $target = $(e.currentTarget)

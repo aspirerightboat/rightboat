@@ -186,6 +186,7 @@ module Rightboat
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
 
         images.each do |url|
+          url = url.gsub(/(\n|\t|\s+)/, '')
           img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
           img.cache_file_from_source_url
           if target.new_record?

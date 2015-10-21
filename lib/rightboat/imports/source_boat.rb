@@ -38,7 +38,8 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location, :office, :target
+        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location,
+        :office, :office_id, :target
       ]
 
       attr_accessor :missing_spec_attrs
@@ -179,14 +180,15 @@ module Rightboat
           office.update_attributes!(office_attrs)
           target.office = office
         end
+        target.office_id = office_id if office_id
 
-        self.poa = price.blank? || price.to_i <= 0
+        target.poa = price.blank? || price.to_i <= 0
 
         self.images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
 
         images.each do |url|
-          url = url.gsub(/(\n|\t|\s+)/, '')
+          url.strip!
           img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
           img.cache_file_from_source_url
           if target.new_record?

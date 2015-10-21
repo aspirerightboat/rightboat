@@ -13,12 +13,13 @@ $ ->
   $('select.select-currency').each ->
     $(this).select2
       minimumResultsForSearch: Infinity
+      dropdownAutoWidth: true
       formatSelection: (viewMode, container, escapeMarkup) ->
         viewMode.text
       formatResult: (viewMode, container, escapeMarkup) ->
         ret = '<span'
         ret += ' class="priority-last"' if viewMode.id is 'USD'
-        ret += '>' + viewMode.text + '<small>(' + viewMode.id + ')</small></span>'
+        ret += '>' + viewMode.text + ' <small>' + viewMode.id + '</small></span>'
 
   $('#manufacturer_model').select2
     tags: true

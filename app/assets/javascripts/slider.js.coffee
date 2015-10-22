@@ -1,3 +1,6 @@
+String.prototype.capitalize = ->
+  this.charAt(0).toUpperCase() + this.slice(1)
+
 getLocation = (href) ->
   loc = document.createElement('a')
   loc.href = href
@@ -5,155 +8,128 @@ getLocation = (href) ->
 
 $ ->
   $(document).ready ->
-    convertCurrency = (value) ->
+    priceValues = [1000, 2000, 3000, 4000, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000, 60000,
+                   70000, 80000, 90000, 100000, 125000, 150000, 175000, 200000, 250000, 300000, 350000, 400000, 450000,
+                   500000, 600000, 700000, 800000, 900000, 1000000, 2000000, 3000000, 4000000, 5000000, 10000000]
+    lengthValuesFt = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 85, 95, 105, 115, 125, 135, 145, 200, 250, 300, 400, 500]
+    lengthValuesM = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 130, 140]
+
+    convertPrice = (value, unit) ->
+      parseInt(Number(value) * window.currencyRates[unit])
+
+    convertLength = (value, unit) ->
       value = Number(value)
-      currency = $('form:visible select[name="currency"]').val()
-      rate = window.currencyRates[currency]
-      rate * value
+      value = value * 3.28084 if unit == 'ft'
+      parseInt(value)
 
-    convertLength = (value) ->
-      value = Number(value)
-      unit = $('form:visible select[name="length_unit"]').val()
-      if unit == 'ft'
-        return value * 3.28084
+    updateSlider = ($slider, field, value, minOrMax) ->
+      $input = $slider.parents('form').find('input[name="' + field + '_' + minOrMax + '"]')
+      if value == $slider.data(minOrMax)
+        if $slider.parents('#advanced-search-wrapper').length > 0
+          html = minOrMax.capitalize()
+        $input.val('')
       else
-        return value
+        $input.val(value)
+        html = $.numberWithCommas(value)
+        html += ' ' + ($slider.data('unit') || '') if field == 'length'
 
-    convertValue = (v, $item) =>
-      convertFuncName = $item.data('convert')
-      return v unless convertFuncName
-      eval(convertFuncName + "(" + v + ")");
+      $slider.parent().find('.' + minOrMax + '-label').html(html)
 
-    changeSliderValue = ($slider, handleIndex=0) ->
-      value = $slider.slider('values', handleIndex)
-      selector = if handleIndex == 0 then 'min' else 'max'
-      if value == $slider.data(selector)
-        html = if handleIndex == 0 then 'Min' else 'Max'
+    findNearest = (value, field, unit) ->
+      nearest = null
+      diff = null
+      i = 0
+      values = if field == 'price'
+        priceValues
+      else if unit = 'm'
+        lengthValuesM
       else
-        value = Math.floor(convertValue(value, $slider))
-        html = value + ' ' + ($slider.data('unit') || '')
+        lengthValuesFt
 
-      $sliderContainer = $slider.parent()
+      while i < values.length
+        if values[i] <= value or values[i] >= value
+          newDiff = Math.abs(value - (values[i]))
+          if diff == null or newDiff < diff
+            nearest = values[i]
+            diff = newDiff
+        i++
+      nearest
 
-      $sliderContainer.find('.' + selector + '-label')
-      .html(html)
-      #.position
-      #    my: 'center top'
-      #    at: 'center bottom'
-      #    of: $sliderContainer.find('.ui-slider-handle:eq(' + handleIndex + ')')
-      #    collision: 'flip none'
-      #    offset: "0, 10"
+    onChangeSlide = ($slider, field, value, unit, handleIndex) ->
+      if ['price', 'length'].indexOf(field) > -1
+        convertedValue = eval('convert' + field.capitalize() + '(' + value + ', "' + unit + '")')
+        value = findNearest(convertedValue, field, unit)
 
-      updateValues($slider)
-      changePriceIncrement($slider)
-
-    alignSliderLabelPosition = ($item) ->
-      for i in [0, 1]
-        changeSliderValue($item, i)
-
-    updateValues = ($slider) ->
-      input_name = $slider.data('input')
-      if input_name && input_name.length
-        min = $slider.data('min')
-        max = $slider.data('max')
-        min_v = $slider.slider('values', 0)
-        max_v = $slider.slider('values', 1)
-        min_v = if min == min_v then '' else Math.floor(convertValue(min_v, $slider))
-        max_v = if max == max_v then '' else Math.floor(convertValue(max_v, $slider))
-        max_v = '' if max == max_v
-        $('input[name="' + input_name + '_min"]').val(min_v)
-        $('input[name="' + input_name + '_max"]').val(max_v)
-
-    changeLengthIncrement = ($slider) ->
-      return unless $slider.attr('id') is 'length-slider'
-      step = if $slider.data('unit') == 'ft' then 6.096 else 10
-      $slider.slider
-        step: step
-
-    changePriceIncrement = ($slider) ->
-      return unless $slider.attr('id') is 'price-slider'
-      max = parseInt($slider.slider('values', 0))
-      step = if max < 1000000
-        100000
-      else
-        1000000
-
-      $slider.slider
-        step: step
+      minOrMax = if handleIndex == 0 then 'min' else 'max'
+      updateSlider($slider, field, value, minOrMax)
 
     $( '.slider' ).each ->
       $this = $(this)
-      v1 = $this.data('value1')
-      v2 = $this.data('value2')
+      field = $(this).data('slide-name')
+      min = $this.data('min')
+      max = $this.data('max')
 
       $this.slider
         range: true
-        min: $this.data('min')
-        max: $this.data('max')
-        values: [ v1, v2 ]
+        min: min
+        max: max
+        values: [ $this.data('value1'), $this.data('value2') ]
         slide: ( event, ui ) ->
-          delay = ->
-            changeSliderValue($this, $(ui.handle).data('uiSliderHandleIndex'))
-          setTimeout(delay, 5)
+          value = ui.value
+          unit = $this.data('unit')
+          handleIndex = $(ui.handle).data('uiSliderHandleIndex')
+          onChangeSlide($this, field, value, unit, handleIndex)
 
-      changeLengthIncrement($this)
-      changePriceIncrement($this)
-      alignSliderLabelPosition($this)
+      updateSlider($this, field, min, 'min')
+      updateSlider($this, field, max, 'max')
 
     $('select[name="length_unit"]').change (e)=>
       $target = $(e.currentTarget)
       unit = $target.val()
       $('select[name="length_unit"]').select2('val', unit)
-      $target.parents('.length-input-group').find('[data-slide-name="length"]').each ->
+      $target.parents('form').find('[data-slide-name="length"]').each ->
         $slider = $(this)
         $slider.data('unit', unit)
-        alignSliderLabelPosition($slider)
-        changeLengthIncrement($slider)
+        for i in [0, 1]
+          onChangeSlide($slider, 'length', $slider.slider('values', i), unit, i)
       $('[data-attr-name="loa"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
-        l = Number(convertLength($boat.data('length')).toFixed(2))
+        l = Number(convertLength($boat.data('length'), unit).toFixed(2))
         $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
 
     $('select[name="currency"]').change (e)=>
-      $el = $(e.currentTarget)
-      currency = $el.find('option:selected').text()
-      $('select[name="currency"]').select2('val', $el.val())
-      $('[data-slide-name="price"]').each ->
+      $target = $(e.currentTarget)
+      currency = $target.find('option:selected').text()
+      unit = e.added.id
+      $('select[name="currency"]').select2('val', $target.val())
+      $target.parents('form').find('[data-slide-name="price"]').each ->
         $slider = $(this)
-        alignSliderLabelPosition($slider)
+        $slider.data('unit', unit)
+        for i in [0, 1]
+          onChangeSlide($slider, 'price', $slider.slider('values', i), unit, i)
       $('[data-attr-name="price"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
         if price = $boat.data('price')
-          p = Number(convertCurrency(price).toFixed(2))
+          p = Number(convertPrice(price, unit).toFixed(2))
           $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
-
-    setupSliderLabelPosition = ->
-      $('#advanced-search .slider, #home-search .slider').each ->
-        alignSliderLabelPosition($(this))
 
     $('.toggle-adv-search').click (e)->
       e.preventDefault()
 
       $('#home-search-form, #top-navbar').slideUp
         duration: 200
-        progress: setupSliderLabelPosition
         complete: ->
           $('#advanced-search').slideDown
             duration: 200
-            progress: setupSliderLabelPosition
-            complete: setupSliderLabelPosition
 
     $('#advanced-search .close').click (e) ->
       e.preventDefault()
 
       $('#advanced-search').slideUp
         duration: 200
-        progress: setupSliderLabelPosition
         complete: ->
           $('#home-search-form, #top-navbar').slideDown
             duration: 200
-            progress: setupSliderLabelPosition
-            complete: setupSliderLabelPosition
 
     $('#view-mode, #sort-field, select#currency, select#length_unit').change ->
       value = $(this).val().toLowerCase()

@@ -35,7 +35,7 @@
             .col-xs-10
               .rb-control-group
                 .rb-control
-                  = slider_tag(:price, html: { 'data-convert' => 'convertCurrency' })
+                  = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
                 .rb-control-group-addon
                   = currency_tag :currency, current_currency, class: 'select-sm select-currency'
           .range-slider-wrapper.row
@@ -43,7 +43,7 @@
             .col-xs-10
               .rb-control-group.length-input-group
                 .rb-control
-                  = slider_tag(:length, unit: current_length_unit, html: { 'data-convert' => 'convertLength' })
+                  = slider_tag(:length, unit: current_length_unit)
                 .rb-control-group-addon
                   = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm select-general'
           .row

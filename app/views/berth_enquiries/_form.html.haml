@@ -45,7 +45,7 @@
             .col-md-6.col-xs-12
               .rb-control-group.length-input-group
                 .rb-control
-                  = slider_tag(:length, min: 0, max: 300, unit: 'm', html: { 'data-convert' => 'convertLength' })
+                  = slider_tag(:length, min: 0, max: 300, unit: 'm')
                 .rb-control-group-addon
                   = select_tag :length_unit, options_for_select(['ft', 'm'], 'm'), class: 'select-sm'
           .form-group.row

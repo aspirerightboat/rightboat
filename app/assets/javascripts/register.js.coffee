@@ -22,8 +22,12 @@ $ ->
     .success ->
       $this.prepend('<div class="alert alert-success">Changes saved successfully.</div>')
     .error ->
-      console.log 'Error'
-      console.log arguments
+      errors = response.responseJSON.errors
+      $errors = $('<div class="alert alert-danger">')
+      Object.keys(errors).forEach (key) ->
+        field = key.toString()
+        $errors.append(field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ') + ' ' + errors[key].toString() + '<br>')
+      $this.prepend($errors)
     .always =>
       $this.find('button[type=submit]').removeAttr('disabled')
 

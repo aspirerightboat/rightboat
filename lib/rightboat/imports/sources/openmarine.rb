@@ -74,7 +74,7 @@ module Rightboat
             nodes = office_node.element_children.index_by(&:name)
             office_name = clean_text(nodes['office_name'])
             office = user_offices.find { |o| o.name == office_name } || @user.offices.new(name: office_name)
-            office.name = @user.company_name if !office.name && user_offices.none? && office_nodes.one?
+            office.name = @user.company_name if !office.name && user_offices.none?
 
             office.contact_name = (nodes['name'].element_children.map { |node| node.text }.join(' ').strip.presence if nodes['name'])
             office.email = clean_text(nodes['email'])
@@ -95,6 +95,7 @@ module Rightboat
             address.country_id = country.try(:id)
             address.zip = clean_text(nodes['postcode'])
 
+            user_offices << office if office.new_record?
             office.save! if office.changed?
             address.save! if address.changed?
 

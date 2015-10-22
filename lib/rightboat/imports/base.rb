@@ -10,6 +10,8 @@ module Rightboat
 
       SOURCE_TYPES = %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco boat_stream)
 
+      attr_reader :jobs_mutex
+
       def initialize(import)
         @import = import
         init_logger
@@ -166,6 +168,7 @@ module Rightboat
         increment_stats = []
         source_boat.user = @user
         source_boat.import = @import
+        source_boat.import_base = self
 
         success = source_boat.save
         if success

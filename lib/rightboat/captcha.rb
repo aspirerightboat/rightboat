@@ -9,9 +9,9 @@ class Rightboat::Captcha
   end
 
   def self.image(opts)
-    question = "What is #{opts[:a]} #{opts[:op]} #{opts[:b]} ="
+    question = "What is #{opts[:a]} #{opts[:op].to_s == '*' ? '×' : opts[:op]} #{opts[:b]} ="
     # see: http://www.imagemagick.org/Usage/text/#label
-    `convert -fill '#999999' -pointsize 12 -font Helvetica-Oblique label:'#{question}' png:-`
+    `convert -fill '#777777' -pointsize 16 -font Helvetica label:'#{question}' png:-`
   end
 
   def self.correct?(opts, value)

@@ -27,7 +27,7 @@
   %h2 #{@boat.year_built} year
   .qr-code-block
     - boat_url = boat_url(@boat.slug)
-    = render partial: 'shared/qr_code', locals: {url: boat_url, size: 7}
+    = render partial: 'shared/qr_code', locals: {url: boat_url, size: 8}
     .qr-code-hint Scan to view boat online
 .hr
 

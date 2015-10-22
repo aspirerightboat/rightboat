@@ -16,9 +16,12 @@ class LeadsMailer < ApplicationMailer
     @boat = @enquiry.boat
     @office = @boat.office
     attach_boat_pdf
-    to_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
-    mail_params = {to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}"}
-    mail_params[:cc] = @boat.user.email if to_email != @boat.user.email
+    office_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
+    mail_params = {to: office_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}"}
+    if @boat.user.broker_info.copy_to_head_office
+      head_office_email = STAGING_EMAIL || @boat.user.email
+      mail_params[:cc] = head_office_email if office_email != head_office_email
+    end
 
     mail(mail_params)
   end

@@ -45,8 +45,8 @@ class Member::BoatsController < Member::BaseController
   end
 
   def build_specifications
-    ['beam_m', 'draft_m', 'engine_type', 'engine_horse_power', 'engine_count', 'hull_type', 'number_on_cabins', 'number_on_berths'].each do |x|
-      spec = Specification.where('LOWER(name) LIKE ?', "%#{x}%").first
+    %w(beam_m draft_m engine_type engine_horse_power engine_count hull_type number_on_cabins number_on_berths).each do |x|
+      spec = Specification.where(name: x).first
       @boat.boat_specifications.build(specification: spec) if @boat.boat_specifications.where(specification: spec).empty?
     end
     @boat.boat_images.build if @boat.boat_images.empty?

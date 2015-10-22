@@ -13,7 +13,11 @@ class Address < ActiveRecord::Base
     if v.is_a?(String)
       name = (v.upcase == 'UK') ? 'GB' : v
       country = Country.joins(:misspellings).where('misspellings.alias_string = :name OR name = :name OR iso = :name', name: name).first
-      self[:country_id] = country.id if country
+      if country
+        self[:country_id] = country.id
+      # else
+      #   self[:country_id]
+      end
     else
       super
     end

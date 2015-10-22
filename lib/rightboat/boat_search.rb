@@ -110,7 +110,7 @@ module Rightboat
 
       # calculate price with default currency
       if !req_params[:currency].blank?
-        c = Currency.find_by_name(req_params[:currency])
+        c = Currency.cached_by_name(req_params[:currency])
         [:price_min, :price_max].each do |k|
           unless req_params[k].blank?
             req_params[k] = Currency.convert(req_params[k], c, Currency.default)

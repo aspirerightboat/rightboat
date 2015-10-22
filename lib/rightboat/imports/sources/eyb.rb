@@ -64,7 +64,7 @@ module Rightboat
                   boat.send("#{attr}=", val)
                 end
               else
-                boat.set_missing_attr(key, val)
+                boat.set_missing_attr(key, val) if val.length < 256 # Ignore long values like "Comments En"
               end
             end
           end

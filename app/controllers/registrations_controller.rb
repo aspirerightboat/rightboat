@@ -15,6 +15,16 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def update
+    user = current_user
+
+    if user.update(params.require(:user).permit(:title, :first_name, :last_name, :email, :phone))
+      render json: {}
+    else
+      render json: user.errors.full_messages, root: false, status: 422
+    end
+  end
+
   def confirm_email
     user = User.find(params[:user])
     if !user.email_confirmed? && user.confirm_email_token == params[:token]

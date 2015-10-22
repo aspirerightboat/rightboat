@@ -30,6 +30,7 @@ YAML.load_file(Rails.root.join("db/data/countries.yaml")).each do |code|
   name = country_data["names"].shift
   country = Country.where(name: name).first_or_initialize
   country.iso = country_data["alpha2"]
+  country.country_code = country_data["country_code"]
   country.currency ||= Currency.where(name: country_data['currency']).first
   country.save!
 

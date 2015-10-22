@@ -10,7 +10,7 @@ module Rightboat
         end
 
         def self.validate_param_option
-          {party_id: :presence}
+          {party_id: [:presence, /\A\d+\z/]}
         end
 
         class BoatStreamParser < Nokogiri::XML::SAX::Document

@@ -20,12 +20,14 @@ GB:
   name: United Kingdom
   names:
   - United Kingdom
+  - Great Britain
+  - Great Britain (UK)
+  - UK
   - Vereinigtes Königreich
   - Royaume-Uni
   - Reino Unido
   - イギリス
   - Verenigd Koninkrijk
-  - Great Britain (UK)
   national_destination_code_lengths:
   - 2
   national_number_lengths:

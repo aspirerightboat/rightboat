@@ -38,7 +38,8 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location, :office, :target
+        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location,
+        :office, :office_id, :target, :import_base
       ]
 
       attr_accessor :missing_spec_attrs
@@ -174,19 +175,30 @@ module Rightboat
         end
 
         if office.present?
-          office_attrs = office.symbolize_keys
-          office = Office.where(user_id: user_id, name: office_attrs[:name]).first_or_initialize
-          office.update_attributes!(office_attrs)
-          target.office = office
-        end
+          import_base.jobs_mutex.synchronize do
+            @@user_offices ||= user.offices.includes(:address).to_a
 
-        self.poa = price.blank? || price.to_i <= 0
+            office_attrs = office.symbolize_keys
+            office = @@user_offices.find { |o| o.name == office_attrs[:name] } || user.offices.new(name: office_attrs[:name])
+            office.name = user.company_name if office_attrs[:name].blank? && @@user_offices.none?
+            office.address ||= Address.new
+            office.assign_attributes(office_attrs)
+
+            @@user_offices << office if office.new_record?
+            office.save! if office.changed?
+            office.address.save! if office.address.changed?
+            target.office = office
+          end
+        end
+        target.office_id = office_id if office_id
+
+        target.poa = price.blank? || price.to_i <= 0
 
         self.images_count = 0
         boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
 
         images.each do |url|
-          url = url.gsub(/(\n|\t|\s+)/, '')
+          url.strip!
           img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
           img.cache_file_from_source_url
           if target.new_record?

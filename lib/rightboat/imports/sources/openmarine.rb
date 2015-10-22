@@ -44,7 +44,7 @@ module Rightboat
         )
 
         def self.validate_param_option
-          {url: :presence, broker_id: [:presence, /^all|\d+$/]}
+          {url: :presence, broker_id: [:presence, /\A(first|\d+)\z/]}
         end
 
         def enqueue_jobs
@@ -53,52 +53,53 @@ module Rightboat
 
           log 'Scraping'
           broker_nodes = doc.xml.root.element_children
-          broker_nodes.select { |node| @broker_id == node['code'] } if @broker_id != 'all'
+          broker_node = @broker_id == 'first' ? broker_nodes[0] : broker_nodes.find { |node| @broker_id == node['code'] }
 
-          broker_nodes.each do |broker_node|
-            log 'Scraping broker info'
-            inner_nodes = broker_node.element_children.index_by(&:name)
+          log 'Scraping broker offices'
+          inner_nodes = broker_node.element_children.index_by(&:name)
+          handle_offices(inner_nodes['offices'].element_children)
 
-            office_info_by_id = inner_nodes['offices'].element_children.each_with_object({}) do |office_node, h|
-              nodes = office_node.element_children.index_by(&:name)
-              country_name = (nodes['country'] || nodes['counrty']).text # counrty misspelling is here: http://81.143.47.18/boat/boats-xml/p/2/b/6/k/b987de2d33b17e6ca8aa874d58e51a6c/pk/c93422dd21571cc120a928c6ab047768
-              country = country_name == 'United States' ? Country.find_by(iso: 'US') : Country.query_with_aliases(country_name).first
-              contact_name = (nodes['name'].element_children.map { |node| node.text }.join(' ').strip if nodes['name'])
-              office_info = {
-                  name: nodes['office_name'].text.presence || @user.company_name,
-                  contact_name: contact_name,
-                  email: nodes['email'].text.presence,
-                  daytime_phone: nodes['daytime_phone'].text,
-                  evening_phone: nodes['evening_phone'].text,
-                  fax: nodes['fax'].text,
-                  mobile: nodes['mobile'].text,
-                  website: nodes['website'].text,
-                  address_attributes: {
-                      line1: nodes['address'].text,
-                      town_city: nodes['town'].text,
-                      county: nodes['county'].text,
-                      country_id: country.try(:id),
-                      zip: nodes['postcode'].text,
-                  }
-              }
-              if office_info[:address_attributes][:line1].blank?
-                office_info[:address_attributes] = {
-                    line1: @user.address.try(:line1),
-                    town_city: @user.address.try(:town_city),
-                    county: @user.address.try(:county),
-                    country_id: @user.address.try(:country_id),
-                    zip: @user.address.try(:zip),
-                }
-              end
-              h[office_node['id']] = office_info
-            end
+          advert_nodes = inner_nodes['adverts'].element_children
+          log "Found #{advert_nodes.size} boats"
+          advert_nodes.each do |advert_node|
+            enqueue_job(advert_node: advert_node, office_id: @office_id_by_source_id[advert_node['office_id']])
+          end
+        end
 
-            advert_nodes = inner_nodes['adverts'].element_children
-            log "Found #{advert_nodes.size} boats"
-            advert_nodes.each do |advert_node|
-              office = office_info_by_id[advert_node['office_id']]
-              enqueue_job(advert_node: advert_node, office: office)
-            end
+        def handle_offices(office_nodes)
+          user_offices = @user.offices.includes(:address).to_a
+          @office_id_by_source_id = {}
+
+          office_nodes.each do |office_node|
+            nodes = office_node.element_children.index_by(&:name)
+            office_name = clean_text(nodes['office_name'])
+            office = user_offices.find { |o| o.name == office_name } || @user.offices.new(name: office_name)
+            office.name = @user.company_name if !office.name && user_offices.none?
+
+            office.contact_name = (nodes['name'].element_children.map { |node| node.text }.join(' ').strip.presence if nodes['name'])
+            office.email = clean_text(nodes['email'])
+            office.daytime_phone = clean_text(nodes['daytime_phone'])
+            office.evening_phone = clean_text(nodes['evening_phone'])
+            office.fax = clean_text(nodes['fax'])
+            office.mobile = clean_text(nodes['mobile'])
+            office.website = clean_text(nodes['website'])
+
+            office.address ||= Address.new
+            address = office.address
+            address.line1 = clean_text(nodes['address'])
+            address.town_city = clean_text(nodes['town'])
+            address.county = clean_text(nodes['county'])
+            country_name = clean_text(nodes['country'] || nodes['counrty']) # counrty misspelling is here: http://81.143.47.18/boat/boats-xml/p/2/b/6/k/b987de2d33b17e6ca8aa874d58e51a6c/pk/c93422dd21571cc120a928c6ab047768
+            country = (Country.query_with_aliases(country_name).first if country_name)
+            log "Country not found: #{country_name}" if !country
+            address.country_id = country.try(:id)
+            address.zip = clean_text(nodes['postcode'])
+
+            user_offices << office if office.new_record?
+            office.save! if office.changed?
+            address.save! if address.changed?
+
+            @office_id_by_source_id[office_node['id']] = office.id
           end
         end
 
@@ -110,7 +111,7 @@ module Rightboat
           end
 
           boat = SourceBoat.new
-          boat.office = job[:office]
+          boat.office_id = job[:office_id]
           boat.source_id = advert_node['ref']
 
           inner_nodes = advert_node.element_children.index_by(&:name)
@@ -129,11 +130,11 @@ module Rightboat
             media_nodes.unshift(media_nodes.delete(primary_media)) if media_nodes.index(primary_media) > 0
           end
 
-          image_urls = media_nodes.map(&:text)
-          boat.images = image_urls.map do |url|
+          boat.images = media_nodes.map do |node|
+            url = node.text
             url.strip!
             url = URI.encode(url)
-            url = url.gsub('[', '%5B').gsub(']', '%5D') if url =~ /[\[\]]/
+            url.gsub!(/[\[\]]/) { |m| m == '[' ? '%5B' : '%5D' }
             url = URI.parse(@url).merge(url).to_s if !url.start_with?('http:')
             url
           end
@@ -193,6 +194,14 @@ module Rightboat
             else
               boat.send("#{attr}=", value)
             end
+          end
+        end
+
+        def clean_text(node)
+          str = node.try(:text)
+          if str
+            str.strip!
+            str.presence
           end
         end
 

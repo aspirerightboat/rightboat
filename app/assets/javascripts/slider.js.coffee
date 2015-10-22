@@ -25,7 +25,8 @@ $ ->
     updateSlider = ($slider, field, value, minOrMax) ->
       $input = $slider.parents('form').find('input[name="' + field + '_' + minOrMax + '"]')
       if value == $slider.data(minOrMax)
-        html = minOrMax.capitalize()
+        if $slider.parents('#advanced-search-wrapper').length > 0
+          html = minOrMax.capitalize()
         $input.val('')
       else
         $input.val(value)

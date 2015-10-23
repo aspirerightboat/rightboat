@@ -13,7 +13,6 @@ class SearchController < ApplicationController
     end
 
     search = Sunspot.search(*klass_group) do |q|
-      q.with :live, true
       q.with :name_ngrme, params[:q]
     end
     ret = search.results.map do |object|
@@ -25,7 +24,6 @@ class SearchController < ApplicationController
 
   def manufacturer_model
     search = Sunspot.search(Manufacturer, Model) do |q|
-      q.with :live, true
       if params[:q].blank?
         # all manufacturer_models
         q.order_by(:name)

@@ -57,7 +57,8 @@ module Rightboat
 
           log 'Scraping broker offices'
           inner_nodes = broker_node.element_children.index_by(&:name)
-          handle_offices(inner_nodes['offices'].element_children)
+          offices_node = inner_nodes['offices'] || broker_node.at_css('broker_details offices') # http://www.jdyachts.com/datafeed/datafeed.php - here offices are inside broker_details
+          handle_offices(offices_node.element_children)
 
           advert_nodes = inner_nodes['adverts'].element_children
           log "Found #{advert_nodes.size} boats"

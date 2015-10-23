@@ -3,7 +3,7 @@ class Enquiry < ActiveRecord::Base
   STATUSES = %w(pending quality_check approved rejected invoiced)
   BAD_QUALITY_REASONS = %w(bad_contact other)
 
-  attr_accessor :have_account, :password
+  attr_accessor :have_account, :password, :honeypot#, :captcha_correct
 
   belongs_to :user
   belongs_to :boat
@@ -18,13 +18,12 @@ class Enquiry < ActiveRecord::Base
   validates_uniqueness_of :token, allow_blank: true
 
   before_validation :generate_token
-  before_validation :add_captcha_error
+  # before_validation :add_captcha_error
+  before_validation :check_honeypot
 
   after_save :send_quality_check_email
   after_update :create_lead_trail
   after_update :admin_reviewed_email
-
-  attr_accessor :captcha_correct
 
   def name
     "#{first_name} #{surname}".strip
@@ -44,8 +43,12 @@ class Enquiry < ActiveRecord::Base
     end
   end
 
-  def add_captcha_error
-    errors.add(:captcha, 'is invalid') if captcha_correct != nil && !captcha_correct
+  # def add_captcha_error
+  #   errors.add(:captcha, 'is invalid') if captcha_correct != nil && !captcha_correct
+  # end
+
+  def check_honeypot
+    errors.add(:honeypot, 'is invalid') unless honeypot.blank?
   end
 
   def send_quality_check_email

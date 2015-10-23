@@ -8,6 +8,7 @@
       .modal-body
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
         = form_tag '#', class: 'enquiry-form' do
+          = text_field_tag :honeypot, nil, class: 'hide'
           .row.login-toggle.active
             .col-sm-6.col-xs-12
               .form-group
@@ -27,7 +28,7 @@
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = select_tag :country_code, options_for_country_code, prompt: 'Country', placeholder: 'Country', class: 'select-white select-sm country-code-select'
+                    = select_tag :country_code, options_for_country_code, prompt: 'Country Code', placeholder: 'Country Code', class: 'select-white select-sm country-code-select'
                   .rb-control
                     = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), placeholder: 'Phone', class: 'form-control'
             - unless current_user
@@ -42,13 +43,14 @@
               = check_box_tag :have_account
               = label_tag :have_account, 'I have an account'
           .row
-            .col-xs-12.col-sm-6
-              .form-group
-                .input-group.captcha-input
-                  %label.input-group-addon(for="captcha")
-                    %img.captcha-img
-                  = hidden_field_tag :captcha_key
-                  = text_field_tag :captcha, '', placeholder: 'Prove you are human', class: 'form-control', 'data-validetta' => 'required,number'
+            /
+              .col-xs-12.col-sm-6
+                .form-group
+                  .input-group.captcha-input
+                    %label.input-group-addon(for="captcha")
+                      %img.captcha-img
+                    = hidden_field_tag :captcha_key
+                    = text_field_tag :captcha, '', placeholder: 'Prove you are human', class: 'form-control', 'data-validetta' => 'required,number'
             .col-xs-12.col-sm-6
               = button_tag 'Send', type: 'submit', class: 'btn-flat btn-block'
           .clearfix
@@ -88,10 +90,6 @@
 :javascript
   $(function() {
     $(document).ready(function() {
-      $('#enquiry-popup .country-code-select').selectize({
-        allowEmptyOption: true
-      });
-
       $('#have_account').change(function() {
         $('.login-toggle').toggleClass('active');
       });

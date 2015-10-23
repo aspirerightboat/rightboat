@@ -12,7 +12,7 @@ module BoatsHelper
     fav_class = favourited ? 'fav-link active' : 'fav-link'
     fav_title = favourited ? 'Unfavourite' : 'Favourite'
 
-    link_to 'Favourite', '#', class: fav_class, title: fav_title, data: {toggle: 'tooltip', placement: 'top'}
+    link_to 'Favourite', "#favourite-#{boat.id}", id: "favourite-#{boat.id}", class: fav_class, title: fav_title, data: {toggle: 'tooltip', placement: 'top'}
   end
 
   def reduced_description(description=nil)

@@ -11,7 +11,7 @@
           .form-group
             = f.label :title, 'Title:*'
             %br
-            = f.select :title, options_for_select(User::TITLES), {}, class: 'select-sm cool-select'
+            = f.select :title, options_for_select(User::TITLES, current_user.title), {}, class: 'select-sm cool-select'
           .form-group.row
             .col-sm-6.col-xs-12
               = f.label :first_name, 'First Name:*'

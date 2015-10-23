@@ -31,9 +31,10 @@ class Country < ActiveRecord::Base
 
   def self.country_code_options
     @counties = Rails.cache.fetch "rb.counties", expires_in: 1.hour do
-      ret = Country.where(iso: %w(GB US AU CA HR DK FR DE GR IE IT NL NZ PL ES SE CH TR))
+      ret = Country.where(iso: %w(GB US))
+      ret += Country.where(iso: %w(AU CA HR DK FR DE GR IE IT NL NZ PL ES SE CH TR)).order(:name)
       ret += Country.where('id NOT IN (?)', ret.map(&:id)).order(:name)
-      ret.map { |x| ["#{x.name} (+#{x.country_code})", x.iso]}
+      ret.map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]}
     end
   end
 end

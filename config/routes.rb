@@ -76,8 +76,8 @@ Rails.application.routes.draw do
 
   get 'search', to: 'search#results'
   post 'boats/:boat_id/request-details', to: 'enquiries#create'
-  get 'captcha', to: 'captcha#image'
-  get 'captcha/new', to: 'captcha#new'
+  # get 'captcha', to: 'captcha#image'
+  # get 'captcha/new', to: 'captcha#new'
 
   get 'contact', to: 'home#contact', as: :contact
   get 'toc', to: 'home#toc', as: :toc

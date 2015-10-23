@@ -1,7 +1,6 @@
 $ ->
   $(document).on 'click', '.user-register', ->
-    $('#login-content').hide()
-    $('#register-content').show()
+    $('#register-content').slideDown()
     $('#login_popup').modal('show') unless $('#login_popup').is(':visible')
     false
 

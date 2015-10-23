@@ -7,19 +7,20 @@ class EnquiriesController < ApplicationController
   def create
     enquiry = Enquiry.new(enquiry_params)
 
-    if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
-      enquiry.captcha_correct = false
-    end
+    # disable captcha for easy use
+    # if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
+    #   enquiry.captcha_correct = false
+    # end
 
     enquiry.boat = Boat.find(params[:boat_id])
     if enquiry.save
-      session.delete(:captcha)
+      # session.delete(:captcha)
       LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
       LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
       enquiry.create_lead_trail(true)
       render json: enquiry, serializer: EnquirySerializer, root: false
     else
-      session[:captcha] = Rightboat::Captcha.generate
+      # session[:captcha] = Rightboat::Captcha.generate
       render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
     end
   end
@@ -46,7 +47,7 @@ class EnquiriesController < ApplicationController
 
   def enquiry_params
     params.require(:enquiry)
-          .permit(:title, :first_name, :surname, :email, :country_code, :phone, :message, :have_account, :password)
+          .permit(:title, :first_name, :surname, :email, :country_code, :phone, :message, :have_account, :password, :honeypot)
           .merge({user_id: current_user.try(:id), remote_ip: request.remote_ip, browser: request.env['HTTP_USER_AGENT']})
   end
 

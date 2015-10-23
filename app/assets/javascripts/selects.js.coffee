@@ -83,3 +83,14 @@ $ ->
     placeholder: 'Select Countries...'
     selectAllText: 'Check/Uncheck All'
     selectAllDelimiter: [ '', '' ]
+
+  $('select.country-code-select').each ->
+    $(this).select2
+      minimumResultsForSearch: Infinity
+      dropdownAutoWidth: true
+      formatSelection: (viewMode, container, escapeMarkup) ->
+        viewMode.text
+      formatResult: (viewMode, container, escapeMarkup) ->
+        ret = '<span'
+        ret += ' class="priority-last"' if /Turkey/.test viewMode.text
+        ret += '>' + viewMode.text + '</span>'

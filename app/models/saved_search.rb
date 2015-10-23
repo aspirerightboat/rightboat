@@ -10,7 +10,7 @@ class SavedSearch < ActiveRecord::Base
 
   def search_title
     not_defined = '..'
-    currency_sym = Currency.find_by(name: currency).try(:symbol)
+    currency_sym = Currency.cached_by_name(currency).try(:symbol)
     res = ''
     res << " Keyword=#{q}" if q.present?
     res << " BoatType=#{boat_type}" if boat_type.present?

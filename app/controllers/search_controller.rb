@@ -73,14 +73,13 @@ class SearchController < ApplicationController
     # view mode will be working in client side
     # only manage currency, order field and length unit
 
-    if !params[:currency].blank?
-      currency = Currency.find_by_name(params[:currency]) rescue nil
-      set_currency(currency)
+    if params[:currency].present?
+      set_currency(params[:currency])
     end
-    if !params[:length_unit].blank?
+    if params[:length_unit].present?
       set_length_unit(params[:length_unit])
     end
-    if !params[:order].blank?
+    if params[:order].present?
       set_order_field(params[:order])
     end
   end

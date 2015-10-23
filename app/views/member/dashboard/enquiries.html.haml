@@ -10,7 +10,7 @@
   - else
     .row
       - @enquiries.each do |enquiry|
-        - if boat = enquiry.boat
+        - if (boat = enquiry.boat)
           = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: false} do
             .boat-links.boat-links-bottom
               .boat-price

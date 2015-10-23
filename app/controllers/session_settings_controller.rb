@@ -1,17 +1,9 @@
 class SessionSettingsController < ApplicationController
   def change
-    if !params['sort-field'].blank?
-      set_order_field(params['order-field'])
-    end
-    if !params['view-mode'].blank?
-      set_view_layout(params['view-mode'])
-    end
-    if !params['currency'].blank?
-      set_currency(params['currency'])
-    end
-    if !params['length_unit'].blank?
-      set_length_unit(params['length_unit'])
-    end
+    set_order_field(params['order-field']) if params['sort-field'].present?
+    set_view_layout(params['view-mode']) if params['view-mode'].present?
+    set_currency(params['currency']) if params['currency'].present?
+    set_length_unit(params['length_unit']) if params['length_unit'].present?
 
     render json: {status: 'success'}
   end

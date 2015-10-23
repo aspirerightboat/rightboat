@@ -8,6 +8,9 @@ class BoatSpecification < ActiveRecord::Base
     joins(:specification).where('specifications.visible = ?', true)
   }
 
-  default_scope -> { joins(:specification).order('specifications.position') }
+  def self.visible_ordered_specs
+    joins(:specification).where('specifications.visible = ?', true).order('specifications.position')
+        .pluck('specifications.display_name, boat_specifications.value')
+  end
 
 end

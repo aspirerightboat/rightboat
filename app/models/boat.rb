@@ -123,39 +123,35 @@ class Boat < ActiveRecord::Base
     "RB#{100000 + id}"
   end
 
-  def spec_attributes(context = nil, full_spec = false)
-    ret = full_spec ? [['Seller', user.name]] : []
+  def spec_attributes(context, full_spec = false)
+    currency = (context.current_currency if context)
+    l_unit = (context.current_length_unit if context)
 
-    currency = (context.current_currency if context && context.respond_to?(:current_currency))
-    l_unit = (context.current_length_unit if context && context.respond_to?(:current_length_unit))
-
-    ret += [
-      ['Price', display_price(currency), 'price'],
-      ['LOA', display_length(l_unit), 'loa'],
-      ['Manufacturer', self.manufacturer],
-      ['Model', self.model],
-      ['Boat Type', boat_type],
-      ['Year Built', self.year_built],
-      ['Location', self.country.to_s],
-      ['Tax Status', self.tax_status],
-      ['Engine make/model', self.engine_model],
-      ['Fuel', self.fuel_type]
-    ]
+    ret = []
+    ret << ['Seller', user.name] if full_spec
+    ret << ['Price', display_price(currency), 'price']
+    ret << ['LOA', display_length(l_unit), 'loa']
+    ret << ['Manufacturer', manufacturer]
+    ret << ['Model', model]
+    ret << ['Boat Type', boat_type]
+    ret << ['Year Built', year_built]
+    ret << ['Location', country.to_s]
+    ret << ['Tax Status', tax_status]
+    ret << ['Engine make/model', engine_model]
+    ret << ['Fuel', fuel_type]
 
     if full_spec
-      specs = boat_specifications.includes(:specification)
-      specs = specs.front
-      ret = specs.inject(ret) {|arr, bs| arr << [bs.specification.to_s, bs.value]; arr}
+      ret.concat boat_specifications.visible_ordered_specs
     else
-      specs = Specification.front
-      ret = specs.inject(ret) {|arr, s| arr << [s.to_s, s.boat_specifications.where(boat_id: id).first.try(:value)]; arr}
+      ret.concat Specification.visible_ordered_boat_specs(self)
     end
-    ret << ['RB Boat Ref', self.ref_no]
-    ret.map{|k, v| [k, (v.blank? ? 'N/A' : v)] }
+
+    ret << ['RB Boat Ref', ref_no]
+    ret.map { |k, v| [k, v.presence || 'N/A'] }
   end
 
   def full_location
-    [location, country.to_s].reject(&:blank?).join(', ')
+    [location, country.name].reject(&:blank?).join(', ')
   end
 
   def display_length(unit = nil)
@@ -170,13 +166,13 @@ class Boat < ActiveRecord::Base
     (length_m * 3.2808399 * 100).round / 100.0
   end
 
-  def display_price(currency = nil)
-    if self.poa?
-      return I18n.t('poa').html_safe
+  def display_price(current_currency = nil)
+    if poa?
+      I18n.t('poa').html_safe
     else
-      currency ||= (self.currency || Currency.default)
-      price = Currency.convert(self.price, self.currency, currency)
-      number_to_currency(price, unit: currency.symbol.html_safe, precision: 0)
+      cur = current_currency || currency || Currency.default
+      pric = Currency.convert(price, currency, cur)
+      number_to_currency(pric, unit: cur.symbol.html_safe, precision: 0)
     end
   end
 

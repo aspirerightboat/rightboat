@@ -10,14 +10,15 @@ class ApplicationController < ActionController::Base
   serialization_scope :view_context
 
   def current_currency
-    return @_current_currency if @_current_currency
+    @current_currency ||= Currency.cached_by_name(cookies[:currency]) || set_currency
+  end
 
-    if cookies[:currency]
-      @_current_currency = Currency.find_by_name(cookies[:currency])
-      return @_current_currency if @_current_currency
-    end
-
-    set_currency
+  def set_currency(currency_name = nil)
+    @current_currency = Currency.cached_by_name(currency_name) if currency_name
+    @current_currency ||= (Country.find_by(iso: request.location.country_code).try(:currency) if request.location)
+    @current_currency ||= Currency.default
+    cookies[:currency] = @current_currency
+    @current_currency
   end
 
   def current_length_unit

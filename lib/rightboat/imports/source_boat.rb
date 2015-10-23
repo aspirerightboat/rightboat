@@ -105,43 +105,50 @@ module Rightboat
         adjust_location(target)
 
         NORMAL_ATTRIBUTES.each do |attr_name|
-          value = instance_variable_get("@#{attr_name}".to_sym)
-          value = nil if value.blank? || value.to_s =~ /^[\.0]+$/
-          if attr_name == :description && value
-            remove_contact_info!(value)
+          if (value = send(attr_name)).present? && value.to_s !~ /^[\.0]+$/
+            case attr_name
+            when :description then remove_contact_info!(value)
+            when :new_boat then value = value == /\A(New|N)\z/ if value.is_a?(String)
+            end
           end
           target.send "#{attr_name}=", value
         end
         # target.revive(true) if target.deleted?
 
-        spec_proc = Proc.new do |attr_name, value|
-          value ||= instance_variable_get("@#{attr_name}".to_sym)
+        spec_proc = Proc.new do |spec_name, value|
+          value ||= instance_variable_get("@#{spec_name}".to_sym)
           value = nil if value.blank? || value.to_s =~ /^[\.0]+$/ || value =~ /^false$/i
           value = 'Yes' if value =~ /^(true|1|yes)$/i
 
           is_blank_value = value.blank? || value.to_s =~ /^[\.0]+$/
 
-          spec = Specification.where(name: attr_name).first_or_initialize
-          if spec.new_record?
-            spec.display_name = attr_name.to_s.titleize
-            spec.save! unless is_blank_value
+          spec = nil
+          import_base.jobs_mutex.synchronize do
+            @@existing_specs ||= Specification.select(:id, :name).to_a
+            spec_name_str = spec_name.to_s
+            spec = @@existing_specs.find { |s| s.name == spec_name_str }
+            if !spec
+              spec = Specification.create(name: spec_name_str, display_name: spec_name_str.titleize)
+              @@existing_specs << spec
+            end
           end
 
           if target.new_record?
-            spec_attrs = {specification_id: spec.id, value: value}
-            target.boat_specifications.build(spec_attrs) unless is_blank_value
+            target.boat_specifications.build(specification_id: spec.id, value: value) unless is_blank_value
           else
-            boat_spec = target.boat_specifications.where(specification_id: spec.id).first_or_initialize
+            @existing_boat_specs ||= target.boat_specifications.to_a
+            boat_spec = @existing_boat_specs.find { |bs| bs.specification_id == spec.id }
+            boat_spec ||= target.boat_specifications.build(specification_id: spec.id)
             if is_blank_value
               boat_spec.destroy if boat_spec.persisted?
-            else
+            elsif boat_spec.value != value
               boat_spec.value = value
               boat_spec.save!
             end
           end
         end
 
-        SPEC_ATTRS.each { |attr_name| spec_proc.call(attr_name) }
+        SPEC_ATTRS.each { |spec_name| spec_proc.call(spec_name) }
         if @missing_spec_attrs.present?
           @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
         end
@@ -189,8 +196,9 @@ module Rightboat
             office.address.save! if office.address.changed?
             target.office = office
           end
+        elsif office_id
+          target.office_id = office_id
         end
-        target.office_id = office_id if office_id
 
         target.poa = price.blank? || price.to_i <= 0
 

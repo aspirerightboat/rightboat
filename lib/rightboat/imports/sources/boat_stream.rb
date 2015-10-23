@@ -35,7 +35,8 @@ module Rightboat
 
           def characters(str)
             return if !@boat || str.blank?
-            @char = str.strip
+            str.strip!
+            @char << str
           end
 
           def end_element(el)
@@ -197,9 +198,8 @@ module Rightboat
           end
 
           def read_description(str)
-            str.gsub!('&amp;', '&')
-            str.gsub!('&lt;', '<')
-            str.gsub!('&gt;', '>')
+            str = CGI.unescapeHTML(str)
+            str.gsub!('&nbsp;', '')
             str
           end
         end

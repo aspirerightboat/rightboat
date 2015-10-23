@@ -23,7 +23,7 @@
 
 .boat-title-block
   %h1 <b>#{@boat.manufacturer}</b> #{@boat.model}
-  %h2 #{@boat.display_price(Currency.where(name: 'GBP').first)}
+  %h2 #{@boat.display_price(Currency.default)}
   %h2 #{@boat.year_built} year
   .qr-code-block
     - boat_url = boat_url(@boat.slug)

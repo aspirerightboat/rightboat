@@ -5,7 +5,7 @@ class Member::UserAlertController < Member::BaseController
 
   def update
     current_user.user_alert.update_attributes!(user_alert_params)
-    redirect_to({action: :show}, notice: 'Your settings was saved')
+    redirect_to({action: :show}, notice: 'Your settings were saved')
   end
 
   private

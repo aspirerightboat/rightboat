@@ -92,5 +92,5 @@ $ ->
         viewMode.text
       formatResult: (viewMode, container, escapeMarkup) ->
         ret = '<span'
-        ret += ' class="priority-last"' if viewMode.id is 'TR'
+        ret += ' class="priority-last"' if /Turkey/.test viewMode.text
         ret += '>' + viewMode.text + '</span>'

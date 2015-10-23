@@ -1,13 +1,13 @@
 window.initBoatView = (el) ->
   boat_id = $(el).data('boat-ref')
 
-  $('#captcha').focus ->
-    $('.captcha-img').show()
+  # $('#captcha').focus ->
+  #   $('.captcha-img').show()
 
   $('.request-details', el).click (e) ->
     url = '/boats/' + boat_id + '/request-details'
     $('.enquiry-form').attr('action', url)
-    $('.enquiry-form').find('#message, #captcha').val('')
+    # $('.enquiry-form').find('#message, #captcha').val('')
     $('.enquiry-result-container').hide()
     $('.enquiry-form-container').show()
     $('#enquiry-popup').displayPopup()
@@ -45,11 +45,16 @@ $ ->
   $('.boat-view').each ->
     initBoatView(this)
 
-  $('#enquiry-popup').on 'show.bs.modal', ->
-    $('form', @).renderCaptcha()
+  # $('#enquiry-popup').on 'show.bs.modal', ->
+  #   $('form', @).renderCaptcha()
 
   onSubmit = (e) ->
     e.preventDefault()
+
+    # prevent spams to submit form
+    if $('#honeypot').val().length != 0
+      return false
+
     $this = $(e.target) # form
     $phone = $this.find('#phone')
 
@@ -102,7 +107,7 @@ $ ->
         $('#enquiry-result-popup .similar-boats-link').hide()
         $('#enquiry-result-popup .similar-boats').hide()
     .error (resp)->
-      $this.renderCaptcha()
+      # $this.renderCaptcha()
       errors = resp.responseJSON.errors
       $errors = $('<div class="alert alert-danger">')
       $.each errors, (k, v)->

@@ -11,7 +11,6 @@ $ ->
     requireLogin(e, false)
 
   $(document).on 'click', '.user-login', ->
-    $('#login-content').show()
     $('#register-content').hide()
     $('#login_popup').modal('show') unless $('#login_popup').is(':visible')
     false

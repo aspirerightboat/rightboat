@@ -112,6 +112,8 @@ $(document).ready ->
       $(target).modal('show')
     else if $(target).data('method') == 'post'
       $(target).click()
+    else if $(target).hasClass('fav-link')
+      window.favLink = $(target)
     else
       if target == '#about'
         $('.rb-extended').slideDown()
@@ -123,7 +125,8 @@ $(document).ready ->
     if target == '#about'
       $('.rb-extended').slideDown()
       $('.toggle-about').html 'less...'
-    scrollToTarget(target) if $(target).length
+    unless $(target).length && $(target).hasClass('fav-link')
+      scrollToTarget(target) if $(target).length
 
   $('.cool-select').select2()
 

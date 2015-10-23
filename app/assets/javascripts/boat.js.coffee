@@ -14,7 +14,7 @@ window.initBoatView = (el) ->
     false
 
   $('.fav-link', el).click (e) ->
-    return false unless requireLogin(e, true)
+    return false unless requireLogin(e, false)
 
     $link = $(@).attr('disabled', 'disabled')
 
@@ -34,6 +34,9 @@ window.initBoatView = (el) ->
     .always ->
       $link.removeAttr('disabled')
     false
+
+  if window.favLink
+    window.favLink.click()
 
 ######## Enquiry form
 $ ->

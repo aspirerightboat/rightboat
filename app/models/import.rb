@@ -11,28 +11,17 @@ class Import < ActiveRecord::Base
 
   validates_presence_of :user_id, :import_type
   validates_numericality_of :threads, greater_than: 0, less_than: 10, allow_blank: true
-  validates_inclusion_of :import_type, in: Rightboat::Imports::Base::SOURCE_TYPES, allow_blank: true
+  validates_inclusion_of :import_type, in: Rightboat::Imports::Base.import_types, allow_blank: true
   validates_uniqueness_of :import_type, scope: :user_id, if: 'import_type != "eyb"'
 
   # scheduling options
   validates_presence_of :frequency_quantity, :frequency_unit, if: :active
   validates_inclusion_of :frequency_unit, within: FREQUENCY_UNITS.map(&:to_s), allow_blank: true, if: :active
-  validates_presence_of :tz, if: lambda {|r| r.active? && !r.at.blank? }
+  validates_presence_of :tz, if: -> (import) { import.active? && import.at.present? }
   validates_inclusion_of :tz, within: TZInfo::Timezone.all_identifiers, allow_blank: true, if: :active
   validates_numericality_of :frequency_quantity, greater_than: 0, allow_blank: true, if: :active
-  validate do
-    # at value should be understandable by clockwork
-    # valid examples:
-    #   01:30, 1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
-    if self.active? && !self.at.blank?
-      begin
-        Clockwork::At.parse(self.at)
-      rescue Clockwork::At::FailedToParse
-        self.errors.add :at, 'is invalid'
-      end
-    end
-    validate_params
-  end
+  validate :validate_clockwork_params
+  validate :validate_import_params
 
   before_destroy :stop!
 
@@ -40,7 +29,7 @@ class Import < ActiveRecord::Base
 
   def self.source_class(type)
     return if type.blank?
-    "Rightboat::Imports::Sources::#{type.camelcase}".constantize
+    Rightboat::Imports::Sources.const_get(type.camelcase)
   end
 
   def source_class
@@ -94,25 +83,37 @@ class Import < ActiveRecord::Base
   end
 
   private
-  def validate_params
+
+  def validate_clockwork_params
+    # at value should be understandable by clockwork
+    # valid examples:
+    #   01:30, 1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
+    if active? && at.present?
+      begin
+        Clockwork::At.parse(at)
+      rescue Clockwork::At::FailedToParse
+        self.errors.add :at, 'is invalid'
+      end
+    end
+  end
+
+  def validate_import_params
     return unless source_class
     symbolized_param = param.symbolize_keys
     source_class.validate_param_option.each do |key, validators|
       validators = [validators] unless validators.is_a?(Array)
       validators.each do |validator|
         value = symbolized_param[key.to_sym]
-        if validator.to_s == 'presence'
+        if validator == :presence
           if value.blank?
             errors.add :param, "[#{key}] can't be blank"
           end
         elsif validator.is_a?(Regexp)
-          unless value.blank? || value.to_s =~ validator
+          if value.blank? || value !~ validator
             errors.add :param, "[#{key}] is invalid"
           end
-        elsif validator.to_s == 'optional'
-          # this is optional param for later use case
         else
-          raise "Invalid validate option"
+          raise 'Invalid validate option'
         end
       end
     end

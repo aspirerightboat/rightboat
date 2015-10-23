@@ -40,7 +40,7 @@ module Rightboat
         end
 
         def self.validate_param_option
-          { source_id: [:presence, /^[A-Za-z0-9]{1,7}$/] }
+          { source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/] }
         end
 
         def enqueue_jobs

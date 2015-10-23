@@ -173,7 +173,7 @@ module Rightboat
             boat.location = location_el.text
             boat.country = location_el['country']
           end
-          boat.new_boat = read_new_or_used(feature_nodes['new_or_used'].text)
+          boat.new_boat = read_new_or_used(feature_nodes['new_or_used'].try(:text))
         end
 
         def handle_boat_features(boat, boat_features)

@@ -14,17 +14,16 @@ module ApplicationHelper
   def slider_tag(field, options = {})
     min = options[:min] || @search_facets["min_#{field}".to_sym]
     max = options[:max] || @search_facets["max_#{field}".to_sym]
-    v1 = options[:value1] || params["#{field}_min".to_sym]#; v1 = v1.blank? ? min : v1
-    v2 = options[:value2] || params["#{field}_max".to_sym]#; v2 = v2.blank? ? max : v2
+    v0 = options[:value0] || params["#{field}_min".to_sym]
+    v1 = options[:value1] || params["#{field}_max".to_sym]
 
     html_options = {
       'data-input' => field,
       'data-min' => min,
       'data-max' => max,
+      'data-value0' => v0,
       'data-value1' => v1,
-      'data-value2' => v2,
       'data-unit' => options[:unit],
-      'data-slide-name' => field,
       id: "#{field}-slider",
       class: 'slider'
     }

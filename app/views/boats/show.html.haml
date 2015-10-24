@@ -35,7 +35,7 @@
       - if @boat.year_built.present?
         %span.text-nowrap (#{@boat.year_built})
 
-  #slider
+  #slider.hide
     - @boat.boat_images.not_deleted.each do |boat_img|
       %figure
         = link_to boat_img.file_url, 'data-size' => "#{boat_img.width}x#{boat_img.height}" do
@@ -99,6 +99,12 @@
         slidesToShow: 1,
         variableWidth: true,
         infinite: false
+      });
+
+      $('#slider img').one('load', function() {
+        $('#slider').removeClass('hide');
+      }).each(function() {
+        if(this.complete) $(this).load();
       });
 
       var initPhotoSwipeFromDOM = function(gallerySelector) {

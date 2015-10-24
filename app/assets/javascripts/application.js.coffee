@@ -130,6 +130,9 @@ $(document).ready ->
 
   $('.cool-select').select2()
 
+  $('.modal').on 'hidden.bs.modal', ->
+    $(this).find('input[type="text"], input[type="email"], input[type="password"], textarea').val('')
+
 $.fn.initTitleSelect = ->
   @.selectize(create: true)
 $ ->

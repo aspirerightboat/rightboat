@@ -8,8 +8,6 @@ module Rightboat
 
       include Utils
 
-      SOURCE_TYPES = %w(openmarine yachtworld ancasta boatsandoutboards charleswatson eyb yatco boat_stream)
-
       attr_reader :jobs_mutex
 
       def initialize(import)
@@ -116,6 +114,14 @@ module Rightboat
         end
       end
 
+      def self.import_types
+        @@import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/sources/*"].map { |path| File.basename(path, '.*') }
+      end
+
+      # def self.import_classes
+      #   @@import_classes ||= import_types.map { |type| Sources.const_get(type.camelcase) }
+      # end
+
       # set validate options for each param
       #  e.g. require office_id and only accepts digits
       #       { office_id: [:presence, /\d+/] }
@@ -124,7 +130,7 @@ module Rightboat
       end
 
       def self.params
-        self.validate_param_option.keys
+        validate_param_option.keys
       end
 
       def enqueue_job(job)

@@ -32,7 +32,7 @@ module Rightboat
         )
 
         def self.validate_param_option
-          { broker_id: [:presence, /^\d+$/]}
+          { broker_id: [:presence, /\A\d+\z/]}
         end
 
         def enqueue_jobs

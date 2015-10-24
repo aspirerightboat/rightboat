@@ -36,7 +36,7 @@ module Rightboat
         )
 
         def self.validate_param_option
-          { offices: [], source_id: [:presence, /^[A-Za-z0-9]{1,7}$/] }
+          { offices: [], source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/] }
         end
 
         def advert_url(url)

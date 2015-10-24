@@ -1,7 +1,7 @@
 ActiveAdmin.register ImportTrail do
   menu parent: 'Imports'
 
-  # filter :import_type, collection: -> { Rightboat::Imports::Base::SOURCE_TYPES }
+  # filter :import_type, collection: -> { Rightboat::Imports::Base.import_types }
 
   controller do
     private

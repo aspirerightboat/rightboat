@@ -1,14 +1,14 @@
 = semantic_form_for [:admin, @import] do |f|
-  = f.inputs "Import" do
+  = f.inputs 'Import' do
     = f.input :user, as: :select, collection: User.companies, label_method: :name, value_method: :id, include_blank: false
-    = f.input :import_type, collection: Rightboat::Imports::Base::SOURCE_TYPES, include_blank: false
+    = f.input :import_type, collection: Rightboat::Imports::Base.import_types, include_blank: false
     = f.input :threads
     = f.input :active
     = f.input :use_proxy, as: :boolean
-  = f.inputs "Parameters", id: 'import-params' do
+  = f.inputs 'Parameters', id: 'import_params' do
     = f.semantic_errors :param
 
-  = f.inputs "Scheduling", id: 'import-scheduling' do
+  = f.inputs 'Scheduling', id: 'import_scheduling' do
     %span Every
     = f.input :frequency_quantity, label: false
     = f.input :frequency_unit, as: :select, collection: Import::FREQUENCY_UNITS, include_blank: false, label: false
@@ -21,32 +21,40 @@
       &nbsp;&nbsp;1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
   = f.actions
 
-- j_params = Rightboat::Imports::Base::SOURCE_TYPES.inject({}) { |h, import_type| h[import_type] = Import.source_class(import_type).params.map{|x| [x, x.to_s.titleize]}; h}
+- j_params = Rightboat::Imports::Base.import_types.inject({}) { |h, type| h[type] = Import.source_class(type).validate_param_option; h }
+-##import_params_data{data: {imports_params: j(j_params.to_json), current_params: j(resource.param.to_json)}}
+-#:javascript
+-#  $(function() {
+-#    window.imports_params = $.parseJSON($('#import_params_data').data('imports_params'));
+-#    window.current_params = $.parseJSON($('#import_params_data').data('current_params'));
+-#  }
 :javascript
-  $(document).ready(function() {
-    var current_param = #{resource.param.to_json},
-      job_params = #{j_params.to_json};
-
-    $('#import_import_type').change(function(){
+  $(function() {
+    window.imports_params = #{j_params.to_json};
+    window.current_params = #{resource.param.to_json};
+  });
+-# splitted to two declarations to fix rubymine highlighting
+:javascript
+  $(function() {
+    $('#import_import_type').change(function() {
+      var $ol = $('#import_params ol').empty();
       var type = $(this).val();
-      $('#import-params').hide().find('ol > li').remove()
-      params = job_params[type]
-      if (params && params.length) {
-        $.each(params, function() {
-          var key = this[0], label = this[1],
-          $input = $('<input>').attr('name', 'import[param][' + key + ']')
-          .attr('id', 'import_param_' + key).attr('type', 'text')
-          .val(current_param[key] || ''),
-          $label = $('<label>').attr('for', 'import_param_' + key)
-          .addClass('label').html(label).append('<abbr title="required">*</abbr>'),
-          $li = $('<li>').attr('class', 'string input required stringish')
-          .append($label).append($input);
-
-          $('#import-params').find('ol').append($li);
+      var params = window.imports_params[type];
+      var any_params = !$.isEmptyObject(params);
+      if (any_params) {
+        $.each(params, function(key, validations) {
+          var val = window.current_params[key] || '';
+          var id = 'import_param_'+key;
+          if (!(validations instanceof Array))
+            validations = [validations];
+          var required = validations[0] == 'presence' ? ' <span style="color:red">*</span>' : '';
+          console.log();
+          var hint = (validations[1] && validations[1][0] == '(') ? ' <i style="font-weight:normal">'+validations[1].replace('(?-mix:\\A', '').replace('\\z)', '')+'</i>' : '';
+          $('<li class="string input required stringish">').appendTo($ol)
+            .append('<label for="'+id+'" class="label">'+key + required + hint+'</label>')
+            .append('<input type="text" name="import[param]['+key+']" id="'+id+'" value="'+val+'">');
         });
-        $('#import-params').show();
       }
-    });
-
-    $('#import_import_type').change();
+      $('#import_params').toggle(any_params);
+    }).change();
   });

@@ -2,20 +2,21 @@ module Rightboat
   module Imports
     module Sources
       class BoatStream < Base
+
         def enqueue_jobs
           @skip_thread_parsing_boat = true
           file = "#{Rails.root}/import_data/boat_stream.xml"
           log "Parsing file #{file}"
-          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_id)).parse_file(file)
+          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_ids)).parse_file(file)
         end
 
         def self.validate_param_option
-          {party_id: [:presence, /\A\d+\z/]}
+          {party_ids: [:presence, /\A\d+(, \d+)*\z/]}
         end
 
         class BoatStreamParser < Nokogiri::XML::SAX::Document
-          def initialize(source, party_id)
-            @party_id = party_id
+          def initialize(source, party_ids)
+            @party_ids = party_ids.split(', ')
             @source = source
             @tree = []
             @country_id_by_iso = Country.pluck(:iso, :id).each_with_object({}) { |(iso, id), h| h[iso] = id }
@@ -54,7 +55,7 @@ module Rightboat
             c = @char.to_s
 
             if @el == 'PartyID'
-              if @party_id != c
+              if !@party_ids.include?(c)
                 @boat = nil
                 return
               end

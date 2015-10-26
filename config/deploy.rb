@@ -20,7 +20,7 @@ set :keep_releases, 3
 
 set :passenger_in_gemfile, false
 set :passenger_roles, :app
-set :passenger_restart_with_sudo, true
+set :passenger_restart_with_touch, true
 set :passenger_restart_command, 'bundle exec passenger-config restart-app'
 set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
 

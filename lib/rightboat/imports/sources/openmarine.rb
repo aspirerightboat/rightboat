@@ -55,6 +55,8 @@ module Rightboat
           broker_nodes = doc.xml.root.element_children
           broker_node = @broker_id == 'first' ? broker_nodes[0] : broker_nodes.find { |node| @broker_id == node['code'] }
 
+          raise "No broker with ID=#{@broker_id} found" if !broker_node
+
           log 'Scraping broker offices'
           inner_nodes = broker_node.element_children.index_by(&:name)
           offices_node = inner_nodes['offices'] || broker_node.at_css('broker_details offices') # http://www.jdyachts.com/datafeed/datafeed.php - here offices are inside broker_details

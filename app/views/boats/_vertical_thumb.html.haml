@@ -7,9 +7,8 @@
     .boat-img-thumb
       = image_tag boat.primary_image.file.url(:thumb)
     .caption
-      %h4
-        %strong= boat.manufacturer
-        = boat.model
+      %h4= boat.manufacturer
+      %h5= boat.model
       %p.price(data-attr-name='price')= boat_price(boat)
       %p.boat-length
         %span(data-attr-name='loa')= boat_length(boat)

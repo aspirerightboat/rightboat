@@ -4,8 +4,8 @@
       .modal-header
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
-        .h Register as Broker
       .modal-body
+        %h2 Register as Broker
         = form_tag register_broker_path, class: 'simple-ajax-form', remote: true, data: {type: :json} do
           .row
             .col-xs-12
@@ -24,39 +24,30 @@
               .form-group
                 .rb-control-group
                   .rb-control-group-addon
-                    = label_tag :title, 'Title:'
-                    %br
                     = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
                   .rb-control
-                    = label_tag :title, 'First Name:*'
-                    = text_field_tag :first_name, nil, class: 'form-control', 'data-validetta' => 'required'
+                    = text_field_tag :first_name, nil, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :last_name, 'Last name:*'
-                = text_field_tag :last_name, nil, class: 'form-control', 'data-validetta' => 'required'
+                = text_field_tag :last_name, nil, placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
           .row
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :email, 'Email*'
-                = email_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required,email'
+                = email_field_tag :email, '', placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
               .form-group
-                = label_tag :phone, 'Phone*'
-                = phone_field_tag :phone, '', class: 'form-control', 'data-validetta' => 'required'
+                = phone_field_tag :phone, '', placeholder: 'Phone', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = password_field_tag :password, '', placeholder: 'Password', class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-6.col-xs-12
+              .form-group
+                = password_field_tag :password_confirmation, '', placeholder: 'Repeat Password', class: 'form-control', 'data-validetta' => 'required'
           .row
             .col-xs-12
               .form-group
-                = label_tag :company_name, 'Company Name:*'
-                = text_field_tag :company_name, '', class: 'form-control', 'data-validetta' => 'required'
-          .row
-            .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :password, 'Password:*'
-                = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required'
-            .col-sm-6.col-xs-12
-              .form-group
-                = label_tag :password_confirmation, 'Repeat Password:*'
-                = password_field_tag :password_confirmation, '', class: 'form-control', 'data-validetta' => 'required'
+                = text_field_tag :company_name, '', placeholder: 'Company Name', class: 'form-control', 'data-validetta' => 'required'
           .row
             .col-xs-12
               %p

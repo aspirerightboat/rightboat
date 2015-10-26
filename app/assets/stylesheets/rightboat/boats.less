@@ -17,11 +17,13 @@
   .boat-thumb.thumbnail {
     .caption { height: 90px; padding: 10px; }
     h4, h5 {
-      font-size: 85%;
+      font-size: 0.9em;
     }
     h5 { margin-bottom: 0; }
     .boat-price {
       float: none !important;
+      text-align: left;
+      font-size: 0.85em;
     }
     .boat-length, .boat-year, .boat-location, .boat-links-bottom {
       display: none;
@@ -79,12 +81,10 @@
   border: 1px solid @rb-color-primary;
 
   h4, h5 {
-    font-size: 26px;
-    line-height: 1.1em;
+    line-height: 1.2em;
     margin: 0;
   }
   h5 {
-    font-weight: normal;
     margin-bottom: 8px;
   }
   .small {
@@ -345,7 +345,7 @@ a.pdf-link {
 
 .pswp__button--arrow--left, .pswp__button--arrow--right {
   &:before {
-    background: none;
+    background-image: none !important;
     font-family: "fontello";
     font-size: 40px;
     line-height: 1;

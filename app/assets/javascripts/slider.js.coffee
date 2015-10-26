@@ -15,25 +15,30 @@ getYearsArray = ->
     years.push(startYear++)
   years
 
+lengthRates =
+  'm': 1
+  'ft': 3.28084
+
 $ ->
   $(document).ready ->
     priceValues = [5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000, 60000,
                    70000, 80000, 90000, 100000, 125000, 150000, 175000, 200000, 250000, 300000, 350000, 400000, 450000,
                    500000, 600000, 700000, 800000, 900000, 1000000, 2000000, 3000000, 4000000, 5000000, 10000000]
-    lengthValuesFt = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 85, 95, 105, 115, 125, 135, 145, 200, 250, 300, 400, 500]
-    lengthValuesM = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 130, 140]
+    lengthValuesFt = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000]
+    lengthValuesM = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 130, 140, 150, 200, 250, 300]
     yearValues = getYearsArray()
 
-    convertPrice = (value, unit) ->
-      parseInt(Number(value) * window.currencyRates[unit])
+    convertValue = (field, value, fromUnit, toUnit) ->
+      switch field
+        when 'price' then convertPrice(value, fromUnit, toUnit)
+        when 'length' then convertLength(value, fromUnit, toUnit)
+        else value
 
-    convertLength = (value, unit) ->
-      value = Number(value)
-      value = value * 3.28084 if unit == 'ft'
-      parseInt(value)
+    convertPrice = (value, fromUnit, toUnit) ->
+      (Number(value) * ( window.currencyRates[toUnit] / window.currencyRates[fromUnit] )).toFixed(2)
 
-    convertYear = (value, unit) ->
-      value
+    convertLength = (value, fromUnit, toUnit) ->
+      (Number(value) * ( lengthRates[toUnit] / lengthRates[fromUnit] )).toFixed(2)
 
     updateSlider = ($slider, field, value, minOrMax, bEdge=false) ->
       $input = $slider.parents('form').find('input[name="' + field + '_' + minOrMax + '"]')
@@ -61,84 +66,89 @@ $ ->
         i++
       nearest
 
-    getValues = (field, unit) ->
+    getValues = ($slider, unit) ->
+      field = $slider.data('input')
+      min = $slider.data('min') || 0
+      max = $slider.data('max') || 1000000000
+
       if field == 'length'
-        if unit == 'm' then lengthValuesM else lengthValuesFt
+        if unit == 'm'
+          values = lengthValuesM
+        else
+          values = lengthValuesFt
+          min = min * 3.28084 if min
+          max = max * 3.28084 if max
       else
-        eval(field + 'Values')
+        values = eval(field + 'Values')
 
-    onChangeSlide = ($slider, field, value, unit, handleIndex, bEdge=false) ->
-      minOrMax = if handleIndex == 0 then 'min' else 'max'
-      updateSlider($slider, field, value, minOrMax, bEdge)
+      values.filter (x) -> (x >= min && x <= max)
 
-    $( '.slider' ).each ->
-      $this = $(this)
-      field = $(this).data('slide-name')
-      unit = $this.data('unit')
-      values = getValues(field, unit)
+    initSlider = ($slider, fromUnit=null) ->
+      unit = $slider.data('unit')
+      field = $slider.data('input')
+      fromUnit = unit unless fromUnit
+      $slider.data('unit', unit)
+      values = getValues($slider, unit)
+
       len = values.length
-      value1 = findNearest(values, eval('convert' + field.capitalize() + '(' + $this.data('value1') + ', "' + unit + '")')) || 0
-      value2 = findNearest(values, eval('convert' + field.capitalize() + '(' + $this.data('value2') + ', "' + unit + '")')) || len - 1
+      iValues = []
+      for i in [0, 1]
+        if originvalue = $slider.data('value' + i)
+          cValue = convertValue(field, originvalue, fromUnit, unit)
+        else
+          cValue = if i == 0 then values[0] else values[len - 1]
+        $slider.data('value' + i, cValue)
+        iValues[i] = findNearest(values, cValue) || (if i == 0 then 0 else len - 1)
 
-      $this.slider
+      $slider.slider
         range: true
         min: 0
         max: len - 1
-        values: [ value1, value2 ]
+        values: [ iValues[0], iValues[1] ]
         slide: ( event, ui ) ->
           value = ui.value
-          unit = $this.data('unit')
-          values = getValues(field, unit)
-          len = values.length
           handleIndex = $(ui.handle).data('uiSliderHandleIndex')
           bEdge = (value == 0) || (value == len - 1)
-          onChangeSlide($this, field, values[value], unit, handleIndex, bEdge)
+          minOrMax = if handleIndex == 0 then 'min' else 'max'
+          $slider.data('value' + handleIndex, values[value])
+          updateSlider($slider, field, values[value], minOrMax, bEdge)
 
-      updateSlider($this, field, values[value1], 'min', value1 == 0)
-      updateSlider($this, field, values[value2], 'max', value2 == len - 1)
+      updateSlider($slider, field, values[iValues[0]], 'min', iValues[0] == 0)
+      updateSlider($slider, field, values[iValues[1]], 'max', iValues[1] == len - 1)
+
+    reinitSlider = ($slider, oldUnit, unit) ->
+      $slider.slider('destroy')
+      $slider.data('unit', unit)
+      initSlider($slider, oldUnit)
+
+    $( '.slider' ).each ->
+      initSlider($(this))
 
     $('select[name="length_unit"]').change (e)=>
       $target = $(e.currentTarget)
+      oldUnit = e.removed.id
       unit = $target.val()
       $('select[name="length_unit"]').select2('val', unit)
-      $target.parents('form').find('[data-slide-name="length"]').each ->
-        $slider = $(this)
-        oldUnit = $slider.data('unit')
-        oldValues = getValues('length', oldUnit)
-        $slider.data('unit', unit)
-        newValues = getValues('length', unit)
-        for i in [0, 1]
-          oldValue = oldValues[$slider.slider('values', i)]
-          oldValueM = if oldUnit == 'ft' then oldValue / 3.28084 else oldValue
-          newValue = findNearest(newValues, convertLength(oldValueM, unit))
-          bEdge = (newValue == 0) || (newValue == newValues.length - 1)
-          onChangeSlide($slider, 'length', newValues[newValue], unit, i, bEdge)
+      $('[data-input="length"]').each ->
+        reinitSlider($(this), oldUnit, unit)
       $('[data-attr-name="loa"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
-        l = Number(convertLength($boat.data('length'), unit).toFixed(2))
-        $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
+        if length = $boat.data('length')
+          l = convertLength(Number(length), oldUnit, unit)
+          $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
 
     $('select[name="currency"]').change (e)=>
       $target = $(e.currentTarget)
       currency = $target.find('option:selected').text()
       oldUnit = e.removed.id
       unit = e.added.id
-      oldValues = getValues('price', oldUnit)
-      newValues = getValues('price', unit)
       $('select[name="currency"]').select2('val', $target.val())
-      $target.parents('form').find('[data-slide-name="price"]').each ->
-        $slider = $(this)
-        $slider.data('unit', unit)
-        for i in [0, 1]
-          oldValue = oldValues[$slider.slider('values', i)]
-          oldValuePound = oldValue / window.currencyRates[oldUnit]
-          newValue = findNearest(newValues, convertPrice(oldValuePound, unit))
-          bEdge = (newValue == 0) || (newValue == newValues.length - 1)
-          onChangeSlide($slider, 'price', newValues[newValue], unit, i, bEdge)
+      $('[data-input="price"]').each ->
+        reinitSlider($(this), oldUnit, unit)
       $('[data-attr-name="price"]').each (_, el)=>
         $boat = $(el).closest('[data-boat-ref]')
         if price = $boat.data('price')
-          p = Number(convertPrice(price, unit).toFixed(2))
+          p = convertPrice(Number(price), oldUnit, unit)
           $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
 
     $('.toggle-adv-search').click (e)->

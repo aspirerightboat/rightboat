@@ -12,7 +12,7 @@ $ ->
 
   $(document).on 'click', '.user-login', ->
     $('#register-content').hide()
-    $('#login_popup').modal('show') unless $('#login_popup').is(':visible')
+    $('#login_popup').displayPopup() unless $('#login_popup').is(':visible')
     false
 
   $('#login_popup')

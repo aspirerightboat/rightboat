@@ -24,7 +24,7 @@ module Rightboat
                 puts "No match: #{data}"
               end
             end
-            puts "VAT: #{vat.inspect}"
+            # puts "VAT: #{vat.inspect}"
             if vat && (vat.to_s.include? "Tax Not Paid")
               boat.vat_rate = "No Tax Paid"
             elsif vat
@@ -85,23 +85,24 @@ module Rightboat
           while url
             doc = get(url)
 
-            rows = doc.search("table[summary=search_results] tr")
+            rows = doc.root.css('table[summary=search_results] tr')
             rows.shift # remove header row
 
             rows.each do |row|
               job = {}
-              location = cleanup_string(row.xpath('./td[10]').text)
+              tds = row.element_children
+              location = cleanup_string(tds[9].text)
               next if location == 'Sold' || location == 'Sale Pending'
 
-              length = cleanup_string(row.xpath('./td[4]').text)
+              length = cleanup_string(tds[3].text)
               if length =~ /^(\d+)'(\s(\d+)\s")?$/
                 job[:length_m] = ($1.to_f * 0.3048 + $3.to_f * 0.0254).round(2)
               end
               country, _, location = location.rpartition(/\s?,\s?/)
               job[:country] = country.dup
               job[:location] = location.dup
-              job[:codes] = row.xpath('./td[9]').text.strip.split(nbsp_char)
-              job[:source_url] = doc.uri.merge(row.search('a').first['href'])
+              job[:codes] = tds[8].text.strip.split(nbsp_char)
+              job[:source_url] = doc.uri.merge(tds[4].at_css('a')['href'])
 
               enqueue_job(job)
             end

@@ -132,9 +132,17 @@ $(document).ready ->
 
   $('.modal').on 'hidden.bs.modal', ->
     $(this).find('input[type="text"], input[type="email"], input[type="password"], textarea').val('')
+    $(this).find('select').select2 'val', ''
+    $(this).find('.select-title').val('')
+    $(this).find('.selectize-input input').val('').attr('placeholder', 'Title').css
+      left: 0
+      opacity: 1
+      position: 'relative'
+      width: 'auto'
+    $(this).find('.selectize-input > div').html('')
 
 $.fn.initTitleSelect = ->
-  @.selectize(create: true)
+  @.selectize(create: true, createOnBlur: true)
 $ ->
   $('.select-title').initTitleSelect()
 

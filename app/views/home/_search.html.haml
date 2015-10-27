@@ -1,4 +1,4 @@
-#search-wrapper.navbar-static-top
+#search-wrapper.container
   #home-search.container
     = image_tag 'logo.png', alt: 'Rightboat', class: 'logo-img'
     #home-search-form
@@ -48,12 +48,12 @@
                   = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm select-general'
           .row
             .col-xs-12.nice-buttons.last-row-pad
-              %button.transparent-button.reset-search-form(type="button") Reset
+              %button.transparent-button.reset-search-form(type="button") Rightboat
               %button.nice-button(type="submit") Search
 
         .form-group.row
           .nice-buttons(style="margin: 10px 0")
-            %button.nice-button.toggle-adv-search Refine Search
+            %button.transparent-button.toggle-adv-search Advanced Search
           %h3
             Find your<br/>
             <strong>Rightboat</strong>

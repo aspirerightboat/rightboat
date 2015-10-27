@@ -1,19 +1,30 @@
+adjustLoginLink = ->
+  if $(window).width() > 767
+    $('.rb-dropdown')
+      .on 'mouseenter', -> $(@).addClass 'open'
+      .on 'mouseleave', -> $(@).removeClass 'open'
+  else
+    $('.rb-dropdown')
+      .unbind('mouseenter')
+      .unbind('mouseleave')
+
 $ ->
   myRightboatClicked = false
-
-  $('.rb-dropdown')
-    .on 'mouseenter', -> $(@).addClass 'open'
-    .on 'mouseleave', -> $(@).removeClass 'open'
 
   $('[data-require-login]').click (e) ->
     if $(this).html() is 'My Rightboat'
       myRightboatClicked = true
     requireLogin(e, false)
 
-  $(document).on 'click', '.user-login', ->
+  $(document)
+  .on('ready', adjustLoginLink)
+  .on 'click', '.user-login', ->
     $('#register-content').hide()
     $('#login_popup').displayPopup() unless $('#login_popup').is(':visible')
     false
+
+  $(window).resize ->
+    adjustLoginLink()
 
   $('#login_popup')
     .on 'hidden.bs.modal', ->

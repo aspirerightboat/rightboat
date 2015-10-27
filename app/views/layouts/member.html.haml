@@ -50,3 +50,6 @@
         = render 'shared/confirm_email_popup'
     - else
       = render 'shared/session_popup'
+
+    - if content_for? :body_scripts
+      = yield :body_scripts

@@ -7,6 +7,9 @@ CarrierWave.configure do |config|
       host: 's3.eu-central-1.amazonaws.com',
       endpoint: 'https://s3.eu-central-1.amazonaws.com'
   }
+
+  config.asset_host = 'https://d2qh54gyqi6t5f.cloudfront.net'
+
   config.fog_directory  = 'rightboat'
   # config.fog_public     = true
   config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}

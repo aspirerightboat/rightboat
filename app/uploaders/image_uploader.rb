@@ -4,7 +4,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   storage(Rails.env.production? || Rails.env.staging? ? :fog : :file)
 
   def store_dir
-    "rb-assets/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    "#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
   def extension_white_list

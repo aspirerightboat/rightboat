@@ -10,7 +10,7 @@ set :format, :pretty
 set :log_level, :debug
 set :pty, true
 set :linked_files, %w(config/database.yml config/secrets.yml config/application.yml config/smtp.yml)
-set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/rb-assets public/uploads solr/data import_data)
+set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/uploads solr/data import_data)
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

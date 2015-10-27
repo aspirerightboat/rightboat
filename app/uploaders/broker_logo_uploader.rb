@@ -1,7 +1,7 @@
 class BrokerLogoUploader < ImageUploader
 
   def store_dir
-    "rb-assets/broker-logos/#{model.id}"
+    "broker_logos/#{model.id}"
   end
 
   version :thumb do

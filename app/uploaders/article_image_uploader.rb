@@ -1,6 +1,6 @@
 class ArticleImageUploader < ImageUploader
   def store_dir
-    "rb-assets/article-images/#{model.id}"
+    "article_images/#{model.id}"
   end
 
   version :main do

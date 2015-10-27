@@ -27,6 +27,10 @@ ActiveAdmin.register ImportTrail do
     column :not_saved_count
     column :created_at
     column :finished_at
+    column :error do |import_trail|
+      status_tag(import_trail.error_msg, :red) if import_trail.error_msg.present?
+    end
+
 
     actions
   end

@@ -53,6 +53,11 @@ ActiveAdmin.register Import do
     column :last_log do |import|
       link_to('view log', admin_import_trail_path(import.last_import_trail)) if import.last_import_trail
     end
+    column :last_error do |import|
+      if import.last_import_trail && import.last_import_trail.error_msg.present?
+        status_tag(import.last_import_trail.error_msg, :red)
+      end
+    end
 
     actions do |job|
       if job.running?

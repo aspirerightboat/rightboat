@@ -3,7 +3,8 @@ class BoatImageUploader < ImageUploader
   process :store_dimensions
 
   def store_dir
-    "rb-assets/boat-images/#{model.id}"
+    i = model.id
+    "boat_images/#{i / 1000_000}/#{i / 1000}/#{i}" # generally it is a good idea to not have so many files in one folder
   end
 
   version :thumb do
@@ -18,9 +19,7 @@ class BoatImageUploader < ImageUploader
 
   def store_dimensions
     if file && model
-      img = ::Magick::Image::read(file.file).first
-      model.width = img.columns
-      model.height = img.rows
+      model.width, model.height = `identify -format "%w %h" #{file.path}`.split(' ')
     end
   end
 end

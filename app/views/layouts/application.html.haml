@@ -28,4 +28,7 @@
     = render 'shared/phone_popup'
     - if user_signed_in?
       = render 'berth_enquiries/form'
-    -#= yield :body_scripts
+
+    - if content_for? :body_scripts
+      = yield :body_scripts
+

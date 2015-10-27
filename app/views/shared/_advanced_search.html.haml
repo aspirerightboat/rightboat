@@ -117,5 +117,6 @@
           = @boats.total_count >= 10000 ? "10,000 plus" : @boats.total_count
           boats fit your criteria
 
-:javascript
-  window.currencyRates = #{Currency.all.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};
+- content_for :body_scripts do
+  :javascript
+    window.currencyRates = #{Currency.all.select(:name, :rate).inject({}) {|h, c| h[c.name] = c.rate; h}.to_json};

@@ -32,7 +32,7 @@ a, a:hover, a:active, a:focus {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10000;
+  z-index: 100000;
 
   .wrapper {
     background: #fefce1;
@@ -60,7 +60,8 @@ a, a:hover, a:active, a:focus {
       line-height: 0;
       position: absolute;
       right: 12px;
-      top: 10px;
+      top: -webkit-calc(50% + - 15px);
+      top: calc(50% + - 15px);
       padding: 9px;
       background: #f0ad4e;
       border-radius: 4px;
@@ -107,3 +108,5 @@ a, a:hover, a:active, a:focus {
     }
   }
 }
+
+.logo-img { max-height: 117px; }

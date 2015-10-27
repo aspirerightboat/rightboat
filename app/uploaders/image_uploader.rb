@@ -1,8 +1,7 @@
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::RMagick
 
-  # storage(Rails.env.production? ? :fog : :file)
-  storage(:file)
+  storage(Rails.env.production? || Rails.env.staging? ? :fog : :file)
 
   def store_dir
     "rb-assets/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"

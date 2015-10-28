@@ -30,5 +30,4 @@ $ ->
     .always =>
       $this.find('button[type=submit]').removeAttr('disabled')
 
-  validetta_options = $.extend({onValid: onProfileSubmit}, Rightboat.validetta_options)
-  $('.profile-form').validetta(validetta_options)
+  $('.profile-form').rbValidetta(onValid: onProfileSubmit)

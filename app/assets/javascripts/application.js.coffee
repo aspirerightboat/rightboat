@@ -43,12 +43,15 @@
 #= require_tree .
 
 window.Rightboat = {}
-Rightboat.validetta_options =
-  custom :
-    username :
-      pattern : /^[a-zA-Z][\w@.-]+$/,
-      errorMessage : "Only include a-z, A-Z, digits and underline."
-  display: 'inline'
+
+$.fn.rbValidetta = (opts = {}) ->
+  default_opts =
+    display: 'inline'
+    custom :
+      username :
+        pattern : /^[a-zA-Z][\w@.-]+$/,
+        errorMessage : "Only include a-z, A-Z, digits and underline."
+  @.validetta($.extend(default_opts, opts))
 
 window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')
@@ -130,16 +133,15 @@ $(document).ready ->
 
   $('.cool-select').select2()
 
-  $('.modal').on 'hidden.bs.modal', ->
-    $(this).find('input[type="text"], input[type="email"], input[type="password"], textarea').val('')
-    $(this).find('select').select2 'val', ''
-    $(this).find('.select-title').val('')
-    $(this).find('.selectize-input input').val('').attr('placeholder', 'Title').css
+  $.fn.resetForm = ->
+    $('form', @).reset()
+    $('select', @).select2 'val', ''
+    $('.selectize-input input', @).val('').attr('placeholder', 'Title').css
       left: 0
       opacity: 1
       position: 'relative'
       width: 'auto'
-    $(this).find('.selectize-input > div').html('')
+    $('.selectize-input > div', @).html('')
 
 $.fn.initTitleSelect = ->
   @.selectize(create: true, createOnBlur: true)

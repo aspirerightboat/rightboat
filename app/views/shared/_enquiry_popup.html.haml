@@ -1,4 +1,4 @@
-#enquiry-popup.modal.fade
+#enquiry_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
@@ -10,20 +10,19 @@
         = form_tag '#', class: 'enquiry-form' do
           = text_field_tag :honeypot, nil, class: 'hide'
           .row.login-toggle.active
+            .col-sm-2.col-xs-12
+              .form-group
+                = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title enq-req-title'
+            .col-sm-4.col-xs-12
+              .form-group
+                = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control enq-req-fname', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
-                .rb-control-group
-                  .rb-control-group-addon
-                    = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
-                  .rb-control
-                    = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
-            .col-sm-6.col-xs-12
-              .form-group
-                = text_field_tag :surname, current_user.try(:last_name), placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
+                = text_field_tag :surname, current_user.try(:last_name), placeholder: 'Last name', class: 'form-control enq-req-lname', 'data-validetta' => 'required'
           .row
             .col-sm-6.col-xs-12
               .form-group
-                = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
+                = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control enq-req-email', 'data-validetta' => 'required,email', id: 'request_email'
             .col-sm-6.col-xs-12.login-toggle.active
               .form-group
                 .rb-control-group
@@ -55,7 +54,7 @@
               = button_tag 'Send', type: 'submit', class: 'btn-flat btn-block'
           .clearfix
 
-#enquiry-result-popup.modal.fade
+#enquiry_result_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
@@ -65,13 +64,13 @@
       .modal-body
         %h1.text-center Thank you for your enquiry
         %h4.text-center
-          The brokers details are: (<span id='broker-name'></span><span id='broker-phone'></span>)
+          The brokers details are: (<span id="broker_name"></span><span id="broker_phone"></span>)
           and they will be in touch.
           %br
           A downloadable PDF is available in 'My Requests' within 'My Rightboat' and a copy has also been sent to your email address.
           %br
           %br
-          = link_to 'PDF link', '#', id: 'boat-pdf', class: 'btn-flat btn-black'
+          = link_to 'PDF link', '#', id: 'pdf_link', class: 'btn-flat btn-black'
         .signup-form-container.row
           %h3.text-center Sign up to MyRightboat for free
           .col-sm-offset-1.col-sm-10.col-xs-12

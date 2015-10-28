@@ -10,7 +10,7 @@ window.initBoatView = (el) ->
     # $('.enquiry-form').find('#message, #captcha').val('')
     $('.enquiry-result-container').hide()
     $('.enquiry-form-container').show()
-    $('#enquiry-popup').displayPopup()
+    $('#enquiry_popup').displayPopup()
     false
 
   $('.fav-link', el).click (e) ->
@@ -45,7 +45,7 @@ $ ->
   $('.boat-view').each ->
     initBoatView(this)
 
-  # $('#enquiry-popup').on 'show.bs.modal', ->
+  # $('#enquiry_popup').on 'show.bs.modal', ->
   #   $('form', @).renderCaptcha()
 
   onSubmit = (e) ->
@@ -73,39 +73,30 @@ $ ->
       dataType: 'JSON'
       data: { enquiry: $this.serializeObject() }
     .success (enquiry) ->
-      $('#enquiry-result-popup #signup-email').hide()
-      $('#enquiry-result-popup #signup-email input').val(enquiry.email)
+      $('#enquiry_result_popup').each ->
+        $(@).displayPopup()
 
-      $('#enquiry-result-popup').displayPopup()
+        $('.signup-form-container', @).toggle(!enquiry.user_registered)
+        if !enquiry.user_registered
+          $enq_form = $('.enquiry-form')
+          $('.signup-email', @).val($('.enq-req-email', $enq_form).val())
+          $('select.signup-title', @)[0].selectize.setValue($('.enq-req-title', $enq_form).val())
+          $('.signup-first-name', @).val($('.enq-req-fname', $enq_form).val())
+          $('.signup-last-name', @).val($('.enq-req-lname', $enq_form).val())
 
-      # signup form
-      if enquiry.user_registered
-        $('#enquiry-result-popup .signup-form-container').hide()
-      else
-        $('#enquiry-result-popup .signup-form-container').show()
+        $('#broker_name').html(enquiry.broker.name)
+        $('#broker_phone').html(enquiry.broker.phone).before(', ') if enquiry.broker.phone
 
-      # broker info
-      $('#enquiry-result-popup #broker-name').html(enquiry.broker.name)
-      if enquiry.broker.phone && enquiry.broker.phone.length > 0
-        $('#enquiry-result-popup #broker-phone').html(', ' + enquiry.broker.phone)
+        $('#pdf_link').attr('href', enquiry.boat_pdf)
 
-      # pdf link
-      $('#enquiry-result-popup #boat-pdf').attr('href', enquiry.boat_pdf)
-
-      # similar boats
-      if enquiry.similar_boats.length > 0
-        $similar_boats = $('<div>')
+        any_similar = enquiry.similar_boats.length > 0
+        $('.similar-boats-link', @).toggle(any_similar)
+        $similar_boats = $('.similar-boats', @).empty().toggle(any_similar)
         $.each enquiry.similar_boats, ->
-          boatThumb = $('<div class="col-xs-4 col-sm-3 col-lg-2">')
-          boatLink = $('<a>').attr('href', '/boats/' + @slug)
-          boatLink.append($('<img>').attr('src', @primary_image.mini))
-          boatThumb.append(boatLink)
-          $similar_boats.append(boatThumb)
-        $('#enquiry-result-popup .similar-boats').html($similar_boats.html()).show()
-        $('#enquiry-result-popup .similar-boats-link').show()
-      else
-        $('#enquiry-result-popup .similar-boats-link').hide()
-        $('#enquiry-result-popup .similar-boats').hide()
+          $similar_boats.append(
+            $('<div class="col-xs-4 col-sm-3 col-lg-2">').append(
+              $('<a>').attr('href', '/boats/' + @slug).append(
+                $('<img>').attr('src', @primary_image.mini))))
     .error (resp)->
       # $this.renderCaptcha()
       errors = resp.responseJSON.errors
@@ -114,6 +105,5 @@ $ ->
         $errors.append(k + ' ' + v + '<br>')
       $this.prepend($errors)
 
-  validetta_options = $.extend({onValid: onSubmit}, Rightboat.validetta_options)
-  $('.enquiry-form').validetta(validetta_options)
+  $('.enquiry-form').rbValidetta(onValid: onSubmit)
 

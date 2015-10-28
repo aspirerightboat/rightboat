@@ -20,13 +20,12 @@
                   and I acknowledge that by registering and using Rightboat.com, I agree to be bound by the
                   #{link_to 'Rightboat.com terms and conditions', toc_path}
           .row
-            .col-sm-6.col-xs-12
+            .col-sm-2.col-xs-12
               .form-group
-                .rb-control-group
-                  .rb-control-group-addon
-                    = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
-                  .rb-control
-                    = text_field_tag :first_name, nil, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
+                = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
+            .col-sm-4.col-xs-12
+              .form-group
+                = text_field_tag :first_name, nil, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-6.col-xs-12
               .form-group
                 = text_field_tag :last_name, nil, placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'

@@ -26,7 +26,7 @@ $ ->
     $form = @
     $submit = $('button[type="submit"]', $form)
     $form
-    .validetta(Rightboat.validetta_options)
+    .rbValidetta()
     .on 'ajax:before', (e) -> $submit.addClass('inline-loading')
     .on 'ajax:complete', (e) -> $submit.removeClass('inline-loading')
     .on 'ajax:success', (e, data, status, xhr) ->

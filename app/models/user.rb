@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
 
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
+  before_validation :ensure_username
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
   attr_accessor :updated_by_admin
@@ -95,12 +96,6 @@ class User < ActiveRecord::Base
 
   def organization?
     self.company? || self.manufacturer?
-  end
-
-  def generate_username
-    str = "#{first_name} #{last_name}".downcase.squeeze.gsub(' ', '-').gsub(/[^\w@.-]/, '')
-    str = "u-#{str}" if str !~ /\A[a-zA-Z]/
-    self.username = str
   end
 
   def confirm_email_token
@@ -150,5 +145,13 @@ class User < ActiveRecord::Base
       send_email_confirmation
     end
     true
+  end
+
+  def ensure_username
+    if username.blank?
+      str = name.downcase.squeeze.gsub(' ', '-').gsub(/[^\w@.-]/, '')
+      str = "u-#{str}" if str !~ /\A[a-zA-Z]/
+      self.username = str
+    end
   end
 end

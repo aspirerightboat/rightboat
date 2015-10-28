@@ -1,4 +1,5 @@
 class BrokerAreaController < ApplicationController
+  before_action :require_confirmed_email
   before_action :require_broker_user
 
   def show

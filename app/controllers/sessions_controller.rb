@@ -1,4 +1,5 @@
 class SessionsController < Devise::SessionsController
+  skip_before_action :require_confirmed_email, only: [:destroy]
   clear_respond_to
   respond_to :json
 

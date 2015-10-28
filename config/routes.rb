@@ -80,12 +80,17 @@ Rails.application.routes.draw do
   # get 'captcha', to: 'captcha#image'
   # get 'captcha/new', to: 'captcha#new'
 
-  get 'contact', to: 'home#contact', as: :contact
-  get 'toc', to: 'home#toc', as: :toc
-  get 'marine_services', to: 'home#marine_services', as: :marine_services
-  get 'privacy_policy', to: 'home#privacy_policy', as: :privacy_policy
-  get 'cookies_policy', to: 'home#cookies_policy', as: :cookies_policy
-  get 'sell_my_boats', to: 'home#sell_my_boats', as: :sell_my_boats
+  resource :home, controller: :home, path: '/' do
+    collection do
+      get :contact
+      get :toc
+      get :marine_services
+      get :privacy_policy
+      get :cookies_policy
+      get :sell_my_boats
+      get :confirm_email
+    end
+  end
 
   namespace :api, defaults: {format: :json}, constraints: {format: :json} do
     controller :manufacturers, path: 'manufacturers' do

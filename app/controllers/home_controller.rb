@@ -1,6 +1,8 @@
 class HomeController < ApplicationController
-  before_filter :load_search_facets, only: :index
+  before_action :load_search_facets, only: :index
   # TODO: after_filter :register_statistics, only: :index
+
+  skip_before_action :require_confirmed_email, only: [:confirm_email]
 
   def index
     if user_signed_in? && params[:popup_login]
@@ -37,6 +39,9 @@ class HomeController < ApplicationController
 
   def cookies_policy
     @page_title = 'Cookies Policy'
+  end
+
+  def confirm_email
   end
 
   private

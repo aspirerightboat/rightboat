@@ -153,9 +153,4 @@ $ ->
   curPopup = null
   $.fn.displayPopup = ->
     curPopup.modal('hide') if curPopup
-    curPopup = @
-    @.modal('show')
-
-$ ->
-  $('#confirm_email_popup').each ->
-    $(@).displayPopup()
+    curPopup = @.modal('show')

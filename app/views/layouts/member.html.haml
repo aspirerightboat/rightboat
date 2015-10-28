@@ -46,8 +46,6 @@
     = render 'shared/enquiry_popup'
     - if user_signed_in?
       = render 'berth_enquiries/form'
-      - if !current_user.email_confirmed
-        = render 'shared/confirm_email_popup'
     - else
       = render 'shared/session_popup'
 

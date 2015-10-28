@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   after_action :set_visited
 
-  before_filter :global_current_user
+  before_action :global_current_user
 
   include SessionSetting
 
@@ -101,5 +101,11 @@ class ApplicationController < ActionController::Base
 
   def global_current_user
     $current_user = current_user # or store it like this: Thread.current[:current_user] = current_user
+  end
+
+  def require_confirmed_email
+    if user_signed_in? && !current_user.email_confirmed
+      redirect_to confirm_email_home_path
+    end
   end
 end

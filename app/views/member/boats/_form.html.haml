@@ -62,11 +62,11 @@
     .form-group.clearfix
       .col-xs-12
         = f.check_box :accept_toc, checked: @boat.persisted?
-        = f.label :accept_toc, "I have read and accept Rightboat #{link_to 'Terms and Conditions', toc_path, target: '_blank'}".html_safe
+        = f.label :accept_toc, "I have read and accept Rightboat #{link_to 'Terms and Conditions', toc_home_path, target: '_blank'}".html_safe
     .form-group.clearfix
       .col-xs-12
         = f.check_box :agree_privacy_policy, checked: @boat.persisted?
-        = f.label :agree_privacy_policy, "I understand our #{link_to 'Private Advert Pricing Policy', privacy_policy_path, target: '_blank'}".html_safe
+        = f.label :agree_privacy_policy, "I understand our #{link_to 'Private Advert Pricing Policy', privacy_policy_home_path, target: '_blank'}".html_safe
   %fieldset
     %h5 7. Payment:
     .form-group.clearfix

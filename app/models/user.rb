@@ -142,7 +142,7 @@ class User < ActiveRecord::Base
 
   def reconfirm_email_if_changed
     if email_changed? && !id_changed?
-      update_attribute(:email_confirmed, false)
+      update_column(:email_confirmed, false)
       send_email_confirmation
     end
     true

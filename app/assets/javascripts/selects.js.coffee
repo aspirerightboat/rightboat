@@ -1,14 +1,17 @@
 $ ->
 
   $('select.select-general').each ->
+    $this = $(this)
     options = minimumResultsForSearch: Infinity
-    if $(this).hasClass('select-white')
+    if $this.hasClass('select-white')
       options = $.extend(options, dropdownCssClass: 'select-white')
-    $(this).select2(options).on 'change', ->
+    $this.select2(options).on 'change', (e) ->
       $allOption = $(this).find('option[value=\'\']')
       if $allOption.length and $allOption.text().match(/^all$/i)
         if $allOption.is(':selected')
-          $(this).select2 'val', ''
+          $this.select2 'val', ''
+      if $this.attr('id') == 'manufacturer_id'
+        window.syncModel(e.added.id, $this.parents('form').find('#model_id'))
 
   $('select.select-currency').each ->
     $(this).select2
@@ -79,10 +82,21 @@ $ ->
       $('<div>').append $icon
     dropdownCssClass: 'view-mode-dropdown'
 
-  $('.country-select').multipleSelect
+  $('.multiple-country-select').multipleSelect
     placeholder: 'Select Countries...'
     selectAllText: 'Check/Uncheck All'
     selectAllDelimiter: [ '', '' ]
+
+  $('select.country-select').each ->
+    $(this).select2
+      minimumResultsForSearch: Infinity
+      dropdownAutoWidth: true
+      formatSelection: (viewMode, container, escapeMarkup) ->
+        viewMode.text
+      formatResult: (viewMode, container, escapeMarkup) ->
+        ret = '<span'
+        ret += ' class="priority-last"' if /Turkey/.test viewMode.text
+        ret += '>' + viewMode.text + '</span>'
 
   $('select.country-code-select').each ->
     $(this).select2

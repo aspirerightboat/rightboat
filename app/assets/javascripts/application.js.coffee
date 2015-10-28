@@ -89,13 +89,14 @@ $(document).ready ->
     form = this.form
     form.q.value = ''
     form.boat_type[0].checked = true
-    $(form.currency).val('GBP').trigger('change')
-    $(form.length_unit).val('ft').trigger('change')
     $('#price-slider, #length-slider').each ->
-      opts = $(this).slider('option')
-      $slider = $(this)
-      $slider.slider('option', 'values', [opts.min, opts.max])
-      alignSliderLabelPosition($slider)
+      $this = $(this)
+      for i in [0, 1]
+        $(this).data('value' + i, '')
+      reinitSlider($this)
+    $form = $(this).parents('form')
+    $form.find('#s2id_currency').select2 'val', 'GBP'
+    $form.find('#s2id_length_unit').select2 'val', 'ft'
     false
 
   $('[data-toggle="tooltip"]').tooltip()

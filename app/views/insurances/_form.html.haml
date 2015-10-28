@@ -1,0 +1,66 @@
+- current_year = Date.today.year
+
+#insurance-popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+        .h My Right Berths
+      .modal-body
+        %p By filling in a few simple details, we will be able to send your insurance request to Rightboat selected partners who will assist in delivering insurance quotes directly to you.
+        = form_for Insurance.new, html: { class: 'insurance-form' } do |f|
+          .form-group.row
+            .col-md-5.col-xs-12 1. Type of Cover
+            .col-md-5.col-xs-12
+              = select_tag :type_of_cover, options_for_select(Insurance::TYPE_OF_COVERS), class: 'select-white select-general'
+          .form-group.row
+            .col-md-5.col-xs-12 2. Manufacturer
+            .col-md-5.col-xs-12
+              = select_tag :manufacturer_id, options_from_collection_for_select(Manufacturer.all, :id, :name), class: 'select-white select-general'
+          .form-group.row
+            .col-md-5.col-xs-12 3. Model
+            .col-md-5.col-xs-12
+              = select_tag :model_id, options_for_select(Manufacturer.first.models), class: 'select-white select-general'
+          .form-group.row
+            .col-md-5.col-xs-12 4. Age of Vessel
+            .col-md-5.col-xs-12
+              = select_tag :age_of_vessel, options_for_select((current_year - 30)..current_year), class: 'select-white select-general'
+          .form-group.row
+            .col-md-5.col-xs-12 5. Loation
+            .col-md-5.col-xs-12
+              = country_tag(:country_id)
+          .form-group.row
+            .col-md-5.col-xs-12 6. Where Kept
+            .col-md-5.col-xs-12
+              = select_tag :where_kept, options_for_select(Insurance::WHERE_KEPTS), class: 'select-white select-general'
+          .form-group.row
+            .col-md-5.col-xs-12 7. Total Value to Insurance
+            .col-md-5.col-xs-12
+              .rb-control-group
+                .rb-control
+                  = text_field_tag :total_value, nil, class: 'form-control', 'data-validetta' => 'number'
+                .rb-control-group-addon
+                  = currency_tag :currency, current_currency, class: 'select-white select-sm select-currency'
+          .form-group.row
+            .col-md-5.col-xs-12 8.  Years no Claims
+            .col-md-5.col-xs-12
+              = select_tag :years_no_claim, options_for_select(0..30), class: 'select-white select-general'
+
+          .form-group.row
+            .col-md-3.col-xs-12
+              = f.submit 'Submit a Request', class: 'btn-flat'
+            .col-md-9.col-xs-12
+              We will send your enquiry to Rightboat selected partners to assist in your search.
+
+#insurance-result-popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+        .h Message Sent
+      .modal-body
+        %h1.text-center Thank you for your insurance
+        %h4.text-center
+          Your details have been forwarded to select Boat Insurance Specialists and they will be in touch in due course.

@@ -83,11 +83,18 @@ $ ->
 
       values.filter (x) -> (x >= min && x <= max)
 
+    defaultUnit = (field) ->
+      if field == 'length'
+        'ft'
+      else if field == 'price'
+        'GBP'
+
     initSlider = ($slider, fromUnit=null) ->
-      unit = $slider.data('unit')
       field = $slider.data('input')
+      unless unit = $slider.data('unit')
+        unit = defaultUnit()
+        $slider.data('unit', unit)
       fromUnit = unit unless fromUnit
-      $slider.data('unit', unit)
       values = getValues($slider, unit)
 
       len = values.length
@@ -116,7 +123,7 @@ $ ->
       updateSlider($slider, field, values[iValues[0]], 'min', iValues[0] == 0)
       updateSlider($slider, field, values[iValues[1]], 'max', iValues[1] == len - 1)
 
-    reinitSlider = ($slider, oldUnit, unit) ->
+    window.reinitSlider = ($slider, oldUnit=null, unit=null) ->
       $slider.slider('destroy')
       $slider.data('unit', unit)
       initSlider($slider, oldUnit)

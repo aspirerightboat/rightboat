@@ -29,11 +29,14 @@ module BoatsHelper
   end
 
   def similar_link(boat)
+    currency = current_currency || Currency.default
+    price = Currency.convert(boat.price, boat.currency, currency)
     options = {
       exclude: boat.ref_no,
-      currency: boat.currency.name,
-      price_min: boat.price * 8 / 10,
-      price_max: boat.price * 12 / 10
+      currency: currency.name,
+      price_min: (price * 8 / 10).to_i,
+      price_max: (price * 12 / 10).to_i,
+      category_id: boat.category_id
     }
 
     if length = boat.length_m

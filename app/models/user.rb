@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_many :favourites, dependent: :delete_all
   has_many :berth_enquiries, dependent: :destroy
   has_many :insurances, dependent: :destroy
+  has_many :finances, dependent: :destroy
   has_one :information, class_name: 'UserInformation', inverse_of: :user, dependent: :destroy
   has_one :broker_info, dependent: :destroy
   has_one :user_alert, dependent: :destroy

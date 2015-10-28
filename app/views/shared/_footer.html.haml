@@ -17,7 +17,7 @@
             /%li= link_to 'Marine Services', marine_services_home_path
             %li= link_to 'Sell my boat', sell_my_boats_home_path
             %li= link_to 'Berths', '#', data: {'require-login' => true, toggle: 'modal', target: '#berths-popup'}
-            %li= link_to 'Finance', 'javascript: void(0);'
+            %li= link_to 'Finance', '#', data: {'require-login' => true, toggle: 'modal', target: '#finance-popup'}
             %li= link_to 'Insurance', '#', data: {'require-login' => true, toggle: 'modal', target: '#insurance-popup'}
           %ul.col-xs-6.col-sm-3.social-links
             %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link'

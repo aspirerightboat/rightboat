@@ -8,7 +8,7 @@ CarrierWave.configure do |config|
       endpoint: 'https://s3.eu-central-1.amazonaws.com'
   }
 
-  config.asset_host = 'https://d2qh54gyqi6t5f.cloudfront.net'
+  config.asset_host = 'https://d2qh54gyqi6t5f.cloudfront.net' unless Rails.env.development?
 
   config.fog_directory  = 'rightboat'
   # config.fog_public     = true

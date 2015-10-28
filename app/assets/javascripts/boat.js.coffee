@@ -95,7 +95,7 @@ $ ->
         $.each enquiry.similar_boats, ->
           $similar_boats.append(
             $('<div class="col-xs-4 col-sm-3 col-lg-2">').append(
-              $('<a>').attr('href', '/boats/' + @slug).append(
+              $('<a>').attr('href', '/boats-for-sale/' + @slug).append(
                 $('<img>').attr('src', @primary_image.mini))))
     .error (resp)->
       # $this.renderCaptcha()

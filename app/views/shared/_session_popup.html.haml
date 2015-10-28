@@ -12,7 +12,7 @@
             = form_tag user_session_path, class: 'session-form' do
               .form-group
                 = label_tag :email, 'Account'
-                = text_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Username or Email'
+                = text_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Email'
               .form-group
                 = label_tag :password
                 = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Password'

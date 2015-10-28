@@ -24,3 +24,4 @@ $ ->
 $(document).ready ->
   $('select#boat_manufacturer_id').loadModelsOfManufacturer('select#boat_model_id')
   $('select#q_manufacturer_id').loadModelsOfManufacturer('select#q_model_id')
+  $('select#buyer_guide_manufacturer_id').loadModelsOfManufacturer('select#buyer_guide_model_id')

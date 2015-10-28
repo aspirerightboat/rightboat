@@ -17,17 +17,18 @@
     - else
       = render 'shared/navbar'
 
-
     #content-wrapper
       = yield
 
     = render 'shared/footer'
 
-    = render 'shared/session_popup' unless user_signed_in?
     = render 'shared/enquiry_popup'
     = render 'shared/phone_popup'
     - if user_signed_in?
       = render 'berth_enquiries/form'
+      = render 'insurances/form'
+    - else
+      = render 'shared/session_popup'
 
     - if content_for? :body_scripts
       = yield :body_scripts

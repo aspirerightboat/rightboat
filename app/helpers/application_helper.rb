@@ -71,4 +71,8 @@ module ApplicationHelper
     code, phone = phone_with_code.split('-')
     "+(#{code}) #{phone}"
   end
+
+  def country_tag(name)
+    return select_tag(name, options_for_select(Country.country_options), prompt: 'Please select...', placeholder: 'Please select...', class: 'select-white country-select')
+  end
 end

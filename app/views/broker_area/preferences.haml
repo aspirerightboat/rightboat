@@ -2,18 +2,18 @@
   %h1 Preferences
 
   %h2 Change Password
-  = form_tag update_preferences_broker_area_path, style: 'position: relative' do
+  = form_tag change_password_broker_area_path, style: 'position: relative' do
     .row
       .col-sm-6.col-xs-12
         .form-group
           = label_tag :old_password
-          = text_field_tag :old_password, nil, class: 'form-control'
+          = password_field_tag :old_password, nil, class: 'form-control'
         .form-group
-          = label_tag :new_password
-          = text_field_tag :new_password, nil, class: 'form-control'
+          = label_tag :password
+          = password_field_tag :password, nil, class: 'form-control'
         .form-group
           = label_tag :password_confirmation, 'Repeat password'
-          = text_field_tag :password_confirmation, nil, class: 'form-control'
+          = password_field_tag :password_confirmation, nil, class: 'form-control'
     .row
       .col-sm-6.col-xs-12.form-actions
         %button.btn-flat.btn-block(type="submit") Change

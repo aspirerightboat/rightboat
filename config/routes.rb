@@ -117,6 +117,7 @@ Rails.application.routes.draw do
     get :getting_started
     get :details
     post :update_details
+    post :change_password
     get :preferences
     post :update_preferences
     get :charges

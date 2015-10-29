@@ -26,6 +26,21 @@ class BrokerAreaController < ApplicationController
   def preferences
   end
 
+  def change_password
+    @user = current_user
+    if !@user.valid_password?(params[:old_password])
+      redirect_to({action: :preferences}, alert: 'Old password is incorrect')
+      return
+    end
+
+    if @user.update_attributes(params.permit(:password, :password_confirmation))
+      sign_in @user, bypass: true
+      redirect_to({action: :preferences}, notice: 'Your settings was saved')
+    else
+      redirect_to({action: :preferences}, alert: current_user.errors.full_messages.join('. '))
+    end
+  end
+
   def update_preferences
     redirect_to({action: :details}, notice: 'coming soon')
   end

@@ -3,7 +3,7 @@ module QrcodeHelper
 
   def render_qr_code(url, size = 3)
     return if url.blank?
-    qr = RQRCode::QRCode.new(url, size: 10)
+    qr = safe_qr_code(url)
     sizeStyle = "width: #{size}px; height: #{size}px;"
 
     content_tag :table, class: 'qrcode' do
@@ -17,6 +17,18 @@ module QrcodeHelper
         concat(tr)
       end
     end
+  end
+
+  def safe_qr_code(url)
+    qr_size = 7
+    while qr_size <= 12
+      begin
+        return RQRCode::QRCode.new(url, size: qr_size)
+      rescue RQRCode::QRCodeRunTimeError
+        qr_size += 1
+      end
+    end
+    nil
   end
 
 end

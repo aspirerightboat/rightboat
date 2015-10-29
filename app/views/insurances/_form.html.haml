@@ -21,7 +21,7 @@
           .form-group.row
             .col-md-5.col-xs-12 3. Model
             .col-md-5.col-xs-12
-              = select_tag :model_id, options_for_select(Manufacturer.first.models), class: 'select-white select-general'
+              = select_tag :model_id, (options_for_select(Manufacturer.first.models) if Manufacturer.first), class: 'select-white select-general'
           .form-group.row
             .col-md-5.col-xs-12 4. Age of Vessel
             .col-md-5.col-xs-12

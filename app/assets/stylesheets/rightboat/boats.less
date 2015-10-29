@@ -178,7 +178,7 @@ a.fav-link.active:before {
 .boat-img-thumb a {
   &:extend(.embed-responsive);
   padding-bottom: 66.6667%;
-  background: @rb-color-dark;
+  background: #f0f0f0;
   .overlay { display: none; }
   &:hover {
     img { transform: scale(1.2); }
@@ -249,6 +249,10 @@ a.pdf-link {
       bottom: 0;
     }
   }
+}
+.no-image {
+  background: #f0f0f0 image-url('logo-mini.png') no-repeat center center;
+  padding-bottom: 66.66%;
 }
 
 #boats-show {

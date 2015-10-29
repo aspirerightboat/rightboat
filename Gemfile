@@ -53,8 +53,7 @@ gem 'delayed_job_active_record'
 gem 'clockwork'
 
 # pdf generating
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
+gem 'wicked_pdf' # you need install wkhtmltopdf binary manually to have the latest version. see: http://wkhtmltopdf.org/downloads.html
 gem 'rqrcode'
 
 # for importing module

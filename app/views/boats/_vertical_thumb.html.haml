@@ -5,7 +5,10 @@
                                                               'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
   = link_to boat_path(boat.slug) do
     .boat-img-thumb
-      = image_tag boat.primary_image.file.url(:thumb)
+      - if boat.primary_image
+        = image_tag boat.primary_image.file.url(:thumb)
+      - else
+        .no-image
     .caption
       %h4= boat.manufacturer
       %h5= boat.model

@@ -488,7 +488,6 @@ GEM
     webrobots (0.1.1)
     wicked_pdf (0.11.0)
       rails
-    wkhtmltopdf-binary (0.9.9.3)
 
 PLATFORMS
   ruby
@@ -550,7 +549,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   validate_url
   wicked_pdf
-  wkhtmltopdf-binary
 
 BUNDLED WITH
    1.10.6

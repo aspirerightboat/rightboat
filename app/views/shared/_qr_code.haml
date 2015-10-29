@@ -1,4 +1,4 @@
-- qr = RQRCode::QRCode.new(url, size: size)
+- qr = safe_qr_code(url)
 %table.qr-code
   - qr.modules.each_index do |x|
     %tr

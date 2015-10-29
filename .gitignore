@@ -19,7 +19,6 @@ config/smtp.yml
 db/schema.rb
 
 # uploaded files
-public/rb-assets
 public/uploads
 public/boat_images
 import_data

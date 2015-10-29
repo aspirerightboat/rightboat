@@ -13,11 +13,11 @@
           .form-group.row
             .col-md-5.col-xs-12 1. Manufacturer
             .col-md-5.col-xs-12
-              = select_tag :manufacturer_id, options_from_collection_for_select(Manufacturer.all, :id, :name), prompt: 'Please select', class: 'select-white select-general'
+              = select_tag :manufacturer_id, options_from_collection_for_select(Manufacturer.order(:name), :id, :name), prompt: 'Please select', class: 'select-white select-general'
           .form-group.row
             .col-md-5.col-xs-12 2. Model
             .col-md-5.col-xs-12
-              = select_tag :model_id, (options_for_select(Manufacturer.first.models) if Manufacturer.first), prompt: 'Please select', class: 'select-white select-general'
+              = select_tag :model_id, (options_for_select(Manufacturer.order(:name).first.try(:models))), prompt: 'Please select', class: 'select-white select-general'
           .form-group.row
             .col-md-5.col-xs-12 3. Age of Vessel
             .col-md-5.col-xs-12
@@ -35,7 +35,7 @@
                 .rb-control-group-addon
                   = currency_tag :price_currency, current_currency, class: 'select-white select-sm select-currency'
           .form-group.row
-            .col-md-5.col-xs-12 5. Loan Amount Required
+            .col-md-5.col-xs-12 6. Loan Amount Required
             .col-md-5.col-xs-12
               .rb-control-group
                 .rb-control

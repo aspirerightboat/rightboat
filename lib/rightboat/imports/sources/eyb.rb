@@ -46,6 +46,7 @@ module Rightboat
 
         def process_job(job)
           doc = job[:ad]
+          comments_en = nil
           boat = SourceBoat.new
 
           doc.children.each do |node|
@@ -64,9 +65,17 @@ module Rightboat
                   boat.send("#{attr}=", val)
                 end
               else
-                boat.set_missing_attr(key, val) if val.length < 256 # Ignore long values like "Comments En"
+                if key == 'comments_en'
+                  comments_en = val
+                elsif val.length < 256 # Ignore other long values
+                  boat.set_missing_attr(key, val)
+                end
               end
             end
+          end
+
+          unless comments_en.blank?
+            boat.description = comments_en # Replace foreign descriptions with English one
           end
 
           boat

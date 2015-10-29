@@ -1,6 +1,6 @@
 ActiveAdmin.register Boat do
   permit_params :manufacturer_id, :model_id, :price, :currency_id, :year_built,
-                :featured, :recently_reduced, :under_offer, :new_boat,
+                :featured, :recently_reduced, :under_offer, :new_boat, :description,
                 :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id
 
   menu priority: 2

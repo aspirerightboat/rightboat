@@ -72,7 +72,7 @@ module ApplicationHelper
     "+(#{code}) #{phone}"
   end
 
-  def country_tag(name)
-    return select_tag(name, options_for_select(Country.country_options), prompt: 'Please select...', placeholder: 'Please select...', class: 'select-white country-select')
+  def country_tag(name, selected=nil, options={})
+    select_tag(name, options_for_select(Country.country_options, selected), options)
   end
 end

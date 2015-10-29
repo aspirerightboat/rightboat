@@ -1,3 +1,10 @@
+<% if :production %>
+check process dj_rightboat with pidfile <%= fetch :deploy_to %>/current/tmp/pids/delayed_job.pid
+start program = "/home/rightboat/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :deploy_to %>/current/bin/delayed_job start'" as uid rightboat and gid rightboat
+stop program = "/home/rightboat/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :deploy_to %>/current/bin/delayed_job stop'" as uid rightboat and gid rightboat
+<% else %>
 check process dj_rightboat with pidfile <%= fetch :deploy_to %>/current/tmp/pids/delayed_job.pid
 start program = "/home/ubuntu/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :deploy_to %>/current/bin/delayed_job start'" as uid ubuntu and gid ubuntu
 stop program = "/home/ubuntu/.rvm/bin/rvm-shell -c 'RAILS_ENV=<%= fetch :rails_env %> <%= fetch :deploy_to %>/current/bin/delayed_job stop'" as uid ubuntu and gid ubuntu
+<% end %>
+

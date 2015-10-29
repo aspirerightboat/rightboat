@@ -1,7 +1,24 @@
-server '52.28.195.70',
-       user: 'ubuntu',
+server '52.29.91.175',
+       user: 'rightboat',
        roles: %w{web app db import}
 
+server '52.29.100.91',
+       user: 'rightboat',
+       roles: %w{web app db import}
+
+server '52.28.217.72',
+       user: 'rightboat',
+       roles: %w{app db import}
+
+#set :ssh_options, {keys: ['~/.ssh/StagingKey.pem']}
+
+set :application, 'rightboat.com'
+set :deploy_to, '/opt/applications/rightboat.com'
+set :log_level, :info
+set :branch, ENV['BRANCH'] || 'master'
+
+set :passenger_in_gemfile, false
+set :passenger_restart_with_touch, true
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.

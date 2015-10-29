@@ -1,6 +1,6 @@
 #search-wrapper.container
   #home-search.container
-    = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
+    %a.reset-search-form{title: 'Click here to reset search'}= image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
     #home-search-form
       %h2
         The <strong>global choice</strong><br/>
@@ -48,7 +48,6 @@
                   = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm select-general'
           .row
             .col-xs-12.nice-buttons.last-row-pad
-              %button.transparent-button.reset-search-form(type="button") Rightboat
               %button.nice-button(type="submit") Search
 
         .form-group.row

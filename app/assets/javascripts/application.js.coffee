@@ -86,15 +86,15 @@ $(document).ready ->
       $(this).find('.glyphicon').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-right')
 
   $('.reset-search-form').click ->
-    form = this.form
-    form.q.value = ''
-    form.boat_type[0].checked = true
-    $('#price-slider, #length-slider').each ->
+    $form = $('#home-search-form form')
+    $form.find('#search-input').val('')
+    $form.find('#boat_type_all').click()
+    $form.find('#price-slider, #length-slider').each ->
       $this = $(this)
       for i in [0, 1]
         $(this).data('value' + i, '')
       reinitSlider($this)
-    $form = $(this).parents('form')
+
     $form.find('#s2id_currency').select2 'val', 'GBP'
     $form.find('#s2id_length_unit').select2 'val', 'ft'
     false

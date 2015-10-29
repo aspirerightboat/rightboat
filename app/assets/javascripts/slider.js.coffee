@@ -92,7 +92,7 @@ $ ->
     initSlider = ($slider, fromUnit=null) ->
       field = $slider.data('input')
       unless unit = $slider.data('unit')
-        unit = defaultUnit()
+        unit = defaultUnit(field)
         $slider.data('unit', unit)
       fromUnit = unit unless fromUnit
       values = getValues($slider, unit)

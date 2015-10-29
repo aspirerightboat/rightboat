@@ -36,7 +36,8 @@ module BoatsHelper
       currency: currency.name,
       price_min: (price * 8 / 10).to_i,
       price_max: (price * 12 / 10).to_i,
-      category_id: boat.category_id
+      boat_type: [boat.boat_type.try(&:name_stripped)],
+      category: [boat.category_id]
     }
 
     if length = boat.length_m

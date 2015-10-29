@@ -29,7 +29,8 @@ class Model < ActiveRecord::Base
   end
 
   def full_name
-    [self.manufacturer, self.name].reject(&:blank?).join(' ')
+    #[self.manufacturer, self.name].reject(&:blank?).join(' ')
+    name
   end
 
 

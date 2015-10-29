@@ -19,12 +19,12 @@
         %p.lead.text-center Your search resulted in 10,000 plus boats. Please refine your search.
       - else
         = render @boats
+        - if @boats.total_pages > 1
+          .row
+            = link_to '#', class: 'view-more-link' do
+              %span VIEW MORE
+              %span
+                %i.glyphicon.glyphicon-chevron-down
     - else
       %p.lead.text-center No boats were found matching your search criteria. Please try again.
 
-  - if @boats.total_pages > 1
-    .row
-      = link_to '#', class: 'view-more-link' do
-        %span VIEW MORE
-        %span
-          %i.glyphicon.glyphicon-chevron-down

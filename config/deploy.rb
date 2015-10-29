@@ -29,6 +29,7 @@ end
 
 def template(file)
   erb = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
-  ERB.new(erb).result(binding)
+  b = binding
+  b.local_variable_set(:rails_env, fetch(:rails_env))
+  ERB.new(erb).result(b)
 end
-

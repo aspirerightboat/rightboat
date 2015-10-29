@@ -20,7 +20,7 @@ class SearchController < ApplicationController
       object.is_a?(Model) ? object.name_with_manufacturer : object.name
     end
 
-    render json: ret
+    render json: ret.sort
   end
 
   def manufacturer_model
@@ -37,7 +37,7 @@ class SearchController < ApplicationController
       object.is_a?(Model) ? object.name_with_manufacturer : object.name
     end
 
-    render json: ret
+    render json: ret.sort
   end
 
   def results

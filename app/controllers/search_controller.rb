@@ -15,8 +15,9 @@ class SearchController < ApplicationController
     search = Sunspot.search(*klass_group) do |q|
       q.with :name_ngrme, params[:q]
     end
+
     ret = search.results.map do |object|
-      object.is_a?(Model) ? object.full_name : object.name
+      object.is_a?(Model) ? object.name_with_manufacturer : object.name
     end
 
     render json: ret
@@ -32,10 +33,11 @@ class SearchController < ApplicationController
       end
     end
 
-    json = search.results.map do |object|
-      object.is_a?(Manufacturer) ? object.name : object.full_name
+    ret = search.results.map do |object|
+      object.is_a?(Model) ? object.name_with_manufacturer : object.name
     end
-    render json: json
+
+    render json: ret
   end
 
   def results

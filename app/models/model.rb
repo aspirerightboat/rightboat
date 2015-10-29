@@ -15,10 +15,10 @@ class Model < ActiveRecord::Base
 
   searchable do
     string :name do |model|
-      model.full_name
+      model.name_with_manufacturer
     end
     string :name_ngrme, as: :name_ngrme do |model|
-      model.full_name
+      model.name_with_manufacturer
     end
     integer :manufacturer_id
   end
@@ -28,7 +28,7 @@ class Model < ActiveRecord::Base
     name
   end
 
-  def full_name
+  def name_with_manufacturer
     [self.manufacturer, self.name].reject(&:blank?).join(' ')
   end
 

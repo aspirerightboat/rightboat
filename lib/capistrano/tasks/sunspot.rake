@@ -1,6 +1,6 @@
 namespace :deploy do
   before :updated, :setup_solr_data_dir do
-    on roles(:app) do
+    on roles(:import) do
       unless test "[ -d #{shared_path}/solr/data ]"
         execute :mkdir, "-p #{shared_path}/solr/data"
       end
@@ -13,9 +13,9 @@ namespace :solr do
   %w[start stop].each do |command|
     desc "#{command} solr"
     task command do
-      on roles(:app) do
+      on roles(:import) do
         solr_pid = "#{shared_path}/pids/sunspot-solr.pid"
-        if command == "start" or (test "[ -f #{solr_pid} ]" and test "kill -0 $( cat #{solr_pid} )")
+        if command == 'start' or (test "[ -f #{solr_pid} ]" and test "kill -0 $( cat #{solr_pid} )")
           within current_path do
             with rails_env: fetch(:rails_env, 'production') do
               execute :bundle, 'exec', 'sunspot-solr', command, "--port=8983 --solr-home=#{release_path}/solr --data-directory=#{shared_path}/solr/data --pid-dir=#{shared_path}/pids"
@@ -26,7 +26,7 @@ namespace :solr do
     end
   end
 
-  desc "restart solr"
+  desc 'restart solr'
   task :restart do
     invoke 'solr:stop'
     invoke 'solr:start'
@@ -34,17 +34,17 @@ namespace :solr do
 
   after 'deploy:finished', 'solr:restart'
 
-  desc "reindex the whole solr database"
+  desc 'reindex the whole solr database'
   task :reindex do
     invoke 'solr:stop'
-    on roles(:app) do
+    on roles(:import) do
       execute :rm, "-rf #{shared_path}/solr/data"
     end
     invoke 'solr:start'
-    on roles(:app) do
+    on roles(:import) do
       within current_path do
         with rails_env: fetch(:rails_env, 'production') do
-          info "Reindexing Solr database"
+          info 'Reindexing Solr database'
           execute :bundle, 'exec', :rake, 'sunspot:solr:reindex[,,true]'
         end
       end

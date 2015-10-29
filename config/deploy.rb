@@ -18,12 +18,6 @@ set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/upl
 # Default value for keep_releases is 5
 set :keep_releases, 3
 
-set :passenger_in_gemfile, false
-set :passenger_roles, :app
-set :passenger_restart_with_touch, true
-set :passenger_restart_command, 'bundle exec passenger-config restart-app'
-set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
-
 set :rvm_type, :user
 set :rvm_ruby_version, '2.2.3'
 
@@ -37,3 +31,4 @@ def template(file)
   erb = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
   ERB.new(erb).result(binding)
 end
+

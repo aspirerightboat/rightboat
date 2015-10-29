@@ -8,7 +8,7 @@ namespace :workers do
     end
 
     def delayed_job_roles
-      fetch(:delayed_job_server_role, :app)
+      fetch(:delayed_job_server_role, :import)
     end
 
     desc 'Setup monitrc for delayed_job process'

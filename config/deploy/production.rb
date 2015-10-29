@@ -1,24 +1,23 @@
-server '52.29.91.175',
-       user: 'rightboat',
-       roles: %w{web app db import}
+server '52.29.91.175', user: 'rightboat', roles: %w{web app app1}
+server '52.29.100.91', user: 'rightboat', roles: %w{web app app2}
+server '52.28.217.72', user: 'rightboat', roles: %w{db import}
 
-server '52.29.100.91',
-       user: 'rightboat',
-       roles: %w{web app db import}
-
-server '52.28.217.72',
-       user: 'rightboat',
-       roles: %w{app db import}
-
-#set :ssh_options, {keys: ['~/.ssh/StagingKey.pem']}
+#set :ssh_options, {keys: ['~/.ssh/ProdKey.pem']}
 
 set :application, 'rightboat.com'
 set :deploy_to, '/opt/applications/rightboat.com'
 set :log_level, :info
 set :branch, ENV['BRANCH'] || 'master'
 
-set :passenger_in_gemfile, false
-set :passenger_restart_with_touch, true
+set :passenger_roles, %w(app app1 app2)
+
+
+# bundle exec cap production deploy #=> deploy all
+# bundle exec cap --roles=app1,import production deploy #=> deploy only specific roles
+# BRANCH=seo_improvements bundle exec cap production deploy #=> deploy specific branch
+
+
+
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.

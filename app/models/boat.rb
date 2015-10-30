@@ -52,25 +52,25 @@ class Boat < ActiveRecord::Base
   end
 
   has_many :favourites, dependent: :delete_all
-  has_many :enquiries, inverse_of: :boat, dependent: :destroy
-  has_many :boat_specifications, inverse_of: :boat, dependent: :destroy
-  has_many :boat_images, inverse_of: :boat, dependent: :destroy
+  has_many :enquiries, dependent: :destroy
+  has_many :boat_specifications, dependent: :delete_all
+  has_many :boat_images, dependent: :destroy
   has_one :primary_image, -> { order(:position) }, class_name: 'BoatImage'
   has_many :slave_images, -> { order(:position).offset(1) }, class_name: 'BoatImage'
-  belongs_to :user,          inverse_of: :boats
-  belongs_to :import,        inverse_of: :boats
-  belongs_to :office,        inverse_of: :boats
-  belongs_to :manufacturer,  inverse_of: :boats
-  belongs_to :model,         inverse_of: :boats
-  belongs_to :engine_manufacturer,  inverse_of: :boats
-  belongs_to :engine_model,  inverse_of: :boats
-  belongs_to :category,      inverse_of: :boats, class_name: 'BoatCategory'
-  belongs_to :boat_type,     inverse_of: :boats
-  belongs_to :drive_type,    inverse_of: :boats
-  belongs_to :fuel_type,     inverse_of: :boats
-  belongs_to :vat_rate,      inverse_of: :boats
-  belongs_to :currency,      inverse_of: :boats
-  belongs_to :country,       inverse_of: :boats
+  belongs_to :user
+  belongs_to :import
+  belongs_to :office
+  belongs_to :manufacturer
+  belongs_to :model
+  belongs_to :engine_manufacturer
+  belongs_to :engine_model
+  belongs_to :category, class_name: 'BoatCategory'
+  belongs_to :boat_type
+  belongs_to :drive_type
+  belongs_to :fuel_type
+  belongs_to :vat_rate
+  belongs_to :currency
+  belongs_to :country
 
   # solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
   validates_presence_of :manufacturer, :model

@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
   before_validation :ensure_username
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
-  attr_accessor :updated_by_admin
+  attr_accessor :updated_by_admin, :current_password
 
   delegate :country, to: :address
 

@@ -20,7 +20,7 @@ $ ->
       data: $this.serializeObject()
     .success ->
       $this.prepend('<div class="alert alert-success">Changes saved successfully.</div>')
-    .error ->
+    .error (response)->
       errors = response.responseJSON.errors
       $errors = $('<div class="alert alert-danger">')
       Object.keys(errors).forEach (key) ->

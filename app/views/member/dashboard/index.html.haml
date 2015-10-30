@@ -25,9 +25,23 @@
           .form-group
             = f.label :phone, 'Tel/Mobile:'
             = f.text_field :phone, class: 'form-control'
-
+          .form-group
+            %h3
+              Change password
+              %br
+              %small
+                %i (Leave blank if you don't want to change)
+          .form-group
+            = f.label :current_password, 'Current Password:'
+            = f.password_field :current_password, class: 'form-control'
+          .form-group
+            = f.label :password, 'Password:'
+            = f.password_field :password, class: 'form-control'
+          .form-group
+            = f.label :password_confirmation, 'Password Confirmation:'
+            = f.password_field :password_confirmation, class: 'form-control'
       .row
-        .col-sm-6.col-xs-12.form-actions
+        .col-sm-12.col-xs-12.form-actions
           = button_tag 'Save Changes', type: 'submit', class: 'btn-flat btn-block'
   - else
     .alert.alert-info(role="alert")

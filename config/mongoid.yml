@@ -23,7 +23,7 @@ production:
     default:
       database: rightboat_v2
       hosts:
-        - 52.29.79.44:27017
+        - 172.31.24.106:27017
       options:
   options:
 

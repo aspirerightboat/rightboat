@@ -1,6 +1,6 @@
-server '52.29.91.175', user: 'rightboat', roles: %w{web app app1}
-server '52.29.100.91', user: 'rightboat', roles: %w{web app app2}
-server '52.28.217.72', user: 'rightboat', roles: %w{db import}
+server '52.28.252.119', user: 'rightboat', roles: %w{web app app1}
+server '52.29.96.125', user: 'rightboat', roles: %w{web app app2}
+server '52.29.79.44', user: 'rightboat', roles: %w{db import}
 
 set :ssh_options, {keys: ['~/.ssh/ProdKey.pem']}
 

@@ -18,12 +18,29 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def update
+    user_params = params.require(:user).permit(:title, :first_name, :last_name, :email, :phone, :password, :password_confirmation)
+    update_params = user_params
     user = current_user
 
-    if user.update(params.require(:user).permit(:title, :first_name, :last_name, :email, :phone))
-      render json: {}
+    if update_params[:password].blank?
+      update_params.delete('password')
+      update_params.delete('password_confirmation')
+
+      user.update(update_params)
     else
-      render json: user.errors.full_messages, root: false, status: 422
+      if user.valid_password?(params[:user][:current_password])
+        if user.update(update_params)
+          sign_in user.reload
+        end
+      else
+        user.errors.add(:current_password, 'is invalid')
+      end
+    end
+
+    if user.errors.any?
+      render json: { errors: user.errors }, status: 422
+    else
+      render json: {}
     end
   end
 

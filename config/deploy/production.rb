@@ -1,6 +1,6 @@
 server 'prod1.rightboat.com', user: 'rightboat', roles: %w{web app app1}
 server 'prod2.rightboat.com', user: 'rightboat', roles: %w{web app app2}
-server 'import.rightboat.com', user: 'rightboat', roles: %w{db import}
+server 'import.rightboat.com', user: 'rightboat', roles: %w{web app db import}
 
 set :ssh_options, {keys: ['~/.ssh/ProdKey.pem']}
 
@@ -13,7 +13,7 @@ set :passenger_roles, %w(app app1 app2)
 
 
 # bundle exec cap production deploy #=> deploy all
-# bundle exec cap --roles=app1,import production deploy #=> deploy only specific roles
+# bundle exec cap --roles=app1,app2 production deploy #=> deploy only specific roles
 # BRANCH=seo_improvements bundle exec cap production deploy #=> deploy specific branch
 
 

@@ -3,7 +3,7 @@
 html, body {
   color: black;
   font-family: Helvetica Neue, Helvetica, Arial, Sans-Serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: normal;
   line-height: 1.4em;
 }
@@ -22,12 +22,12 @@ html, body {
   padding: 20px;
   position: relative;
   box-sizing: border-box;
-  max-height: 150px;
+  max-height: 300px;
   .ClearFix();
 }
 .broker-logo {
   float: left;
-  width: 30%;
+  width: 50%;
   //text-align: center;
   img {
     height: 75px;
@@ -35,7 +35,7 @@ html, body {
 }
 .broker-info {
   float: left;
-  width: 35%;
+  width: 50%;
 }
 
 .boat-main-image {
@@ -79,10 +79,10 @@ h1, h2 {
   margin: 0 0 18px;
 }
 h1 {
-  font-size: 34px;
+  font-size: 32px;
 }
 h2 {
-  font-size: 30px;
+  font-size: 28px;
 }
 
 p {
@@ -101,6 +101,7 @@ strong, .boat-description b { font-weight: bold; }
   tr:not(:last-child) {
     td, th { border-bottom: 1px solid #60bbff; }
   }
+  th { text-align: left; }
   tr, td, th, tbody {
     page-break-inside: avoid !important;
   }
@@ -124,15 +125,33 @@ h3 {
     .ClearFix();
 
     .thumb:first-child {
-      padding-right: 2%;
+      padding-right: 4%;
     }
   }
   .thumb {
     float: left;
-    width: 49%;
+    width: 48%;
     position: relative;
   }
   img {
+    width: 100%;
+  }
+}
+
+#footer {
+  color: #60bbff;
+  font-size: 12px;
+
+  .company-site {
+    text-align: right;
+    line-height: 13px;
+
+    .homepage {
+      font-size: 15px;
+    }
+  }
+
+  .company-logo img {
     width: 100%;
   }
 }

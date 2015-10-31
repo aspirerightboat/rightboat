@@ -12,7 +12,16 @@ class BoatsController < ApplicationController
 
   def pdf
     @boat = Boat.find(params[:boat_id])
-    render pdf: 'pdf', layout: 'pdf'
+    render pdf: 'pdf',
+           layout: 'pdf',
+           margin: { bottom: 16 },
+           footer: {
+               html: {
+                   template:  'shared/_pdf_footer.html.haml',
+                   layout:    'pdf'
+               }
+           }
+
   end
 
   private

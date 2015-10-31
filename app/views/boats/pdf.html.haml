@@ -52,11 +52,12 @@
 
 .page-break
 
-%h3 Images
+%h3
+  Images
+  - if @boat.slave_images.count > 24
+    %small (More available online)
 .boat-thumbs
   - @boat.slave_images.limit(24).each_slice(2) do |slice|
     .thumbs-row
       - slice.each do |img|
         .thumb= wicked_pdf_image_tag img.file_url(:thumb)
-  - if @boat.slave_images.count > 24
-    %p More available online

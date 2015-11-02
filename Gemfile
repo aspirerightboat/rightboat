@@ -85,6 +85,5 @@ end
 
 group :production, :staging do
   gem 'daemons'
-  gem 'passenger'
 end
 

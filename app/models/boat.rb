@@ -123,57 +123,12 @@ class Boat < ActiveRecord::Base
     "RB#{100000 + id}"
   end
 
-  def spec_attributes(context, full_spec = false)
-    currency = (context.current_currency if context)
-    l_unit = (context.current_length_unit if context)
-
-    ret = []
-    ret << ['Seller', user.name] if full_spec
-    ret << ['Price', display_price(currency), 'price']
-    ret << ['LOA', display_length(l_unit), 'loa']
-    ret << ['Manufacturer', manufacturer]
-    ret << ['Model', model]
-    ret << ['Boat Type', boat_type]
-    ret << ['Year Built', year_built]
-    ret << ['Location', country.to_s]
-    ret << ['Tax Status', tax_status]
-    ret << ['Engine make/model', engine_model]
-    ret << ['Fuel', fuel_type]
-
-    if full_spec
-      ret.concat boat_specifications.visible_ordered_specs
-    else
-      ret.concat Specification.visible_ordered_boat_specs(self)
-    end
-
-    ret << ['RB Boat Ref', ref_no]
-    ret.map { |k, v| [k, v.presence || 'N/A'] }
-  end
-
   def full_location
     [location, country.try(:name)].reject(&:blank?).join(', ')
   end
 
-  def display_length(unit = nil)
-    return '' if (length_m.nil? || length_m <= 0)
-    unit ||= 'm'
-    length = self.length_m.to_f
-    length = unit.to_s =~ /ft/i ? length_ft.round : length.round
-    "#{length} #{unit}"
-  end
-
   def length_ft
     (length_m * 3.2808399 * 100).round / 100.0
-  end
-
-  def display_price(current_currency = nil)
-    if poa?
-      I18n.t('poa').html_safe
-    else
-      cur = current_currency || currency || Currency.default
-      pric = Currency.convert(price, currency, cur)
-      number_to_currency(pric, unit: cur.symbol.html_safe, precision: 0)
-    end
   end
 
   def live?

@@ -1,10 +1,19 @@
 module BoatsHelper
-  def boat_length(boat, unit = current_length_unit)
-    boat.display_length(unit)
+  def boat_length(boat, unit = nil)
+    return '' if !boat.length_m || boat.length_m <= 0
+    unit ||= current_length_unit || 'm'
+    length = unit == 'ft' ? boat.length_ft.round : boat.length_m.round
+    "#{length} #{unit}"
   end
 
-  def boat_price(boat, currency = current_currency)
-    boat.display_price(currency)
+  def boat_price(boat, target_currency = nil)
+    if boat.poa?
+      I18n.t('poa')
+    else
+      target_currency ||= current_currency || Currency.default
+      price = Currency.convert(boat.price, boat.currency || Currency.default, target_currency)
+      number_to_currency(price, unit: target_currency.symbol, precision: 0)
+    end
   end
 
   def favourite_link_to(boat)
@@ -42,7 +51,7 @@ module BoatsHelper
       category: [boat.category_id]
     }
 
-    if length = boat.length_m
+    if (length = boat.length_m)
       options = options.merge(
         length_min: length * 8 / 10,
         length_max: length * 12 / 10
@@ -50,5 +59,29 @@ module BoatsHelper
     end
 
     search_path(options)
+  end
+
+  def boat_specs(boat, full_spec = false)
+    ret = []
+    ret << ['Seller', boat.user.name] if full_spec
+    ret << ['Price', boat_price(boat), 'price']
+    ret << ['LOA', boat_length(boat), 'loa']
+    ret << ['Manufacturer', boat.manufacturer]
+    ret << ['Model', boat.model]
+    ret << ['Boat Type', boat.boat_type]
+    ret << ['Year Built', boat.year_built]
+    ret << ['Location', boat.country.to_s]
+    ret << ['Tax Status', boat.tax_status]
+    ret << ['Engine make/model', boat.engine_model]
+    ret << ['Fuel', boat.fuel_type]
+
+    if full_spec
+      ret.concat boat.boat_specifications.visible_ordered_specs
+    else
+      ret.concat Specification.visible_ordered_boat_specs(boat)
+    end
+
+    ret << ['RB Boat Ref', boat.ref_no]
+    ret.map { |k, v| [k, v.presence || 'N/A'] }
   end
 end

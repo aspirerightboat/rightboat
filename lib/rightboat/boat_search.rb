@@ -19,16 +19,16 @@ module Rightboat
     def retrieve_boats(includes = nil, per_page = 30)
       match_conidtion = Proc.new do |q, field, param_field|
         param_field ||= field
-        q.with field, @params[param_field] unless @params[param_field].blank?
+        q.with field, @params[param_field] if @params[param_field].present?
       end
 
-      includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country] if !includes
+      includes ||= [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
       search = Boat.solr_search(include: includes) do |q|
-        q.without :ref_no, @params[:exclude] unless @params[:exclude].blank?
-        q.with :ref_no, @params[:ref_no] unless @params[:ref_no].blank?
+        q.without :ref_no, @params[:exclude] if @params[:exclude].present?
+        q.with :ref_no, @params[:ref_no] if @params[:ref_no].present?
         q.with :live, true
-        q.fulltext @params[:q] unless @params[:q].blank?
-        q.paginate page: @params[:page].to_i, per_page: per_page
+        q.fulltext @params[:q] if @params[:q].present?
+        q.paginate page: @params[:page].presence.try(:to_i) || 1, per_page: per_page
 
         q.order_by @params[:order].to_sym, @params[:order_dir].to_sym if @params[:order]
 
@@ -58,16 +58,16 @@ module Rightboat
         match_conidtion.call(q, :category_id, :category)
 
         # price
-        q.with(:price).greater_than_or_equal_to(@params[:price_min]) unless @params[:price_min].blank?
-        q.with(:price).less_than_or_equal_to(@params[:price_max]) unless @params[:price_max].blank?
+        q.with(:price).greater_than_or_equal_to(@params[:price_min]) if @params[:price_min].present?
+        q.with(:price).less_than_or_equal_to(@params[:price_max]) if @params[:price_max].present?
 
         # length
-        q.with(:length_m).greater_than_or_equal_to(@params[:length_min]) unless @params[:length_min].blank?
-        q.with(:length_m).less_than_or_equal_to(@params[:length_max]) unless @params[:length_max].blank?
+        q.with(:length_m).greater_than_or_equal_to(@params[:length_min]) if @params[:length_min].present?
+        q.with(:length_m).less_than_or_equal_to(@params[:length_max]) if @params[:length_max].present?
 
         # year
-        q.with(:year).greater_than_or_equal_to(@params[:year_min]) unless @params[:year_min].blank?
-        q.with(:year).less_than_or_equal_to(@params[:year_max]) unless @params[:year_max].blank?
+        q.with(:year).greater_than_or_equal_to(@params[:year_min]) if @params[:year_min].present?
+        q.with(:year).less_than_or_equal_to(@params[:year_max]) if @params[:year_max].present?
 
         # fuel type
         match_conidtion.call(q, :fuel_type)

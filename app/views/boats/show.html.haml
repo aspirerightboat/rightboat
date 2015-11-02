@@ -50,15 +50,12 @@
         .col-sm-5.col-md-7.col-xs-12.pull-right
           %br
           .row
-            - @boat.spec_attributes(self).each_slice(2).each do |spec_group|
+            - boat_specs(@boat).each_slice(2).each do |spec_group|
               - spec_group.each do |spec|
                 .col-md-6.col-xs-12
                   %dl.dl-horizontal
                     %dt= spec[0]
-                    - if spec[2]
-                      %dd{ 'data-attr-name' => spec[2] }= spec[1]
-                    - else
-                      %dd= spec[1]
+                    %dd{'data-attr-name' => spec[2]}= spec[1]
         -# unless @boat.owners_comment.blank?
         -#  %h3 Owners Comment
         -#  %p.owners-commnet= @boat.owners_comment

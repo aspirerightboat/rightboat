@@ -54,8 +54,6 @@ class ApplicationController < ActionController::Base
   def load_search_facets
     search = Sunspot.search(Boat) do |q|
       q.with :live, true
-      q.facet :manufacturer_model
-      q.facet :category_id
       q.facet :country_id
       q.stats :year
       q.stats :price
@@ -67,10 +65,8 @@ class ApplicationController < ActionController::Base
     length_data = search.stats(:length_m).data
 
     country_facet = search.facet(:country_id).rows
-    countries = Country.where(id: country_facet.map(&:value))
-
-    countries.each do |country|
-      country.name = "#{country.name}(#{country_facet.select { |x| x.value == country.id }.first.count})"
+    countries_for_select = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
+      ["#{name} (#{country_facet.find { |x| x.value == id }.count})", id]
     end
 
     @search_facets = {
@@ -79,8 +75,7 @@ class ApplicationController < ActionController::Base
       min_year:   (year_data && year_data['min'].floor) || 1970,
       min_length: (length_data && length_data['min'].floor) || 10,
       max_length: (length_data && length_data['max'].ceil) || 1000,
-      categories: BoatCategory.where(id: search.facet(:category_id).rows.map(&:value)),
-      countries: countries
+      countries_for_select: countries_for_select
     }
   end
 

@@ -1,5 +1,4 @@
 class Boat < ActiveRecord::Base
-  include ActionView::Helpers::NumberHelper
   include AdvancedSolrIndex
 
   extend FriendlyId
@@ -25,11 +24,11 @@ class Boat < ActiveRecord::Base
     integer :manufacturer_id
     integer :model_id
     string :fuel_type do |boat|
-      boat.fuel_type.try(&:name_stripped)
+      boat.fuel_type.try(:name_stripped)
     end
     integer :category_id
     string :boat_type do |boat|
-      boat.boat_type.try(&:name_stripped)
+      boat.boat_type.try(:name_stripped)
     end
     integer :drive_type_id
     integer :country_id

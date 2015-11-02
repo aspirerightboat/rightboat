@@ -15,6 +15,8 @@ class RBConfig < ActiveRecord::Base
         {key: 'lead_quality_check_email', value: 'boats@rightboat.com', description: 'When lead status changes to QualityCheck then email will be sent to this admin email'},
         {key: 'leads_approve_delay', value: '72', description: 'Lead delay before approved in hours'},
         {key: 'invoicing_report_email', value: 'boats@rightboat.com', description: 'Where to send report summary about generated invoices'},
+        {key: 'lead_price_coef', value: '0.0002', description: 'If boat has price is £100.000 then invoice price will be eg. 0.0002 * 100_000 = £20'},
+        {key: 'lead_flat_fee', value: '99', description: 'If no boat price not length present then invoice price will be flat fee in £'},
     ]
 
     available_keys = RBConfig.pluck(:key)

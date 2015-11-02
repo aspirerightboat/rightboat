@@ -92,7 +92,7 @@
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries], :id, :name, params[:country]), class: 'select-black select-full multiple-country-select', multiple: 'multiple'
+            = select_tag 'country[]', options_from_collection_for_select(@search_facets[:countries].order(:name), :id, :name, params[:country]), class: 'select-black select-full multiple-country-select', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'

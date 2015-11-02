@@ -18,11 +18,13 @@ module BoatsHelper
   def reduced_description(description=nil)
     return '' if description.blank?
     length = vlength = 0
+    description = description.gsub(/(^<p>|<\/p>$)/, '').gsub('&lt;br /&gt;', ' ')
     description.split('.').each do |x|
-      vlength += 50 if x =~ /<(br|h\d|p)>/
+      breaker = x[/<(br\s+\/|h\d|p)>/]
+      vlength += 50 if breaker
       break if (vlength + x.length) > 410
       vlength += (x.length + 1)
-      length += (x.length + 1)
+      length += (x.length + (breaker ? breaker.length : 1))
     end
 
     sanitize(description[0..(length - 1)])

@@ -38,17 +38,17 @@
 .hr
 
 %table.spec-table
-  - @boat.boat_specifications.each_slice(2).each do |spec1, spec2|
+  - @boat.boat_specifications.not_blank.each_slice(2).each do |spec1, spec2|
     %tr
       %th(width="25%")
         = spec1.specification.to_s
       %td(width="25%")
-        = spec1.value.blank? ? 'N/A' : spec1.value
+        = spec1.value
       - if spec2
         %th(width="25%")
           = spec2.specification.to_s
         %td(width="25%")
-          = spec2.value.blank? ? 'N/A' : spec2.value
+          = spec2.value
 
 .page-break
 

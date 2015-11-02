@@ -4,9 +4,8 @@ class BoatSpecification < ActiveRecord::Base
 
   validates_presence_of :specification
 
-  scope :front, -> {
-    joins(:specification).where('specifications.visible = ?', true)
-  }
+  scope :front, -> { joins(:specification).where('specifications.visible = ?', true) }
+  scope :not_blank, -> { where.not(value: [nil, '']) }
 
   def self.visible_ordered_specs
     joins(:specification).where('specifications.visible = ?', true).order('specifications.position')

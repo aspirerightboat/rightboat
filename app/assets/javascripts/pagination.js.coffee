@@ -14,6 +14,7 @@ $ ->
         dataType: 'JSON'
         data: { page: currentPage + 1 }
       .success (response)->
+        $('.over-limit').fadeOut().remove()
         boats = response.search
         pagination = response.meta.pagination
         $.each boats, ->

@@ -88,6 +88,7 @@ ActiveAdmin.register Boat do
 
   sidebar 'Tools', only: [:show, :edit] do
     link_to boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat)
+    link_to('Delete images', {action: :delete_images}, method: :post, confirm: 'Are you sure?', disable_with: 'Deleting...') if boat.boat_images.any?
   end
 
   member_action :statistics, method: :get do
@@ -102,6 +103,13 @@ ActiveAdmin.register Boat do
     activate ? boat.revive : boat.destroy
 
     redirect_to (request.referer || {action: :index}), notice: "boat #{boat.slug} was #{activate ? 'activated' : 'deactivated'}"
+  end
+
+  member_action :delete_images, method: :post do
+    boat = Boat.find_by(slug: params[:id])
+    boat.boat_images.destroy_all
+
+    redirect_to (request.referer || {action: :index}), notice: "Images was deleted for boat #{boat.slug}"
   end
 
   collection_action :delete_all_boats, method: :post do

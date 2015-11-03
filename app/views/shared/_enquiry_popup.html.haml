@@ -64,7 +64,7 @@
       .modal-body
         %h1.text-center Thank you for your enquiry
         %h4.text-center
-          The brokers details are: <b id="broker_name"></b><b id="broker_phone"></b>
+          The seller's details are: <b id="broker_name"></b><b id="broker_phone"></b>
           and they will be in touch.
           %br
           A downloadable PDF is available in 'My Requests' within 'My Rightboat' and a copy has also been sent to your email address.
@@ -82,8 +82,8 @@
 
           .col-sm-12.col-xs-12
             = render 'shared/signup_form'
-        .row
-          %h4.similar-boats-link= link_to 'Similar Boats (click for more details)', '#'
+        .row.text-center
+          %h4.similar-boats-link= link_to 'Similar Boats', '#'
           .similar-boats.row
 
 :javascript

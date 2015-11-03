@@ -36,6 +36,9 @@ $ ->
         window.location = xhr.responseJSON.location
     .on 'ajax:error', (e, xhr) ->
       $('.alert', e.target).remove()
-      $errors =  $('<div class="alert alert-danger">').prependTo(e.target)
-      $.each xhr.responseJSON, (i, msg) ->
-        $errors.append('<div>' + msg + '</div>')
+      if xhr.status == '200' # goes here when attached file
+        window.location = JSON.parse(xhr.responseText).location
+      else
+        $errors =  $('<div class="alert alert-danger">').prependTo(e.target)
+        $.each xhr.responseJSON, (i, msg) ->
+          $errors.append('<div>' + msg + '</div>')

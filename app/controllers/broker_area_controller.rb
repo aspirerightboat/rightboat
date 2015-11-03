@@ -12,7 +12,6 @@ class BrokerAreaController < ApplicationController
   def details
     current_user.build_address if !current_user.address
     @offices = current_user.offices.includes(:address).to_a
-    @countries_for_select = Country.order(:name).pluck(:name, :id)
   end
 
   def update_details

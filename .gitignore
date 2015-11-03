@@ -21,4 +21,5 @@ db/schema.rb
 # uploaded files
 public/uploads
 public/boat_images
+public/broker_logos
 import_data

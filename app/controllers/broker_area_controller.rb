@@ -51,6 +51,11 @@ class BrokerAreaController < ApplicationController
   end
 
   def boats_overview
+    @last_imported_at = Import.find_by(user: current_user).try(:last_import_trail).try(:finished_at)
+  end
+
+  def my_boats
+    @boats = current_user.boats.not_deleted.boat_view_includes.includes(:country).page(params[:page]).per(15)
   end
 
   def boats_manager

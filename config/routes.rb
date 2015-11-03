@@ -123,6 +123,7 @@ Rails.application.routes.draw do
     get :charges
     get :messages
     get :boats_overview
+    get :my_boats
     get :boats_manager
     get :my_leads
   end

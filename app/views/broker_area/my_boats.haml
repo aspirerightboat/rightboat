@@ -1,0 +1,10 @@
+= render layout: 'broker_layout', locals: {tab: :boats, sidebar: render('boats_sidebar')} do
+  %h1 My Boats
+
+  - if @boats.size > 0
+    #boats-list.row(data-view-layout="#{current_view_layout}")
+      = render partial: 'boats/boat', collection: @boats
+    = paginate @boats
+  - else
+    %p.lead.text-center No boats were found matching your search criteria. Please try again.
+

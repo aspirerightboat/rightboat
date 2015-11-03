@@ -2,18 +2,18 @@
   %h1 Boats Overview
 
   %ul
-    %li You have <b>0 boats live</b>
-    %li You have <b>0 boats pending</b>
-    %li You have <b>0 boats deleted</b> (shd be able to record deleted boats to re-instate later if required)
+    %li You have <b>#{current_user.boats.not_deleted.count} boats live</b>
+    %li You have <b>#{current_user.boats.deleted.count} boats deleted</b>
 
   %p
-    Last feed update timestamp: 2015/mm/dd hh:mm:ss
+    Last feed update timestamp: <b>#{@last_imported_at ? @last_imported_at.strftime('%Y/%m/%d %H:%M') : '-'}</b>
 
   %p
-    You are a manual/automatic feed
-  %p
-    Do you wish to make a change?
-  %p
-    Upload new feed URL, format and credentials (triggers email to RB to action
-  %p
-    Start manually uploading (triggers email to RB to action)
+    You are a <b>automatic feed</b>
+
+  -#%p
+  -#  Do you wish to make a change?
+  -#%p
+  -#  Upload new feed URL, format and credentials (triggers email to RB to action
+  -#%p
+  -#  Start manually uploading (triggers email to RB to action)

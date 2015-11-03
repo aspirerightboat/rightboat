@@ -22,4 +22,5 @@ db/schema.rb
 public/uploads
 public/boat_images
 public/broker_logos
+public/buyer_guide
 import_data

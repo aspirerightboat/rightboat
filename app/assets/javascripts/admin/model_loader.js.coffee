@@ -7,11 +7,11 @@ window.syncModel = (manufacturer, $modelSelect) ->
       dataType: "JSON"
       data:
         manufacturer: manufacturer
-    .success (options)->
-      $modelSelect.children().detach()
+    .success (options) ->
+      $modelSelect.empty()
+      $('<option>').attr('value', '').text('Any').appendTo($modelSelect)
       $.each options, ->
-        $option = $('<option>').attr('value', this[0]).html(this[1])
-        $modelSelect.append($option)
+        $('<option>').attr('value', this[0]).text(this[1]).appendTo($modelSelect)
       if $modelSelect.hasClass('select-general')
         $modelSelect.select2
           minimumResultsForSearch: Infinity
@@ -19,7 +19,7 @@ window.syncModel = (manufacturer, $modelSelect) ->
       $modelSelect.removeAttr('disabled')
 
 $ ->
-  $.fn.loadModelsOfManufacturer = (selector)->
+  $.fn.loadModelsOfManufacturer = (selector) ->
     onChange = =>
       syncModel($(this).val(), $(selector))
 

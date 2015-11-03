@@ -11,7 +11,7 @@ ActiveAdmin.register FuelType do
   index do
     column :name
     column 'Boats' do |r|
-      r.boats.count
+      r.boats.not_deleted.count
     end
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]

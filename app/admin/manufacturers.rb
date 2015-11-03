@@ -15,7 +15,7 @@ ActiveAdmin.register Manufacturer do
       link_to r.models.count, [:admin, r, :models]
     end
     column '# Boats' do |r|
-      r.boats.count
+      r.boats.not_deleted.count
     end
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]

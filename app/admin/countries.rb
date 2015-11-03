@@ -16,7 +16,7 @@ ActiveAdmin.register Country do
     column :currency
     column :country_code
     column '# Boats' do |r|
-      r.boats.count
+      r.boats.not_deleted.count
     end
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]

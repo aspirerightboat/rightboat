@@ -14,7 +14,7 @@ ActiveAdmin.register Currency do
     column :symbol
     column :rate
     column '# Boats' do |r|
-      r.boats.count
+      r.boats.not_deleted.count
     end
 
     actions

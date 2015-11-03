@@ -1,7 +1,7 @@
 ActiveAdmin.register ImportTrail do
   menu parent: 'Imports'
 
-  # filter :import_type, collection: -> { Rightboat::Imports::Base.import_types }
+  filter :import_type, collection: -> { Rightboat::Imports::Base.import_types }
 
   controller do
     private
@@ -27,10 +27,12 @@ ActiveAdmin.register ImportTrail do
     column :not_saved_count
     column :created_at
     column :finished_at
-    column :error do |import_trail|
-      status_tag(import_trail.error_msg, :red) if import_trail.error_msg.present?
+    column :duration do |trail|
+      trail.duration.strftime('%H:%M:%S')
     end
-
+    column :error do |trail|
+      status_tag(trail.error_msg, :red) if trail.error_msg.present?
+    end
 
     actions
   end

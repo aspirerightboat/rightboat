@@ -39,8 +39,7 @@ ActiveAdmin.register_page 'Dashboard' do
             t.column('Time from-to (duration)') { |trail|
               started_at = l(trail.created_at, format: :short)
               finished_at = trail.finished_at ? l(trail.finished_at, format: :short) : '...'
-              duration = Time.at(((trail.finished_at || Time.current) - trail.created_at)).utc.strftime('%H:%M:%S')
-              "#{started_at} - #{finished_at} (#{duration})"
+              "#{started_at} - #{finished_at} (#{trail.duration.strftime('%H:%M:%S')})"
             }
             t.column('view log') do |trail|
               link_to 'view log', admin_import_trail_path(trail)

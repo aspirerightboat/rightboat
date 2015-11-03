@@ -16,7 +16,7 @@ ActiveAdmin.register Specification do
       r.visible? ? status_tag('Public', :ok) : status_tag('Private', :error)
     end
     column '# Boats' do |r|
-      r.boats.count
+      r.boats.not_deleted.count
     end
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]

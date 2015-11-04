@@ -201,7 +201,7 @@ class Boat < ActiveRecord::Base
 
   def violation
     if accept_toc && accept_toc != '1'
-      errors.add :base, 'You should accept Rightboat terms and conditions'
+      errors.add :base, 'You should accept Rightboat terms and conditions.'
     end
 
     if agree_privacy_policy && agree_privacy_policy != '1'

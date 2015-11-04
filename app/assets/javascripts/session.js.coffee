@@ -19,6 +19,7 @@ $ ->
   $(document)
   .on('ready', adjustLoginLink)
   .on 'click', '.user-login', ->
+    $('#login-content').show()
     $('#register-content').hide()
     $('#login_popup').displayPopup() unless $('#login_popup').is(':visible')
     false

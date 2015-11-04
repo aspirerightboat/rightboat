@@ -2,6 +2,7 @@
   - if @boat.errors.any?
     %ul.alert.alert-danger
       - @boat.errors.full_messages.each do |msg|
+        - msg += '.' unless msg =~ /\.$/
         %li= msg
   %fieldset
     %h5 1. Boat Type:
@@ -50,7 +51,7 @@
   %fieldset
     %h5 5. Boat images:
     .form-group
-      .col-md-4.col-xs-12= label_tag 'Please upload at least 1 image:'
+      .col-md-4.col-xs-12= label_tag('Please upload at least 1 image:') unless f.object.boat_images.any?
       .col-md-8.col-xs-12
         #boat-images
           = f.fields_for :boat_images do |boat_image|
@@ -80,12 +81,11 @@
   $(function() {
     function loadPreview(el) {
       el.find('input[type="file"]').change(function(e) {
-        $this = $(this);
         var reader = new FileReader;
         reader.onload = function() {
           var img = new Image;
           img.src = reader.result;
-          $this.parents('.nested-fields').find('img').attr('src', img.src);
+          $(this).parents('.nested-fields').find('img').attr('src', img.src);
         }
         reader.readAsDataURL(this.files[0]);
       });

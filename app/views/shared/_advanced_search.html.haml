@@ -87,7 +87,7 @@
           .col-xs-4
             = label_tag :category
           .col-xs-8
-            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.all, :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.order(:name), :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :country
@@ -108,7 +108,7 @@
             = label_tag :new_used_used, 'Used'
         .form-group.row
           .col-xs-4
-            %button.btn-flat(type="submit" name="save_search") Save this Search
+            %button.btn-flat(type="submit" name="save_search" data-require-login=true) Save this Search
           .col-xs-8
             = button_tag 'Search', type: 'submit', class: 'btn-flat'
       .result-info.col-sm-12.col-md-12.text-center

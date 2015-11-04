@@ -5,7 +5,7 @@ ActiveAdmin.register Boat do
 
   menu priority: 2
 
-  filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Free'
+  filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Name | Manuf | Model | Office'
   filter :id
   filter :user, as: :select, collection: User.companies.order(:company_name)
   filter :country, as: :select, collection: Country.order(:name)
@@ -18,6 +18,14 @@ ActiveAdmin.register Boat do
 
   index do
     column :id
+    column :images do |boat|
+      if boat.primary_image
+        img = image_tag(boat.primary_image.file.url(:mini), size: '64x43')
+      else
+        img = content_tag(:div, nil, style: 'background-color: lightgray; width: 64px; height: 43px;')
+      end
+      link_to img, admin_boat_images_path(q: {boat_id_equals: boat.id})
+    end
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
@@ -28,7 +36,7 @@ ActiveAdmin.register Boat do
     column :user, :user, sortable: 'users.first_name'
     column :office, :office, sortable: 'offices.name'
     column :geocoded do |boat|
-      boat.geocoded? ? status_tag('Geocoded', :ok) : status_tag('Failed', :error)
+      boat.geocoded? ? status_tag('Geocoded', :ok) : status_tag('Failed', :no)
     end
     column :country, :country, sortable: 'countries.name'
     column :location
@@ -36,7 +44,7 @@ ActiveAdmin.register Boat do
       boat.boat_images.count
     end
     actions do |boat|
-      item 'Statistics', statistics_admin_boat_path(boat), class: 'member_link'
+      item 'Stats', statistics_admin_boat_path(boat), class: 'member_link'
       item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link'
     end
   end
@@ -46,7 +54,7 @@ ActiveAdmin.register Boat do
   end
 
   form do |f|
-    f.inputs do 
+    f.inputs do
       f.input :manufacturer, include_blank: false
       f.input :model, collection: [], include_blank: false
       f.input :price
@@ -69,7 +77,7 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      Boat.includes(:manufacturer, :user, :country, :office, model: :manufacturer)
+      Boat.includes(:manufacturer, :user, :country, :office, :primary_image, :model)
     end
 
     def find_resource
@@ -89,6 +97,7 @@ ActiveAdmin.register Boat do
   sidebar 'Tools', only: [:show, :edit] do
     link_to boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat)
     link_to('Delete images', {action: :delete_images}, method: :post, confirm: 'Are you sure?', disable_with: 'Deleting...') if boat.boat_images.any?
+    link_to 'Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}) if boat.boat_images.any?
   end
 
   member_action :statistics, method: :get do

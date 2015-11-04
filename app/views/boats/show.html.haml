@@ -1,3 +1,19 @@
+- @page_title = @boat.to_s
+
+- content_for :meta_tags do
+  %meta(name="title" content="#{@boat.to_s} | Rightboat.com")
+  %meta(property="og:title" content="#{@boat.to_s} | Rightboat.com")
+  %meta(name="description" content="#{reduced_description(@boat.description)}")
+  %meta(name="og:description" content="#{reduced_description(@boat.description)}")
+  %meta(itemprop="name" content="#{@boat.to_s}")
+  %meta(itemprop="currency" content="#{@boat.currency.to_s}")
+  %meta(itemprop="price" content="#{@boat.price}")
+  %meta(name="robots" content="index, follow")
+  %meta(property="og:url" content="#{boat_url(@boat.slug)}")
+  %link(rel="canonical" href="#{boat_url(@boat.slug)}")
+  - if @boat.primary_image
+    %meta(property="og:image" content="#{@boat.primary_image.file_url}")
+
 - content_for :header_text do
   - if session[:boats_count] && @back_url
     .navbar-h  Boats <strong>For Sale</strong>

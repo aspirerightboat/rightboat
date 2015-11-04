@@ -49,7 +49,7 @@ class Member::BoatsController < Member::BaseController
       spec = Specification.where(name: x).first
       @boat.boat_specifications.build(specification: spec) if @boat.boat_specifications.where(specification: spec).empty?
     end
-    @boat.boat_images.build if @boat.boat_images.empty?
+    # @boat.boat_images.build if @boat.boat_images.empty?
   end
 
   def boat_params

@@ -111,6 +111,7 @@ $(document).ready ->
     false
 
   $('[data-toggle="tooltip"]').tooltip()
+  ###
   $('.toggle-about').click ->
     $this = $(this)
     $extended = $('.rb-extended')
@@ -120,6 +121,7 @@ $(document).ready ->
     else
       $this.html 'less...'
       $extended.slideDown('slow')
+  ###
 
   target = window.location.hash
   if $(target).length
@@ -130,16 +132,20 @@ $(document).ready ->
     else if $(target).hasClass('fav-link')
       window.favLink = $(target)
     else
+      ###
       if target == '#about'
         $('.rb-extended').slideDown()
         $('.toggle-about').html 'less...'
+      ###
       scrollToTarget(target)
 
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
+    ###
     if target == '#about'
       $('.rb-extended').slideDown()
       $('.toggle-about').html 'less...'
+    ###
     unless $(target).length && $(target).hasClass('fav-link')
       scrollToTarget(target) if $(target).length
 

@@ -2,47 +2,134 @@
   .navbar-h My <strong>Rightboat</strong>
 
 .member-content
-  %h1 My Details
+  %h1 <b>Welcome</b> to Rightboat.com – the global choice of boats for sale.
   %hr
+  %p Now you are a member of <b>My Rightboat</b>, you have the world’s marine marketplace at your fingertips.
+  %p Here you can see all your <b>favourite boats</b>, keep tabs on the <b>latest prices</b>, new boats on the market, <b>tailor</b> your personalised <b>alerts</b> and <b>save</b> your searches, plus lots more!
+  %p We hope you enjoy using the site to search for your right boat!
+  %p Please let us know what you think, #{mail_to 'info@rightboat.com', 'get in touch with us'}
+  %p Good luck finding your next right boat!
   - if user_signed_in?
-    = form_for current_user, url: user_profile_path, method: :put, html: { class: 'profile-form' } do |f|
+    = form_for current_user, url: user_profile_path, remote: true, data: {format: :json}, method: :put, html: { class: 'profile-form', multipart: true } do |f|
       .row
-        .col-sm-6.col-xs-12
-          .form-group
-            = f.label :title, 'Title:*'
-            %br
-            = f.select :title, options_for_select(User::TITLES, current_user.title), {}, class: 'select-sm cool-select'
+        .col-sm-8.col-xs-12
+          %h4 This is what we know about you so far, you can add, edit and change your personal information whenever you like.
+          .form-group.row
+            .col-sm-4.col-xs-12
+              = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title enq-req-title'
+            .col-sm-4.col-xs-12
+              = f.text_field :first_name, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-4.col-xs-12
+              = f.text_field :last_name, placeholder: 'Last Name', class: 'form-control', 'data-validetta' => 'required'
           .form-group.row
             .col-sm-6.col-xs-12
-              = f.label :first_name, 'First Name:*'
-              = f.text_field :first_name, class: 'form-control', 'data-validetta' => 'required'
+              = f.email_field :email, placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
             .col-sm-6.col-xs-12
-              = f.label :last_name, 'Surname:*'
-              = f.text_field :last_name, class: 'form-control', 'data-validetta' => 'required'
+              = f.text_field :phone, placeholder: 'Tel/Mobile', class: 'form-control'
+          = f.fields_for :address do |ff|
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = ff.text_field :line1, placeholder: 'Address Line 1', class: 'form-control'
+              .col-sm-6.col-xs-12
+                = ff.text_field :line2, placeholder: 'Address Line 2', class: 'form-control'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = ff.text_field :town_city, placeholder: 'City', class: 'form-control', style: 'margin-right: 5px'
+              .col-sm-6.col-xs-12
+                = ff.text_field :county, placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
+              .col-sm-6.col-xs-12
+                = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), { prompt: 'Country' }, class: 'country-select'
           .form-group
-            = f.label :email, 'Email:*'
-            = f.email_field :email, class: 'form-control', 'data-validetta' => 'required,email'
-          .form-group
-            = f.label :phone, 'Tel/Mobile:'
-            = f.text_field :phone, class: 'form-control'
-          .form-group
-            %h3
+            %h4
               Change password
               %br
               %small
                 %i (Leave blank if you don't want to change)
-          .form-group
-            = f.label :current_password, 'Current Password:'
-            = f.password_field :current_password, class: 'form-control'
-          .form-group
-            = f.label :password, 'Password:'
-            = f.password_field :password, class: 'form-control'
-          .form-group
-            = f.label :password_confirmation, 'Password Confirmation:'
-            = f.password_field :password_confirmation, class: 'form-control'
+          .form-group.row
+            .col-sm-4.col-xs-12
+              = f.password_field :current_password, placeholder: 'Current Password', class: 'form-control'
+            .col-sm-4.col-xs-12
+              = f.password_field :password, placeholder: 'Password', class: 'form-control'
+            .col-sm-4.col-xs-12
+              = f.password_field :password_confirmation, placeholder: 'Confirm Password', class: 'form-control'
+          %h4 Help us recommend the right boats for you, introduce yourself.
+          .form-group.row.preview-wrap
+            .col-sm-6.col-xs-12
+              = f.label :avatar, 'You can upload a photo too!'
+            .col-sm-2.col-xs-4
+              = image_tag (!!f.object.avatar.file ? f.object.avatar_url : ''), class: 'img-responsive', alt: ''
+            .col-sm-4.col-xs-8
+              = f.file_field :avatar
+              = f.hidden_field :avatar_cache
+          = f.fields_for :information do |i|
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :mf, 'M/F'
+              .col-sm-6.col-xs-12
+                = i.text_field :mf, class: 'form-control'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :dob, 'Date of Birth'
+              .col-sm-6.col-xs-12
+                = i.text_field :dob, class: 'form-control datepicker'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :sail_power, 'Sail or power?'
+              .col-sm-6.col-xs-12
+                = i.radio_button :sail_power, 'sail', checked: (i.object.sail_power == 'sail')
+                = i.label :sail_power_sail, 'sail'
+                = i.radio_button :sail_power, 'power', checked: (i.object.sail_power == 'power')
+                = i.label :sail_power_power, 'power'
+                = i.radio_button :sail_power, 'both', checked: (i.object.sail_power == 'both')
+                = i.label :sail_power_both, 'both'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :boater_type, 'What type of boater are you?'
+              .col-sm-6.col-xs-12
+                = i.text_field :boater_type, class: 'form-control'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :boating_place, 'Where do you go boating?'
+              .col-sm-6.col-xs-12
+                = i.text_field :boating_place, class: 'form-control'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :have_boat, 'Do you have a boat at the moment?'
+              .col-sm-6.col-xs-12
+                = i.radio_button :have_boat, 'true', checked: i.object.have_boat
+                = i.label :have_boat_true, 'yes'
+                = i.radio_button :have_boat, 'false', checked: !i.object.have_boat
+                = i.label :have_boat_false, 'no'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :boat_type, 'What boat/s do you have at present? '
+              .col-sm-6.col-xs-12
+                = i.text_field :boat_type, class: 'form-control'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :require_finance, 'Do you require finance on your next boat?'
+              .col-sm-6.col-xs-12
+                = i.radio_button :require_finance, 'true', checked: i.object.require_finance
+                = i.label :require_finance_true, 'yes'
+                = i.radio_button :require_finance, 'no', checked: !i.object.require_finance
+                = i.label :require_finance_false, 'no'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                = i.label :require_berth, 'Do you need a berth?'
+              .col-sm-6.col-xs-12
+                = i.radio_button :require_berth, true, checked: i.object.require_berth
+                = i.label :require_berth_true, 'yes'
+                = i.radio_button :require_berth, false, checked: !i.object.require_berth
+                = i.label :require_berth_false, 'no'
+            .form-group
+              %p Talk to us! 0 044 333 322 2628
+              %p= mail_to 'info@rightboat.com', nil
       .row
         .col-sm-12.col-xs-12.form-actions
-          = button_tag 'Save Changes', type: 'submit', class: 'btn-flat btn-block'
+          = button_tag 'Save Changes', type: 'submit', class: 'btn-flat btn-white btn-block'
   - else
     .alert.alert-info(role="alert")
       You need to #{link_to 'sign in', '#', class: 'user-login'} to continue.

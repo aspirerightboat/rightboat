@@ -28,6 +28,7 @@
 #= require twitter/bootstrap/affix.js
 
 #= require jquery-ui/slider
+#= require jquery-ui/datepicker
 #= require jquery.ui.touch-punch
 #= require select2
 #= require selectize.min
@@ -76,6 +77,16 @@ scrollToTarget = (target) ->
   $('html, body').animate
     scrollTop: $(target).offset().top
   , 500
+
+loadPreview = ($el) ->
+  $el.find('input[type="file"]').change (e) ->
+    $this = $(this)
+    reader = new FileReader
+    reader.onload = ->
+      img = new Image
+      img.src = reader.result
+      $this.parents('.row').find('img').attr('src', img.src)
+    reader.readAsDataURL(this.files[0])
 
 $(document).ready ->
   $('[data-toggle=offcanvas]').click ->
@@ -131,6 +142,14 @@ $(document).ready ->
       $('.toggle-about').html 'less...'
     unless $(target).length && $(target).hasClass('fav-link')
       scrollToTarget(target) if $(target).length
+
+  $('.datepicker').datepicker
+    dateFormat: 'yy-dd-mm'
+
+  loadPreview($('.preview-wrap'));
+
+  $('.preview-wrap').bind 'cocoon:after-insert', (e, insertedItem) ->
+    loadPreview(insertedItem)
 
   $('.cool-select').select2()
 

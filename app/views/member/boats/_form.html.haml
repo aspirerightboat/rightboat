@@ -53,7 +53,7 @@
     .form-group
       .col-md-4.col-xs-12= label_tag('Please upload at least 1 image:') unless f.object.boat_images.any?
       .col-md-8.col-xs-12
-        #boat-images
+        .preview-wrap
           = f.fields_for :boat_images do |boat_image|
             = render 'boat_image_fields', f: boat_image
           .links
@@ -76,24 +76,3 @@
         = f.label :secure_payment, "I wish to make a secure online #{link_to 'payment', 'javascript: void(0);'}.".html_safe
   .form-group
     %button.btn-flat.btn-black(type="submit") Save Changes
-
-:javascript
-  $(function() {
-    function loadPreview(el) {
-      el.find('input[type="file"]').change(function(e) {
-        var reader = new FileReader;
-        reader.onload = function() {
-          var img = new Image;
-          img.src = reader.result;
-          $(this).parents('.nested-fields').find('img').attr('src', img.src);
-        }
-        reader.readAsDataURL(this.files[0]);
-      });
-    }
-
-    loadPreview($('#boat-images'));
-
-    $('#boat-images').bind('cocoon:after-insert', function(e, insertedItem) {
-      loadPreview(insertedItem);
-    });
-  })

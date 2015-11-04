@@ -140,7 +140,6 @@ Rails.application.routes.draw do
     resources :boats, except: [:show]
     controller :dashboard do
       get :enquiries
-      get :information
       get :search_histories
     end
   end

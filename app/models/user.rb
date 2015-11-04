@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
-  TITLES = %w(Mr Sir Miss Ms Mrs Dr Capt)
+  TITLES = %w(Mr Mrs Miss Ms Capt Dr Sir)
 
   ROLES = {
       'PRIVATE' => 0,

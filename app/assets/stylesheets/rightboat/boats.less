@@ -124,7 +124,9 @@
 }
 
 .fav-link, .share-link {
-  margin-right: 13px;
+  &:not(.remove-fav) {
+    margin-right: 13px;
+  }
 
   &:before {
     display: inline-block;
@@ -135,10 +137,25 @@
   }
 }
 
-a.fav-link:before {
+.remove-fav {
+  font-size: 30px;
+  line-height: 15px;
+  vertical-align: -4px;
+  display: none;
+
+  &:focus {
+    text-decoration: none;
+  }
+
+  #favourites-index & {
+    display: inline-block;
+  }
+}
+
+a.fav-link:not(.remove-fav):before {
   content: '\e807';
 }
-a.fav-link.active:before {
+a.fav-link.active:not(.remove-fav):before {
   content: '\e809';
 }
 

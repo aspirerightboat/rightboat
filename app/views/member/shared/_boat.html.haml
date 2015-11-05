@@ -11,10 +11,12 @@
     .caption
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
-      .boat-detail-item.boat-links.pull-right
+      .boat-links.pull-right
         = favourite_link_to boat
         - if share_enabled
           = render 'shared/social_share', boat: boat
+        = link_to "#favourite-#{boat.id}", class: 'fav-link remove-fav' do
+          &times;
       .boat-detail-item.boat-length
         %span Length:
         %span(data-attr-name='loa')= boat_length(boat)

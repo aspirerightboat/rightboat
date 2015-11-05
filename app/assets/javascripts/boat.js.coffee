@@ -17,6 +17,8 @@ window.initBoatView = (el) ->
     return false unless requireLogin(e, false)
 
     $link = $(@).attr('disabled', 'disabled')
+    if $link.hasClass('remove-fav')
+      return false unless confirm('Are you sure you permanently want to delete this boat?')
 
     $.ajax
       url: '/my-rightboat/favourites'

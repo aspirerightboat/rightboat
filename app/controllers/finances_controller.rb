@@ -6,7 +6,7 @@ class FinancesController < ApplicationController
     if @finance.save
       render json: {}, status: 200
     else
-      render json: { errors: @finance.errors }, status: 422
+      render json: @finance.errors.full_messages, root: false, status: 422
     end
   end
 

@@ -6,7 +6,7 @@ class InsurancesController < ApplicationController
     if @insurance.save
       render json: {}, status: 200
     else
-      render json: { errors: @insurance.errors }, status: 422
+      render json: @insurance.errors.full_messages, root: false, status: 422
     end
   end
 

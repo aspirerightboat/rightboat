@@ -33,3 +33,5 @@ $(document).ready ->
   $('select#boat_manufacturer_id').loadModelsOfManufacturer('select#boat_model_id')
   $('select#q_manufacturer_id').loadModelsOfManufacturer('select#q_model_id')
   $('select#buyer_guide_manufacturer_id').loadModelsOfManufacturer('select#buyer_guide_model_id')
+  $('select#finance_manufacturer_id').loadModelsOfManufacturer('select#finance_model_id')
+  $('select#insurance_manufacturer_id').loadModelsOfManufacturer('select#insurance_model_id')

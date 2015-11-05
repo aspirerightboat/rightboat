@@ -6,40 +6,40 @@
           %span{"aria-hidden" => "true"} &times;
         .h My Right Berths
       .modal-body
-        = form_for BerthEnquiry.new, html: { class: 'berth-enquiry-form' } do |f|
+        = form_for BerthEnquiry.new, remote: true, data: {format: :json, message: 'Thank you, your request have been sent to us.'}, html: { class: 'simple-ajax-form', multipart: true } do |f|
           = hidden_field_tag :length_min
           = hidden_field_tag :length_max
-          = hidden_field_tag :location
-          = hidden_field_tag :latitude
-          = hidden_field_tag :longitude
+          = f.hidden_field :location
+          = f.hidden_field :latitude
+          = f.hidden_field :longitude
           .form-group.row
             .col-md-6.col-xs-12 1. I am looking to buy a berth
             .col-md-6.col-xs-12
-              = radio_button_tag :buy, 'true', (f.object.buy == true)
-              = label_tag :buy_true, 'Y'
-              = radio_button_tag :buy, 'false', (f.object.buy != true)
-              = label_tag :buy_false, 'N'
+              = f.radio_button :buy, 'true'
+              = f.label :buy_true, 'Y'
+              = f.radio_button :buy, 'false'
+              = f.label :buy_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 2. I am looking to rent a berth
             .col-md-6.col-xs-12
-              = radio_button_tag :rent, 'true', (f.object.rent == true)
-              = label_tag :rent_true, 'Y'
-              = radio_button_tag :rent, 'false', (f.object.rent != true)
-              = label_tag :rent_false, 'N'
+              = f.radio_button :rent, 'true'
+              = f.label :rent_true, 'Y'
+              = f.radio_button :rent, 'false'
+              = f.label :rent_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 3. I am looking for a home berth
             .col-md-6.col-xs-12
-              = radio_button_tag :home, 'true', (f.object.home == true)
-              = label_tag :home_true, 'Y'
-              = radio_button_tag :home, 'false', (f.object.home != true)
-              = label_tag :home_false, 'N'
+              = f.radio_button :home, 'true'
+              = f.label :home_true, 'Y'
+              = f.radio_button :home, 'false'
+              = f.label :home_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 4. I am looking for a short term berth
             .col-md-6.col-xs-12
-              = radio_button_tag :short_term, 'true', (f.object.short_term == true)
-              = label_tag :short_term_true, 'Y'
-              = radio_button_tag :short_term, 'false', (f.object.short_term != true)
-              = label_tag :short_term_false, 'N'
+              = f.radio_button :short_term, 'true'
+              = f.label :short_term_true, 'Y'
+              = f.radio_button :short_term, 'false'
+              = f.label :short_term_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 5. The size of the berth I am look for is:
             .col-md-6.col-xs-12
@@ -47,7 +47,7 @@
                 .rb-control
                   = slider_tag(:length, min: 0, max: 300, unit: 'm')
                 .rb-control-group-addon
-                  = select_tag :length_unit, options_for_select(['ft', 'm'], 'm'), class: 'select-sm'
+                  = select_tag :length_unit, options_for_select(['ft', 'm'], 'm'), class: 'select-sm select-general select-white'
           .form-group.row
             .col-md-6.col-xs-12
               6. I am looking for a berth here:
@@ -90,10 +90,10 @@
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[0]) {
           var location = results[0].formatted_address;
-          $('#location').val(location);
+          $('#berth_enquiry_location').val(location);
           $('#location-address').html(location);
-          $('#latitude').val(latLng.lat());
-          $('#longitude').val(latLng.lng());
+          $('#berth_enquiry_latitude').val(latLng.lat());
+          $('#berth_enquiry_longitude').val(latLng.lng());
 
           marker = new google.maps.Marker({
             position: latLng,
@@ -111,11 +111,6 @@
   }
 
   $(function() {
-    $("#berths-popup select").select2({
-      minimumResultsForSearch: Infinity
-      //templateResult: formatState
-    });
-
     $('#berths-popup').on('shown.bs.modal', function () {
       initMap();
     });

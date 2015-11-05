@@ -9,7 +9,7 @@
       .col-md-8.col-xs-12= f.select :model_id, [[f.object.model.try(:name), f.object.model.try(:id)]], {}, include_blank: false, class: 'select-general'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :year_built
-      .col-md-8.col-xs-12= f.select :year_built, ((Date.today.year - 40)..Date.today.year), {}, class: 'select-general'
+      .col-md-8.col-xs-12= f.select :year_built, ((Date.today.year - 40)..Date.today.year), {}, class: 'select-general', 'data-validetta' => 'number'
   %fieldset
     %h5 2. Boat Specifics:
     .form-group.clearfix
@@ -17,7 +17,7 @@
       .col-md-8.col-xs-12= f.text_field :location, class: 'form-control'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :price, 'Price(£):'
-      .col-md-8.col-xs-12= f.text_field :price, class: 'form-control'
+      .col-md-8.col-xs-12= f.text_field :price, class: 'form-control', 'data-validetta' => 'number'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :tax_paid, 'Tax paid?'
       .col-md-8.col-xs-12
@@ -29,7 +29,7 @@
     %h5 3. Boat Details:
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :length_m, 'LOA:'
-      .col-md-8.col-xs-12= f.text_field :length_m, class: 'form-control'
+      .col-md-8.col-xs-12= f.text_field :length_m, class: 'form-control', 'data-validetta' => 'number'
     = f.fields_for :boat_specifications do |bs|
       .form-group.nested-fields.clearfix
         = bs.hidden_field :specification_id

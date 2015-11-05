@@ -6,7 +6,7 @@ class MarineEnquiriesController < ApplicationController
     if @marine_enquiry.save
       render json: {}, status: 200
     else
-      render json: { errors: @marine_enquiry.errors }, status: 422
+      render json: @marine_enquiry.errors.full_messages, root: false, status: 422
     end
   end
 

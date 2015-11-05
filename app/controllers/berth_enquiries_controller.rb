@@ -6,7 +6,7 @@ class BerthEnquiriesController < ApplicationController
     if @berth_enquiry.save
       render json: {}, status: 200
     else
-      render json: { errors: @berth_enquiry.errors }, status: 422
+      render json: @berth_enquiry.errors.full_messages, root: false, status: 422
     end
   end
 
@@ -14,6 +14,7 @@ class BerthEnquiriesController < ApplicationController
 
   def berth_enquiry_params
     params.fetch(:berth_enquiry, {})
-      .permit(:buy, :rent, :home, :short_term, :length_min, :length_max, :length_unit, :location, :latitude, :longitude)
+      .permit(:buy, :rent, :home, :short_term, :location, :latitude, :longitude)
+      .merge(length_min: params[:length_min], length_max: params[:length_max], length_unit: params[:length_unit])
   end
 end

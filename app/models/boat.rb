@@ -91,23 +91,27 @@ class Boat < ActiveRecord::Base
 
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
 
-  def self.similar_boats(boat, options = {})
-    # TODO: need confirmation from RB
-    return [] unless boat.manufacturer
-    search = Boat.solr_search(include: [:manufacturer, :model, :primary_image]) do |q|
-      q.with :live, true
-      q.without :ref_no, boat.ref_no
-      q.with :manufacturer_id, boat.manufacturer_id
-      q.any_of do |q|
-        q.all_of do |q|
-          q.with :category_id, boat.category_id
-          q.with :drive_type_id, boat.drive_type_id
-        end
-        q.with :model_id, boat.model_id if boat.model
-      end
-      q.paginate page: 1, per_page: options[:limit] || 4
+  def similar_options(required_currency=nil)
+    required_price = required_currency ? Currency.convert(price, currency, required_currency) : price
+    required_currency ||= currency
+
+    options = {
+        exclude:    ref_no,
+        currency:   currency.name,
+        price_min:  (required_price * 8 / 10).to_i,
+        price_max:  (required_price * 12 / 10).to_i,
+        boat_type:  [boat_type.try(&:name_stripped)],
+        category:   [category_id]
+    }
+
+    if (length = length_m)
+      options = options.merge(
+          length_min: (length * 80).round.to_f / 100,
+          length_max: (length * 120).round.to_f / 100
+      )
     end
-    search.results
+
+    options
   end
 
   def manufacturer_model

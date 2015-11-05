@@ -1,5 +1,5 @@
 class EnquirySerializer < ActiveModel::Serializer
-  attributes :user_registered, :boat_pdf, :email, :broker
+  attributes :user_registered, :boat_pdf, :email, :broker, :similar_link
 
   has_many :similar_boats
 
@@ -15,7 +15,11 @@ class EnquirySerializer < ActiveModel::Serializer
   end
 
   def similar_boats
-    Boat.similar_boats(object.boat)
+    Rightboat::BoatSearch.new(object.boat.similar_options).retrieve_boats
+  end
+
+  def similar_link
+    search_path(object.boat.similar_options)
   end
 
   def broker

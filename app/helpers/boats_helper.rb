@@ -39,28 +39,6 @@ module BoatsHelper
     sanitize(description[0..(length - 1)])
   end
 
-  def similar_link(boat)
-    currency = current_currency || Currency.default
-    price = Currency.convert(boat.price, boat.currency, currency)
-    options = {
-      exclude: boat.ref_no,
-      currency: currency.name,
-      price_min: (price * 8 / 10).to_i,
-      price_max: (price * 12 / 10).to_i,
-      boat_type: [boat.boat_type.try(&:name_stripped)],
-      category: [boat.category_id]
-    }
-
-    if (length = boat.length_m)
-      options = options.merge(
-        length_min: length * 8 / 10,
-        length_max: length * 12 / 10
-      )
-    end
-
-    search_path(options)
-  end
-
   def boat_specs(boat, full_spec = false)
     ret = []
     ret << ['Seller', boat.user.name] if full_spec

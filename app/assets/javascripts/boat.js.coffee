@@ -90,6 +90,8 @@ $ ->
         $('#pdf_link').attr('href', enquiry.boat_pdf)
 
         any_similar = enquiry.similar_boats.length > 0
+        if enquiry.similar_link
+          $('.similar-boats-link a', @).attr('href', enquiry.similar_link)
         $('.similar-boats-link', @).toggle(any_similar)
         $similar_boats = $('.similar-boats', @).empty().toggle(any_similar)
         $.each enquiry.similar_boats, ->

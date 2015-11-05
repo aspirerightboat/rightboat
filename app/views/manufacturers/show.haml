@@ -1,7 +1,7 @@
 = render layout: 'shared/boats_for_sale' do
   = render 'manufacturer_letters'
   %h1 Boats of "#{@manufacturer.name}"
-  .row(data-view-layout="list")
+  .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|
       = render layout: 'boats/boat', locals: {boat: b} do
         -#

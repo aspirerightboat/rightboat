@@ -11,7 +11,7 @@
     #featured-boats.nabvar-tools
       %h3.toolbar-title Featured Boats
     .container
-      .row(data-view-layout="gallery")
+      .row(data-layout-mode="gallery")
         = render @featured_boats, back: true
 
   - if @recent_boats.any?

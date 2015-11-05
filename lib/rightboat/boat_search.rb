@@ -1,16 +1,7 @@
 module Rightboat
 
   class BoatSearch
-    SortTypes = {
-      'Best Match'        => :score,
-      'Newly listed'      => :created_at,
-      'Price: high - low' => :price_desc,
-      'Price: low - high' => :price_asc,
-      'Age: high - low'   => :year_asc,
-      'Age: low - high'   => :year_desc,
-      'LOA: high - low'   => :length_m_desc,
-      'LOA: low - high'   => :length_m_asc
-    }
+    OrderTypes = %w(score created_at price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
 
     def initialize(params = {})
       @params = preprocess_param(params)
@@ -94,7 +85,7 @@ module Rightboat
       }
       type_mapping.each do |field, type|
         v = req_params[field]
-        unless v.blank?
+        if v.present?
           req_params[field] =
             case type.to_sym
               when :string then v.to_s
@@ -103,47 +94,47 @@ module Rightboat
               when :array
                 (v.is_a?(Array) ? v : v.to_s.split(',')).reject(&:blank?)
               when :boolean
-                v =~ /^yes|true|1$/i ? true : false
+                v =~ /^yes|true|1$/i
             end
         end
       end
 
       # calculate price with default currency
-      if !req_params[:currency].blank?
+      if req_params[:currency].present?
         c = Currency.cached_by_name(req_params[:currency])
         [:price_min, :price_max].each do |k|
-          unless req_params[k].blank?
+          if req_params[k].present?
             req_params[k] = Currency.convert(req_params[k], c, Currency.default)
           end
         end
       end
 
       # length is indexed in meter
-      if !(u = req_params[:length_unit]).blank? && (u.to_s.downcase == 'ft')
+      if (u = req_params[:length_unit]).present? && (u.to_s.downcase == 'ft')
         [:length_min, :length_max].each do |k|
-          unless req_params[k].blank?
+          if req_params[k].present?
             req_params[k] = (req_params[k] * 0.3048).round(2)
           end
         end
       end
 
-      if (new_used = req_params[:new_used]) && new_used.is_a?(Hash) && !new_used.blank?
-        unless new_used['new'] && new_used['used']
+      if (new_used = req_params[:new_used]) && new_used.is_a?(Hash) && new_used.present?
+        if new_used['new'] || new_used['used']
           req_params[:new_used] = new_used['new'] ? :new : :used
         end
       end
 
-      if (tax_status = req_params[:tax_status]) && tax_status.is_a?(Hash) && !tax_status.blank?
-        unless tax_status['paid'] && tax_status['unpaid']
+      if (tax_status = req_params[:tax_status]) && tax_status.is_a?(Hash) && tax_status.present?
+        if tax_status['paid'] || tax_status['unpaid']
           req_params[:tax_status] = tax_status['paid'] ? :paid : :unpaid
         end
       end
 
       page = req_params[:page].to_i
-      req_params[:page] = page > 1 ? page : 1
+      req_params[:page] = page > 0 ? page : 1
 
       if req_params[:order]
-        if SortTypes.values.map(&:to_s).include?(req_params[:order])
+        if OrderTypes.include?(req_params[:order])
           req_params[:order_dir] = req_params[:order].to_s =~ /_asc$/ ? :asc : :desc
           req_params[:order] = req_params[:order].gsub(/_(asc|desc)$/, '')
         else

@@ -72,7 +72,7 @@ $ ->
         }
       cache: true
 
-  $('select#view-mode').select2
+  $('select#layout_mode').select2
     minimumResultsForSearch: Infinity
     formatSelection: (viewMode, container, escapeMarkup) ->
       $('<img>').attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png').addClass 'view-mode-icon'

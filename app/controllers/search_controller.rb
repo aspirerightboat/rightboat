@@ -53,7 +53,7 @@ class SearchController < ApplicationController
     params.delete(:page) unless request.xhr?
 
     search_params = params.clone
-    search_params[:order] ||= current_order_field
+    search_params[:order] ||= current_search_order
 
     search = Rightboat::BoatSearch.new(search_params)
     @boats = search.retrieve_boats
@@ -70,18 +70,9 @@ class SearchController < ApplicationController
   private
 
   def save_session_settings
-    # view mode will be working in client side
-    # only manage currency, order field and length unit
-
-    if params[:currency].present?
-      set_currency(params[:currency])
-    end
-    if params[:length_unit].present?
-      set_length_unit(params[:length_unit])
-    end
-    if params[:order].present?
-      set_order_field(params[:order])
-    end
+    set_current_currency params[:currency]
+    set_current_length_unit(params[:length_unit])
+    set_current_search_order(params[:order])
   end
 
   def log_search_terms

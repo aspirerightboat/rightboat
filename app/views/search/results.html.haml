@@ -14,7 +14,7 @@
 = render 'shared/search_bar'
 #main-content.container
   - if @boats.length > 0
-    #boats-list.row(data-view-layout="#{current_view_layout}")
+    #boats-list.row(data-layout-mode="#{current_layout_mode}")
       - if @boats.total_count >= 10000
         %p.over-limit.lead.text-center Your search resulted in 10,000 plus boats. Please refine your search.
       - else

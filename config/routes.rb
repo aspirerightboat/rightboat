@@ -64,7 +64,7 @@ Rails.application.routes.draw do
     get 'manufacturer_model'
   end
 
-  put 'session-settings', to: 'session_settings#change', constraints: { format: :json }
+  # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }
 
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
   resources :articles, only: [:show], path: :news

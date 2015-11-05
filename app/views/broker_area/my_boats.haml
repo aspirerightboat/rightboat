@@ -2,7 +2,7 @@
   %h1 My Boats
 
   - if @boats.size > 0
-    #boats-list.row(data-view-layout="#{current_view_layout}")
+    #boats-list.row(data-layout-mode="#{current_layout_mode}")
       = render partial: 'boats/boat', collection: @boats
     = paginate @boats
   - else

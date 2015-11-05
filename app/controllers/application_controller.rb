@@ -5,35 +5,9 @@ class ApplicationController < ActionController::Base
 
   before_action :global_current_user
 
-  include SessionSetting
-
   serialization_scope :view_context
 
-  def current_currency
-    @current_currency ||= Currency.cached_by_name(cookies[:currency]) || set_currency
-  end
-
-  def set_currency(currency_name = nil)
-    @current_currency = Currency.cached_by_name(currency_name) if currency_name
-    @current_currency ||= (Country.find_by(iso: request.location.country_code).try(:currency) if request.location)
-    @current_currency ||= Currency.default
-    cookies[:currency] = @current_currency
-    @current_currency
-  end
-
-  def current_length_unit
-    @_current_length_unit ||= cookies[:length_unit] || 'ft'
-  end
-
-  def current_view_layout
-    @_current_view_layout ||= cookies[:view_layout] || 'gallery'
-  end
-
-  def current_order_field
-    @_current_order_field ||= cookies[:order_field] || 'score'
-  end
-  helper_method :current_currency, :current_view_layout,
-                :current_order_field, :current_length_unit
+  Dir["#{Rails.root}/app/controllers/application_controller_ext/*"].each { |file| Rails.env.development? ? load(file) : require(file) }
 
   private
 

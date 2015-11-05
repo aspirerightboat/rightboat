@@ -48,7 +48,7 @@
               .rb-control
                 = label_tag :length
               .rb-control-group-addon
-                = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-white select-sm select-general'
+                = select_tag :length_unit, length_unit_options, class: 'select-white select-sm select-general'
           .col-xs-7.col-sm-8
             = slider_tag(:length, max: 150, unit: current_length_unit) # max in meter
         .range-slider-wrapper.row

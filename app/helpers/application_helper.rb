@@ -44,12 +44,22 @@ module ApplicationHelper
     select_tag name, options_from_collection_for_select(currencies, :name, :display_symbol, selected), options
   end
 
-  def sort_options(selected = nil)
-    options_for_select(Rightboat::BoatSearch::SortTypes, selected || current_order_field)
+  def search_order_options
+    opts = Rightboat::BoatSearch::OrderTypes.map { |type| [t("search_orders.#{type}"), type] }
+    options_for_select(opts, current_search_order)
+  end
+
+  def layout_mode_options
+    opts = ApplicationController::LAYOUT_MODES.map { |m| [m.capitalize, m] }
+    options_for_select(opts, current_layout_mode)
   end
 
   def options_for_country_code
     options_for_select(Country.country_code_options)
+  end
+
+  def length_unit_options
+    options_for_select(ApplicationController::LENGTH_UNITS, current_length_unit)
   end
 
   def tel_to(text)

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, skip: [:sessions, :registrations]
+  devise_for :users, skip: [:sessions, :registrations], controllers: { passwords: 'passwords' }
 
   devise_scope :user do
     get 'sign-in', to: 'home#index', as: :new_user_session, defaults: { popup_login: true }

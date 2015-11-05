@@ -9,11 +9,15 @@ $ ->
     $(this).simpleAjaxForm()
 
   $('.insurance-form').simpleAjaxForm ($form) ->
-    $('<div class="alert alert-success">').remove()
+    $('.alert', $form).remove()
     $('#insurance-popup').modal('hide')
     $('#insurance-result-popup').displayPopup()
 
   $('.finance-form').simpleAjaxForm ($form) ->
-    $('<div class="alert alert-success">').remove()
+    $('.alert', $form).remove()
     $('#finance-popup').modal('hide')
     $('#finance-result-popup').displayPopup()
+
+  $('.reset-password-form').simpleAjaxForm ($form) ->
+    $('.alert', $form).remove()
+    $('#reset-password-result-popup').displayPopup()

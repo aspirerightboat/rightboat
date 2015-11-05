@@ -7,7 +7,7 @@
       %li= link_to 'Refine Search', '#', class: 'toggle-adv-search'
       %li= link_to 'Back', :back, class: 'return-prev'
       - if controller_name == 'search'
-        %li= link_to 'Save this search', member_saved_searches_path(params.except(:controller, :action)), method: :post, data: { 'require-login' => true }, id: 'save-search'
+        %li= link_to 'Save this search', member_saved_searches_path(params.except(:controller, :action)), method: :post, data: { 'require-login' => true, 'login-title' => 'Please sign in or join as a member to save your search.' }, id: 'save-search'
 
     - unless local_assigns[:simple_search_bar]
       %ul.nav.navbar-nav.navbar-right.display-options

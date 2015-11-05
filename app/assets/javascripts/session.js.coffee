@@ -9,11 +9,10 @@ adjustLoginLink = ->
       .unbind('mouseleave')
 
 $ ->
-  myRightboatClicked = false
+  loginTitle = null
 
   $('[data-require-login]').click (e) ->
-    if $(this).html() is 'My Rightboat'
-      myRightboatClicked = true
+    loginTitle = $(this).data('login-title')
     requireLogin(e, false)
 
   $(document)
@@ -30,11 +29,11 @@ $ ->
   $('#login_popup')
     .on 'hidden.bs.modal', ->
       $('form .alert').remove()
-      myRightboatClicked = false
-      $('.register-notice').remove()
+      loginTitle = null
+      $('#login-title').html('').hide()
     .on 'shown.bs.modal', ->
-      if myRightboatClicked && !$('.register-notice').length > 0
-        $('#login_popup .modal-body').prepend('<h5 class="text-center register-notice">To use my Rightboat, you must first Join as a Member</h5>')
+      if loginTitle && loginTitle.length > 0
+        $('#login-title').html(loginTitle).show()
 
   onSubmit = (e) ->
     e.preventDefault()

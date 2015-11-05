@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_order_field
-    @_current_order_field ||= cookies[:order_field] || 'created_at'
+    @_current_order_field ||= cookies[:order_field] || 'score'
   end
   helper_method :current_currency, :current_view_layout,
                 :current_order_field, :current_length_unit

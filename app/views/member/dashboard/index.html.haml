@@ -43,12 +43,13 @@
                 = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
               .col-sm-6.col-xs-12
                 = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), { prompt: 'Country' }, class: 'country-select'
-          .form-group
-            %h4
-              Change password
-              %br
-              %small
-                %i (Leave blank if you don't want to change)
+          %br
+          %h4
+            Change password
+            %br
+            %small
+              %i (Leave blank if you don't want to change)
+
           .form-group.row
             .col-sm-4.col-xs-12
               = f.password_field :current_password, placeholder: 'Current Password', class: 'form-control'
@@ -56,6 +57,8 @@
               = f.password_field :password, placeholder: 'Password', class: 'form-control'
             .col-sm-4.col-xs-12
               = f.password_field :password_confirmation, placeholder: 'Confirm Password', class: 'form-control'
+
+          %br
           %h4 Help us recommend the right boats for you, introduce yourself.
           .form-group.row.preview-wrap
             .col-sm-6.col-xs-12

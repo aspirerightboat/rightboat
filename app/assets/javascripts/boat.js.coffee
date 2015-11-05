@@ -14,6 +14,7 @@ window.initBoatView = (el) ->
     false
 
   $('.fav-link', el).click (e) ->
+    window.loginTitle = 'Please sign in or join as a member to record your favourite boats.'
     return false unless requireLogin(e, false)
 
     $link = $(@).attr('disabled', 'disabled')

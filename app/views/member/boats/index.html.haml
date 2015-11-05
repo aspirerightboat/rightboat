@@ -5,17 +5,34 @@
   = link_to 'Create New', new_member_boat_path, class: 'btn-flat pull-right btn-black'
   %h1 Sell My Boats
   %hr
-  - if @my_boats.empty?
-    .alert.alert-info
-      You have no boats registered yet.
-  - else
-    .row
-      - @my_boats.each do |boat|
-        = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: true} do
-          .boat-links.boat-links-bottom
-            .boat-price
-              %span(data-attr-name='price')= boat_price(boat)
-              %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
-            .pull-right
-              = link_to 'Edit', edit_member_boat_path(boat), class: 'btn-flat btn-black'
-              = link_to 'Delete', member_boat_path(boat), method: :delete, class: 'btn-flat btn-black'
+  .introduction
+    %p
+      To broker or not to broker ­ that is the question
+    %p
+      The first step towards buying a new boat for most is deciding what you are going to do with your existing boat.
+    %p
+      Second hand boat sales are often problematic and can be stressful for Vendor and Purchaser, that's why we recommend you use a broker who will visit your boat and offer a brokerage service to you. They can talk knowledgeably to potential buyers and ensure you receive first class marketing advice, checking the legal paperwork so the boat is offered with correct title, RCD and VAT status evidence.
+    %p
+      By managing the sale both Vendor and Purchaser will be assisted by the broker to achieve a satisfactory outcome, with the new owner having clear legal title and the seller receiving cleared funds, with the least stress we hope!
+    %p
+      Through our network of reputable brokers and surveyors across the globe, we can offer you a selection of services to help you decide the best way forward.
+    %p
+      We can arrange a valuation of your boat arrange for a pre­sale survey to be undertaken, or if you would like to market the boat yourself, offer you a global audience on Rightboat to sell your own boat.
+    %p
+      Complete our simple form and we'll get in touch with whatever option you choose.
+  %br
+  .my-boats
+    - if @my_boats.empty?
+      .alert.alert-info
+        You have no boats registered yet.
+    - else
+      .row
+        - @my_boats.each do |boat|
+          = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: true} do
+            .boat-links.boat-links-bottom
+              .boat-price
+                %span(data-attr-name='price')= boat_price(boat)
+                %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
+              .pull-right
+                = link_to 'Edit', edit_member_boat_path(boat), class: 'btn-flat btn-black'
+                = link_to 'Delete', member_boat_path(boat), method: :delete, class: 'btn-flat btn-black'

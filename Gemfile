@@ -68,6 +68,8 @@ gem 'premailer-rails'
 gem 'remotipart' # to upload file via ajax
 gem 'cocoon'
 
+gem 'redis-rails'
+
 group :development, :test do
   # gem 'byebug'
   # gem 'web-console', '~> 2.0'

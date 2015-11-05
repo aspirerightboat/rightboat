@@ -31,6 +31,8 @@ module Rightboat
 
     config.active_job.queue_adapter = :delayed_job
 
+    config.cache_store = :redis_store
+
     # Log file rotation. see: https://www.youtube.com/watch?v=Hgc6LGZMMXY
     config.logger = Logger.new(config.paths['log'].first,
                                5, # 5 files total

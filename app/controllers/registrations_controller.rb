@@ -43,7 +43,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if user.errors.any?
-      render json: { errors: user.errors }, status: 422
+      render json: user.errors.full_messages, root: false, status: 422
     else
       render json: {}
     end

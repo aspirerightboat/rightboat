@@ -1,20 +1,15 @@
-= form_for [:member, @boat] do |f|
-  - if @boat.errors.any?
-    %ul.alert.alert-danger
-      - @boat.errors.full_messages.each do |msg|
-        - msg += '.' unless msg =~ /\.$/
-        %li= msg
+= form_for [:member, @boat], remote: true, data: {format: :json}, html: { class: 'simple-ajax-form', multipart: true } do |f|
   %fieldset
     %h5 1. Boat Type:
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :manufacturer
-      .col-md-8.col-xs-12= f.select :manufacturer_id, Manufacturer.order(:name).collect { |x| [ x.name, x.id ] }, include_blank: false
+      .col-md-8.col-xs-12= f.select :manufacturer_id, Manufacturer.order(:name).collect { |x| [ x.name, x.id ] }, {}, include_blank: false, class: 'select-general'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :model
-      .col-md-8.col-xs-12= f.select :model_id, Model.all.collect { |x| [ x.name, x.id ] }, include_blank: false
+      .col-md-8.col-xs-12= f.select :model_id, [[f.object.model.try(:name), f.object.model.try(:id)]], {}, include_blank: false, class: 'select-general'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :year_built
-      .col-md-8.col-xs-12= f.select :year_built, ((Date.today.year - 40)..Date.today.year)
+      .col-md-8.col-xs-12= f.select :year_built, ((Date.today.year - 40)..Date.today.year), {}, class: 'select-general'
   %fieldset
     %h5 2. Boat Specifics:
     .form-group.clearfix

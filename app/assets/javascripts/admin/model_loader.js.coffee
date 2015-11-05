@@ -1,4 +1,5 @@
 window.syncModel = (manufacturer, $modelSelect) ->
+  value = $modelSelect.val()
   $modelSelect.attr('disabled', 'disabled')
   if manufacturer && manufacturer.length
     $.ajax
@@ -12,6 +13,8 @@ window.syncModel = (manufacturer, $modelSelect) ->
       $('<option>').attr('value', '').text('Any').appendTo($modelSelect)
       $.each options, ->
         $('<option>').attr('value', this[0]).text(this[1]).appendTo($modelSelect)
+      if value
+        $modelSelect.val(value)
       if $modelSelect.hasClass('select-general')
         $modelSelect.select2
           minimumResultsForSearch: Infinity

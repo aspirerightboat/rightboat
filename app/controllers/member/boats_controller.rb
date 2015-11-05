@@ -15,9 +15,10 @@ class Member::BoatsController < Member::BaseController
     @boat = current_user.boats.new(boat_params)
 
     if @boat.save
-      redirect_to member_boats_path, notice: 'Boat created successfully.'
+      flash[:notice] = 'Boat created successfully.'
+      render json: { location: member_boats_path }
     else
-      render :new
+      render json: @boat.errors.full_messages, root: false, status: 422
     end
   end
 
@@ -27,9 +28,10 @@ class Member::BoatsController < Member::BaseController
 
   def update
     if @boat.update(boat_params)
-      redirect_to member_boats_path, notice: 'Boat updated successfully.'
+      flash[:notice] = 'Boat updated successfully.'
+      render json: { location: member_boats_path }
     else
-      render :edit
+      render json: @boat.errors.full_messages, root: false, status: 422
     end
   end
 

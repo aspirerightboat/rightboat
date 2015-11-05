@@ -30,10 +30,13 @@ $ ->
     .on 'ajax:before', (e) -> $submit.addClass('inline-loading')
     .on 'ajax:complete', (e) -> $submit.removeClass('inline-loading')
     .on 'ajax:success', (e, data, status, xhr) ->
+      $('.alert', $form).remove()
       if onComplete
         onComplete($form)
-      else
-        window.location = xhr.responseJSON.location
+      else if loc = xhr.responseJSON.location
+        window.location = loc
+      else if message = $form.data('message')
+        $('<div class="alert alert-info">' + message + '</div>').prependTo($form).hide().show(200)
     .on 'ajax:error', (e, xhr) ->
       $('.alert', e.target).remove()
       if xhr.status == '200' # goes here when attached file

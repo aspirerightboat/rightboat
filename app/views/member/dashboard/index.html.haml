@@ -10,7 +10,8 @@
   %p Please let us know what you think, #{mail_to 'info@rightboat.com', 'get in touch with us'}
   %p Good luck finding your next right boat!
   - if user_signed_in?
-    = form_for current_user, url: user_profile_path, remote: true, data: {format: :json}, method: :put, html: { class: 'profile-form', multipart: true } do |f|
+    = form_for current_user, url: user_profile_path, remote: true, data: {format: :json, message: 'Setting was saved successfully.'},
+        method: :put, html: { class: 'simple-ajax-form', multipart: true } do |f|
       .row
         .col-sm-8.col-xs-12
           %h4 This is what we know about you so far, you can add, edit and change your personal information whenever you like.

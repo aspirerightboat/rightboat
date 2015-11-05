@@ -92,9 +92,9 @@ $(document).ready ->
   $('[data-toggle=offcanvas]').click ->
     $('.row-offcanvas').toggleClass('active');
     if ($('.row-offcanvas').hasClass('active'))
-      $(this).find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left')
+      $(this).find('.icon').removeClass('icon-right-open').addClass('icon-left-open')
     else
-      $(this).find('.glyphicon').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-right')
+      $(this).find('.icon').removeClass('icon-left-open').addClass('icon-right-open')
 
   $('.reset-search-form').click ->
     $form = $('#home-search-form form')
@@ -146,8 +146,10 @@ $(document).ready ->
       $('.rb-extended').slideDown()
       $('.toggle-about').html 'less...'
     ###
-    unless $(target).length && $(target).hasClass('fav-link')
-      scrollToTarget(target) if $(target).length
+    if $(target).length && !$(target).hasClass('fav-link')
+      e.preventDefault()
+      scrollToTarget(target)
+      return false
 
   $('.datepicker').datepicker
     dateFormat: 'yy-dd-mm'

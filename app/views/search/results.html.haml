@@ -21,10 +21,11 @@
         = render @boats
     - if @boats.total_pages > 1
       .row
+        = link_to '#search-results', class: 'scroll-top pull-right' do
+          %i.icon.icon-up-bold
         = link_to '#', class: 'view-more-link' do
           %span VIEW MORE
-          %span
-            %i.glyphicon.glyphicon-chevron-down
+          %i.icon.icon-down-open
   - else
     %p.lead.text-center No boats were found matching your search criteria. Please try again.
 

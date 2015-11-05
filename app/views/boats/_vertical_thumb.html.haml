@@ -16,4 +16,4 @@
       %p.boat-length
         %span(data-attr-name='loa')= boat_length(boat)
       %p #{boat.year_built}
-      %p #{boat.full_location}
+      %p #{boat.country.to_s}

@@ -7,7 +7,7 @@ class FeedbacksController < ApplicationController
       ContactMailer.new_request(@feedback).deliver_now
       render json: {}, status: 200
     else
-      render json: @feedback, status: 422
+      render json: @feedback.errors.full_messages, root: false, status: 422
     end
   end
 

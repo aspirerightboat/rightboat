@@ -32,7 +32,7 @@ $ ->
     .on 'ajax:success', (e, data, status, xhr) ->
       $('.alert', $form).remove()
       if onComplete
-        onComplete($form)
+        onComplete($form, e, data, status, xhr)
       else if loc = xhr.responseJSON.location
         window.location = loc
       else if message = $form.data('message')

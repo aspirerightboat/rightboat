@@ -1,4 +1,4 @@
-= form_for Feedback.new, html: { class: 'contact-form' } do |f|
+= form_for Feedback.new, remote: true, data: {format: :json, message: 'Thank you, your comments have been sent to us. If you asked for a response, you should hear back within 2 business days.'}, html: { class: 'simple-ajax-form', multipart: true } do |f|
 
   .form-group.row
     .col-md-3= f.label :title, 'Title:'

@@ -69,9 +69,9 @@ Rails.application.routes.draw do
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
   resources :articles, only: [:show], path: :news
   resources :buyer_guides, only: [:index, :show]
-  resources :feedbacks, only: [:create]
-  resources :mail_subscriptions, only: [:create]
-  resources :marine_enquiries, only: [:create]
+  # resources :feedbacks, only: [:create]
+  # resources :mail_subscriptions, only: [:create]
+  # resources :marine_enquiries, only: [:create]
   resources :berth_enquiries, only: [:create]
   resources :insurances, only: [:create]
   resources :finances, only: [:create]
@@ -85,7 +85,7 @@ Rails.application.routes.draw do
     collection do
       get :contact
       get :toc
-      get :marine_services
+      # get :marine_services
       get :privacy_policy
       get :cookies_policy
       get :sell_my_boats

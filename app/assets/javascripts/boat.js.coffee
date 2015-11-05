@@ -38,15 +38,15 @@ window.initBoatView = (el) ->
       $link.removeAttr('disabled')
     false
 
-  if window.favLink
-    window.favLink.click()
-
 ######## Enquiry form
 $ ->
   phoneModalOpened = false
 
   $('.boat-view').each ->
     initBoatView(this)
+
+  if window.favLink
+    window.favLink.click()
 
   # $('#enquiry_popup').on 'show.bs.modal', ->
   #   $('form', @).renderCaptcha()

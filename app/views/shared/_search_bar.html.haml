@@ -2,13 +2,16 @@
   .container
     = form_tag search_path, method: :get, class: 'navbar-form navbar-left', role: 'search' do
       = text_field_tag :q, params[:q], class: 'form-control', placeholder: 'Quick Search'
+      %i.icon.icon-search
     %ul.nav.navbar-nav.page-links
       %li= link_to 'Refine Search', '#', class: 'toggle-adv-search'
       %li= link_to 'Back', :back, class: 'return-prev'
       - if controller_name == 'search'
         %li
           = link_to 'Save this search', member_saved_searches_path(params.except(:controller, :action)),
-                     method: :post, data: {'require-login' => true}, id: 'save-search'
+                     method: :post, id: 'save-search',
+                     data: {'require-login' => true, 'login-title' => 'Please sign in or join as a member to save your search.'}
+                     
 
     - unless local_assigns[:simple_search_bar]
       %ul.nav.navbar-nav.navbar-right.display-options

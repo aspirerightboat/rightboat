@@ -20,7 +20,7 @@
           .col-xs-4.col-sm-2
             = label_tag :keywords, 'Keywords'
           .col-xs-8.col-sm-10
-            = text_field_tag :q, params[:q], id: 'keywords', class: 'tags-input', placeholder: 'e.g. 4berth'
+            = text_field_tag :q, params[:q], id: 'keywords', class: 'tags-input', placeholder: 'e.g. 4 berths'
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-4
@@ -108,7 +108,7 @@
             = label_tag :new_used_used, 'Used'
         .form-group.row
           .col-xs-4
-            %button.btn-flat(type="submit" name="save_search" data-require-login=true) Save this Search
+            %button.btn-flat(type="submit" name="save_search" data-require-login=true data-login-title="Please sign in or join as a member to save your search.") Save this Search
           .col-xs-8
             = button_tag 'Search', type: 'submit', class: 'btn-flat'
       .result-info.col-sm-12.col-md-12.text-center

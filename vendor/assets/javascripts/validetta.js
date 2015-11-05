@@ -23,7 +23,7 @@
      *  Form validate error messages
      */
     messages = {
-      required  : 'This field is required. Please be sure to check.',
+      required  : 'This field is required.',
       email     : 'Your E-mail address appears to be invalid. Please be sure to check.',
       number    : 'You can enter only numbers in this field.',
       maxLength : 'Maximum {count} characters allowed!',

@@ -42,11 +42,11 @@ class ApplicationController < ActionController::Base
     end
 
     @search_facets = {
-      min_price:  (price_data && price_data['min'].floor) || 0,
-      max_price:  (price_data && price_data['max'].ceil) || 10000,
-      min_year:   (year_data && year_data['min'].floor) || 1970,
-      min_length: (length_data && length_data['min'].floor) || 10,
-      max_length: (length_data && length_data['max'].ceil) || 1000,
+      min_price:  (price_data && price_data['min'].try(:floor)) || 0,
+      max_price:  (price_data && price_data['max'].try(:ceil)) || 10000,
+      min_year:   (year_data && year_data['min'].try(:floor)) || 1970,
+      min_length: (length_data && length_data['min'].try(:floor)) || 10,
+      max_length: (length_data && length_data['max'].try(:ceil)) || 1000,
       countries_for_select: countries_for_select
     }
   end

@@ -22,4 +22,11 @@ class UserMailer < ApplicationMailer
     mail(to: to_email, subject: 'Confirm your email - Rightboat')
   end
 
+  def new_sell_request(boat_id, request_type)
+    @boat = Boat.find(boat_id)
+    @user = @boat.user
+    @request_type = request_type
+
+    mail(to: 'info@rightboat.com', subject: 'New sell my boat request - RightBoat')
+  end
 end

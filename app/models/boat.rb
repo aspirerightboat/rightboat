@@ -4,7 +4,9 @@ class Boat < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
-  attr_accessor :tax_paid, :accept_toc, :agree_privacy_policy
+  SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
+
+  attr_accessor :tax_paid, :sell_request_type#, :accept_toc, :agree_privacy_policy
 
   searchable do
     text :ref_no,               boost: 5
@@ -76,7 +78,7 @@ class Boat < ActiveRecord::Base
   validate :model_inclusion_of_manufacturer
   validate :require_price
   validate :active_of
-  validate :violation
+  # validate :violation
 
   accepts_nested_attributes_for :boat_specifications, reject_if: 'value.blank?'
   accepts_nested_attributes_for :boat_images, reject_if: :all_blank

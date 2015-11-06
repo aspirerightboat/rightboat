@@ -4,9 +4,8 @@
 }
 
 .member-right {
-  .btn-flat.btn-block {
+  .btn-flat.btn-white {
     border-color: @rb-color-dark;
-    font-weight: bold;
 
     &:hover, &:focus, &:active, &.active {
       background-color: @rb-color-dark;
@@ -21,6 +20,25 @@
 
 #dashboard-index .member-content h4 {
   font-size: 17px;
+}
+
+.request-type {
+  display: inline-block;
+
+  label {
+    border: 1px solid @rb-color-dark;
+    line-height: 1.2em !important;
+    padding-left: 8px !important;
+
+    &:before, &:after {
+      visibility: hidden;
+    }
+
+    &:hover {
+      background-color: @rb-color-dark;
+      color: white;
+    }
+  }
 }
 
 #boat-images {

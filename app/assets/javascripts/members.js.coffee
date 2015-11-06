@@ -11,8 +11,10 @@ loadPreview = ($el) ->
 
 $(document).ready ->
 
-  $('.datepicker').datepicker
-    dateFormat: 'yy-dd-mm'
+  $('.rb-datepicker').datetimepicker
+    formatTime: ''
+    format: 'Y-m-d'
+    timepicker: false
 
   $('[name="boat[sell_request_type]"]').change (e) ->
     $this = $(this)

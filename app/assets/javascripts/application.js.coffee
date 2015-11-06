@@ -28,7 +28,7 @@
 #= require twitter/bootstrap/affix.js
 
 #= require jquery-ui/slider
-#= require jquery-ui/datepicker
+#= require jquery.datetimepicker.full.min
 #= require jquery.ui.touch-punch
 #= require select2
 #= require selectize.min

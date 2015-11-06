@@ -16,6 +16,7 @@ class Member::BoatsController < Member::BaseController
 
     if @boat.save
       flash[:notice] = 'Boat created successfully.'
+      UserMailer.new_sell_request(@boat.id, params[:boat][:sell_request_type]).deliver_now unless params[:boat][:sell_request_type].blank?
       render json: { location: member_boats_path }
     else
       render json: @boat.errors.full_messages, root: false, status: 422

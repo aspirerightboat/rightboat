@@ -45,7 +45,7 @@
       .col-md-8.col-xs-12= f.text_area :owners_comment, class: 'form-control'
   %fieldset
     %h5 5. Boat images:
-    .form-group
+    .form-group.clearfix
       .col-md-4.col-xs-12= label_tag('Please upload at least 1 image:') unless f.object.boat_images.any?
       .col-md-8.col-xs-12
         .preview-wrap
@@ -53,21 +53,28 @@
             = render 'boat_image_fields', f: boat_image
           .links
             = link_to_add_association 'Add Image', f, :boat_images
-  %fieldset
-    %h5 6. Confirmation:
-    .form-group.clearfix
-      .col-xs-12
-        = f.check_box :accept_toc, checked: @boat.persisted?
-        = f.label :accept_toc, "I have read and accept Rightboat #{link_to 'Terms and Conditions', toc_home_path, target: '_blank'}".html_safe
-    .form-group.clearfix
-      .col-xs-12
-        = f.check_box :agree_privacy_policy, checked: @boat.persisted?
-        = f.label :agree_privacy_policy, "I understand our #{link_to 'Private Advert Pricing Policy', privacy_policy_home_path, target: '_blank'}".html_safe
-  %fieldset
-    %h5 7. Payment:
-    .form-group.clearfix
-      .col-xs-12
-        = f.check_box :secure_payment
-        = f.label :secure_payment, "I wish to make a secure online #{link_to 'payment', 'javascript: void(0);'}.".html_safe
+  - if false
+    %fieldset
+      %h5 6. Confirmation:
+      .form-group.clearfix
+        .col-xs-12
+          = f.check_box :accept_toc, checked: @boat.persisted?
+          = f.label :accept_toc, "I have read and accept Rightboat #{link_to 'Terms and Conditions', toc_home_path, target: '_blank'}".html_safe
+      .form-group.clearfix
+        .col-xs-12
+          = f.check_box :agree_privacy_policy, checked: @boat.persisted?
+          = f.label :agree_privacy_policy, "I understand our #{link_to 'Private Advert Pricing Policy', privacy_policy_home_path, target: '_blank'}".html_safe
+    %fieldset
+      %h5 7. Payment:
+      .form-group.clearfix
+        .col-xs-12
+          = f.check_box :secure_payment
+          = f.label :secure_payment, "I wish to make a secure online #{link_to 'payment', 'javascript: void(0);'}.".html_safe
+  .form-group.text-center
+    - Boat::SELL_REQUEST_TYPES.each_with_index do |x, i|
+      .request-type
+        = f.radio_button :sell_request_type, x, checked: (i == 0)
+        = f.label "sell_request_type_#{x.downcase.gsub(/\s+/, '_')}", x, class: "btn-flat #{i == 0 ? 'btn-black' : ''}"
+
   .form-group
     %button.btn-flat.btn-black(type="submit") Save Changes

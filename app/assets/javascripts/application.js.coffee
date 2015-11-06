@@ -79,16 +79,6 @@ scrollToTarget = (target) ->
     scrollTop: $(target).offset().top
   , 500
 
-loadPreview = ($el) ->
-  $el.find('input[type="file"]').change (e) ->
-    $this = $(this)
-    reader = new FileReader
-    reader.onload = ->
-      img = new Image
-      img.src = reader.result
-      $this.parents('.row').find('img').attr('src', img.src)
-    reader.readAsDataURL(this.files[0])
-
 $(document).ready ->
   $('[data-toggle=offcanvas]').click ->
     $('.row-offcanvas').toggleClass('active');
@@ -151,14 +141,6 @@ $(document).ready ->
       e.preventDefault()
       scrollToTarget(target)
       return false
-
-  $('.datepicker').datepicker
-    dateFormat: 'yy-dd-mm'
-
-  loadPreview($('.preview-wrap'));
-
-  $('.preview-wrap').bind 'cocoon:after-insert', (e, insertedItem) ->
-    loadPreview(insertedItem)
 
   $('.cool-select').select2()
 

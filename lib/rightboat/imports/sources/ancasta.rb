@@ -2,9 +2,14 @@ module Rightboat::Imports
   class Sources::Ancasta < Base
     include ActionView::Helpers::TextHelper # for simple_format
 
+    def self.validate_param_option
+      {source_url: :presence}
+    end
+
     def enqueue_jobs
       log 'Loading XML file'
-      doc = get('http://ancanet.com/webfiles/DailyBoatExport/BoatExport.xml')
+      # http://ancanet.com/webfiles/DailyBoatExport/BoatExport.xml
+      doc = get(@source_url)
 
       log 'Scraping boats'
       doc.xml.root.element_children.each do |boat_node|
@@ -41,14 +46,12 @@ module Rightboat::Imports
           daytime_phone: boat_nodes['Phone'].text,
           email: boat_nodes['Email'].text,
       }
-      descr = fix_whitespace(boat_nodes['Description'].inner_html)
-      descr = simple_format(descr.gsub('<br />', "\n").strip) if !descr['<p>']
-      boat.description = descr
+      boat.description = prepare_description(boat_nodes['Description'].inner_html)
       boat_node.element_children.select { |n| n.name.start_with?('Text') }.map do |node|
         if node.text.present?
           header = node.name.sub('Text', '')
-          text = fix_whitespace(node.inner_html)
-          boat.description << "<h3>#{header}</h3>#{simple_format text}"
+          text = prepare_description(node.inner_html)
+          boat.description << "<h3>#{header}</h3>#{text}"
         end
       end
       boat
@@ -62,11 +65,23 @@ module Rightboat::Imports
     }
 
     def read_currency(str)
-      CURRENCIES[str] || (log "Unexpected currency: #{str}"; nil)
+      CURRENCIES[str] || (log_error "Unexpected currency: #{str}"; nil)
     end
 
-    def fix_whitespace(str)
-      str.gsub(/[\s]+|&nbsp;/, ' ').squeeze.gsub('/n', "\n").strip
+    def prepare_description(str)
+      if str['&']
+        str = CGI.unescapeHTML(str)
+        str.gsub!(' & ', ' &amp; ')
+      end
+      str.gsub!('&nbsp;', ' ')
+      str.gsub!(/[\s]{2,}/, ' ')
+      str.gsub!('/n', "\n")
+      str.strip!
+      str.gsub!(/<img[^>]*>/, '')
+      str.gsub!(/<a [^>]*>(.*?)<\/a>/, '\1')
+      str.gsub!(/<p>\s*<\/p>/, '')
+      str = simple_format(str.gsub(/<br[^>]*>/, "\n").strip) if !str['<p>']
+      str
     end
   end
 end

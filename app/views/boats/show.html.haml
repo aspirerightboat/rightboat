@@ -60,7 +60,7 @@
         = favourite_link_to @boat
         = render 'shared/social_share', boat: @boat
         .pull-right
-          - if @boat.user = current_user
+          - if @boat.user == current_user
             = link_to 'PDF Link', boat_pdf_path(@boat), class: 'btn-flat btn-black'
           - else
             = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'

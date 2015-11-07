@@ -126,6 +126,7 @@ Rails.application.routes.draw do
     get :my_boats
     get :boats_manager
     get :my_leads
+    get :tc
   end
   resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:show, :create]
 

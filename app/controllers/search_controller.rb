@@ -58,6 +58,7 @@ class SearchController < ApplicationController
     search = Rightboat::BoatSearch.new(search_params)
     @boats = search.retrieve_boats
     session[:boats_count] = @boats.total_count
+    @prev_url = request.referrer[/boats-for-sale/]
 
     respond_to do |format|
       format.html

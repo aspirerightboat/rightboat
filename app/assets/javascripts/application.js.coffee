@@ -88,7 +88,7 @@ $(document).ready ->
       $(this).find('.icon').removeClass('icon-left-open').addClass('icon-right-open')
 
   $('.reset-search-form').click ->
-    $form = $('#home-search-form form')
+    $form = $('#search-hub-form form')
     $form.find('#search-input').val('')
     $form.find('#boat_type_all').click()
     $form.find('#price-slider, #length-slider').each ->

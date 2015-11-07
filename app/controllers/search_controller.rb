@@ -51,6 +51,7 @@ class SearchController < ApplicationController
     end
 
     params.delete(:page) unless request.xhr?
+    params.delete(:boat_type) unless params[:q].blank?
 
     search_params = params.clone
     search_params[:order] ||= current_search_order

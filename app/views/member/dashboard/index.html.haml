@@ -71,9 +71,12 @@
           = f.fields_for :information do |i|
             .form-group.row
               .col-sm-6.col-xs-12
-                = i.label :mf, 'M/F'
+                = i.label :gender, 'M/F'
               .col-sm-6.col-xs-12
-                = i.text_field :mf, class: 'form-control'
+                = i.radio_button :gender, 'male', checked: (i.object.gender == 'male')
+                = i.label :gender_male, 'male'
+                = i.radio_button :gender, 'female', checked: (i.object.gender == 'female')
+                = i.label :gender_female, 'female'
             .form-group.row
               .col-sm-6.col-xs-12
                 = i.label :dob, 'Date of Birth'

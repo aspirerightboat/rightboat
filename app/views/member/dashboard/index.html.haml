@@ -73,10 +73,9 @@
               .col-sm-6.col-xs-12
                 = i.label :gender, 'M/F'
               .col-sm-6.col-xs-12
-                = i.radio_button :gender, 'male', checked: (i.object.gender == 'male')
-                = i.label :gender_male, 'male'
-                = i.radio_button :gender, 'female', checked: (i.object.gender == 'female')
-                = i.label :gender_female, 'female'
+                - UserInformation::GENDERS.each do |gender|
+                  = i.radio_button :gender, gender, checked: (i.object.gender == gender)
+                  = i.label "gender_#{gender}", gender
             .form-group.row
               .col-sm-6.col-xs-12
                 = i.label :dob, 'Date of Birth'

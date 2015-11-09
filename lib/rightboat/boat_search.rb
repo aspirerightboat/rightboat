@@ -115,7 +115,7 @@ module Rightboat
       @manufacturer_model = read_tags(params[:manufacturer_model])
       @category = read_tags(params[:category])
       @country = read_tags(params[:country])
-      @boat_type = read_tags(params[:boat_type])
+      @boat_type = read_tags(params[:boat_type]).try(:first)
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
       @price_min = read_price(params[:price_min], params[:currency])

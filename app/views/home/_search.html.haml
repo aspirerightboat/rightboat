@@ -21,9 +21,9 @@
           #boat-types.form-group.pull-right
             = radio_button_tag :boat_type, '', params[:boat_type].blank?, id: 'boat_type_all'
             = label_tag :boat_type_all, 'All', for: 'boat_type_all'
-            = radio_button_tag :boat_type, 'power', params[:boat_type].to_s.downcase == 'power'
+            = radio_button_tag :boat_type, 'Power', params[:boat_type] == 'Power'
             = label_tag :boat_type_power, 'Power', for: 'boat_type_power'
-            = radio_button_tag :boat_type, 'sail', params[:boat_type].to_s.downcase == 'sail'
+            = radio_button_tag :boat_type, 'Sail', params[:boat_type] == 'Sail'
             = label_tag :boat_type_sail, 'Sail', for: 'boat_type_sail'
 
           .clearfix

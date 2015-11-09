@@ -50,6 +50,7 @@ class SearchController < ApplicationController
     end
 
     params.delete(:page) unless request.xhr?
+    params.delete(:boat_type) unless params[:q].blank?
 
     search_params = params.clone
     search_params[:order] ||= current_search_order
@@ -58,6 +59,7 @@ class SearchController < ApplicationController
     @boats = boat_search.results
     @search_facets = boat_search.facets_data
     session[:boats_count] = @boats.total_count
+    @prev_url = request.referrer[/boats-for-sale/] if request.referer
 
     respond_to do |format|
       format.html

@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   LENGTH_UNITS = %w(ft m)
 
   def current_currency
-    @current_currency ||= Currency.cached_by_name(session[:currency]) ||
+    @current_currency ||= Currency.cached_by_name(cookies[:currency]) ||
         (Country.find_by(iso: request.location.country_code).try(:currency) if request.location) ||
         Currency.default
   end
@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def set_current_currency(currency_name)
     if currency_name.present? && (cur = Currency.cached_by_name(currency_name))
-      session[:currency] = cur
+      cookies[:currency] = cur
     end
   end
 
@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   def set_current_length_unit(unit)
     if unit.present? && LENGTH_UNITS.include?(unit)
-      session[:length_unit] = unit
+      cookies[:length_unit] = unit
     end
   end
 
@@ -47,8 +47,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_search_order
 
   def set_current_search_order(field)
-    if field.present? && Rightboat::BoatSearch::ORDER_TYPES.include?(field)
-      session[:search_order] = field
+    if field.present? && Rightboat::BoatSearch::OrderTypes.include?(field)
+      cookies[:search_order] = field
     end
   end
 

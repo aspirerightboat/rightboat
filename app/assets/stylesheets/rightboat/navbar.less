@@ -29,6 +29,7 @@ h1.navbar-brand {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
+  min-height: 98px;
   .container {position: relative;}
   h1, .navbar-h {
     font-weight: normal;
@@ -172,11 +173,14 @@ a.navbar-brand {
     padding-right: 22px;
   }
 
-  .icon-search {
+  [type="submit"] {
+    background: transparent;
+    border: none;
     color: gray;
+    padding: 2px;
     position: absolute;
-    right: 1px;
-    top: 7px;
+    right: 0;
+    top: 5px;
   }
 }
 
@@ -231,8 +235,8 @@ a.navbar-brand {
     font-size: 23px;
   }
 
-  .navbar-form .icon-search {
+  .navbar-form [type="submit"] {
     right: 11px;
-    top: 14px;
+    top: 12px;
   }
 }

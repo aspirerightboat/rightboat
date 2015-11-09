@@ -2,11 +2,11 @@
   .navbar-h My <strong>Rightboat</strong>
 
 .member-content(data-layout-mode='list')
-  %h1 My Requests
+  %h1 My Enquiries
   %hr
   - if @enquiries.blank?
     .alert.alert-info
-      You have no requests yet.
+      You have no enquiries yet.
   - else
     .row
       - @enquiries.each do |enquiry|

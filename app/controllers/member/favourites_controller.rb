@@ -1,7 +1,7 @@
 module Member
   class FavouritesController < BaseController
     def index
-      @favourites = current_user.favourites.includes(boat: [:currency, :primary_image, :manufacturer, :model, :country, :vat_rate])
+      @favourites = current_user.favourites.includes(boat: [:currency, :primary_image, :manufacturer, :model, :country, :vat_rate]).order(created_at: :desc)
     end
 
     def create

@@ -12,17 +12,16 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = javascript_include_tag 'https://maps.google.com/maps/api/js?sensor=false'
-  %body(id="#{controller_name}-#{action_name}")
+  %body.member-area(id="#{controller_name}-#{action_name}")
     - if content_for? :header
       = yield :header
     - else
+      = render 'home/search'
       = render 'shared/advanced_search'
       = render 'shared/navbar'
 
     #content-wrapper
-      = render 'shared/search_bar', simple_search_bar: true
-
-      = image_tag 'member-page-bg.jpg', alt: '', width: '100%'
+      = image_tag 'member-page-bg.jpg', alt: '', height: 450
 
       #main-content.container(style='position: relative;')
         .sidebar-toggle.visible-xs

@@ -28,7 +28,8 @@ module Rightboat
           'hours_engine' => :engine_hours,
           'number_cabins' => :cabins,
           'comments' => :owners_comment,
-          'exhibitcomments' => :description
+          'exhibitcomments' => :description,
+          'type_name' => :boat_type
         )
 
         def self.validate_param_option

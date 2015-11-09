@@ -14,6 +14,7 @@ $(document).ready ->
   $('.rb-datepicker').datetimepicker
     formatTime: ''
     format: 'Y-m-d'
+    scrollInput: false
     timepicker: false
 
   $('[name="boat[sell_request_type]"]').change (e) ->

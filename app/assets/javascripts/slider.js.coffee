@@ -160,7 +160,7 @@ $ ->
   $('.toggle-adv-search').click (e)->
     e.preventDefault()
 
-    $('#home-search-form, #top-navbar').slideUp
+    $('#search-hub-form, #top-navbar').slideUp
       duration: 200
       complete: ->
         $('#advanced-search').slideDown
@@ -172,7 +172,7 @@ $ ->
     $('#advanced-search').slideUp
       duration: 200
       complete: ->
-        $('#home-search-form, #top-navbar').slideDown
+        $('#search-hub-form, #top-navbar').slideDown
           duration: 200
 
   $('#layout_mode').change ->

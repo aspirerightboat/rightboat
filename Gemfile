@@ -41,7 +41,6 @@ gem 'permanent_records'
 
 # for search
 gem 'sunspot_rails'
-gem 'sunspot_solr'
 gem 'progress_bar', require: false
 gem 'sunspot-queue'
 
@@ -83,6 +82,10 @@ group :development, :test do
   gem 'letter_opener'
   gem 'quiet_assets'
   gem 'bullet'
+end
+
+group :development, :staging do
+  gem 'sunspot_solr'
 end
 
 group :production, :staging do

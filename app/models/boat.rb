@@ -98,7 +98,7 @@ class Boat < ActiveRecord::Base
 
     options = {
         exclude_id: id,
-        currency:   currency.name,
+        currency:   currency.try(:name),
         price_min:  (required_price * 0.8).to_i,
         price_max:  (required_price * 1.2).to_i,
         boat_type:  [boat_type.try(&:name_stripped)],

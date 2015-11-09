@@ -51,9 +51,9 @@ module Rightboat
         with(:year).greater_than_or_equal_to(year_min) if year_min
         with(:year).less_than_or_equal_to(year_max) if year_max
 
-        with :country_id, country if country
-        with :category_id, category if category
-        with :boat_type, boat_type if boat_type
+        any_of { country.each { |country_id| with :country_id, country_id } } if country
+        any_of { category.each { |category_id| with :category_id, category_id } } if category
+        any_of { boat_type.each { |boat_type| with :boat_type, boat_type } } if boat_type
 
         if with_facets
           facet :country_id
@@ -100,12 +100,12 @@ module Rightboat
       end
 
       @facets_data = {
-          price_min:  (price_stats.min.try(:floor)) || PRICES_RANGE.min,
-          price_max:  (price_stats.max.try(:ceil)) || PRICES_RANGE.max,
-          year_min:   (year_stats.min.try(:floor)) || YEARS_RANGE.min,
-          year_max:   (year_stats.min.try(:ceil)) || YEARS_RANGE.max,
-          length_min: (length_stats.min.try(:floor)) || LENGTHS_RANGE.min,
-          length_max: (length_stats.max.try(:ceil)) || LENGTHS_RANGE.max,
+          price_min:  (price_stats.data && price_stats.min.try(:floor)) || PRICES_RANGE.min,
+          price_max:  (price_stats.data && price_stats.max.try(:ceil)) || PRICES_RANGE.max,
+          year_min:   (year_stats.data && year_stats.min.try(:floor)) || YEARS_RANGE.min,
+          year_max:   (year_stats.data && year_stats.max.try(:ceil)) || YEARS_RANGE.max,
+          length_min: (length_stats.data && length_stats.min.try(:floor)) || LENGTHS_RANGE.min,
+          length_max: (length_stats.data && length_stats.max.try(:ceil)) || LENGTHS_RANGE.max,
           countries_for_select: countries_for_select
       }
     end
@@ -115,7 +115,7 @@ module Rightboat
       @manufacturer_model = read_tags(params[:manufacturer_model])
       @category = read_tags(params[:category])
       @country = read_tags(params[:country])
-      @boat_type = read_tags(params[:boat_type]).try(:first)
+      @boat_type = read_tags(params[:boat_type])
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
       @price_min = read_price(params[:price_min], params[:currency])

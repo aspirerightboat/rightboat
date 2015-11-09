@@ -30,7 +30,7 @@ namespace :solr do
   #   invoke 'solr:start'
   # end
 
-  after 'deploy:finished', 'solr:restart'
+  after 'deploy:finished', 'solr:restart' unless ENV['SKIP_SOLR_RESTART']
 
   desc 'reindex the whole solr database'
   task :reindex do

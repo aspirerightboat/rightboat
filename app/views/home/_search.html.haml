@@ -45,7 +45,7 @@
                 .rb-control
                   = slider_tag(:length, unit: current_length_unit) # max in meter
                 .rb-control-group-addon
-                  = select_tag :length_unit, options_for_select(['ft', 'm'], current_length_unit), class: 'select-sm select-general'
+                  = select_tag :length_unit, options_for_select(%w(ft m), current_length_unit), class: 'select-sm select-general'
           .row
             .col-xs-12.nice-buttons.last-row-pad
               %button.nice-button(type="submit") Search

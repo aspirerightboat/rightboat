@@ -6,7 +6,7 @@ $ ->
     if $this.hasClass('select-white')
       options = $.extend(options, dropdownCssClass: 'select-white')
     $this.select2(options).on 'change', (e) ->
-      $allOption = $(this).find('option[value=\'\']')
+      $allOption = $(this).find('option[value=""]')
       if $allOption.length and $allOption.text().match(/^all$/i)
         if $allOption.is(':selected')
           $this.select2 'val', ''

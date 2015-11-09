@@ -1,149 +1,173 @@
 module Rightboat
-
   class BoatSearch
-    OrderTypes = %w(score created_at price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
+    ORDER_TYPES = %w(score created_at price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
+    YEARS_RANGE = 1970..Time.current.year
+    PRICES_RANGE = 0..100_000_000
+    LENGTHS_RANGE = 0..60
 
-    def initialize(params = {})
-      @params = preprocess_param(params)
-    end
+    attr_reader :facets_data, :search
+    
+    attr_reader :q, :manufacturer_model, :category, :country, :boat_type,
+                :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
+                :ref_no, :new_boat, :tax_paid, :page, :order_dir, :order, :exclude_id
 
-    def retrieve_boats(includes = nil, per_page = 30)
-      match_conidtion = Proc.new do |q, field, param_field|
-        param_field ||= field
-        q.with field, @params[param_field] if @params[param_field].present?
+    attr_reader :with_facets, :includes, :per_page
+
+    def do_search(search_params, opts = {})
+      prepare_params(search_params)
+
+      @with_facets = opts[:with_facets]
+      @includes = opts[:includes] || [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
+      @per_page = opts[:per_page] || 30
+
+      @search = Boat.solr_search(include: includes) do
+        fulltext q if q
+        with :live, true
+        with :ref_no, ref_no if ref_no
+        without :id, exclude_id if exclude_id
+        paginate page: page, per_page: per_page
+        order_by order, order_dir if order
+
+        with :new_boat, new_boat  if new_boat
+
+        if !tax_paid.nil?
+          with :tax_paid, true if tax_paid
+          without :tax_paid, true if !tax_paid
+        end
+
+        if (manuf_model = manufacturer_model)
+          any_of do
+            with :manufacturer, manuf_model
+            with :manufacturer_model, manuf_model
+          end
+        end
+
+        with(:price).greater_than_or_equal_to(price_min) if price_min
+        with(:price).less_than_or_equal_to(price_max) if price_max
+
+        with(:length_m).greater_than_or_equal_to(length_min) if length_min
+        with(:length_m).less_than_or_equal_to(length_max) if length_max
+
+        with(:year).greater_than_or_equal_to(year_min) if year_min
+        with(:year).less_than_or_equal_to(year_max) if year_max
+
+        with :country_id, country if country
+        with :category_id, category if category
+        with :boat_type, boat_type if boat_type
+
+        if with_facets
+          facet :country_id
+          stats :year, :price, :length_m
+        end
       end
 
-      includes ||= [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
-      search = Boat.solr_search(include: includes) do |q|
-        q.without :ref_no, @params[:exclude] if @params[:exclude].present?
-        q.with :ref_no, @params[:ref_no] if @params[:ref_no].present?
-        q.with :live, true
-        q.fulltext @params[:q] if @params[:q].present?
-        q.paginate page: @params[:page].presence.try(:to_i) || 1, per_page: per_page
+      fetch_facets_data(@search) if with_facets
 
-        q.order_by @params[:order].to_sym, @params[:order_dir].to_sym if @params[:order]
-
-        # new or used
-        if (new_used = @params[:new_used])
-          year = Date.today.year
-          # q.with :new_boat, true if new_used == :new
-          q.with(:year).greater_than_or_equal_to(year) if new_used == :new
-          # q.without :new_boat, true if new_used == :used
-          q.with(:year).less_than_or_equal_to(year - 1) if new_used == :used
-        end
-
-        # tax paid or unpaid
-        if (tax_status = @params[:tax_status])
-          q.with :tax_paid, true if tax_status == :paid
-          q.without :tax_paid, true if tax_status == :unpaid
-        end
-
-        # manufacturer or model
-        q.any_of do |sq|
-          match_conidtion.call(sq, :manufacturer, :manufacturer_model)
-          match_conidtion.call(sq, :manufacturer_model)
-        end
-
-        # category
-        match_conidtion.call(q, :country_id, :country)
-        match_conidtion.call(q, :category_id, :category)
-
-        # price
-        q.with(:price).greater_than_or_equal_to(@params[:price_min]) if @params[:price_min].present?
-        q.with(:price).less_than_or_equal_to(@params[:price_max]) if @params[:price_max].present?
-
-        # length
-        q.with(:length_m).greater_than_or_equal_to(@params[:length_min]) if @params[:length_min].present?
-        q.with(:length_m).less_than_or_equal_to(@params[:length_max]) if @params[:length_max].present?
-
-        # year
-        q.with(:year).greater_than_or_equal_to(@params[:year_min]) if @params[:year_min].present?
-        q.with(:year).less_than_or_equal_to(@params[:year_max]) if @params[:year_max].present?
-
-        # fuel type
-        match_conidtion.call(q, :fuel_type)
-        match_conidtion.call(q, :boat_type)
-      end
-
-      search.results
+      self
     end
 
-    def preprocess_param(params)
-      req_params = params.symbolize_keys
-      type_mapping = {
-        manufacturer_model: :array,
-        category:     :array,
-        country:      :array,
-        boat_type:    :array,
-        fuel_type:    :array,
-        price_min:    :float,
-        price_max:    :float,
-        length_min:   :float,
-        length_max:   :float,
-        year_min:     :integer,
-        year_max:     :integer,
+    def self.general_facets_cached
+      Rails.cache.fetch 'general_search_facets', expires_in: 1.hour do
+        BoatSearch.new.general_facets
+      end
+    end
+
+    def general_facets
+      search = Boat.solr_search do
+        with :live, true
+        facet :country_id
+        stats :year, :price, :length_m
+        paginate page: 1, per_page: 0
+      end
+
+      fetch_facets_data(search)
+    end
+
+    def results
+      @search.results
+    end
+
+    private
+
+    def fetch_facets_data(search)
+      price_stats = search.stats(:price)
+      year_stats = search.stats(:year)
+      length_stats = search.stats(:length_m)
+
+      country_facet = search.facet(:country_id).rows
+      countries_for_select = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
+        ["#{name} (#{country_facet.find { |x| x.value == id }.count})", id]
+      end
+
+      @facets_data = {
+          price_min:  (price_stats.min.try(:floor)) || PRICES_RANGE.min,
+          price_max:  (price_stats.max.try(:ceil)) || PRICES_RANGE.max,
+          year_min:   (year_stats.min.try(:floor)) || YEARS_RANGE.min,
+          year_max:   (year_stats.min.try(:ceil)) || YEARS_RANGE.max,
+          length_min: (length_stats.min.try(:floor)) || LENGTHS_RANGE.min,
+          length_max: (length_stats.max.try(:ceil)) || LENGTHS_RANGE.max,
+          countries_for_select: countries_for_select
       }
-      type_mapping.each do |field, type|
-        v = req_params[field]
-        if v.present?
-          req_params[field] =
-            case type.to_sym
-              when :string then v.to_s
-              when :float then v.to_f
-              when :integer then v.to_i
-              when :array
-                (v.is_a?(Array) ? v : v.to_s.split(',')).reject(&:blank?)
-              when :boolean
-                v =~ /^yes|true|1$/i
-            end
-        end
+    end
+
+    def prepare_params(params)
+      @q = read_str(params[:q])
+      @manufacturer_model = read_tags(params[:manufacturer_model])
+      @category = read_tags(params[:category])
+      @country = read_tags(params[:country])
+      @boat_type = read_tags(params[:boat_type])
+      @year_min = read_year(params[:year_min])
+      @year_max = read_year(params[:year_max])
+      @price_min = read_price(params[:price_min], params[:currency])
+      @price_max = read_price(params[:price_max], params[:currency])
+      @length_min = read_length(params[:length_min], params[:length_unit])
+      @length_max = read_length(params[:length_max], params[:length_unit])
+      @ref_no = read_str(params[:ref_no])
+      @new_boat = read_hash_bool(params[:new_used], 'new', 'used')
+      @tax_paid = read_hash_bool(params[:tax_status], 'paid', 'unpaid')
+      @page = [params[:page].to_i, 1].max
+      if params[:order].present? && ORDER_TYPES.include?(params[:order])
+        @order_dir = params[:order].end_with?('_asc') ? :asc : :desc
+        @order = params[:order].gsub(/_(?:asc|desc)\z/, '')
       end
+      @exclude_id = params[:exclude_id]
+    end
 
-      # calculate price with default currency
-      if req_params[:currency].present?
-        c = Currency.cached_by_name(req_params[:currency])
-        [:price_min, :price_max].each do |k|
-          if req_params[k].present?
-            req_params[k] = Currency.convert(req_params[k], c, Currency.default)
-          end
-        end
+    def read_str(str)
+      str.strip if str.present?
+    end
+
+    def read_tags(tags)
+      if tags.present?
+        tags.split(/\s*,\s*/).reject(&:blank?).presence
       end
+    end
 
-      # length is indexed in meter
-      if (u = req_params[:length_unit]).present? && (u.to_s.downcase == 'ft')
-        [:length_min, :length_max].each do |k|
-          if req_params[k].present?
-            req_params[k] = (req_params[k] * 0.3048).round(2)
-          end
-        end
+    def read_price(price, currency)
+      if price.present?
+        c = Currency.cached_by_name(currency) || Currency.default
+        Currency.convert(price.to_i, c, Currency.default)
       end
+    end
 
-      if (new_used = req_params[:new_used]) && new_used.is_a?(Hash) && new_used.present?
-        if new_used['new'] || new_used['used']
-          req_params[:new_used] = new_used['new'] ? :new : :used
-        end
+    def read_year(year)
+      if year.present?
+        year.to_i.clamp(1970, Time.current.year)
       end
+    end
 
-      if (tax_status = req_params[:tax_status]) && tax_status.is_a?(Hash) && tax_status.present?
-        if tax_status['paid'] || tax_status['unpaid']
-          req_params[:tax_status] = tax_status['paid'] ? :paid : :unpaid
-        end
+    def read_length(len, len_unit)
+      if len.present?
+        res = len.to_f
+        res = res.ft_to_m if len_unit == 'ft'
+        res.round(2).clamp(0, 1000)
       end
+    end
 
-      page = req_params[:page].to_i
-      req_params[:page] = page > 0 ? page : 1
-
-      if req_params[:order]
-        if OrderTypes.include?(req_params[:order])
-          req_params[:order_dir] = req_params[:order].to_s =~ /_asc$/ ? :asc : :desc
-          req_params[:order] = req_params[:order].gsub(/_(asc|desc)$/, '')
-        else
-          req_params.delete :order
-        end
+    def read_hash_bool(hash, true_key, false_key)
+      if hash.present? && hash.is_a?(Hash)
+        hash[true_key] ? true : (hash[false_key] ? false : nil)
       end
-
-      req_params
     end
   end
-
 end

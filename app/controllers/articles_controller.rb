@@ -1,6 +1,4 @@
 class ArticlesController < ApplicationController
-  before_filter :load_search_facets
-
   def index
     @categories = ArticleCategory.where("articles_count > 0")
     page = params[:page].to_i

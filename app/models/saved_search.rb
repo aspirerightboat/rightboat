@@ -24,7 +24,6 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def to_search_params
-    attributes
-      .except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at')
+    attributes.except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at')
   end
 end

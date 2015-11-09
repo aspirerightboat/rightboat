@@ -1,5 +1,4 @@
 class HomeController < ApplicationController
-  before_action :load_search_facets, only: :index
   # TODO: after_filter :register_statistics, only: :index
 
   skip_before_action :require_confirmed_email, only: [:confirm_email]

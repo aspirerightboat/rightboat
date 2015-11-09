@@ -74,7 +74,7 @@ module Rightboat
               value_m = val.to_f.round(2)
               break
             elsif val =~ /ft$/
-              value_m = val.to_f * 0.3048
+              value_m = val.to_f.ft_to_m
               break
             end
           end

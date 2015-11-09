@@ -55,7 +55,7 @@ class Import < ActiveRecord::Base
 
   def run!
     update_attributes!(queued_at: Time.current, pid: -1)
-    Delayed::Job.enqueue RunImportJob.new(id)
+    `bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
   end
 
   def stop!(nonblock = true)

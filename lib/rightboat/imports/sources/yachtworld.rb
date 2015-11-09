@@ -50,7 +50,7 @@ module Rightboat
               boat.instance_variable_set :@_length_m, data.to_s.to_f
             else
               length_ft, length_in = data.to_s.split(/\s*ft\s*/)
-              boat.instance_variable_set :@_length_m, (length_ft.to_f * 0.3048 + length_in.to_f * 0.0254).round(2)
+              boat.instance_variable_set :@_length_m, (length_ft.to_f.ft_to_m + length_in.to_f * 0.0254).round(2)
             end
           },
           "LWL" => :lwl_m,
@@ -96,7 +96,7 @@ module Rightboat
 
               length = cleanup_string(tds[3].text)
               if length =~ /^(\d+)'(\s(\d+)\s")?$/
-                job[:length_m] = ($1.to_f * 0.3048 + $3.to_f * 0.0254).round(2)
+                job[:length_m] = ($1.to_f.ft_to_m + $3.to_f * 0.0254).round(2)
               end
               country, _, location = location.rpartition(/\s?,\s?/)
               job[:country] = country.dup
@@ -145,7 +145,7 @@ module Rightboat
           boat.source_id = url_param(source_url.to_s, :boat_id)
           details = doc.search("div:has(h2)")
           m = doc.search("h3").text.match(/^\s*(?<length>\d{1,3})'/)
-          rough_length = m[:length] if m
+          rough_length = (m[:length] if m)
 
           begin
             boat.manufacturer_model = doc.search("h3").first.text.gsub(/^\s*\d+.\s*/,"")
@@ -209,9 +209,8 @@ module Rightboat
           boat.description = description
 
           length_m = boat.instance_variable_get(:@_length_m)
-          unless length_m
-            length_ft = rough_length
-            l = (length_ft.to_f * 0.3048).round(2)
+          if !length_m && rough_length
+            length_m = rough_length.to_f.ft_to_m.round(2)
           end
           boat.length_m = length_m
 

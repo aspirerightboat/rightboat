@@ -15,7 +15,7 @@ class EnquirySerializer < ActiveModel::Serializer
   end
 
   def similar_boats
-    Rightboat::BoatSearch.new(object.boat.similar_options).retrieve_boats
+    Rightboat::BoatSearch.new.do_search(object.boat.similar_options).results
   end
 
   def similar_link

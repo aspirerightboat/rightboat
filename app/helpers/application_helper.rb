@@ -12,10 +12,12 @@ module ApplicationHelper
 
   # Options
   def slider_tag(field, options = {})
-    min = options[:min] || @search_facets["min_#{field}".to_sym]
-    max = options[:max] || @search_facets["max_#{field}".to_sym]
-    v0 = options[:value0] || params["#{field}_min".to_sym]
-    v1 = options[:value1] || params["#{field}_max".to_sym]
+    key_min = :"#{field}_min"
+    key_max = :"#{field}_max"
+    min = options[:min] || general_facets[key_min]
+    max = options[:max] || general_facets[key_max]
+    v0 = params[key_min].presence || @search_facets.try(:[], key_min)
+    v1 = params[key_max].presence || @search_facets.try(:[], key_max)
 
     html_options = {
       'data-input' => field,
@@ -28,9 +30,9 @@ module ApplicationHelper
       class: 'slider'
     }
 
-    ret = content_tag :div, '', html_options
-    ret += content_tag(:div, '', class: 'min-label')
-    ret += content_tag(:div, '', class: 'max-label')
+    ret = content_tag(:div, '', html_options)
+    ret << content_tag(:div, '', class: 'min-label')
+    ret << content_tag(:div, '', class: 'max-label')
 
     ret.html_safe
   end
@@ -45,7 +47,7 @@ module ApplicationHelper
   end
 
   def search_order_options
-    opts = Rightboat::BoatSearch::OrderTypes.map { |type| [t("search_orders.#{type}"), type] }
+    opts = Rightboat::BoatSearch::ORDER_TYPES.map { |type| [t("search_orders.#{type}"), type] }
     options_for_select(opts, current_search_order)
   end
 
@@ -84,5 +86,9 @@ module ApplicationHelper
 
   def country_tag(name, selected=nil, options={})
     select_tag(name, options_for_select(Country.country_options, selected), options)
+  end
+
+  def general_facets
+    @general_facets ||= Rightboat::BoatSearch.general_facets_cached
   end
 end

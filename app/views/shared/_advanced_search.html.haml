@@ -1,8 +1,8 @@
 #advanced-search-wrapper.navbar-static-top
   = image_tag 'anchor.png', class: 'anchor-img', alt: ''
   #advanced-search.container
-    %button.close{"aria-label" => "Close", :type => "button"}
-      %span{"aria-hidden" => "true"}
+    %button.close(aria-label="Close" type="button")
+      %span(aria-hidden="true")
         %small Close
         &times;
     %h2 Advanced Search
@@ -27,16 +27,6 @@
             = label_tag :manufacturer_model, 'Manufacturer / Model'
           .col-xs-8
             = text_field_tag :manufacturer_model, params[:manufacturer_model], class: 'select-black select-full tags-input', placeholder: 'e.g. Princess'
-        -#.form-group.row
-        -#  .col-xs-4
-        -#    = label_tag :boat_type
-        -#  .col-xs-8
-        -#    = check_box_tag 'boat_type[all]'
-        -#    = label_tag :boat_type, 'All'
-        -#    = check_box_tag 'boat_type[power]'
-        -#    = label_tag :boat_type, 'Power(131)'
-        -#    = check_box_tag 'boat_type[sail]'
-        -#    = label_tag :boat_type, 'Sail(23)'
         .range-slider-wrapper.row
           .col-xs-5.col-sm-4
             = label_tag :year
@@ -50,7 +40,7 @@
               .rb-control-group-addon
                 = select_tag :length_unit, length_unit_options, class: 'select-white select-sm select-general'
           .col-xs-7.col-sm-8
-            = slider_tag(:length, max: 150, unit: current_length_unit) # max in meter
+            = slider_tag(:length, unit: current_length_unit) # max in meter
         .range-slider-wrapper.row
           .col-xs-5.col-sm-4
             .rb-control-group
@@ -92,7 +82,8 @@
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            = select_tag 'country[]', options_for_select(@search_facets[:countries_for_select], params[:country]), class: 'select-black select-full multiple-country-select', multiple: 'multiple'
+            - country_options = @search_facets.try(:[], :countries_for_select) || general_facets[:countries_for_select]
+            = select_tag 'country[]', options_for_select(country_options, params[:country]), class: 'select-black select-full multiple-country-select', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'

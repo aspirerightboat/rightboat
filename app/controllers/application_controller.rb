@@ -23,34 +23,6 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :remember_me) }
   end
 
-  def load_search_facets
-    search = Sunspot.search(Boat) do |q|
-      q.with :live, true
-      q.facet :country_id
-      q.stats :year
-      q.stats :price
-      q.stats :length_m
-    end
-
-    price_data = search.stats(:price).data
-    year_data = search.stats(:year).data
-    length_data = search.stats(:length_m).data
-
-    country_facet = search.facet(:country_id).rows
-    countries_for_select = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
-      ["#{name} (#{country_facet.find { |x| x.value == id }.count})", id]
-    end
-
-    @search_facets = {
-      min_price:  (price_data && price_data['min'].try(:floor)) || 0,
-      max_price:  (price_data && price_data['max'].try(:ceil)) || 10000,
-      min_year:   (year_data && year_data['min'].try(:floor)) || 1970,
-      min_length: (length_data && length_data['min'].try(:floor)) || 10,
-      max_length: (length_data && length_data['max'].try(:ceil)) || 1000,
-      countries_for_select: countries_for_select
-    }
-  end
-
   # prevent flash message in devise controller
   def is_flashing_format?
     false

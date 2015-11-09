@@ -1,6 +1,5 @@
 class SearchController < ApplicationController
   before_filter :save_session_settings, only: :results
-  before_filter :load_search_facets, only: :results
   after_filter :log_search_terms, only: :results
 
   def suggestion
@@ -55,8 +54,9 @@ class SearchController < ApplicationController
     search_params = params.clone
     search_params[:order] ||= current_search_order
 
-    search = Rightboat::BoatSearch.new(search_params)
-    @boats = search.retrieve_boats
+    boat_search = Rightboat::BoatSearch.new.do_search(search_params, with_facets: true)
+    @boats = boat_search.results
+    @search_facets = boat_search.facets_data
     session[:boats_count] = @boats.total_count
 
     respond_to do |format|

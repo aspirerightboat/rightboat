@@ -1,0 +1,13 @@
+class Numeric
+  def percents
+    (self * 100).round
+  end
+
+  def ft_to_m
+    self * 0.3048
+  end
+
+  def clamp(min, max)
+    self < min ? min : (self > max ? max : self)
+  end
+end

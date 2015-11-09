@@ -195,7 +195,7 @@ module Rightboat
 
           def to_meters(value_str, unit)
             return value_str if unit == 'meter'
-            (value_str.to_f * 0.3048).round(2).to_s if unit == 'feet'
+            value_str.to_f.ft_to_m.round(2).to_s if unit == 'feet'
           end
 
           def read_description(str)

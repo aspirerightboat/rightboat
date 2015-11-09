@@ -7,8 +7,7 @@ class SavedSearchNoticesJob
     sent_mails = 0
     all_searches_grouped.each do |user_id, saved_searches|
       searches = saved_searches.map do |ss|
-        search = Rightboat::BoatSearch.new(ss.to_search_params)
-        found_boats = search.retrieve_boats([], 5)
+        found_boats = Rightboat::BoatSearch.new.do_search(ss.to_search_params, includes: [], per_page: 5).results
         if found_boats.any? && found_boats.first.id != ss.first_found_boat_id
           boat_ids = found_boats.map(&:id).split(ss.first_found_boat_id).first
           ss.first_found_boat_id = found_boats.first.id

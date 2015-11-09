@@ -10,9 +10,7 @@ class Member::SavedSearchesController < Member::BaseController
 
     ss = current_user.saved_searches.new(valid_params)
 
-    search_params = params.clone
-    search = Rightboat::BoatSearch.new(search_params)
-    @first_boat = search.retrieve_boats(nil, 1).first
+    @first_boat = Rightboat::BoatSearch.new.do_search(params, per_page: 1).results.first
     ss.first_found_boat_id = @first_boat.try(:id)
 
     ss.save!

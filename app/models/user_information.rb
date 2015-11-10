@@ -4,5 +4,5 @@ class UserInformation < ActiveRecord::Base
 
   belongs_to :user, inverse_of: :information
 
-  validates_inclusion_of :gender, within: GENDERS
+  validates_inclusion_of :gender, in: GENDERS, unless: 'gender.blank?'
 end

@@ -43,6 +43,7 @@ gem 'permanent_records'
 gem 'sunspot_rails'
 gem 'progress_bar', require: false
 gem 'sunspot-queue'
+gem 'sitemap_generator'
 
 # for detecting country
 gem 'geocoder'

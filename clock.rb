@@ -4,10 +4,6 @@ require 'clockwork'
 require './config/boot'
 require './config/environment'
 
-# require 'rake'
-# Rake::Task.clear
-# Rightboat::Application.load_tasks
-
 module DBBackedClockwork
   include Clockwork
 
@@ -35,6 +31,10 @@ module DBBackedClockwork
 
   every 1.day, 'send saved search notifications', at: '22:00' do
     SavedSearchNoticesJob.new.perform
+  end
+
+  every 1.day, 'update sitemap.xml', at: '10:00' do
+    `rake -s sitemap:refresh`
   end
 
   # get the manager object

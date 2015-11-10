@@ -51,19 +51,12 @@ $ ->
 
     $slider.parent().find('.' + minOrMax + '-label').html(html)
 
-  findNearest = (values, value) ->
-    nearest = null
-    diff = null
-    i = 0
-
-    while i < values.length
-      if values[i] <= value or values[i] >= value
-        newDiff = Math.abs(value - (values[i]))
-        if diff == null or newDiff < diff
-          nearest = i
-          diff = newDiff
-      i++
-    nearest
+  findNearest = (values, value, toFloor) ->
+    if toFloor
+      v = $(values.filter((val) -> val <= value)).get(-1) || $(values).get(0)
+    else
+      v = $(values.filter((val) -> val >= value)).get(0) || $(values).get(-1)
+    values.indexOf(v)
 
   getValues = ($slider, unit) ->
     field = $slider.data('input')
@@ -104,7 +97,7 @@ $ ->
       else
         cValue = if i == 0 then values[0] else values[len - 1]
       $slider.data('value' + i, cValue)
-      iValues[i] = findNearest(values, cValue) || (if i == 0 then 0 else len - 1)
+      iValues[i] = findNearest(values, cValue, i == 0)
 
     $slider.slider
       range: true

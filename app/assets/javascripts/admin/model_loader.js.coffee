@@ -21,17 +21,14 @@ window.syncModel = (manufacturer, $modelSelect) ->
     .always ->
       $modelSelect.removeAttr('disabled')
 
+$.fn.loadModelsOfManufacturer = (selector) ->
+  onChange = ->
+    syncModel(@value, $(selector))
+  @.change(onChange).change()
+
 $ ->
-  $.fn.loadModelsOfManufacturer = (selector) ->
-    onChange = =>
-      syncModel($(this).val(), $(selector))
-
-    onChange()
-    $(this).change onChange
-
-$(document).ready ->
-  $('select#boat_manufacturer_id').loadModelsOfManufacturer('select#boat_model_id')
-  $('select#q_manufacturer_id').loadModelsOfManufacturer('select#q_model_id')
-  $('select#buyer_guide_manufacturer_id').loadModelsOfManufacturer('select#buyer_guide_model_id')
-  $('select#finance_manufacturer_id').loadModelsOfManufacturer('select#finance_model_id')
-  $('select#insurance_manufacturer_id').loadModelsOfManufacturer('select#insurance_model_id')
+  $('#boat_manufacturer_id').loadModelsOfManufacturer('#boat_model_id')
+  $('#q_manufacturer_id').loadModelsOfManufacturer('#q_model_id')
+  $('#buyer_guide_manufacturer_id').loadModelsOfManufacturer('#buyer_guide_model_id')
+  $('#finance_manufacturer_id').loadModelsOfManufacturer('#finance_model_id')
+  $('#insurance_manufacturer_id').loadModelsOfManufacturer('#insurance_model_id')

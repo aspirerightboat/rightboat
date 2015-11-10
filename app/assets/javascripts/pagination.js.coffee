@@ -3,6 +3,14 @@ prevViewPage = 0
 
 loadPrevPage = ->
   return if isNaN(prevViewPage)
+  prevPosition = parseInt(sessionStorage.getItem('currentScrollTop'))
+
+  unless isNaN(prevPosition)
+    if $('body').scrollTop() < prevPosition
+      $('html, body').animate
+        scrollTop: prevPosition
+      , 500
+
   if currentPage < prevViewPage
     $('.view-more-link').click()
 

@@ -24,7 +24,7 @@ module Rightboat
         fulltext q if q
         with :live, true
         with :ref_no, ref_no if ref_no
-        without :id, exclude_id if exclude_id
+        without :ref_no, exclude_id if exclude_id
         paginate page: page, per_page: per_page
         order_by order, order_dir if order
 

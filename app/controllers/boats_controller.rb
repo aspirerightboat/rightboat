@@ -6,7 +6,7 @@ class BoatsController < ApplicationController
   end
 
   def show
-    @boat = Boat.find_by(id: params[:id])
+    @boat = Boat.find_by(slug: params[:id])
     redirect_to(manufacturers_path, notice: 'This boat does not exists anymore') && return if !@boat
     store_recent
   end

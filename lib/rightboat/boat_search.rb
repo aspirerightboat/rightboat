@@ -9,7 +9,7 @@ module Rightboat
     
     attr_reader :q, :manufacturer_model, :category, :country, :boat_type,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                :ref_no, :new_boat, :tax_paid, :page, :order_dir, :order, :exclude_id
+                :ref_no, :new_boat, :tax_paid, :page, :order_dir, :order, :exclude_ref_no
 
     attr_reader :with_facets, :includes, :per_page
 
@@ -24,11 +24,11 @@ module Rightboat
         fulltext q if q
         with :live, true
         with :ref_no, ref_no if ref_no
-        without :ref_no, exclude_id if exclude_id
+        without :ref_no, exclude_ref_no if exclude_ref_no
         paginate page: page, per_page: per_page
         order_by order, order_dir if order
 
-        with :new_boat, new_boat  if new_boat
+        with :new_boat, new_boat  if !new_boat.nil?
 
         if !tax_paid.nil?
           with :tax_paid, true if tax_paid
@@ -131,7 +131,7 @@ module Rightboat
         @order_dir = params[:order].end_with?('_asc') ? :asc : :desc
         @order = params[:order].gsub(/_(?:asc|desc)\z/, '')
       end
-      @exclude_id = params[:exclude_id]
+      @exclude_ref_no = params[:exclude_ref_no]
     end
 
     def read_str(str)
@@ -140,7 +140,7 @@ module Rightboat
 
     def read_tags(tags)
       if tags.present?
-        tags.split(/\s*,\s*/).reject(&:blank?).presence
+        tags.is_a?(Array) ? tags : tags.split(/\s*,\s*/).reject(&:blank?).presence
       end
     end
 

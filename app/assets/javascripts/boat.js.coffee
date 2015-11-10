@@ -38,6 +38,9 @@ window.initBoatView = (el) ->
       $link.removeAttr('disabled')
     false
 
+  $('.boat-img-thumb > a', el).click ->
+    sessionStorage.setItem('currentScrollTop', $('body').scrollTop())
+
 ######## Enquiry form
 $ ->
   phoneModalOpened = false

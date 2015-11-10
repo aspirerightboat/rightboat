@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
 
 
   def current_search_order
-    @current_search_order ||= cookies[:search_order] || 'score'
+    @current_search_order ||= cookies[:search_order] || 'price_desc'
   end
   helper_method :current_search_order
 

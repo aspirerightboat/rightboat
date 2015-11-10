@@ -1,4 +1,4 @@
-body#home-index {
+body#home-index, body.member-area {
   #top-navbar > .container {
     height: 0;
   }
@@ -16,8 +16,13 @@ body#home-index {
     -o-background-size: cover;
     background-size: cover;
   }
-  .embed-responsive-home-page {
-    padding-bottom: 63.44%;
+
+  .embed-responsive {
+    padding-bottom: 40%;
+
+    &.embed-responsive-home-page {
+      padding-bottom: 63.44%;
+    }
   }
 }
 

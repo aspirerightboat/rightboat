@@ -16,13 +16,14 @@
     - if content_for? :header
       = yield :header
     - else
-      = render 'home/search'
+      = render 'home/navbar'
       = render 'shared/advanced_search'
-      = render 'shared/navbar'
+      = render 'home/search'
+
+    .page-gap
+      .embed-responsive
 
     #content-wrapper
-      = image_tag 'member-page-bg.jpg', alt: '', height: 450
-
       #main-content.container(style='position: relative;')
         .sidebar-toggle.visible-xs
           %button.btn-flat.btn-sm(type="button" data-toggle="offcanvas")

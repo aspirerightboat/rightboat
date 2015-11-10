@@ -132,6 +132,7 @@ Rails.application.routes.draw do
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index'
+    get :about_me, to: 'dashboard#about_me'
     get 'favourites', to: 'favourites#index', as: :favourites
     post 'favourites', to: 'favourites#create', as: :favourite, constraints: { format: :json }
     resource :user_alert, controller: :user_alert, path: 'alerts', only: [:show, :update]

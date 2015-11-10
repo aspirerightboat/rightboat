@@ -97,12 +97,12 @@ class Boat < ActiveRecord::Base
     required_price = required_currency ? Currency.convert(price, currency, required_currency) : price
 
     options = {
-        exclude_id: id,
+        exclude_id: ref_no,
         currency:   currency.try(:name),
         price_min:  (required_price * 0.8).to_i,
         price_max:  (required_price * 1.2).to_i,
-        boat_type:  [boat_type.try(&:name_stripped)],
-        category:   [category_id]
+        boat_type:  boat_type_id ? [boat_type.try(&:name_stripped)] : '',
+        category:   category_id ? [category_id] : ''
     }
 
     if (length = length_m)

@@ -14,10 +14,10 @@ module ApplicationHelper
   def slider_tag(field, options = {})
     key_min = :"#{field}_min"
     key_max = :"#{field}_max"
-    min = options[:min] || general_facets[key_min]
-    max = options[:max] || general_facets[key_max]
-    v0 = params[key_min].presence || @search_facets.try(:[], key_min)
-    v1 = params[key_max].presence || @search_facets.try(:[], key_max)
+    min = options[:min] || convert_to_current_unit(field, general_facets[key_min])
+    max = options[:max] || convert_to_current_unit(field, general_facets[key_max])
+    v0 = params[key_min].presence || convert_to_current_unit(field, @search_facets.try(:[], key_min))
+    v1 = params[key_max].presence || convert_to_current_unit(field, @search_facets.try(:[], key_max))
 
     html_options = {
       'data-input' => field,
@@ -26,8 +26,7 @@ module ApplicationHelper
       'data-value0' => v0,
       'data-value1' => v1,
       'data-unit' => options[:unit],
-      id: "#{field}-slider",
-      class: 'slider'
+      class: "slider #{field}-slider"
     }
 
     ret = content_tag(:div, '', html_options)
@@ -35,6 +34,17 @@ module ApplicationHelper
     ret << content_tag(:div, '', class: 'max-label')
 
     ret.html_safe
+  end
+
+  def convert_to_current_unit(field, value)
+    return if !value
+    if field == :length
+      value.to_f.m_to_ft if current_length_unit == 'ft'
+    elsif field == :price
+      Currency.convert(value, Currency.default, current_currency)
+    else
+      value
+    end
   end
 
   def currency_tag(name, selected, options = {})

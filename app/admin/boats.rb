@@ -56,7 +56,7 @@ ActiveAdmin.register Boat do
   form do |f|
     f.inputs do
       f.input :manufacturer, include_blank: false
-      f.input :model, collection: [], include_blank: false
+      f.input :model, collection: [f.object.model], include_blank: false
       f.input :price
       f.input :poa
       f.input :currency

@@ -71,7 +71,7 @@
           .col-xs-4
             = label_tag :boat_type
           .col-xs-8
-            = select_tag 'boat_type[]', options_for_select(['Power', 'Sail', 'Other'], params[:boat_type]), class: 'select-black select-full select-general', multiple: 'multiple'
+            = select_tag 'boat_type[]', options_for_select(%w(Power Sail Other), params[:boat_type]), class: 'select-black select-full select-general', multiple: 'multiple'
         -#.form-group.row
         -#  .col-xs-4
         -#    = label_tag :fuel_type

@@ -7,6 +7,10 @@ class Numeric
     self * 0.3048
   end
 
+  def m_to_ft
+    self / 0.3048
+  end
+
   def clamp(min, max)
     self < min ? min : (self > max ? max : self)
   end

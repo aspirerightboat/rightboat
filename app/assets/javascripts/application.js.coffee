@@ -93,7 +93,7 @@ $(document).ready ->
     $form = $('#search-hub-form form')
     $form.find('#search-input').val('')
     $form.find('#boat_type_all').click()
-    $form.find('#price-slider, #length-slider').each ->
+    $form.find('.price-slider, .length-slider').each ->
       $this = $(this)
       for i in [0, 1]
         $(this).data('value' + i, '')

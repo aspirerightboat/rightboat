@@ -22,7 +22,7 @@
 
 .boat-title-block
   %h1 <b>#{@boat.manufacturer}</b> #{@boat.model}
-  %h2 #{boat_price(@boat)}
+  %h2 #{boat_price(@boat, Currency.default)}
   %h2 #{@boat.year_built} year
   .qr-code-block
     - boat_url = boat_url(@boat.slug)

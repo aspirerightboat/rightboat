@@ -1,13 +1,14 @@
 class BoatsController < ApplicationController
   before_filter :set_back_link, only: [:show]
-  after_filter :store_recent, only: [:show]
 
   def index
     redirect_to manufacturers_path
   end
 
   def show
-    @boat = Boat.find(params[:id])
+    @boat = Boat.find_by(slug: params[:id])
+    redirect_to(manufacturers_path, notice: 'This boat does not exists anymore') && return if !@boat
+    store_recent
   end
 
   def pdf

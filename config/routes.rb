@@ -145,4 +145,15 @@ Rails.application.routes.draw do
       get :search_histories
     end
   end
+
+  # old site redirects
+  get '/all/boats-for-sale/:name', to: redirect('/manufacturer/%{name}')
+  get '/about', to: redirect('/#about')
+  get '/privacy-policy', to: redirect('/privacy_policy')
+  get '/terms-of-use', to: redirect('/toc')
+  get '/code-of-conduct', to: redirect('/#about')
+  get '/trade-membership', to: redirect('/')
+  get '/sell-my-boat', to: redirect('/sell_my_boats')
+  get '/marine-directory/*other', to: redirect('/')
+  get '/articles/*other', to: redirect('/')
 end

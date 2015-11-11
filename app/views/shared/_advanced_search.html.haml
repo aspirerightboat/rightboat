@@ -5,7 +5,11 @@
       %span(aria-hidden="true")
         %small Close
         &times;
-    %h2 Advanced Search
+    %h2
+      - if controller_name == 'search'
+        Refine Search <small>Here you can filter and refine the results of this search</small>
+      - else
+        Advanced Search
 
     = form_tag search_path, method: :get, class: 'row' do
       = hidden_field_tag :year_min

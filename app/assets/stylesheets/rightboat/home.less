@@ -1,11 +1,12 @@
 body#home-index, body.member-area {
-  #top-navbar > .container {
-    height: 0;
-  }
-
-  .navbar {
+  #top-navbar {
     height: 0;
     min-height: 0;
+    z-index: 10000;
+
+    > .container {
+      height: 0;
+    }
   }
 
   .page-gap {

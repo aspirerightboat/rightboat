@@ -2,10 +2,13 @@ body#home-index, body.member-area {
   #top-navbar {
     height: 0;
     min-height: 0;
-    z-index: 10000;
 
     > .container {
       height: 0;
+    }
+
+    .navbar-header {
+      height: auto;
     }
   }
 
@@ -30,7 +33,7 @@ body#home-index, body.member-area {
 #search-wrapper {
   height: 0;
   position: relative;
-  z-index: 2000;
+  z-index: 200;
   @media(max-width: @screen-xs-max) {
     font-size: 14px;
   }
@@ -67,14 +70,21 @@ body#home-index, body.member-area {
     padding: 6px 3px;
   }
   h2 {
-    margin: 31px 0;
-    padding-left: 72px + @lg-gutter / 2;
-    @media(max-width: @screen-md-max) { padding-left: 72px + @md-gutter / 2; }
-    @media(max-width: @screen-sm-max) { padding-left: 72px + @sm-gutter / 2; }
-    @media(max-width: @screen-xs-max) { padding-left: 72px + @xs-gutter / 2;}
-    font-size: 25px;
+    font-size: 23px;
     font-weight: normal;
     text-align: center;
+    padding-left: 90px + @lg-gutter / 2;
+    @media(max-width: @screen-md-max) { padding-left: 90px + @md-gutter / 2; }
+    @media(max-width: @screen-sm-max) { padding-left: 90px + @sm-gutter / 2; }
+    @media(max-width: @screen-xs-max) { padding-left: 90px + @xs-gutter / 2;}
+
+    #home-index & {
+      margin: 20px 0;
+    }
+
+    .member-area & {
+      margin: 32px 0;
+    }
   }
   .form-group.last {
     margin-bottom: 40px;

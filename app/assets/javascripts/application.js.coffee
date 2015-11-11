@@ -80,6 +80,7 @@ scrollToTarget = (target) ->
   , 500
 
 $(document).ready ->
+  $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle=offcanvas]').click ->
     $('.row-offcanvas').toggleClass('active');
     if ($('.row-offcanvas').hasClass('active'))
@@ -87,6 +88,7 @@ $(document).ready ->
     else
       $(this).find('.icon').removeClass('icon-left-open').addClass('icon-right-open')
 
+  ###
   $('.reset-search-form').click ->
     $form = $('#search-hub-form form')
     $form.find('#search-input').val('')
@@ -101,8 +103,6 @@ $(document).ready ->
     $form.find('#s2id_length_unit').select2 'val', 'ft'
     false
 
-  $('[data-toggle="tooltip"]').tooltip()
-  ###
   $('.toggle-about').click ->
     $this = $(this)
     $extended = $('.rb-extended')

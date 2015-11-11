@@ -13,6 +13,7 @@ loadPrevPage = ->
         scrollTop: prevPosition
       , 1000
 
+
 $ ->
   if $('.view-more-link').length > 0
     isLoading = false
@@ -22,6 +23,7 @@ $ ->
       0
 
     prevPosition = parseInt(sessionStorage.getItem('currentScrollTop'))
+    sessionStorage.removeItem('currentScrollTop')
 
     $('.view-more-link').click (e)->
       e.preventDefault()

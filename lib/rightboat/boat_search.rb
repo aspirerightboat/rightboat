@@ -95,8 +95,8 @@ module Rightboat
       length_stats = search.stats(:length_m)
 
       country_facet = search.facet(:country_id).rows
-      countries_for_select = Country.pluck(:id, :name).map do |id, name|
-        count = country_facet.find { |x| x.value == id }.try(:count) || 0
+      countries_for_select = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
+        count = country_facet.find { |x| x.value == id }.count
         [id, name, count]
       end.sort_by(&:third).reverse.map { |id, name, count| ["#{name} (#{count})", id] }
 

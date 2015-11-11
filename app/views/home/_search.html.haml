@@ -1,10 +1,13 @@
 #search-wrapper.container
   #search-hub.container
-    %a.reset-search-form{title: 'Click here to reset search'}= image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
+    = link_to root_path do
+      = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
     #search-hub-form
       %h2
-        The <strong>global choice</strong><br/>
-        of boats for sale
+        - if controller_name == 'home'
+          The <strong>global choice</strong><br/> of boats for sale
+        - else
+          My Rightboat
 
       = form_tag search_path, method: :get do
         = hidden_field_tag :price_min, params[:price_min]
@@ -50,8 +53,12 @@
             .col-xs-12.nice-buttons.last-row-pad
               %button.nice-button(type="submit") Search
 
-        .form-group.row
+        .form-group.last
           .nice-buttons(style="margin: 10px 0")
             %button.transparent-button.toggle-adv-search Advanced Search
-          = link_to root_path do
-            %i.icon.icon-home
+          %h4
+            - if controller_name == 'home'
+              Find your<br/><strong>Rightboat</strong>
+            - else
+              = link_to root_path do
+                %i.icon.icon-home

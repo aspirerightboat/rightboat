@@ -27,7 +27,10 @@
 
   .close {
     top: 27px;
-    small { font-size: 74%; }
+    small {
+      font-size: 74%;
+      @media(max-width: @screen-sm-min) { display: none }
+    }
   }
   .tags-input {
     width: 100%;

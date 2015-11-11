@@ -11,7 +11,7 @@ module Member
     end
 
     def enquiries
-      @enquiries = current_user.enquiries.includes(boat: [:currency, :primary_image, :manufacturer, :model, :country, :vat_rate])
+      @enquiries = current_user.enquiries.includes(boat: [:boat_type, :currency, :primary_image, :manufacturer, :model, :country, :vat_rate]).order(created_at: :desc)
     end
   end
 end

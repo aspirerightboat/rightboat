@@ -1,5 +1,6 @@
 class LeadsMailer < ApplicationMailer
   add_template_helper BoatsHelper # for pdf
+  add_template_helper QrcodeHelper # for pdf
   layout 'mailer'
 
   def lead_created_notify_buyer(enquiry_id)

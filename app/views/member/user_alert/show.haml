@@ -9,11 +9,11 @@
       = f.check_box :saved_searches
       = f.label :saved_searches, 'Email me if new listings match my saved searches'
     .form-group
-      = f.check_box :suggestions, checked: false, disabled: true
-      = f.label :suggestions, 'Email me suggestions (Coming soon!)'
+      = f.check_box :suggestions
+      = f.label :suggestions, 'Email me suggestions'
     .form-group
-      = f.check_box :newsletter, checked: false, disabled: true
-      = f.label :newsletter, 'Email me the Rightboat newsletter (Coming soon!)'
+      = f.check_box :newsletter
+      = f.label :newsletter, 'Email me the Rightboat newsletter'
     .row
       .col-xs-6.col-sm-4
         %button.btn-flat.btn-black(type="submit") Save Changes

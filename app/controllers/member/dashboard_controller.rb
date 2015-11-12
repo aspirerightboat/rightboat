@@ -1,6 +1,6 @@
 module Member
   class DashboardController < BaseController
-    skip_before_action :require_user_login!, only: [:index]
+    skip_before_filter :authenticate_user!, only: [:index]
 
     def index
     end

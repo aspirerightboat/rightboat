@@ -29,5 +29,8 @@
         %span Year: #{boat.year_built}
       .boat-location
         %span Location: #{boat.country.to_s}
+      - if enquiry
+        .pull-right
+          Request sent: #{enquiry.created_at.strftime('%d %b %Y')}
       = yield if block_given?
       .clearfix

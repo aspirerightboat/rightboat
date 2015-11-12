@@ -18,8 +18,7 @@
   - if session[:boats_count] && @back_url
     .navbar-h  Boats <strong>For Sale</strong>
     %h3
-      Search Results:
-      %strong #{session[:boats_count]}
+      %strong= session[:boats_count] >= 10000 ? "10,000 plus" : session[:boats_count]
       %span.hidden-sm boats for sale
 
   - elsif params[:back].present? && params[:back] == 'true'

@@ -10,6 +10,7 @@
         Refine Search <small>Here you can filter and refine the results of this search</small>
       - else
         Advanced Search
+      %button.like-link.reset-adv-search Clear Search
 
     = form_tag search_path, method: :get, class: 'row' do
       = hidden_field_tag :year_min

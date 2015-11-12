@@ -78,7 +78,7 @@ scrollToTarget = (target) ->
     scrollTop: $(target).offset().top
   , 500
 
-$(document).ready ->
+$ ->
   $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle=offcanvas]').click ->
     $('.row-offcanvas').toggleClass('active');
@@ -87,31 +87,18 @@ $(document).ready ->
     else
       $(this).find('.icon').removeClass('icon-left-open').addClass('icon-right-open')
 
-  ###
-  $('.reset-search-form').click ->
-    $form = $('#search-hub-form form')
-    $form.find('#search-input').val('')
-    $form.find('#boat_type_all').click()
-    $form.find('.price-slider, .length-slider').each ->
-      $this = $(this)
-      for i in [0, 1]
-        $(this).data('value' + i, '')
-      reinitSlider($this)
-
-    $form.find('#s2id_currency').select2 'val', 'GBP'
-    $form.find('#s2id_length_unit').select2 'val', 'ft'
+  $('.reset-adv-search').click ->
+    $form = $(@).closest('#advanced-search').find('form')
+    $('input[type=text]', $form).val('')
+    $('input[type=checkbox]', $form).prop('checked', false)
+    $('input[name=manufacturer_model], select', $form).select2('data', null)
+    $('.year-slider, .length-slider, .price-slider', $form).each ->
+      $(@).data('value0', '')
+      $(@).data('value1', '')
+      reinitSlider($(@))
+    $($form[0].length_unit).select2 'val', 'ft'
+    $($form[0].currency).select2 'val', 'GBP'
     false
-
-  $('.toggle-about').click ->
-    $this = $(this)
-    $extended = $('.rb-extended')
-    if $extended.is(':visible')
-      $this.html 'more...'
-      $extended.slideUp('slow')
-    else
-      $this.html 'less...'
-      $extended.slideDown('slow')
-  ###
 
   target = window.location.hash
   if $(target).length
@@ -122,20 +109,10 @@ $(document).ready ->
     else if $(target).hasClass('fav-link')
       window.favLink = $(target)
     else
-      ###
-      if target == '#about'
-        $('.rb-extended').slideDown()
-        $('.toggle-about').html 'less...'
-      ###
       scrollToTarget(target)
 
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
-    ###
-    if target == '#about'
-      $('.rb-extended').slideDown()
-      $('.toggle-about').html 'less...'
-    ###
     if $(target).length && !$(target).hasClass('fav-link')
       e.preventDefault()
       scrollToTarget(target)

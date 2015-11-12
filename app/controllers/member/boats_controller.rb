@@ -1,5 +1,6 @@
 class Member::BoatsController < Member::BaseController
 
+  before_filter :ensure_non_broker
   before_filter :load_boat, only: [:edit, :update, :destroy]
 
   def index
@@ -42,6 +43,10 @@ class Member::BoatsController < Member::BaseController
   end
 
   private
+
+  def ensure_non_broker
+    redirect_to member_root_path if current_user.company?
+  end
 
   def load_boat
     @boat = Boat.find(params[:id])

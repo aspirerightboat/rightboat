@@ -13,5 +13,6 @@
         = link_to 'My Enquiries', member_enquiries_path
       %li{class: ('active' if controller_name == 'user_alert')}
         = link_to 'My Alerts', member_user_alert_path
-      %li{class: ('active' if controller_name == 'boats')}
-        = link_to 'Sell My Boat', member_boats_path
+      - unless current_user.company?
+        %li{class: ('active' if controller_name == 'boats')}
+          = link_to 'Sell My Boat', member_boats_path

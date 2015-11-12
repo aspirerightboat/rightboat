@@ -8,22 +8,21 @@ loadPrevPage = ->
   if currentPage < prevViewPage
     $('.view-more-link').click()
   else
-    unless isNaN(prevPosition)
+    if !isNaN(prevPosition) && prevPosition > 0
       $('html, body').animate
         scrollTop: prevPosition
       , 1000
-
+      prevViewPage = 1
+      prevPosition = 0
 
 $ ->
   if $('.view-more-link').length > 0
     isLoading = false
-    prevViewPage = if $('#main-content').data('prev-url') == 'boats-for-sale'
-      parseInt(sessionStorage.getItem('currentPage'))
-    else
-      0
-
-    prevPosition = parseInt(sessionStorage.getItem('currentScrollTop'))
-    sessionStorage.removeItem('currentScrollTop')
+    if $('#main-content').data('prev-url') == 'boats-for-sale'
+      prevViewPage = parseInt(sessionStorage.getItem('currentPage'))
+      sessionStorage.removeItem('currentPage')
+      prevPosition = parseInt(sessionStorage.getItem('currentScrollTop'))
+      sessionStorage.removeItem('currentScrollTop')
 
     $('.view-more-link').click (e)->
       e.preventDefault()

@@ -1,6 +1,3 @@
-- content_for :header_text do
-  .navbar-h My <strong>Rightboat</strong>
-
 .member-content(data-layout-mode="list")
   %h1 My Favourites
   %hr
@@ -11,7 +8,7 @@
     #favourites.row
       - @favourites.each do |favourite|
         - if boat = favourite.boat
-          = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: true} do
+          = render layout: 'member/shared/boat', locals: {boat: boat} do
             .boat-links.boat-links-bottom
               .boat-price
                 %span(data-attr-name='price')= boat_price(boat)

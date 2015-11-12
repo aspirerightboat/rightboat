@@ -1,4 +1,6 @@
-.boat-thumb-container.col-md-4.col-sm-6.col-xs-12
+- enquiry ||= nil
+
+.boat-thumb-container.col-md-4.col-sm-6.col-xs-12(style="#{'display: none;' if enquiry && enquiry.deleted?}" )
   .boat-thumb.thumbnail.boat-view{'data-boat-ref' => boat.slug,
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
@@ -12,11 +14,14 @@
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-links.pull-right
-        = favourite_link_to boat
-        - if share_enabled
+        - if controller_name == 'enquiries'
+          = link_to 'Hide', member_enquiry_path(enquiry), method: :delete, remote: true, class: 'hide-enquiry btn-flat btn-white'
+        - else
+          = favourite_link_to boat
           = render 'shared/social_share', boat: boat
-        = link_to "#favourite-#{boat.id}", class: 'fav-link remove-fav' do
-          &times;
+        - if controller_name == 'favourites'
+          = link_to "#favourite-#{boat.id}", class: 'fav-link remove-fav' do
+            &times;
       .boat-detail-item.boat-length
         %span Length:
         %span(data-attr-name='loa')= boat_length(boat)

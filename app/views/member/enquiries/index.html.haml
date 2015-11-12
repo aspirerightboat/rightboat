@@ -1,14 +1,16 @@
 .member-content(data-layout-mode='list')
+  = link_to 'Un-hide all', unhide_member_enquiries_path, method: :post, remote: true, class: 'unhide-enquires btn-flat pull-right btn-white'
   %h1 My Enquiries
   %hr
   - if @enquiries.blank?
     .alert.alert-info
       You have no enquiries yet.
   - else
+    %p Here are the listings of every enquiry you have made for full boat specifications along with broker contact information.
     .row
       - @enquiries.each do |enquiry|
         - if (boat = enquiry.boat)
-          = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: false} do
+          = render layout: 'member/shared/boat', locals: {boat: boat, enquiry: enquiry} do
             .boat-links.boat-links-bottom
               .boat-price
                 %span(data-attr-name='price')= boat_price(boat)

@@ -2,7 +2,7 @@
   .navbar-h Sell My Boats
 
 .member-content(data-layout-mode='list')
-  = link_to 'Create New', new_member_boat_path, class: 'btn-flat pull-right btn-black'
+  = link_to 'Create New', new_member_boat_path, class: 'btn-flat pull-right btn-white'
   %h1 Sell My Boats
   %hr
   .introduction
@@ -28,7 +28,7 @@
     - else
       .row
         - @my_boats.each do |boat|
-          = render layout: 'member/shared/boat', locals: {boat: boat, share_enabled: true} do
+          = render layout: 'member/shared/boat', locals: {boat: boat} do
             .boat-links.boat-links-bottom
               .boat-price
                 %span(data-attr-name='price')= boat_price(boat)

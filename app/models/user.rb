@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   validates_presence_of :company_name, if: :organization?
   validates_url :company_weburl, allow_blank: true, if: :organization?
 
-  before_create { build_user_alert } # will create user_alert
+  before_create { build_user_alert(saved_searches: false) } # will create user_alert
   before_save :create_broker_info
   before_validation :ensure_username
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin

@@ -8,7 +8,7 @@
       = f.label :favorites, 'Email me if my favourites change status'
     .form-group
       = f.check_box :saved_searches
-      = f.label :saved_searches, 'Email me if new listings match my saved searches'
+      = f.label :saved_searches, "Email me if new listings match my saved searches (these alerts can also be managed individually in the #{link_to 'My Saved Searches', member_saved_searches_path} section.)".html_safe
     .form-group
       = f.check_box :suggestions
       = f.label :suggestions, 'Email me suggestions'

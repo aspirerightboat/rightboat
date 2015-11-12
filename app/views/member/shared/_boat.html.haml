@@ -10,7 +10,7 @@
           = image_tag boat.primary_image.file.url(:thumb)
         - else
           .no-image
-    .caption
+    .caption(href="#{boat_path(boat, back: true)}")
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-links.pull-right

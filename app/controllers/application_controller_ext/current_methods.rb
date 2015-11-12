@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def set_current_currency(currency_name)
     if currency_name.present? && (cur = Currency.cached_by_name(currency_name))
-      cookies[:currency] = cur
+      cookies[:currency] = cur.name
     end
   end
 

@@ -1,5 +1,5 @@
 currentPage = 1
-prevViewPage = 0
+prevViewPage = 1
 prevPosition = 0
 
 loadPrevPage = ->

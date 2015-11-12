@@ -49,82 +49,82 @@
               = f.password_field :password, placeholder: 'Password', class: 'form-control'
             .col-sm-4.col-xs-12
               = f.password_field :password_confirmation, placeholder: 'Confirm Password', class: 'form-control'
-
-          %br
-          %h4 Help us recommend the right boats for you, introduce yourself.
-          .form-group.row.preview-wrap
-            .col-sm-6.col-xs-12
-              = f.label :avatar, 'You can upload a photo too!'
-            .col-sm-2.col-xs-4
-              = image_tag (!!f.object.avatar.file ? f.object.avatar_url : ''), class: 'img-responsive', alt: ''
-            .col-sm-4.col-xs-8
-              = f.file_field :avatar
-              = f.hidden_field :avatar_cache
-          = f.fields_for :information do |i|
-            .form-group.row
+          - if false
+            %br
+            %h4 Help us recommend the right boats for you, introduce yourself.
+            .form-group.row.preview-wrap
               .col-sm-6.col-xs-12
-                = i.label :gender, 'M/F'
-              .col-sm-6.col-xs-12
-                - UserInformation::GENDERS.each do |gender|
-                  = i.radio_button :gender, gender, checked: (i.object.gender == gender)
-                  = i.label "gender_#{gender}", gender
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :dob, 'Date of Birth'
-              .col-sm-6.col-xs-12
-                = i.text_field :dob, class: 'form-control rb-datepicker'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :sail_power, 'Sail or power?'
-              .col-sm-6.col-xs-12
-                = i.radio_button :sail_power, 'sail', checked: (i.object.sail_power == 'sail')
-                = i.label :sail_power_sail, 'sail'
-                = i.radio_button :sail_power, 'power', checked: (i.object.sail_power == 'power')
-                = i.label :sail_power_power, 'power'
-                = i.radio_button :sail_power, 'both', checked: (i.object.sail_power == 'both')
-                = i.label :sail_power_both, 'both'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :boater_type, 'What type of boater are you?'
-              .col-sm-6.col-xs-12
-                = i.text_field :boater_type, class: 'form-control'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :boating_place, 'Where do you go boating?'
-              .col-sm-6.col-xs-12
-                = i.text_field :boating_place, class: 'form-control'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :have_boat, 'Do you have a boat at the moment?'
-              .col-sm-6.col-xs-12
-                = i.radio_button :have_boat, 'true', checked: i.object.have_boat
-                = i.label :have_boat_true, 'yes'
-                = i.radio_button :have_boat, 'false', checked: !i.object.have_boat
-                = i.label :have_boat_false, 'no'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :boat_type, 'What boat/s do you have at present? '
-              .col-sm-6.col-xs-12
-                = i.text_field :boat_type, class: 'form-control'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :require_finance, 'Do you require finance on your next boat?'
-              .col-sm-6.col-xs-12
-                = i.radio_button :require_finance, 'true', checked: i.object.require_finance
-                = i.label :require_finance_true, 'yes'
-                = i.radio_button :require_finance, 'no', checked: !i.object.require_finance
-                = i.label :require_finance_false, 'no'
-            .form-group.row
-              .col-sm-6.col-xs-12
-                = i.label :require_berth, 'Do you need a berth?'
-              .col-sm-6.col-xs-12
-                = i.radio_button :require_berth, true, checked: i.object.require_berth
-                = i.label :require_berth_true, 'yes'
-                = i.radio_button :require_berth, false, checked: !i.object.require_berth
-                = i.label :require_berth_false, 'no'
-            .form-group
-              %p Talk to us! 0 044 333 322 2628
-              %p= mail_to 'info@rightboat.com', nil
+                = f.label :avatar, 'You can upload a photo too!'
+              .col-sm-2.col-xs-4
+                = image_tag (!!f.object.avatar.file ? f.object.avatar_url : ''), class: 'img-responsive', alt: ''
+              .col-sm-4.col-xs-8
+                = f.file_field :avatar
+                = f.hidden_field :avatar_cache
+            = f.fields_for :information do |i|
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :gender, 'M/F'
+                .col-sm-6.col-xs-12
+                  - UserInformation::GENDERS.each do |gender|
+                    = i.radio_button :gender, gender, checked: (i.object.gender == gender)
+                    = i.label "gender_#{gender}", gender
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :dob, 'Date of Birth'
+                .col-sm-6.col-xs-12
+                  = i.text_field :dob, class: 'form-control rb-datepicker'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :sail_power, 'Sail or power?'
+                .col-sm-6.col-xs-12
+                  = i.radio_button :sail_power, 'sail', checked: (i.object.sail_power == 'sail')
+                  = i.label :sail_power_sail, 'sail'
+                  = i.radio_button :sail_power, 'power', checked: (i.object.sail_power == 'power')
+                  = i.label :sail_power_power, 'power'
+                  = i.radio_button :sail_power, 'both', checked: (i.object.sail_power == 'both')
+                  = i.label :sail_power_both, 'both'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :boater_type, 'What type of boater are you?'
+                .col-sm-6.col-xs-12
+                  = i.text_field :boater_type, class: 'form-control'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :boating_place, 'Where do you go boating?'
+                .col-sm-6.col-xs-12
+                  = i.text_field :boating_place, class: 'form-control'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :have_boat, 'Do you have a boat at the moment?'
+                .col-sm-6.col-xs-12
+                  = i.radio_button :have_boat, 'true', checked: i.object.have_boat
+                  = i.label :have_boat_true, 'yes'
+                  = i.radio_button :have_boat, 'false', checked: !i.object.have_boat
+                  = i.label :have_boat_false, 'no'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :boat_type, 'What boat/s do you have at present? '
+                .col-sm-6.col-xs-12
+                  = i.text_field :boat_type, class: 'form-control'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :require_finance, 'Do you require finance on your next boat?'
+                .col-sm-6.col-xs-12
+                  = i.radio_button :require_finance, 'true', checked: i.object.require_finance
+                  = i.label :require_finance_true, 'yes'
+                  = i.radio_button :require_finance, 'no', checked: !i.object.require_finance
+                  = i.label :require_finance_false, 'no'
+              .form-group.row
+                .col-sm-6.col-xs-12
+                  = i.label :require_berth, 'Do you need a berth?'
+                .col-sm-6.col-xs-12
+                  = i.radio_button :require_berth, true, checked: i.object.require_berth
+                  = i.label :require_berth_true, 'yes'
+                  = i.radio_button :require_berth, false, checked: !i.object.require_berth
+                  = i.label :require_berth_false, 'no'
+              .form-group
+                %p Talk to us! 0 044 333 322 2628
+                %p= mail_to 'info@rightboat.com', nil
       .row
         .col-sm-12.col-xs-12.form-actions
-          = button_tag 'Save Changes', type: 'submit', class: 'btn-flat btn-white'
+          = button_tag 'Save Changes', type: 'submit', class: 'btn-flat btn-black'

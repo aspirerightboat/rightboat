@@ -76,8 +76,17 @@ $ ->
       minimumResultsForSearch: Infinity
       dropdownAutoWidth: true
       formatSelection: (viewMode, container, escapeMarkup) ->
-        viewMode.text
+        splitted = viewMode.text.split(',')
+        if splitted.length > 1
+          $('<span>').html('<img class="flag" src="/flags/' + splitted[0] + '.png' + '"/> ' + splitted[2])
+        else
+          viewMode.text
       formatResult: (viewMode, container, escapeMarkup) ->
+        splitted = viewMode.text.split(',')
         ret = '<span'
-        ret += ' class="priority-last"' if /Turkey/.test viewMode.text
-        ret += '>' + viewMode.text + '</span>'
+        if splitted.length > 1
+          ret += ' class="priority-last"' if /Turkey/.test viewMode.text
+          ret += '>' + splitted[1] + ' (' + splitted[2] + ')</span>'
+        else
+          ret += '>' + viewMode.text + '</span>'
+        ret

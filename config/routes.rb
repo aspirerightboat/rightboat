@@ -140,8 +140,10 @@ Rails.application.routes.draw do
       post :toggle, on: :member
     end
     resources :boats, except: [:show]
+    resources :enquiries, only: [:index, :destroy] do
+      post :unhide, on: :collection
+    end
     controller :dashboard do
-      get :enquiries
       get :search_histories
     end
   end

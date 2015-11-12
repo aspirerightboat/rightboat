@@ -1,12 +1,10 @@
-- content_for :header_text do
-  .navbar-h My <strong>Rightboat</strong>
-
 .member-content
   %h1 My Saved Searches
   %hr
 
   - if @saved_searches.none?
-    %p You havent saved searches yet
+    .alert.alert-warning
+      You havent saved searches yet
   - else
     %p Click on the Alert button to toggle new listings alerts on/off
 

@@ -7,5 +7,5 @@
   %p Please let us know what you think, #{mail_to 'memberservices@rightboat.com', 'get in touch with us'}
   %p Good luck finding your next right boat!
   - unless user_signed_in?
-    .alert.alert-info(role="alert")
+    .alert.alert-warning(role="alert")
       You need to #{link_to 'sign in', '#', class: 'user-login'} to continue.

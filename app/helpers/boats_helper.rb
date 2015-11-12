@@ -42,7 +42,8 @@ module BoatsHelper
   def boat_specs(boat, full_spec = false)
     ret = []
     ret << ['Seller', boat.user.name] if full_spec
-    ret << ['Price', boat_price(boat), 'price']
+    price = (boat.currency.name == cookies[:currency]) ? boat_price(boat) : "#{boat_price(boat, boat.currency)}(#{boat_price(boat)})"
+    ret << ['Price', price, 'price']
     ret << ['LOA', boat_length(boat), 'loa']
     ret << ['Manufacturer', boat.manufacturer]
     ret << ['Model', boat.model]

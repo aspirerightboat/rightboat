@@ -29,5 +29,5 @@ $(document).ready ->
   $('.preview-wrap').bind 'cocoon:after-insert', (e, insertedItem) ->
     loadPreview(insertedItem)
 
-  $('.member-area .boat-thumb .caption').click ->
-    window.location = $(this).attr('href')
+#  $('.member-area .boat-thumb .caption').click ->
+#    window.location = $(this).attr('href')

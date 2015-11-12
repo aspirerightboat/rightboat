@@ -1,6 +1,7 @@
 .member-content(data-layout-mode='list')
   %h1 My Alerts
   %hr
+  %p Here you can manage your email alerts. We will email you whenever a status changes for the boats you're watching - price changes, boat sold, etc, as well as keep you posted on any new listings that match your saved searches.
   = form_for [:member, @user_alert] do |f|
     .form-group
       = f.check_box :favorites

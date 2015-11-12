@@ -9,8 +9,7 @@ namespace :import do
 
     doc.css("price_history").each do |price|
       unit_name = price.css('unit').first.content
-      c = Currency.cached_by_name(unit_name).first
-      if c
+      if c = Currency.cached_by_name(unit_name)
         c.rate = price.css('rate').first.content
         c.save
       end

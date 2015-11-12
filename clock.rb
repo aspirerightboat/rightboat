@@ -37,6 +37,10 @@ module DBBackedClockwork
     `rake -s sitemap:refresh`
   end
 
+  every 1.day, 'update currency', at: '1:00' do
+    `rake import:currency`
+  end
+
   # get the manager object
   def self.manager
     Clockwork.instance_variable_get(:@manager)

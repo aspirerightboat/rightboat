@@ -48,30 +48,6 @@ $ ->
         }
       cache: true
 
-  $('#keywords').select2
-    tags: true
-    minimumInputLength: 1
-    tokenSeparators: [ ',' ]
-    initSelection: (el, callback) ->
-      tags = $(el).val().split(',')
-      data = $.map(tags, (token) ->
-        { id: token, text: token }
-      )
-      callback data
-      return
-    ajax:
-      url: '/suggestion'
-      dataType: 'JSON'
-      delay: 150
-      data: (term, page) ->
-        { q: term, page: page }
-      results: (data, page) ->
-        { results: $.map(data.search, (item) ->
-            { id: item, text: item }
-          )
-        }
-      cache: true
-
   $('select#layout_mode').select2
     minimumResultsForSearch: Infinity
     formatSelection: (viewMode, container, escapeMarkup) ->
@@ -82,10 +58,7 @@ $ ->
       $('<div>').append $icon
     dropdownCssClass: 'view-mode-dropdown'
 
-  $('.multiple-country-select').multipleSelect
-    placeholder: 'Select Countries...'
-    selectAllText: 'Check/Uncheck All'
-    selectAllDelimiter: [ '', '' ]
+  $('.multiple-country-select').select2()
 
   $('select.country-select').each ->
     $(this).select2

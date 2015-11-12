@@ -9,7 +9,7 @@ class LeadsMailer < ApplicationMailer
     @office = @boat.office
     attach_boat_pdf
 
-    to_email = STAGING_EMAIL || enquiry.email
+    to_email = STAGING_EMAIL || @enquiry.email
     mail(to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 

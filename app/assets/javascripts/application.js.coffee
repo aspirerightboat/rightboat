@@ -32,7 +32,6 @@
 #= require jquery.ui.touch-punch
 #= require select2
 #= require selectize.min
-#= require jquery.multiple.select
 #= require js-cookie
 #= require utils
 #= require slick.min

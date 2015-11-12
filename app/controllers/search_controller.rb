@@ -2,26 +2,6 @@ class SearchController < ApplicationController
   before_filter :save_session_settings, only: :results
   after_filter :log_search_terms, only: :results
 
-  def suggestion
-    return render(json: []) if params[:q].blank?
-
-    if params[:source_type]
-      klass_group = [params[:source_type].to_s.camelize.constantize]
-    else
-      klass_group = [Manufacturer, Model, Country, FuelType, BoatType]
-    end
-
-    search = Sunspot.search(*klass_group) do |q|
-      q.with :name_ngrme, params[:q]
-    end
-
-    ret = search.results.map do |object|
-      object.is_a?(Model) ? object.name_with_manufacturer : object.name
-    end
-
-    render json: ret.sort
-  end
-
   def manufacturer_model
     search = Sunspot.search(Manufacturer, Model) do |q|
       if params[:q].blank?
@@ -50,16 +30,14 @@ class SearchController < ApplicationController
     end
 
     params.delete(:page) unless request.xhr?
-    params.delete(:boat_type) unless params[:q].blank?
+    params.delete(:boat_type) if params[:q].present?
+    params[:order] ||= current_search_order
 
-    search_params = params.clone
-    search_params[:order] ||= current_search_order
-
-    boat_search = Rightboat::BoatSearch.new.do_search(search_params, with_facets: true)
+    boat_search = Rightboat::BoatSearch.new.do_search(params, with_facets: true)
     @boats = boat_search.results
     @search_facets = boat_search.facets_data
     session[:boats_count] = @boats.total_count
-    @prev_url = request.referrer[/boats-for-sale/] if request.referer
+    @prev_url = request.referrer['boats-for-sale'] if request.referer
 
     respond_to do |format|
       format.html

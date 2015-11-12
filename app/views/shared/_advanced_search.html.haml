@@ -24,7 +24,7 @@
           .col-xs-4.col-sm-2
             = label_tag :keywords, 'Keywords'
           .col-xs-8.col-sm-10
-            = text_field_tag :q, params[:q], id: 'keywords', class: 'tags-input', placeholder: 'e.g. 4 berths'
+            = text_field_tag :q, params[:q], class: 'form-control', placeholder: 'e.g. 4 berths'
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-4
@@ -56,7 +56,7 @@
             = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
         .form-group.row
           .col-xs-4
-            = label_tag :tax_status
+            = label_tag :tax_status, nil, class: 'without-top-pad'
           .col-xs-8
             = check_box_tag 'tax_status[paid]', true, (params[:tax_status] || {})['paid'], class: 'inverse'
             = label_tag :tax_status_paid, 'Paid', class: 'tax-paid' do
@@ -72,11 +72,6 @@
             = label_tag :boat_type
           .col-xs-8
             = select_tag 'boat_type[]', options_for_select(%w(Power Sail Other), params[:boat_type]), class: 'select-black select-full select-general', multiple: 'multiple'
-        -#.form-group.row
-        -#  .col-xs-4
-        -#    = label_tag :fuel_type
-        -#  .col-xs-8
-        -#    = select_tag :fuel_type, options_for_select(['Diesel', 'Petrol', 'Other'], params[:fuel_type]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :category
@@ -95,7 +90,7 @@
             = text_field_tag :ref_no, '', placeholder: 'e.g. RB48573', class: 'form-control'
         .form-group.row
           .col-xs-4
-            = label_tag :new_used, 'New / Used'
+            = label_tag :new_used, 'New / Used', class: 'without-top-pad'
           .col-xs-8
             = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
             = label_tag :new_used_new, 'New'

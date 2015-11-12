@@ -16,7 +16,8 @@
                 %span(data-attr-name='price')= boat_price(boat)
                 %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
               .text-nowrap.pull-right
-                = link_to boat_pdf_path(boat.slug), class: 'pdf-link', target: :blank do
+                = link_to boat_pdf_path(boat.slug), class: 'btn-flat btn-black pdf-link', target: :blank do
+                  View full specs
                   %i
                 = link_to 'Search Similar', search_path(boat.similar_options(current_currency)), class: 'btn-flat btn-black search-similar'
                 = link_to 'Enquire Again', '#', class: 'btn-flat btn-black request-details'

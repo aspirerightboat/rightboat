@@ -44,7 +44,7 @@ class Country < ActiveRecord::Base
 
   def self.country_code_options
     @country_codes = Rails.cache.fetch "rb.country_codes", expires_in: 1.day do
-      self.by_priority.map { |x| ["#{x.name} (+#{x.country_code})", x.country_code]}
+      self.by_priority.map { |x| [[x.iso.downcase, x.name, x.country_code].join(','), x.country_code]}
     end
   end
 end

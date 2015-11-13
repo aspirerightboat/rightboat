@@ -3,6 +3,8 @@ class BoatType < ActiveRecord::Base
   include FixSpelling
   include BoatOwner
 
+  GENERAL_TYPES = %w(Power Sail Other)
+
   # solr_update_association :boats
 
   validates_presence_of :name

@@ -21,9 +21,14 @@ class Enquiry < ActiveRecord::Base
   # before_validation :add_captcha_error
   before_validation :check_honeypot
 
+  before_save :update_lead_price
   after_save :send_quality_check_email
   after_update :create_lead_trail
   after_update :admin_reviewed_email
+
+  def self.not_invoiced
+    where(invoice_id: nil)
+  end
 
   def name
     "#{first_name} #{surname}".strip
@@ -32,6 +37,13 @@ class Enquiry < ActiveRecord::Base
 
   def create_lead_trail(force = false)
     LeadTrail.create!(lead: self, user: $current_user, new_status: status) if force || status_changed?
+  end
+
+  def update_lead_price
+    self.lead_price = calc_lead_price
+    if persisted? && lead_price_changed?
+      update_column :lead_price, lead_price
+    end
   end
 
   private
@@ -78,6 +90,17 @@ class Enquiry < ActiveRecord::Base
       else
         errors.add :email, 'cannot be found'
       end
+    end
+  end
+
+  def calc_lead_price
+    if !boat.poa? && boat.price > 0
+      Currency.convert(boat.price, boat.currency, Currency.default) * RBConfig[:lead_price_coef]
+    elsif boat.length_m && boat.length_m > 0
+      lead_rate = boat.user.broker_info.lead_rate
+      Currency.convert(boat.length_ft * lead_rate, Currency.cached_by_name('EUR'), Currency.default)
+    else
+      RBConfig[:lead_flat_fee]
     end
   end
 end

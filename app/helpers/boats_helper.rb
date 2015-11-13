@@ -16,6 +16,15 @@ module BoatsHelper
     end
   end
 
+  def boat_price_with_converted(boat)
+    converted_price = boat_price(boat, current_currency)
+    if boat.currency && boat.currency != current_currency
+      "#{boat_price(boat, boat.currency)} (#{converted_price})"
+    else
+      converted_price
+    end
+  end
+
   def favourite_link_to(boat)
     favourited = boat.favourited_by?(current_user)
     fav_class = favourited ? 'fav-link active' : 'fav-link'
@@ -42,8 +51,7 @@ module BoatsHelper
   def boat_specs(boat, full_spec = false)
     ret = []
     ret << ['Seller', boat.user.name] if full_spec
-    price = (boat.currency.name == cookies[:currency]) ? boat_price(boat) : "#{boat_price(boat, boat.currency)}(#{boat_price(boat)})"
-    ret << ['Price', price, 'price']
+    ret << ['Price', boat_price_with_converted(boat), 'price']
     ret << ['LOA', boat_length(boat), 'loa']
     ret << ['Manufacturer', boat.manufacturer]
     ret << ['Model', boat.model]

@@ -53,7 +53,7 @@ module Rightboat
 
         any_of { country.each { |country_id| with :country_id, country_id } } if country
         any_of { category.each { |category_id| with :category_id, category_id } } if category
-        any_of { boat_type.each { |boat_type| with :boat_type, boat_type } } if boat_type
+        with :boat_type, boat_type
 
         if with_facets
           facet :country_id
@@ -95,10 +95,10 @@ module Rightboat
       length_stats = search.stats(:length_m)
 
       country_facet = search.facet(:country_id).rows
-      countries_for_select = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
+      countries_data = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
         count = country_facet.find { |x| x.value == id }.count
         [id, name, count]
-      end.sort_by(&:third).reverse.map { |id, name, count| ["#{name} (#{count})", id] }
+      end.sort_by(&:third).reverse #.map { |id, name, count| ["#{name} (#{count})", id] }
 
       @facets_data = {
           price_min:  (price_stats.data && price_stats.min.try(:floor)) || PRICES_RANGE.min,
@@ -107,7 +107,7 @@ module Rightboat
           year_max:   (year_stats.data && year_stats.max.try(:ceil)) || YEARS_RANGE.max,
           length_min: (length_stats.data && length_stats.min.try(:floor)) || LENGTHS_RANGE.min,
           length_max: (length_stats.data && length_stats.max.try(:ceil)) || LENGTHS_RANGE.max,
-          countries_for_select: countries_for_select
+          countries_data: countries_data
       }
     end
 
@@ -116,7 +116,7 @@ module Rightboat
       @manufacturer_model = read_tags(params[:manufacturer_model])
       @category = read_tags(params[:category])
       @country = read_tags(params[:country])
-      @boat_type = read_tags(params[:boat_type])
+      @boat_type = read_str(params[:boat_type])
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
       @price_min = read_price(params[:price_min], params[:currency])

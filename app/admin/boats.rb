@@ -15,6 +15,7 @@ ActiveAdmin.register Boat do
   filter :recently_reduced
   filter :under_offer
   filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
+  filter :boat_type_name, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
 
   index do
     column :id
@@ -24,7 +25,10 @@ ActiveAdmin.register Boat do
       else
         img = content_tag(:div, nil, style: 'background-color: lightgray; width: 64px; height: 43px;')
       end
-      link_to img, admin_boat_images_path(q: {boat_id_equals: boat.id})
+      link_to(img, admin_boat_images_path(q: {boat_id_equals: boat.id}))
+    end
+    column 'Imgs' do |boat|
+      boat.boat_images.count
     end
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
@@ -35,13 +39,12 @@ ActiveAdmin.register Boat do
     end
     column :user, :user, sortable: 'users.first_name'
     column :office, :office, sortable: 'offices.name'
-    column :geocoded do |boat|
-      boat.geocoded? ? status_tag('Geocoded', :ok) : status_tag('Failed', :no)
-    end
-    column :country, :country, sortable: 'countries.name'
-    column :location
-    column :images do |boat|
-      boat.boat_images.count
+    column :location do |boat|
+      res = []
+      res << link_to(boat.country.name, admin_country_path(boat.country)) if boat.country
+      res << html_escape(boat.location) if boat.location.present?
+      res << content_tag(:span, "#{'Not ' if !boat.geocoded?}Geocoded", class: "status_tag #{boat.geocoded? ? 'ok' : 'no'}")
+      res.join('<br>').html_safe
     end
     actions do |boat|
       item 'Stats', statistics_admin_boat_path(boat), class: 'member_link'

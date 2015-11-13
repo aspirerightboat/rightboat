@@ -53,7 +53,7 @@ module Rightboat
 
         any_of { country.each { |country_id| with :country_id, country_id } } if country
         any_of { category.each { |category_id| with :category_id, category_id } } if category
-        any_of { boat_type.each { |boat_type| with :boat_type, boat_type } } if boat_type
+        with :boat_type, boat_type
 
         if with_facets
           facet :country_id
@@ -116,7 +116,7 @@ module Rightboat
       @manufacturer_model = read_tags(params[:manufacturer_model])
       @category = read_tags(params[:category])
       @country = read_tags(params[:country])
-      @boat_type = read_tags(params[:boat_type])
+      @boat_type = read_str(params[:boat_type])
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
       @price_min = read_price(params[:price_min], params[:currency])

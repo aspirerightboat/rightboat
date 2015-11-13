@@ -102,7 +102,7 @@ class Boat < ActiveRecord::Base
         currency:   currency.try(:name),
         price_min:  (required_price * 0.8).to_i,
         price_max:  (required_price * 1.2).to_i,
-        boat_type:  [boat_type.try(:name_stripped)].compact,
+        boat_type:  boat_type.try(:name_stripped),
         category:   [category_id].compact
     }
 

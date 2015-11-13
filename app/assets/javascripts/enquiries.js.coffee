@@ -70,3 +70,6 @@ $ ->
   $('.unhide-enquires').on 'ajax:success', (e, data, status, xhr) ->
     $('.boat-thumb-container').fadeIn()
 
+  $('.enquiry-without-phone').click ->
+    $('.enquiry-form').submit()
+

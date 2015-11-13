@@ -35,5 +35,7 @@ $(document).ready ->
   $(window).click ->
     $('.result-popup').fadeOut()
 
-#  $('.member-area .boat-thumb .caption').click ->
-#    window.location = $(this).attr('href')
+  $('.member-area .boat-thumb .caption').click (e) ->
+    $target = $(e.target)
+    unless $target.is('i') || $target.is('a')
+      window.location = $(this).attr('href')

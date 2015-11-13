@@ -22,9 +22,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column 'Date of Lead', sortable: :created_at do |record|
       "#{l record.created_at, format: :short} (#{distance_of_time_in_words(record.created_at, Time.current)} ago)"
     end
-    column :user, sortable: :user_id
+    column :broker, sortable: :boat_id do |record|
+      link_to record.boat.user.name, admin_user_path(record.boat.user)
+    end
     column :boat, sortable: :boat_id do |record|
-      record.boat.try(&:manufacturer_model)
+      link_to record.boat.try(&:manufacturer_model), admin_boat_path(record.boat)
     end
     column 'Length(m)', sortable: 'boats.length_m' do |record|
       "#{record.boat.try(:length_m)}m"
@@ -52,6 +54,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
         "<b>#{k}</b>: #{v}" unless v.blank?
       }.reject(&:blank?).join('<br/>').html_safe
     end
+    column :user, sortable: :user_id
     column :status
     actions
   end

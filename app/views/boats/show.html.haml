@@ -1,8 +1,9 @@
-- @page_title = @boat.to_s
+- @page_title = "#{@boat.to_s.truncate(64)}"
 
 - content_for :meta_tags do
-  %meta(name="title" content="#{@boat.to_s} | Rightboat.com")
-  %meta(property="og:title" content="#{@boat.to_s} | Rightboat.com")
+  %meta(name="title" content=@page_title)
+  %meta(property="og:title" content=@page_title)
+  %meta(property="og:type" content="product")
   %meta(name="description" content="#{reduced_description(@boat.description)}")
   %meta(name="og:description" content="#{reduced_description(@boat.description)}")
   %meta(itemprop="name" content="#{@boat.to_s}")

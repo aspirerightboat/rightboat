@@ -1,3 +1,12 @@
+- @page_title = "#{@manufacturer.name} boats for sale"
+
+- content_for :meta_tags do
+  %meta(name="title" content=@page_title)
+  %meta(property="og:title" content=@page_title)
+  %meta(name="robots" content="index, follow")
+  %meta(property="og:url" content="#{manufacturer_url(@manufacturer.slug)}")
+  %link(rel="canonical" href="#{manufacturer_url(@manufacturer.slug)}")
+
 = render layout: 'shared/boats_for_sale' do
   = render 'manufacturer_letters'
   %h1 Boats of "#{@manufacturer.name}"

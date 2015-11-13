@@ -89,6 +89,7 @@ class User < ActiveRecord::Base
     company? ? company_name : full_name
   end
   alias_method :to_s, :name
+  alias_method :display_name, :name # for active_admin
 
   ROLES.each do |role_name, _|
     define_method "#{role_name.to_s.underscore}?" do

@@ -90,6 +90,7 @@ class Boat < ActiveRecord::Base
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
   before_destroy :remove_activities
+  after_save :update_leads_price
 
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
 
@@ -169,6 +170,7 @@ class Boat < ActiveRecord::Base
   end
 
   private
+
   def slug_candidates
     [
       name,
@@ -211,6 +213,14 @@ class Boat < ActiveRecord::Base
 
     if agree_privacy_policy && agree_privacy_policy != '1'
       errors.add :base, 'You should agree Rightboat private advert pricing policy.'
+    end
+  end
+
+  def update_leads_price
+    if poa_changed? || price_changed? || length_m_changed?
+      enquiries.not_deleted.not_invoiced.each do |lead|
+        lead.update_lead_price
+      end
     end
   end
 end

@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   has_one :address, as: :addressible, dependent: :destroy
   has_many :offices, inverse_of: :user, dependent: :destroy
   has_many :enquiries, inverse_of: :user, dependent: :nullify
+  has_many :broker_leads, through: :boats, source: :enquiries
   has_many :imports, inverse_of: :user, dependent: :destroy
   has_many :boats, inverse_of: :user, dependent: :destroy
   has_many :favourites, dependent: :delete_all

@@ -1,7 +1,7 @@
 module Member
   class EnquiriesController < BaseController
     def index
-      @enquiries = current_user.enquiries.includes(boat: [:boat_type, :currency, :primary_image, :manufacturer, :model, :country, :vat_rate]).order(created_at: :desc)
+      @enquiries = current_user.enquiries.includes(boat: [:boat_type, :currency, :primary_image, :manufacturer, :model, :country, :vat_rate]).order('id DESC')
     end
 
     def unhide

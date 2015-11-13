@@ -81,12 +81,12 @@ class User < ActiveRecord::Base
     self.class::ROLES.invert[self.role.to_i]
   end
 
+  def full_name
+    [first_name, last_name].join(' ').strip
+  end
+
   def name
-    if company?
-      company_name
-    else
-      [first_name, last_name].join(' ').strip
-    end
+    company? ? company_name : full_name
   end
   alias_method :to_s, :name
 

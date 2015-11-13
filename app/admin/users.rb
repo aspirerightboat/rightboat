@@ -2,8 +2,8 @@ ActiveAdmin.register User do
   permit_params :username, :email, :password, :password_confirmation,
                 :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
                 :avatar, :avatar_cache,
-                address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip],
-                broker_info_attributes: [:contact_name, :position, :description, :lead_rate, :discount, :website, :additional_email, :vat_number, :logo, :copy_to_head_office]
+                address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
+                broker_info_attributes: [:id, :contact_name, :position, :description, :lead_rate, :discount, :website, :additional_email, :vat_number, :logo, :copy_to_head_office, :_destroy]
 
   config.sort_order = 'role_asc'
   menu priority: 8

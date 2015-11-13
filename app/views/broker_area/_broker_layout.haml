@@ -1,7 +1,7 @@
 - content_for :header_text do
   .navbar-h Broker Area
 
-= render 'shared/search_bar'
+= render 'search_bar'
 
 #main-content.container
   .row
@@ -13,11 +13,11 @@
         %li= link_to_unless tab  == :getting_started, 'Getting Started', getting_started_broker_area_path
   .row
     - if sidebar.present?
-      #sidebar.col-xs-6.col-sm-3.sidebar-offcanvas(role="navigation")
+      #sidebar.col-xs-12.col-sm-3.sidebar-offcanvas(role="navigation")
         .sidebar-nav
           %ul.nav.nav-pills.nav-stacked
             = sidebar
-    .col-xs-12.col-sm-9.member-right
+    .col-xs-12.member-right(class="#{'col-sm-9' if sidebar.present?}")
       - if notice
         .alert.alert-info= notice
       - if alert

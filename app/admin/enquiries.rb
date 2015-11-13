@@ -25,7 +25,8 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
     end
     column :customer, sortable: :user_id do |lead|
-      res = link_to(lead.user.name, admin_user_path(lead.user))
+      res = ''.html_safe
+      res << link_to(lead.user.name, admin_user_path(lead.user)) if lead.user
       res << '<br>'.html_safe
       res << {
           'Title' => lead.title,

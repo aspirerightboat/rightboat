@@ -58,7 +58,21 @@ $ ->
       $('<div>').append $icon
     dropdownCssClass: 'view-mode-dropdown'
 
-  $('.multiple-country-select').select2()
+  $('.multiple-country-select').each ->
+    $sel = $(@)
+    filtered_data = $sel.data('filtered-data')
+    if !$.isEmptyObject(filtered_data)
+      selected_ids = $sel.data('selected-ids') || []
+      window.countries_options = $sel.html()
+      $sel.empty()
+      $.each filtered_data, (i, arr) ->
+        id = arr[0]
+        name = arr[1]
+        count = arr[2]
+        opt = $('<option>').text(name+' ('+count+')').attr('value', id)
+        opt.prop('selected', true) if $.inArray(''+id, selected_ids) >= 0
+        $sel.append(opt)
+    $sel.select2()
 
   $('select.country-select').each ->
     $(this).select2

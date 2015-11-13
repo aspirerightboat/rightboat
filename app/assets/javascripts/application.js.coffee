@@ -89,6 +89,9 @@ $ ->
 
   $('.reset-adv-search').click ->
     $form = $(@).closest('#advanced-search').find('form')
+    if window.countries_options
+      $('.multiple-country-select').select2("destroy").html(window.countries_options)
+      $('.multiple-country-select').select2()
     $('input[type=text]', $form).val('')
     $('input[type=checkbox]', $form).prop('checked', false)
     $('input[name=manufacturer_model], select', $form).select2('data', null)

@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   validates_presence_of :company_name, if: :organization?
   validates_url :company_weburl, allow_blank: true, if: :organization?
 
-  before_create { build_user_alert } # will create user_alert
+  before_create { build_user_alert(saved_searches: false) } # will create user_alert
   before_save :create_broker_info
   before_validation :ensure_username
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
@@ -81,12 +81,12 @@ class User < ActiveRecord::Base
     self.class::ROLES.invert[self.role.to_i]
   end
 
+  def full_name
+    [first_name, last_name].join(' ').strip
+  end
+
   def name
-    if company?
-      company_name
-    else
-      [first_name, last_name].join(' ').strip
-    end
+    company? ? company_name : full_name
   end
   alias_method :to_s, :name
 

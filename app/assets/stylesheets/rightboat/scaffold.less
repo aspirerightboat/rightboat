@@ -6,6 +6,10 @@
   z-index: 3000;
 }
 
+.modal-sm {
+  min-width: 480px;
+}
+
 .modal-content {
   background: @rb-color-primary;
   border: 4px solid white;
@@ -55,6 +59,17 @@ label {
 
 .btn, .btn-flat {
   font-size: 15px;
+}
+
+.btn-flat.btn-white {
+  border-color: @rb-color-primary;
+  color: @rb-color-primary;
+
+  &:hover, &:focus, &:active, &.active {
+    background-color: @rb-color-dark;
+    border-color: @rb-color-dark;
+    color: white;
+  }
 }
 
 .close {
@@ -323,4 +338,20 @@ ul.list-decimal > li {
 
 .goog-te-gadget-simple .goog-te-menu-value span {
   color: gray;
+}
+
+.save-search {
+  position: relative;
+
+  .result-popup {
+    background-color: @rb-color-yellow;
+    border-radius: 3px;
+    display: none;
+    font-size: 13px;
+    right: -170px;
+    padding: 10px;
+    position: absolute;
+    top: -51px;
+    z-index: 1000;
+  }
 }

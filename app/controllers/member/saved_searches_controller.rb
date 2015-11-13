@@ -15,7 +15,7 @@ class Member::SavedSearchesController < Member::BaseController
 
     ss.save!
 
-    redirect_to member_saved_searches_path, notice: 'Your search was saved'
+    render json: {}
   end
 
   def destroy

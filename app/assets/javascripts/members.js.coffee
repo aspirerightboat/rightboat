@@ -29,5 +29,13 @@ $(document).ready ->
   $('.preview-wrap').bind 'cocoon:after-insert', (e, insertedItem) ->
     loadPreview(insertedItem)
 
-#  $('.member-area .boat-thumb .caption').click ->
-#    window.location = $(this).attr('href')
+  $('.save-search').on 'ajax:success', (e, data, status, xhr) ->
+    $(this).find('.result-popup').fadeIn()
+
+  $(window).click ->
+    $('.result-popup').fadeOut()
+
+  $('.member-area .boat-thumb .caption').click (e) ->
+    $target = $(e.target)
+    unless $target.is('i') || $target.is('a')
+      window.location = $(this).attr('href')

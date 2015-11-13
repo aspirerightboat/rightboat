@@ -1,5 +1,6 @@
 class Member::BoatsController < Member::BaseController
 
+  before_filter :ensure_non_broker
   before_filter :load_boat, only: [:edit, :update, :destroy]
 
   def index
@@ -43,6 +44,10 @@ class Member::BoatsController < Member::BaseController
 
   private
 
+  def ensure_non_broker
+    redirect_to member_root_path if current_user.company?
+  end
+
   def load_boat
     @boat = Boat.find(params[:id])
   end
@@ -58,7 +63,7 @@ class Member::BoatsController < Member::BaseController
   def boat_params
     params.require(:boat)
       .permit(:manufacturer_id, :model_id, :price, :year_built, :length_m, :description, :owners_comment,
-              :location, :tax_paid, :accept_toc, :agree_privacy_policy, :secure_payment,
+              :location, :tax_paid, :accept_toc, :agree_privacy_policy, :secure_payment, :currency_id,
               boat_specifications_attributes: [:id, :value, :specification_id],
               boat_images_attributes: [:id, :file, :file_cache, :_destroy]
       )

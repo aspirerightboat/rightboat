@@ -2,7 +2,7 @@
 .broker-info-block
   - if broker.avatar?
     .broker-logo
-      = wicked_pdf_image_tag broker.avatar_url, height: 100
+      = wicked_pdf_image_tag broker.avatar_url
   .broker-info
     %div <strong>#{broker.name}</strong>
     = render partial: 'shared/address', locals: {address: broker.address}

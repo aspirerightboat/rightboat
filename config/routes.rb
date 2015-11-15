@@ -11,6 +11,11 @@ Rails.application.routes.draw do
     post 'resend-confirmation', to: 'registrations#resend_confirmation', as: :resend_confirmation
   end
 
+  if Rails.env.production?
+    get '/admin/imports/(:id)/:action', to: redirect { |path_params, req| "http://import.rightboat.com#{req.fullpath}" },
+        constraints: { action: /(run|stop)/, subdomain: /\A(?!import)/ }
+  end
+
   ActiveAdmin.routes(self)
   namespace :admin do
     resources :countries do

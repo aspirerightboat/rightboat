@@ -45,7 +45,7 @@ ActiveAdmin.register_page 'Dashboard' do
               link_to 'view log', admin_import_trail_path(trail)
             end
             t.column('rerun') do |trail|
-              link_to('rerun', run_admin_import_path(trail.import), method: :post, class: 'job-action') if !trail.import.running?
+              link_to('rerun', run_admin_import_path(trail.import), method: :get, class: 'job-action') if !trail.import.running?
             end
           end
         end

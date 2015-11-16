@@ -30,7 +30,7 @@
         %li Name: <b>#{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}</b>
         %li Email: <b>#{@enquiry.email}</b>
         - if @enquiry.phone.present?
-          %li Tel: <b>#{country_code} #{@enquiry.phone}</b>
+          %li Tel: <b>#{@enquiry.country_code} #{@enquiry.phone}</b>
         - if @enquiry.message.present?
           %li Message: <b>#{@enquiry.message}</b>
 

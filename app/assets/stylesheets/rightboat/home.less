@@ -13,25 +13,34 @@
   }
 
   .page-gap {
-    min-height: 480px;
-    background: image-url('home-bg.jpg') no-repeat;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    background-repeat: no-repeat;
+  }
+}
+
+#home-index {
+  .page-gap {
+    min-height: 480px;
+    background-image: image-url('home-bg.jpg');
+
+  }
+
+  .embed-responsive {
+    padding-bottom: 63.44%;
+  }
+}
+
+.member-area {
+  .page-gap {
+    background-image: image-url('member-page-bg.png')
   }
 
   .embed-responsive {
     padding-bottom: 480px;
-
-    &.embed-responsive-home-page {
-      padding-bottom: 63.44%;
-    }
   }
-}
-
-.member-area .page-gap {
-  background-position: center 25%;
 }
 
 #search-wrapper {

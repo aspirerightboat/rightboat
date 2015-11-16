@@ -12,7 +12,7 @@ class SavedSearch < ActiveRecord::Base
     currency_sym = Currency.cached_by_name(currency).try(:symbol)
     res = ''
     res << " Keyword=\"#{q}\"" if q.present?
-    res << " BoatType=\"#{boat_type.join(', ')}\"" if boat_type.present?
+    res << " BoatType=\"#{boat_type}\"" if boat_type.present?
     res << " Boat=\"#{manufacturer_model}\"" if manufacturer_model
     res << " Year=#{year_min.presence || not_defined}-#{year_max.presence || not_defined}" if year_min.present? || year_max.present?
     res << " Price=#{currency_sym}#{price_min.presence || 0}-#{price_max.presence || not_defined}" if price_min.present? || price_max.present?

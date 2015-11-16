@@ -133,7 +133,7 @@ class Boat < ActiveRecord::Base
   end
 
   def length_ft
-    (length_m * 3.2808399 * 100).round / 100.0
+    (length_m * 3.2808399).round(2) if length_m
   end
 
   def live?

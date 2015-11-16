@@ -53,7 +53,7 @@ module Rightboat
 
         any_of { country.each { |country_id| with :country_id, country_id } } if country
         any_of { category.each { |category_id| with :category_id, category_id } } if category
-        with :boat_type, boat_type
+        with :boat_type, boat_type if boat_type
 
         if with_facets
           facet :country_id

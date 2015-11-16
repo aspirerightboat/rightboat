@@ -4,7 +4,6 @@ class SavedSearch < ActiveRecord::Base
   serialize :category, Array
   serialize :tax_status, Hash
   serialize :new_used, Hash
-  serialize :boat_type, Array
 
   belongs_to :user
 

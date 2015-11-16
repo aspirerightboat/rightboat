@@ -28,7 +28,7 @@
           %td= i + 1
           %td= ss.q
           %td= ss.manufacturer_model
-          %td= ss.boat_type.join(', ')
+          %td= ss.boat_type
           %td= BoatCategory.where(id: ss.category).pluck(:name).join(', ')
           %td= Country.where(id: ss.country).pluck(:name).join(', ')
           %td= ss.new_used.values.join(' / ')

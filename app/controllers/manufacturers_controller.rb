@@ -3,6 +3,8 @@ class ManufacturersController < ApplicationController
     @manufacturers = Manufacturer.joins(:boats).group('manufacturers.name, manufacturers.slug')
                          .order('COUNT(*) DESC').page(params[:page]).per(20)
                          .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
+    @page = params[:page].try(:to_i)
+    @page = 1 if !@page || @page <= 0
   end
 
   def show

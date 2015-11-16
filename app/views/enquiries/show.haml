@@ -49,9 +49,6 @@
           .no-image
   .row
     .col-sm-12
-      %p(style="margin: 1.5em 0")
-        = link_to 'View all leads', my_leads_broker_area_path
-
       - if @enquiry.status == 'pending' && current_user && current_user.company?
         %p.nice-buttons(style="margin-top: 1em")
           %a#request_qc_button.transparent-button(href="#") Request Quality Check
@@ -75,5 +72,7 @@
                 RB Administrator
               - else
                 Automatically
+      %p(style="margin: 1.5em 0")
+        = link_to 'View all leads', my_leads_broker_area_path
 
 = render 'shared/quality_check_popup'

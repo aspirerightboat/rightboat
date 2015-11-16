@@ -3,6 +3,7 @@ class EnquiriesController < ApplicationController
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
+  before_action :remember_when_broker_accessed, only: [:show]
 
   def create
     enquiry = Enquiry.new(enquiry_params)
@@ -73,5 +74,13 @@ class EnquiriesController < ApplicationController
 
   def can_view_as_buyer(user)
     @enquiry.user == user
+  end
+
+  def remember_when_broker_accessed
+    if !@enquiry.broker_accessed_at && current_user.company?
+      @enquiry.broker_accessed_at = Time.current
+      @enquiry.accessed_by_broker = current_user
+      @enquiry.save!
+    end
   end
 end

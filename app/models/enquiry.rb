@@ -8,6 +8,7 @@ class Enquiry < ActiveRecord::Base
   belongs_to :user
   belongs_to :boat
   belongs_to :invoice
+  belongs_to :accessed_by_broker, class_name: 'User'
   has_many :lead_trails, foreign_key: 'lead_id'
 
   validate :check_user
@@ -40,7 +41,7 @@ class Enquiry < ActiveRecord::Base
   end
 
   def update_lead_price
-    self.lead_price = calc_lead_price
+    self.lead_price = calc_lead_price.round(2)
     if persisted? && lead_price_changed?
       update_column :lead_price, lead_price
     end

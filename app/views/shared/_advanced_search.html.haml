@@ -7,7 +7,7 @@
         &times;
     %h2
       - if controller_name == 'search'
-        Refine Search <small>Here you can filter and refine the results of this search</small>
+        Refine Search <small>Here you can filter and refine the <b>#{@boats.total_count}</b> boats of your search result</small>
       - else
         Advanced Search
       %button.like-link.reset-adv-search Clear Search

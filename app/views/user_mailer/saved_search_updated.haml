@@ -14,8 +14,11 @@
   -#  #{link_to 'Rerun the search', search_url(saved_search.to_search_params)}
   -#  <br>#{link_to 'Turn this search alert off', member_saved_searches_url}
 
-%p You can manage your alert and email settings from your My Alerts page within My Rightboat.
+%p
+  You can manage your alert and email settings
+  from your #{link_to 'My Alerts', member_user_alert_url}
+  page within <i>My Rightboat</i>.
 %p
   Kind regards,
   %br
-  The Team at Rightboat
+  The Team at #{link_to 'Rightboat', root_url}

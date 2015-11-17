@@ -46,9 +46,9 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_search_order
 
-  def set_current_search_order(field)
-    if field.present? && Rightboat::BoatSearch::ORDER_TYPES.include?(field)
-      cookies[:search_order] = field
+  def set_current_search_order(order)
+    if order.present? && Rightboat::BoatSearch::ORDER_TYPES.include?(order)
+      cookies[:search_order] = order
     end
   end
 

@@ -5,7 +5,7 @@ class Member::SavedSearchesController < Member::BaseController
 
   def create
     valid_params = params.permit(:year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                                 :length_unit, :manufacturer_model, :currency, :ref_no, :q, :boat_type,
+                                 :length_unit, :manufacturer_model, :currency, :ref_no, :q, :boat_type, :order,
                                  tax_status: [:paid, :unpaid], new_used: [:new, :used], country: [], category: [])
 
     ss = current_user.saved_searches.new(valid_params)

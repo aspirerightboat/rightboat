@@ -26,8 +26,8 @@ ActiveAdmin.register SavedSearch do
   end
 
   collection_action :run_saved_search_job, method: :post do
-    res = SavedSearchNoticesJob.new.perform
-    redirect_to({action: :index}, notice: "#{res[0]} searches processed for #{res[1]} users and #{res[2]} mails was sent")
+    total_count, users_count, mails_sent = SavedSearchNoticesJob.new.perform
+    redirect_to({action: :index}, notice: "#{total_count} searches processed for #{users_count} users and #{mails_sent} mails was sent")
   end
 
 end

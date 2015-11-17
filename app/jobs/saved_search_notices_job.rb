@@ -1,6 +1,6 @@
 class SavedSearchNoticesJob
   def perform
-    all_searches = SavedSearch.where(alert: true)
+    all_searches = SavedSearch.where(alert: true) #.order('saved_searches.id DESC')
                        .joins('JOIN user_alerts ON saved_searches.user_id = user_alerts.user_id')
                        .where(user_alerts: {saved_searches: true}).all
     all_searches_grouped = all_searches.group_by(&:user_id)

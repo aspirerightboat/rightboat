@@ -24,6 +24,7 @@ en:
   search_plural:
     one: "search"
     many: "searches"
+    other: "searches"
   search_orders:
     score: "Best Match"
     created_at: "Newly listed"

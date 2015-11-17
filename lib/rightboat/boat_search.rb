@@ -9,12 +9,12 @@ module Rightboat
     
     attr_reader :q, :manufacturer_model, :category, :country, :boat_type,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                :ref_no, :new_boat, :tax_paid, :page, :order_dir, :order, :exclude_ref_no
+                :ref_no, :new_boat, :tax_paid, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
     attr_reader :with_facets, :includes, :per_page
 
     def do_search(search_params, opts = {})
-      prepare_params(search_params)
+      read_params(search_params)
 
       @with_facets = opts[:with_facets]
       @includes = opts[:includes] || [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
@@ -26,7 +26,7 @@ module Rightboat
         with :ref_no, ref_no if ref_no
         without :ref_no, exclude_ref_no if exclude_ref_no
         paginate page: page, per_page: per_page
-        order_by order, order_dir if order
+        order_by order_col, order_dir if order
 
         with :new_boat, new_boat  if !new_boat.nil?
 
@@ -111,7 +111,7 @@ module Rightboat
       }
     end
 
-    def prepare_params(params)
+    def read_params(params)
       @q = read_str(params[:q])
       @manufacturer_model = read_tags(params[:manufacturer_model])
       @category = read_tags(params[:category])
@@ -128,8 +128,9 @@ module Rightboat
       @tax_paid = read_hash_bool(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
       if params[:order].present? && ORDER_TYPES.include?(params[:order])
+        @order = params[:order]
         @order_dir = params[:order].end_with?('_asc') ? :asc : :desc
-        @order = params[:order].gsub(/_(?:asc|desc)\z/, '')
+        @order_col = params[:order].gsub(/_(?:asc|desc)\z/, '')
       end
       @exclude_ref_no = params[:exclude_ref_no]
     end

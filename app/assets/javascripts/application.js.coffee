@@ -101,6 +101,8 @@ $ ->
       reinitSlider($(@))
     $($form[0].length_unit).select2 'val', 'ft'
     $($form[0].currency).select2 'val', 'GBP'
+    $(@).closest('#advanced-search').find('h2').text('Advanced Search')
+    $('.result-info').remove()
     false
 
   target = window.location.hash

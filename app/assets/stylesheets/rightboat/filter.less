@@ -93,11 +93,12 @@
 .reset-adv-search {
   color: white;
   float: right;
-  margin-right: 160px;
+  margin: 42px 160px 0 10px;
   font-size: 15px;
-  margin-top: 15px;
   font-weight: normal;
   text-decoration: underline;
+
+  @media(max-width: @screen-sm-min) { margin-right: 50px; }
 }
 
 body:not(#home-index, .member-area) #advanced-search:after {

@@ -5,12 +5,12 @@
       %span(aria-hidden="true")
         %small Close
         &times;
+    %button.like-link.reset-adv-search Clear Search
     %h2
       - if controller_name == 'search'
-        Refine Search <small>Here you can filter and refine the <b>#{@boats.total_count}</b> boats of your search result</small>
+        Refine Search <small>Here you can filter and refine the <b>#{implicit_boats_count @boats.total_count}</b> boats of your search result</small>
       - else
         Advanced Search
-      %button.like-link.reset-adv-search Clear Search
 
     = form_tag search_path, method: :get, class: 'row' do
       = hidden_field_tag :year_min

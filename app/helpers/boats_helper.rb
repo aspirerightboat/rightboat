@@ -71,4 +71,8 @@ module BoatsHelper
     ret << ['RB Ref', boat.ref_no]
     ret.map { |k, v| [k, v.presence || 'N/A'] }
   end
+
+  def implicit_boats_count(count)
+    count >= 10000 ? '10,000 plus' : count
+  end
 end

@@ -22,7 +22,7 @@
               .broker-detail
                 = boat.user.full_name
                 %br
-                - if phone_number = boat.user.phone || boat.user.mobile
+                - unless (phone_number = boat.user.phone || boat.user.mobile).blank?
                   = phone_number
                   %br
                 = boat.user.email

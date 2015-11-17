@@ -12,6 +12,7 @@ ActiveAdmin.register Specification do
 
   index as: :sortable_table do
     column 'Name', :display_name
+    column :position
     column 'Visible', :visible do |r|
       r.visible? ? status_tag('Public', :ok) : status_tag('Private', :error)
     end
@@ -35,9 +36,9 @@ ActiveAdmin.register Specification do
   form do |f|
     f.inputs do
       f.input :name, input_html: !f.object.new_record? ? { disabled: :disabled,
-              hint: "You can't edit name. Please use `display name` or `active` feature for hide in front site"} : {}
+              hint: "You can't edit name. Please use `display name` or `visible` feature for hide in front site"} : {}
       f.input :display_name
-      f.input :active
+      f.input :position
       f.input :visible, label: 'Public'
     end
 

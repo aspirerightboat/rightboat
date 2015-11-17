@@ -1,3 +1,10 @@
+- @page_title = "#{@model.name} boats for sale"
+- @page_description = @page_title
+- @canonical_url = model_url(@model.slug)
+
+- content_for :meta_tags do
+  %meta(name="robots" content="index, follow")
+
 = render layout: 'shared/boats_for_sale' do
   %h1 Boats by model "#{@model.name}"
   .row(data-layout-mode="#{current_layout_mode}")

@@ -1,9 +1,9 @@
 module Rightboat
   class BoatSearch
     ORDER_TYPES = %w(score created_at price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
-    YEARS_RANGE = 1970..Time.current.year
+    YEARS_RANGE = (Date.today.year - 30)..Date.today.year
     PRICES_RANGE = 0..100_000_000
-    LENGTHS_RANGE = 0..60
+    LENGTHS_RANGE = 0..300
 
     attr_reader :facets_data, :search
     

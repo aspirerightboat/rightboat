@@ -30,7 +30,6 @@ class SearchController < ApplicationController
     end
 
     params.delete(:page) unless request.xhr?
-    params.delete(:boat_type) if params[:q].present?
     set_current_search_order(params[:q].present? ? 'score' : 'price_desc') if params[:order].blank?
     params[:order] ||= current_search_order
 

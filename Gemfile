@@ -78,6 +78,7 @@ group :development, :test do
   gem 'capistrano-rvm'
   gem 'capistrano-passenger'
   gem 'capistrano-rails'
+  gem 'capistrano-db-tasks', require: false #
   gem 'pry-rails'
 #  gem 'mailcatcher'
   gem 'letter_opener'

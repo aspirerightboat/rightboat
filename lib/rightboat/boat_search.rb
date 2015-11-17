@@ -9,7 +9,7 @@ module Rightboat
     
     attr_reader :q, :manufacturer_model, :category, :country, :boat_type,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                :ref_no, :new_boat, :tax_paid, :page, :order, :order_col, :order_dir, :exclude_ref_no
+                :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
     attr_reader :with_facets, :includes, :per_page
 
@@ -28,17 +28,24 @@ module Rightboat
         paginate page: page, per_page: per_page
         order_by order_col, order_dir if order
 
-        with :new_boat, new_boat  if !new_boat.nil?
-
-        if !tax_paid.nil?
-          with :tax_paid, true if tax_paid
-          without :tax_paid, true if !tax_paid
+        if new_used
+          any_of do
+            with :new_boat, true if new_used[:new]
+            with :new_boat, false if new_used[:used]
+          end
         end
 
-        if (manuf_model = manufacturer_model)
+        if tax_status
           any_of do
-            with :manufacturer, manuf_model
-            with :manufacturer_model, manuf_model
+            with :tax_paid, true if tax_status[:paid]
+            with :tax_paid, false if tax_status[:unpaid]
+          end
+        end
+
+        if manufacturer_model
+          any_of do
+            with :manufacturer, manufacturer_model
+            with :manufacturer_model, manufacturer_model
           end
         end
 
@@ -124,8 +131,8 @@ module Rightboat
       @length_min = read_length(params[:length_min], params[:length_unit])
       @length_max = read_length(params[:length_max], params[:length_unit])
       @ref_no = read_str(params[:ref_no])
-      @new_boat = read_hash_bool(params[:new_used], 'new', 'used')
-      @tax_paid = read_hash_bool(params[:tax_status], 'paid', 'unpaid')
+      @new_used = read_hash(params[:new_used], 'new', 'used')
+      @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
       if params[:order].present? && ORDER_TYPES.include?(params[:order])
         @order = params[:order]
@@ -166,9 +173,9 @@ module Rightboat
       end
     end
 
-    def read_hash_bool(hash, true_key, false_key)
+    def read_hash(hash, *possible_keys)
       if hash.present? && hash.is_a?(Hash)
-        hash[true_key] ? true : (hash[false_key] ? false : nil)
+        hash.with_indifferent_access.slice(*possible_keys)
       end
     end
   end

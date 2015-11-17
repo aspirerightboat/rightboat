@@ -52,14 +52,14 @@ module BoatsHelper
     ret = []
     ret << ['Seller', boat.user.name] if full_spec
     ret << ['Price', boat_price_with_converted(boat), 'price']
-    ret << ['LOA', boat_length(boat), 'loa']
+    ret << ['Year Built', boat.year_built]
     ret << ['Manufacturer', boat.manufacturer]
     ret << ['Model', boat.model]
     ret << ['Boat Type', boat.boat_type]
-    ret << ['Year Built', boat.year_built]
+    ret << ['LOA', boat_length(boat), 'loa']
     ret << ['Location', boat.country.to_s]
     ret << ['Tax Status', boat.tax_status]
-    ret << ['Engine make/model', boat.engine_model]
+    ret << ['Engine Make', boat.engine_model]
     ret << ['Fuel', boat.fuel_type]
 
     if full_spec
@@ -68,7 +68,7 @@ module BoatsHelper
       ret.concat Specification.visible_ordered_boat_specs(boat)
     end
 
-    ret << ['RB Boat Ref', boat.ref_no]
+    ret << ['RB Ref', boat.ref_no]
     ret.map { |k, v| [k, v.presence || 'N/A'] }
   end
 end

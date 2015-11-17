@@ -1,4 +1,4 @@
-#advanced-search-wrapper.navbar-static-top
+#advanced-search-wrapper.navbar-static-top(class="#{'refine-search' if controller_name == 'search'}")
   = image_tag 'anchor.png', class: 'anchor-img', alt: ''
   #advanced-search.container
     %button.close(aria-label="Close" type="button")

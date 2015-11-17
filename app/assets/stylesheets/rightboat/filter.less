@@ -1,11 +1,10 @@
 #advanced-search-wrapper {
-  background: @rb-color-dark;
+  background: @rb-color-primary;
   position: relative;
   z-index: 500;
 
-  input[type=checkbox] {
-    margin: 0 6px;
-    &:first-child { margin-left: 0; }
+  &.refine-search {
+    background: @rb-color-dark;
   }
 }
 
@@ -37,20 +36,30 @@
   }
 
   .ui-slider .ui-slider-handle {
-    background: @rb-color-primary;
+    background: @rb-color-dark;
+
+    .refine-search & {
+      background: @rb-color-primary;
+    }
   }
   .ui-slider .ui-slider-range {
     background: #FFF;
   }
   .btn-flat {
     width: 100%;
-    .button-variant(#FFF; @rb-color-primary; @rb-color-primary);
+    .button-variant(#FFF; @rb-color-dark; @rb-color-dark);
+
+    .refine-search & {
+      .button-variant(#FFF; @rb-color-primary; @rb-color-primary);
+
+    }
   }
   .result-info {
     font-size: 30px;
     font-weight: normal;
   }
   .form-control {
+    border: 1px solid #aaa;
     min-height: 40px;
   }
   label {
@@ -62,6 +71,11 @@
   }
   input[type="radio"]:not(:checked) + label:after, input[type="radio"]:checked + label:after {
     background: white;
+  }
+
+  input[type=checkbox] {
+    margin: 0 6px;
+    &:first-child { margin-left: 0; }
   }
 }
 

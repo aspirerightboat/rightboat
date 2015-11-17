@@ -1,11 +1,9 @@
 - @page_title = "Boats for sale in #{@country.name}"
+- @page_description = @page_title
+- @canonical_url = country_url(@country.slug)
 
 - content_for :meta_tags do
-  %meta(name="title" content=@page_title)
-  %meta(property="og:title" content=@page_title)
   %meta(name="robots" content="index, follow")
-  %meta(property="og:url" content="#{country_url(@country.slug)}")
-  %link(rel="canonical" href="#{country_url(@country.slug)}")
 
 = render layout: 'shared/boats_for_sale' do
   %h1 Boats in #{@country.name}

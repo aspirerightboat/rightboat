@@ -65,21 +65,21 @@ ActiveAdmin.register Import do
     actions do |job|
       if job.running?
         # only show Stop button when rake task gets started
-        item 'Stop', stop_admin_import_path(job), method: :get, class: 'job-action job-action-danger' if job.running?(false)
+        item 'Stop', stop_admin_import_path(job), method: :post, class: 'job-action job-action-danger' if job.running?(false)
       elsif job.active? && job.valid?
-        item 'Run', run_admin_import_path(job), method: :get, class: 'job-action'
+        item 'Run', run_admin_import_path(job), method: :post, class: 'job-action'
       end
     end
   end
 
   form partial: 'form'
 
-  member_action :run, method: :get do
+  member_action :run, method: :post do
     resource.run!
     redirect_to admin_imports_path
   end
 
-  member_action :stop, method: :get do
+  member_action :stop, method: :post do
     resource.stop!
     redirect_to admin_imports_path
   end

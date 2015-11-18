@@ -58,13 +58,13 @@ class EnquiriesController < ApplicationController
 
   def require_broker
     if !can_view_as_broker(current_user)
-      redirect_to '/403.html', status: 403
+      redirect_to root_path, alert: 'You are not authorized to access the page.'
     end
   end
 
   def require_buyer_or_broker
     if !can_view_as_broker(current_user) && !can_view_as_buyer(current_user)
-      redirect_to '/403.html', status: 403
+      redirect_to root_path, alert: 'You are not authorized to access the page.'
     end
   end
 

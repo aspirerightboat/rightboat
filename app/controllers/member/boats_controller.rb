@@ -4,7 +4,7 @@ class Member::BoatsController < Member::BaseController
   before_filter :load_boat, only: [:edit, :update, :destroy]
 
   def index
-    @my_boats = current_user.boats.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate)
+    @my_boats = current_user.boats.not_deleted.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate)
   end
 
   def new
@@ -40,7 +40,7 @@ class Member::BoatsController < Member::BaseController
   end
 
   def destroy
-    @boat.destroy(:force)
+    @boat.destroy
     redirect_to member_boats_path, notice: 'Boat deleted successfully.'
   end
 
@@ -51,7 +51,7 @@ class Member::BoatsController < Member::BaseController
   end
 
   def load_boat
-    @boat = Boat.find(params[:id])
+    @boat = current_user.boats.find(params[:id])
   end
 
   def build_specifications

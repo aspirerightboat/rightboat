@@ -52,9 +52,9 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  has_many :favourites, dependent: :delete_all
+  has_many :favourites
   has_many :enquiries, dependent: :destroy
-  has_many :boat_specifications, dependent: :delete_all
+  has_many :boat_specifications, dependent: :destroy
   has_many :boat_images, -> { not_deleted }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
@@ -89,7 +89,7 @@ class Boat < ActiveRecord::Base
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
-  before_destroy :remove_activities
+  before_destroy :send_sold_notification, :remove_activities
   after_save :update_leads_price
 
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
@@ -200,6 +200,13 @@ class Boat < ActiveRecord::Base
         errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
       end
     end
+  end
+
+  def send_sold_notification
+    favourites.each do |x|
+      UserMailer.boat_sold(x.user_id, self.id).deliver_now
+    end
+    favourites.destroy_all
   end
 
   def remove_activities

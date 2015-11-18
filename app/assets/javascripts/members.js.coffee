@@ -17,12 +17,6 @@ $(document).ready ->
     scrollInput: false
     timepicker: false
 
-  $('[name="boat[sell_request_type]"]').change (e) ->
-    $this = $(this)
-    $parent = $this.parents('.form-group')
-    $parent.find('label').removeClass('btn-black')
-    $parent.find('input:checked').parent().find('label').addClass('btn-black')
-
   $('.preview-wrap > div').each ->
     loadPreview($(this));
 

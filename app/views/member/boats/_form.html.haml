@@ -1,3 +1,5 @@
+- current_year = Date.today.year
+
 = form_for [:member, @boat], remote: true, data: {format: :json}, html: { class: 'simple-ajax-form', multipart: true } do |f|
   = f.hidden_field :currency_id, value: Currency.find_by(name: 'GBP').id
   %fieldset
@@ -7,18 +9,18 @@
       .col-md-8.col-xs-12= f.select :manufacturer_id, Manufacturer.order(:name).collect { |x| [ x.name, x.id ] }, {}, include_blank: false, class: 'select-general'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :model
-      .col-md-8.col-xs-12= f.select :model_id, [[f.object.model.try(:name), f.object.model.try(:id)]], {}, include_blank: false, class: 'select-general'
+      .col-md-8.col-xs-12= f.select :model_id, [[f.object.model.try(:name), f.object.model.try(:id)]], {}, include_blank: false, class: 'select-general', 'data-validetta' => 'required'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :year_built
-      .col-md-8.col-xs-12= f.select :year_built, ((Date.today.year - 40)..Date.today.year), {}, class: 'select-general', 'data-validetta' => 'number'
+      .col-md-8.col-xs-12= f.select :year_built, ((current_year - 40)..current_year).to_a.reverse, {}, class: 'select-general', 'data-validetta' => 'number'
   %fieldset
     %h5 2. Boat Specifics:
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :location
       .col-md-8.col-xs-12= f.text_field :location, class: 'form-control'
     .form-group.clearfix
-      .col-md-4.col-xs-12= f.label :price, 'Price(£):'
-      .col-md-8.col-xs-12= f.text_field :price, class: 'form-control', 'data-validetta' => 'number'
+      .col-md-4.col-xs-12= f.label :price, 'Expected Value(£):'
+      .col-md-8.col-xs-12= f.text_field :price, class: 'form-control', 'data-validetta' => 'required,number'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :tax_paid, 'Tax paid?'
       .col-md-8.col-xs-12
@@ -54,17 +56,18 @@
             = render 'boat_image_fields', f: boat_image
           .links
             = link_to_add_association 'Add Image', f, :boat_images
-  - if false
-    %fieldset
-      %h5 6. Confirmation:
-      .form-group.clearfix
-        .col-xs-12
-          = f.check_box :accept_toc, checked: @boat.persisted?
-          = f.label :accept_toc, "I have read and accept Rightboat #{link_to 'Terms and Conditions', toc_home_path, target: '_blank'}".html_safe
+  %fieldset
+    %h5 6. Confirmation:
+    .form-group.clearfix
+      .col-xs-12
+        = f.check_box :accept_toc, checked: @boat.persisted?
+        = f.label :accept_toc, "I agree to the #{link_to 'T&C\'s', toc_home_path, target: '_blank'}".html_safe
+    - if false
       .form-group.clearfix
         .col-xs-12
           = f.check_box :agree_privacy_policy, checked: @boat.persisted?
           = f.label :agree_privacy_policy, "I understand our #{link_to 'Private Advert Pricing Policy', privacy_policy_home_path, target: '_blank'}".html_safe
+  - if false
     %fieldset
       %h5 7. Payment:
       .form-group.clearfix
@@ -73,9 +76,10 @@
           = f.label :secure_payment, "I wish to make a secure online #{link_to 'payment', 'javascript: void(0);'}.".html_safe
   .form-group.text-center
     - Boat::SELL_REQUEST_TYPES.each_with_index do |x, i|
+      - id = "boat_sell_request_type_#{x.downcase.gsub(/\s+/, '_')}"
       .request-type
-        = f.radio_button :sell_request_type, x, checked: (i == 0)
-        = f.label "sell_request_type_#{x.downcase.gsub(/\s+/, '_')}", x, class: "btn-flat #{i == 0 ? 'btn-black' : ''}"
+        = check_box_tag 'boat[sell_request_type][]', x, nil, id: id
+        = label_tag id, x, class: "btn-flat"
 
   .form-group
     %button.btn-flat.btn-black(type="submit") Save Changes

@@ -53,7 +53,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       end
     end
     column 'Boat price' do |lead|
-      "#{lead.boat.price} #{(lead.boat.currency || Currency.default).symbol}" if !lead.boat.poa? && lead.boat.price > 0
+      "#{lead.boat.price} #{lead.boat.safe_currency.symbol}" if !lead.boat.poa? && lead.boat.price > 0
     end
     column :status
     column :lead_price do |lead|

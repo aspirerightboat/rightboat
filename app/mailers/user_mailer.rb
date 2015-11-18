@@ -29,4 +29,13 @@ class UserMailer < ApplicationMailer
 
     mail(to: 'info@rightboat.com', subject: 'New sell my boat request - RightBoat')
   end
+
+  def favourite_boat_status_changed(user_id, boat_id, reason)
+    @user = User.find(user_id)
+    @boat = Boat.find(boat_id)
+    @reason = reason
+
+    to_email = STAGING_EMAIL || @user.email
+    mail(to: to_email, subject: "Favourite boat status changed - #{@boat.manufacturer_model} - RightBoat")
+  end
 end

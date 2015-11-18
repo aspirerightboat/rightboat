@@ -1,0 +1,15 @@
+%p
+  Dear #{@user.name},
+
+%p
+  - case @reason
+    - when 'deleted'
+      Your favourite boat <b>#{@boat.manufacturer_model}</b> was deleted
+    - when 'price_changed'
+      Your favourite boat #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
+      New price is #{@boat.safe_currency.symbol}#{@boat.price}.
+
+%p
+  Kind regards,
+  %br
+  The Team at #{link_to 'Rightboat', root_url}

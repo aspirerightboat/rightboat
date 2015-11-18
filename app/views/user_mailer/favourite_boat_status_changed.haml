@@ -1,0 +1,22 @@
+%p
+  Dear #{@user.name},
+
+- case @reason
+  - when 'deleted'
+    %p Unfortunately the boat #{@boat.manufacturer_model} which you had in your favourites has now been sold.
+
+    - if @similar_boats.count > 0
+      %p However, there are other similar listings which may be of interest to you.
+      %ul
+        - @similar_boats.each do |boat|
+          %li #{link_to boat.manufacturer_model, boat_url(boat)}
+
+  - when 'price_changed'
+    %p
+      Your favourite boat #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
+      New price is #{@boat.safe_currency.symbol}#{@boat.price}.
+
+%p
+  Kind regards,
+  %br
+  The Team at #{link_to 'Rightboat', root_url}

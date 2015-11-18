@@ -52,9 +52,14 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  has_many :favourites
+  before_destroy :remove_activities
+  after_save :update_leads_price
+  after_save :notify_changed
+  before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
+
+  has_many :favourites, dependent: :delete_all
   has_many :enquiries, dependent: :destroy
-  has_many :boat_specifications, dependent: :destroy
+  has_many :boat_specifications, dependent: :delete_all
   has_many :boat_images, -> { not_deleted }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
@@ -88,9 +93,6 @@ class Boat < ActiveRecord::Base
   scope :recently_reduced, -> { reduced.limit(3) }
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
-
-  before_destroy :send_sold_notification, :remove_activities
-  after_save :update_leads_price
 
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
 
@@ -169,6 +171,10 @@ class Boat < ActiveRecord::Base
     self.vat_rate_id = VatRate.first.id if status && status == 'true'
   end
 
+  def safe_currency
+    currency || Currency.default
+  end
+
   private
 
   def slug_candidates
@@ -202,13 +208,6 @@ class Boat < ActiveRecord::Base
     end
   end
 
-  def send_sold_notification
-    favourites.each do |x|
-      UserMailer.boat_sold(x.user_id, self.id).deliver_now
-    end
-    favourites.destroy_all
-  end
-
   def remove_activities
     activities.destroy_all
   end
@@ -228,6 +227,24 @@ class Boat < ActiveRecord::Base
       enquiries.not_deleted.not_invoiced.each do |lead|
         lead.update_lead_price
       end
+    end
+  end
+
+  def notifiable_favourites
+    favourites.joins('INNER JOIN user_alerts ON favourites.user_id = user_alerts.user_id').where(user_alerts: {favorites: true})
+  end
+
+  def notify_changed
+    if !id_changed? && price_changed?
+      notifiable_favourites.pluck(:user_id).each do |user_id|
+        UserMailer.favourite_boat_status_changed(user_id, id, 'price_changed').deliver_later
+      end
+    end
+  end
+
+  def notify_destroyed
+    notifiable_favourites.pluck(:user_id).each do |user_id|
+      UserMailer.favourite_boat_status_changed(user_id, id, 'deleted').deliver_later
     end
   end
 end

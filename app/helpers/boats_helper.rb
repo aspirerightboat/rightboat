@@ -11,7 +11,7 @@ module BoatsHelper
       I18n.t('poa')
     else
       target_currency ||= current_currency || Currency.default
-      price = Currency.convert(boat.price, boat.currency || Currency.default, target_currency)
+      price = Currency.convert(boat.price, boat.safe_currency, target_currency)
       number_to_currency(price, unit: target_currency.symbol, precision: 0)
     end
   end

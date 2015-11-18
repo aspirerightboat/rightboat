@@ -12,7 +12,7 @@
       %div <b>Mobile:</b> #{broker.mobile}
     - if broker.fax.present?
       %div <b>Fax:</b> #{broker.fax}
-    %div <b>Mail:</b> #{mail_to broker.email}
+    %div <b>Email:</b> #{mail_to broker.email}
     - if broker.broker_info && broker.broker_info.website.present?
       %div #{link_to broker.broker_info.website, broker.broker_info.website}
 

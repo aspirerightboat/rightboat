@@ -12,11 +12,8 @@ Rails.application.routes.draw do
   end
 
   if Rails.env.production?
-    get '/admin/imports/(:id)/:action', to: redirect { |path_params, req| "http://import.rightboat.com#{req.fullpath}" },
-        constraints: { action: /(run|stop)/, subdomain: /\A(?!import)/ }
-
-    match '/admin(*any)', to: redirect { |path_params, req| "https://live.rightboat.com#{req.fullpath}" },
-          via: :all, constraints: { subdomain: /\Aimport/ }
+    match '/admin(*any)', to: redirect { |path_params, req| "http://import.rightboat.com#{req.fullpath}" },
+          via: :all, constraints: { subdomain: /\A(?!import)/ }
   end
 
   ActiveAdmin.routes(self)

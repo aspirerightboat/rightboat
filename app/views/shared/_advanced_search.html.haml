@@ -79,11 +79,11 @@
             = label_tag :boat_type_power, 'Power', for: 'adv_boat_type_power'
             = radio_button_tag :boat_type, 'Sail', params[:boat_type] == 'Sail', id: 'adv_boat_type_sail'
             = label_tag :boat_type_sail, 'Sail', for: 'adv_boat_type_sail'
-        .form-group.row
-          .col-xs-4
-            = label_tag :category
-          .col-xs-8
-            = select_tag 'category[]', options_from_collection_for_select(BoatCategory.order(:name), :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
+        -#.form-group.row
+        -#  .col-xs-4
+        -#    = label_tag :category
+        -#  .col-xs-8
+        -#    = select_tag 'category[]', options_from_collection_for_select(BoatCategory.order(:name), :id, :name, params[:category]), class: 'select-black select-full select-general', multiple: 'multiple'
         .form-group.row
           .col-xs-4
             = label_tag :country

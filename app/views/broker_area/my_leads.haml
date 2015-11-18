@@ -21,7 +21,6 @@
         %td= "#{distance_of_time_in_words(lead.broker_accessed_at, Time.current)} ago" if lead.broker_accessed_at
         %td
           = link_to 'Details', lead_path(lead)
-          -#= link_to 'Approve', lead_approve_path(lead), class: 'label label-primary', style: 'margin-left: 2ex', method: 'post'
   = paginate @pending_leads
 
   %h2 History
@@ -31,7 +30,8 @@
       %th User
       %th Boat
       %th Created
-      %th Status
+      %th
+        %abbr(title="First time accessed by the Broker") Accessed
       %th Actions
     - @history_leads.each do |lead|
       %tr
@@ -40,6 +40,6 @@
         - boat = lead.boat
         %td #{boat.manufacturer.name} #{boat.model.name} #{boat.name}
         %td #{distance_of_time_in_words(lead.created_at, Time.current)} ago
-        %td #{lead_status_label lead.status}
+        %td= "#{distance_of_time_in_words(lead.broker_accessed_at, Time.current)} ago" if lead.broker_accessed_at
         %td #{link_to 'Details', lead_path(lead)}
   = paginate @history_leads, param_name: :page2

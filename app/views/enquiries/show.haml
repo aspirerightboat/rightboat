@@ -25,7 +25,7 @@
           #{link_to 'Boat details', boat_path(@boat)}
           (#{link_to 'PDF', boat_pdf_path(@boat)})
 
-      %h2 Requester info
+      %h2 Enquiry Details
       %ul
         %li Name: <b>#{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}</b>
         %li Email: <b>#{@enquiry.email}</b>
@@ -42,37 +42,18 @@
         - if @enquiry.status == 'quality_check'
           %li Current status: #{lead_status_label @enquiry.status}
     .col-sm-6.col-xs-12
-      = link_to boat_path(@boat) do
+      = link_to boat_path(@boat), style: 'display: block; margin-top: 22px;' do
         - if @boat.primary_image
           = image_tag @boat.primary_image.file.url(:thumb)
         - else
           .no-image
   .row
     .col-sm-12
+      %p(style="margin: 1.5em 0")
+        = link_to 'View all leads', my_leads_broker_area_path
+
       - if @enquiry.status == 'pending' && current_user && current_user.company?
         %p.nice-buttons(style="margin-top: 1em")
           %a#request_qc_button.transparent-button(href="#") Request Quality Check
-          -#= link_to 'Request Quality Check', quality_check_path(@enquiry), class: 'transparent-button', method: 'post'
-          = link_to 'Approve', lead_approve_path(@enquiry), class: 'nice-button', method: 'post'
-
-      %h2 Lead History
-      %table.rb-table(style="max-width: 600px")
-        %tr
-          %th Event Time
-          %th New Status
-          %th Changed by
-        - @lead_trails.each do |trail|
-          %tr
-            %td #{distance_of_time_in_words(trail.created_at, Time.current)} ago
-            %td #{lead_status_label trail.new_status}
-            %td
-              - if trail.user.try(:company?)
-                Broker
-              - elsif trail.user.try(:admin?)
-                RB Administrator
-              - else
-                Automatically
-      %p(style="margin: 1.5em 0")
-        = link_to 'View all leads', my_leads_broker_area_path
 
 = render 'shared/quality_check_popup'

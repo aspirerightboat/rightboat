@@ -1,6 +1,6 @@
 class BoatTypesController < ApplicationController
   def index
-    @boat_types = BoatType.all
+    @boat_types = BoatType.order(:name)
   end
 
   def show

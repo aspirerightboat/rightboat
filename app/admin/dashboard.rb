@@ -27,7 +27,7 @@ ActiveAdmin.register_page 'Dashboard' do
             t.column('Running') do |trail|
               if trail.finished_at
                 status_tag('finished', :green)
-              else
+              elsif trail.import.running?
                 status_tag('running', :orange)
               end
             end

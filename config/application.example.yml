@@ -15,6 +15,7 @@ staging:
   mongo_url:          "mongodb://127.0.0.1:27017/rightboat_production"
   aws_s3_access_key_id: "xxx"
   aws_s3_secret_access_key: "yyy"
+  rb_host:             "staging.rightboat.com"
 
 production:
   twitter_handle:     "rightboatdotcom"
@@ -24,4 +25,4 @@ production:
   mongo_url:          "mongodb://127.0.0.1:27017/rightboat_production"
   aws_s3_access_key_id: "xxx"
   aws_s3_secret_access_key: "yyy"
-
+  rb_host:             "live.rightboat.com"

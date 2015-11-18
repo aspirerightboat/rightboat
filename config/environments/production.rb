@@ -77,9 +77,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  host = ENV['IMPORT_SERVER'] ? 'import.rightboat.com' : 'live.rightboat.com'
-  config.action_controller.default_url_options = { host: host}
-  config.action_mailer.default_url_options = { host: 'live.rightboat.com' }
+  config.action_controller.default_url_options = {host: Figaro.env.rb_host}
+  config.action_mailer.default_url_options = {host: 'live.rightboat.com'}
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       authentication: :plain,

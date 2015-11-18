@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
   before_validation :ensure_username
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
+  after_create :own_enquiry
   attr_accessor :updated_by_admin, :current_password
 
   delegate :country, to: :address
@@ -157,5 +158,9 @@ class User < ActiveRecord::Base
       str = "u-#{str}" if str !~ /\A[a-zA-Z]/
       self.username = str
     end
+  end
+
+  def own_enquiry
+    Enquiry.where(email: email, user_id: nil).update_all(user_id: self.id)
   end
 end

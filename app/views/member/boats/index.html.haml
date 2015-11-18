@@ -1,5 +1,5 @@
 .member-content(data-layout-mode='list')
-  = link_to 'Create New', new_member_boat_path, class: 'btn-flat pull-right btn-white'
+  = link_to 'My Boat Details', new_member_boat_path, class: 'btn-flat pull-right btn-white'
   %h1 Sell My Boat
   %hr
   .introduction
@@ -14,9 +14,9 @@
     %p
       Through our network of reputable brokers and surveyors across the globe, we can offer you a selection of services to help you decide the best way forward.
     %p
-      We can arrange a valuation of your boat arrange for a pre­sale survey to be undertaken, or if you would like to market the boat yourself, offer you a global audience on Rightboat to sell your own boat.
+      We'll soon be launching a service, courtesy of our worldwide network of yacht brokers to offer you an up to-date market valuation for your boat, we'll also be able to advise you on a pre-­sale survey, or if you would like to try and sell the boat yourself, offer you a free listing on Rightboat.com (subject to the following #{link_to 'terms and conditions', toc_home_path, target: '_blank'}).
     %p
-      Complete our simple form and we'll get in touch with whatever option you choose.
+      Simply complete your boat details on the form above and we'll call you right back to discuss your requirements.
   %br
   .my-boats
     - if @my_boats.empty?

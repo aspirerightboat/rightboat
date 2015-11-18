@@ -15,14 +15,14 @@
             %li= link_to 'News', articles_path
           %ul.col-xs-6.col-sm-3
             /%li= link_to 'Marine Services', marine_services_home_path
-            %li= link_to 'Sell my boat', sell_my_boats_home_path
+            %li= link_to 'Sell my boat', current_user ? member_boats_path : sell_my_boats_home_path
             %li= link_to 'Berths', '#', data: {'require-login' => true, toggle: 'modal', target: '#berths-popup', 'login-title' => 'Please sign in or join as a member to make a berth request.'}
             %li= link_to 'Finance', '#', data: {'require-login' => true, toggle: 'modal', target: '#finance-popup', 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
             %li= link_to 'Insurance', '#', data: {'require-login' => true, toggle: 'modal', target: '#insurance-popup', 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
           %ul.col-xs-6.col-sm-3.social-links
             %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link', rel: 'nofollow'
             %li= link_to '@rightboatdotcom', 'https://www.twitter.com/rightboatdotcom', class: 'tw-link', rel: 'nofollow'
-            %li= link_to 'Rightboat', 'https://plus.google.com/+Rightboat', class: 'gplus-link', rel: 'nofollow'
+            /%li= link_to 'Rightboat', 'https://plus.google.com/+Rightboat', class: 'gplus-link', rel: 'nofollow'
             %li= link_to '/rightboat', 'https://www.pinterest.com/rightboat', class: 'pint-link', rel: 'nofollow'
             /%li= link_to '/rightboat-ltd', 'https://instagram.com/rightboat', class: 'ig-link', rel: 'nofollow'
           %ul.col-xs-6.col-sm-3

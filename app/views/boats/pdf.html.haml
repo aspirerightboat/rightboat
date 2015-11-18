@@ -7,12 +7,12 @@
     %div <strong>#{broker.name}</strong>
     = render partial: 'shared/address', locals: {address: broker.address}
     - if broker.phone.present?
-      %div <b>phone:</b> #{broker.phone}
+      %div <b>Tel:</b> #{broker.phone}
     - if broker.mobile.present?
-      %div <b>mobile:</b> #{broker.mobile}
+      %div <b>Mobile:</b> #{broker.mobile}
     - if broker.fax.present?
-      %div <b>fax:</b> #{broker.fax}
-    %div #{mail_to broker.email}
+      %div <b>Fax:</b> #{broker.fax}
+    %div <b>Mail:</b> #{mail_to broker.email}
     - if broker.broker_info && broker.broker_info.website.present?
       %div #{link_to broker.broker_info.website, broker.broker_info.website}
 
@@ -21,9 +21,11 @@
     = wicked_pdf_image_tag @boat.primary_image.file_url
 
 .boat-title-block
-  %h1 <b>#{@boat.manufacturer}</b> #{@boat.model}
+  %h1 <b>#{@boat.manufacturer}</b>
+  %h2 #{@boat.model}
   %h2 #{boat_price(@boat, Currency.default)}
   %h2 #{@boat.year_built} year
+  %h2 #{@boat.ref_no}
   .qr-code-block
     - boat_url = boat_url(@boat.slug)
     = render partial: 'shared/qr_code', locals: {url: boat_url, size: 8}

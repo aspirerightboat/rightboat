@@ -49,7 +49,7 @@ module Rightboat
 
         def enqueue_jobs
           log 'Loading XML file'
-          doc = get(@url)
+          doc = get(@import.param[:url])
 
           log 'Scraping'
           broker_nodes = doc.xml.root.element_children

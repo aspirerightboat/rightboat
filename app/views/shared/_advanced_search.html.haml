@@ -111,7 +111,7 @@
                        method: :post, remote: true, class: 'btn-flat',
                        data: {'require-login' => true, 'login-title' => 'Please sign in or join as a member to save your search.'}
             .result-popup
-              Your search has been saved and you can view, re-run or manage this in #{link_to 'My Saved Searches', member_saved_searches_path}.
+              Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
           .col-xs-8
             %button.btn-flat(type="submit") Search
       .result-info.col-sm-12.col-md-12.text-center

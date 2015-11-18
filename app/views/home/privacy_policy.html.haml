@@ -1,32 +1,36 @@
+- content_for :header_text do
+  %h1
+    %strong Rightboat Ltd
+  %h3 Privacy Policy
+
 #main-content.container
   .row
     .col-md-12
       %h4 Ownership
-      %p 'We' are Rightboat Ltd, Castle Malwood, Minstead, Hampshire, S043 7PE. Our Company Registration Number is 5926560 and we are registered under the Data Protection Act 1998, number Z9704300. Our website #{link_to 'www.rightboat.com', root_path} is available to private individuals and registered members who wish to buy or sell boats and/or related services.
+      %p 'We' are Rightboat Ltd, Castle Malwood, Minstead, Hampshire, S043 7PE, UK. Our Company Registration Number is 5926560 and we are registered under the Data Protection Act 1998, number Z9704300. Our website #{link_to 'www.rightboat.com', root_path} is available to private individuals, private members and registered professional brokers who wish to list, browse for, and buy or sell boats and/or related marine services.
       %h4 Your privacy
-      %p We use the information from our customers and website visitors to improve our online service for you. We respect your privacy and we take it very seriously. Please read this privacy policy carefully, it explains the information we collect from www.rightboat.com - 'this website' - and how we use it. We are aware of our obligations under the Data Protection Act 1988 and use the act as a minimum targeted standard of security for your benefit.
+      %p We use information from our registered customers and website visitors to improve our online service for you. We respect your privacy and we take it very seriously. Please read this privacy policy carefully, it explains the information we collect from #{link_to 'www.rightboat.com', root_path} - 'this website' - and how we use it. We are aware of our obligations under the Data Protection Act 1988 and use the Act as a minimum targeted standard of security for your benefit.
       %h4 Consent
       %p
-        By using this website, submitting information and using any services we offer via this website, you agree to accept the terms of our privacy policy.
+        By using this website, submitting information and using any services we offer via this website, you agree to accept the terms of our Privacy Policy.
         %br
-        If you have any queries about our privacy policy or about the way we use your personal information, please contact us.
+        If you have any queries about our Privacy Policy or about the way we use your personal information, please #{link_to 'contact us', contact_home_path}.
       %h4 Use of the information we collect
       %p
-        We collect information when you make an enquiry, including some relevant personal details such as your name, email address, telephone number and products of interest to you. This enables us to respond quickly to your enquiries as well as helping us to develop and improve this website so that we can provide a better service.
-        %br
-        This is also the case with information we collect relating to the way visitors use our site, for example, pages viewed, time of visit, frequency of visit. We may also use the information to communicate any special offers, discounts and other information that we feel our visitors will find useful. However, should you not wish to receive this information please #{link_to 'contact us', contact_home_path}.
+        We collect information when you make an enquiry, including some relevant personal details such as your name, email address, telephone number and products of interest to you. This enables us to respond quickly to your enquiries as well as helping us to develop and improve this website and the services We provide, so that we can deliver a better level of service to our users. This is also the case with information we collect relating to the way visitors use our site, for example, pages viewed, time of visit, frequency of visit. We may also use the information to communicate special offers, discounts and other information that we feel our users will find useful. However, should you not wish to receive this information please #{link_to 'contact us', contact_home_path}.
       %h4 Membership information
       %p
-        When you register as a member, we save the details you provide. You can update your details at any time on this website by visiting the members area or #{link_to 'contacting us', contact_home_path}. The information you provide when you register as a member will enable us to provide you with access to those parts of this website that are only available to members. It will also enable us to supply certain services requested by you that are only available to members.
+        When you register as a member, we save the details you provide. You can update your details at any time on this website by visiting the broker or MyRightboat customer members’ area or #{link_to 'contacting us', contact_home_path}. The information you provide when you register as a member will enable us to provide you with access to those parts of this website that are restricted and only available to members. It will also enable us to supply certain services requested by you that are only available to members.
         %br
         Our privacy policy extends to registered members when they are using the following services on this website:
       %ul.list-disc
         %li buying a boat
         %li selling a boat
-        %li advertising a boat
+        %li listing a boat for sale
         %li getting a valuation for a boat
         %li sending or receiving email or text alerts
-        %li using their online account.
+        %li using their online account
+        %li setting up or accessing any other member service
       %h4 Privacy issues for non-registered visitors
       %p Our privacy policy extends to visitors who are not registered as members when they are using the following services on this website:
       %ul.list-disc
@@ -34,35 +38,27 @@
         %li finding a boat
         %li finding boat finance
         %li finding boat insurance
+        %li finding a berth
         %li finding boat transport
         %li finding foreign exchange
         %li finding surveyors
         %li finding chandlery
         %li finding berths
-        %li any other marine directory services
+        %li accessing any other marine directory service
       %h4 Email alerts
-      %p If you are a registered member and have requested email updates about boats wanted or for sale, we record the information you request and the details sent to you by email.
+      %p If you are a registered member and have requested email updates about boats for sale, we record the information you request and the details sent to you by email.
       %h4 Use of cookies
-      %p When you visit our website, we issue a "cookie" that enables us to recognise your computer. Cookies contain no personal information and are used to record the sections of our website that you have recently visited. We use this information to develop content that is more relevant to your needs.
-      %h4 Disclosure of personal Information collected
-      %h4
-        %em Marketing data
-      %p We may aggregate the information provided by our visitors to identify patterns and to help us develop, administer, support and improve the services and features available on this website.
-      %h4
-        %em Third parties
-      %p
-        We may work with third parties to deliver certain services available from our website. These authorised third parties may have access to visitors' personal information to provide services on our behalf.
-        %br
-        Provided you have given your consent on the member registration page, we may provide personal information collected to carefully-screened third parties who offer products or services that we think may be of interest to you.
-        %br
-        If you no longer wish to be contacted by third parties, please change your setting by visiting the Members Area.
-      %h4
-        %em Legal requirements to disclose
-      %p In certain circumstances, to meet legal requirements, we may disclose personal information about visitors to government or other authorities.
-      %h4
-        %em Partners
+      %p When you visit our website, we issue a "cookie" that enables us to recognise your computer. Cookies contain NO personal information and are used to record the sections of our website that you have recently visited. We use this information to help develop content and services that are more relevant to your needs. For further information please see our Cookie Policy
+      %h3 Disclosure of personal information collected
+      %h4 Marketing data
+      %p We may aggregate the information provided by our visitors to identify patterns or trends that could help us develop, administer, support and improve the services and features available on this website.
+      %h4 Third parties
+      %p We may work with carefully selected third parties to deliver certain services available from our website. Where required, these authorised third parties may have access to visitors' personal information to provide the requested services on our behalf. Provided you have given your consent on the member registration page, we may provide the necessary personal information collected to carefully-screened third parties who offer products or services that we think may enhance your user experience and be of interest to you. If you no longer wish to be contacted by third parties, please change your setting by visiting your Members Area.
+      %h4 Legal requirements to disclose
+      %p In certain circumstances, to meet legal requirements, we may be required to disclose personal information about visitors to government agencies or other regulated authorities. We will only supply the minimum data required to meet our legal obligations.
+      %h4 Partners
       %p If you make an enquiry or submit information to this website, we may pass the information to retailers, agents or distributors associated with us to satisfy the enquiry or to provide relevant information and advice. The way in which partners use your personal information is governed by their own privacy policies. We are not responsible for our partners' privacy policies. You should therefore check the policy of any partner site.
       %h4 Links
-      %p We are not responsible for the privacy policies of any other website, even if you access that website from a link on #{link_to 'www.rightboat.com', root_path}. You should therefore check the policy of any other site you visit.
-      %h4 Changes
-      %p We reserve the right to change this privacy policy at any time. We will notify you of any changes on this page.
+      %p We are not responsible for the privacy policies of any other website, even if you access that website from a link on #{link_to 'www.rightboat.com', root_path}. You should therefore check the policy of any other site you visit.
+      %h4 Variations
+      %p We may, from time to time, issue updated versions of the Privacy Policy without notice. It is the users’ responsibility to regularly review this information, which will be available on the website at all times, and make itself aware of any variation. Your continued use of #{link_to 'www.rightboat.com', root_path} after a variation has been made to the Privacy Policy will be treated as your agreements to that variation.

@@ -38,4 +38,11 @@ class UserMailer < ApplicationMailer
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: "Favourite boat status changed - #{@boat.manufacturer_model} - RightBoat")
   end
+
+  def boat_sold(user_id, boat_id)
+    @boat = Boat.find(boat_id)
+    @user = User.find(user_id)
+    @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options).results.take(5)
+    mail(to: @user.email, subject: 'Boat sold - Rightboat')
+  end
 end

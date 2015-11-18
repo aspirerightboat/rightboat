@@ -1,0 +1,7 @@
+- unless flash.blank?
+  .flash-container.container
+    .col-md-offset-2.col-md-8
+      - flash.each do |type, message|
+        %div{class: "alert alert-#{bootstrap_class_for(type)} fade in"}
+          %button.close{"data-dismiss" => "alert"} ×
+          = message

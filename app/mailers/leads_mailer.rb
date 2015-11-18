@@ -19,15 +19,16 @@ class LeadsMailer < ApplicationMailer
     @boat = @enquiry.boat
     @office = @boat.office
     attach_boat_pdf
-    office_email = [STAGING_EMAIL || @office.try(:email) || @boat.user.email]
-    office_email << 'info@rightboat.com'
-    mail_params = {to: office_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}"}
-    if @boat.user.broker_info.copy_to_head_office
-      head_office_email = STAGING_EMAIL || @boat.user.email
-      mail_params[:cc] = head_office_email if office_email != head_office_email
-    end
 
-    mail(mail_params)
+    user_email = STAGING_EMAIL || @boat.user.email
+    office_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
+    to_emails = []
+    dist =  @boat.user.broker_info.lead_email_distribution
+    to_emails << user_email if dist['user']
+    to_emails << office_email if dist['office']
+    to_emails.uniq!
+
+    mail(to: to_emails, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
   def lead_quality_check(enquiry_id)

@@ -3,7 +3,8 @@ ActiveAdmin.register User do
                 :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
                 :avatar, :avatar_cache,
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
-                broker_info_attributes: [:id, :contact_name, :position, :description, :lead_rate, :discount, :website, :additional_email, :vat_number, :logo, :copy_to_head_office, :_destroy]
+                broker_info_attributes: [:id, :contact_name, :position, :description, :lead_rate, :discount,
+                                         :website, :additional_email, :vat_number, :logo, :lead_email_distribution, :_destroy]
 
   config.sort_order = 'role_asc'
   menu priority: 8
@@ -82,7 +83,7 @@ ActiveAdmin.register User do
         ff.input :additional_email
         ff.input :vat_number
         ff.input :logo
-        ff.input :copy_to_head_office
+        ff.input :lead_email_distribution, as: :select, collection: BrokerInfo::LEAD_EMAIL_DISTRIBUTIONS
       end
     end
     f.actions

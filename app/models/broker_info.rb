@@ -1,4 +1,6 @@
 class BrokerInfo < ActiveRecord::Base
+  LEAD_EMAIL_DISTRIBUTIONS = %w(user_and_office user_only office_only)
+
   belongs_to :user
 
   mount_uploader :logo, BrokerLogoUploader

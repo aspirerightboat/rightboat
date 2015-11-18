@@ -12,9 +12,9 @@ module Rightboat
 
       def initialize(import)
         @import = import
-        init_logger
         @import_trail = ImportTrail.create(import: @import, log_path: @log_path)
         @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
+        init_logger
       end
 
       def run
@@ -205,8 +205,9 @@ module Rightboat
       end
 
       def init_logger
-        dir = FileUtils.mkdir_p("#{Rails.root}/log/imports").first
-        @log_path = "#{dir}/import-log-#{@import.id}-#{@import.import_type}--#{Time.current.strftime('%F--%H-%M-%S')}.log"
+        dir_path = Rails.root + "#{'../shared/' if !Rails.env.development?}log/imports"
+        dir = FileUtils.mkdir_p(dir_path).first
+        @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.import_type}--#{Time.current.strftime('%F--%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)
       end
 

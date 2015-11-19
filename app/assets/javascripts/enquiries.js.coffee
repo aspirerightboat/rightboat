@@ -3,6 +3,13 @@ $ ->
   #   $('form', @).renderCaptcha()
 
   phoneModalOpened = false
+  signedIn = false
+
+  $('#enquiry_result_popup').on 'hidden.bs.modal', ->
+    window.location = location.href if signedIn
+
+  $('#have_account').change ->
+    $('.login-toggle').toggleClass('active')
 
   onSubmit = (e) ->
     e.preventDefault()
@@ -31,6 +38,7 @@ $ ->
     .success (enquiry) ->
       $('#enquiry_result_popup').each ->
         $(@).displayPopup()
+        signedIn = !!enquiry.have_account
 
         $('.signup-form-container', @).toggle(!enquiry.user_registered)
         if !enquiry.user_registered

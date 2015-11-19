@@ -1,5 +1,5 @@
 class EnquirySerializer < ActiveModel::Serializer
-  attributes :user_registered, :boat_pdf, :email, :broker, :similar_link
+  attributes :user_registered, :boat_pdf, :email, :broker, :similar_link, :have_account
 
   has_many :similar_boats
 

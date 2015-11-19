@@ -15,6 +15,7 @@ class EnquiriesController < ApplicationController
 
     enquiry.boat = Boat.find(params[:boat_id])
     if enquiry.save
+      sign_in(enquiry.user) if enquiry.have_account
       # session.delete(:captcha)
       LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
       LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later

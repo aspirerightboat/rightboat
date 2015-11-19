@@ -1,5 +1,6 @@
 - @page_title = "#{@boat.to_s.truncate(64)}"
-- @page_description = reduced_description(@boat.description)
+- description = @boat.description ? truncate(@boat.description.gsub('&lt;br /&gt;', ' '), length: 400, omission: 'zzzzz', escape: false).gsub(/[^>.!]+zzzzz/, '') : ''
+- @page_description = reduced_description(description)
 - @canonical_url = boat_url(@boat.slug)
 - if @boat.primary_image
   - @image_url = @boat.primary_image.file_url
@@ -77,7 +78,7 @@
 
         .col-sm-7.col-md-5.col-xs-12
           %h1 About this #{@boat.manufacturer} / #{@boat.model}
-          .truncated-description= reduced_description(@boat.description)
+          .truncated-description= description.html_safe
 
 :javascript
   var gallery = null;

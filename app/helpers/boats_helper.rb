@@ -33,19 +33,15 @@ module BoatsHelper
     link_to 'Favourite', "#favourite-#{boat.id}", id: "favourite-#{boat.id}", class: fav_class, title: fav_title, data: {toggle: 'tooltip', placement: 'top'}
   end
 
-  def reduced_description(description=nil)
-    return '' if description.blank?
-    length = vlength = 0
-    description = description.gsub(/(^<p>|<\/p>$)/, '').gsub('&lt;br /&gt;', ' ')
-    description.split('.').each do |x|
-      breaker = x[/<(br\s+\/|h\d|p)>/]
-      vlength += 50 if breaker
-      break if (vlength + x.length) > 410
-      vlength += (x.length + 1)
-      length += (x.length + (breaker ? breaker.length : 1))
+  def reduced_description(desc=nil)
+    return '' if desc.blank?
+    description = []
+    Nokogiri::HTML.parse(desc).search('//body').first.children.each do |node|
+      x = node.text
+      description << x
     end
 
-    sanitize(description[0..(length - 1)])
+    description.join('\n')
   end
 
   def boat_specs(boat, full_spec = false)

@@ -1,13 +1,18 @@
-%p
-  Dear #{@user.first_name} #{@user.last_name},
+%p Dear #{@user.first_name} #{@user.last_name},
+%p Thanks for joining the new Rightboat, we really hope you love the site as much as we do.
 - if @user.company?
   %p
-    Thank you for registering as a broker on Rightboat.com.
     Our site is the only worldwide sales portal built specifically to ensure guaranteed results for brokers.
     We do not charge fixed advertising fees and only earn a fee for delivering you leads.
     We are confident you will love it. - We know your accountant will!
-  %p
-    Please #{link_to 'click this link', @confirm_href} to activate your account and access your “Broker” area.
 - else
-  %p
-    Please #{link_to 'click this link', @confirm_href} to activate your account and access your “Member” area.
+  %p By becoming a member of My Rightboat you are able to keep tabs on your favourite boats, save your searches, and set up alerts so that we tell you when there are new listings or changes to your favourite boats that you need to know about.
+  %p We’ve tried to make it as easy as possible for you to find your next right boat.
+
+%p First step, is to verify your account, by clicking #{link_to 'here', @confirm_href}.
+
+%br
+%p
+  Happy boating!
+  %br
+  The #{link_to 'Rightboat', root_url} Team

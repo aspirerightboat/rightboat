@@ -319,16 +319,16 @@ module Rightboat
         str
       end
 
-      def import_remove_regexes
-        @@import_remove_regexes ||= begin
-          import_type = ['', import.import_type]
-          id = ['', import.id]
-          ImportSub.where(import_type: import_type, import_id: id).pluck(:remove_regex).map { |r| Regexp.new r }
-        end
+      def do_import_substitutions!(value)
+        import_subs.each { |is| is.process_text!(value) }
       end
 
-      def do_import_substitutions!(value)
-        import_remove_regexes.each { |r| value.gsub!(r, '') }
+      def import_subs
+        @@import_subs ||= begin
+          import_type = ['', import.import_type]
+          id = ['', import.id]
+          ImportSub.where(import_type: import_type, import_id: id).select(:use_regex, :from, :to).to_a
+        end
       end
     end
   end

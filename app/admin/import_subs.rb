@@ -1,7 +1,7 @@
 ActiveAdmin.register ImportSub do
   menu parent: 'Imports', label: 'Substitutions', priority: 20
 
-  permit_params :import_type,  :import_id,  :remove_regex,  :sample_text
+  permit_params :import_type,  :import_id,  :use_regex, :from, :to,  :sample_text
 
   filter :import_type, collection: -> { ['any'] + Rightboat::Imports::Base.import_types }
   filter :import_id
@@ -13,8 +13,12 @@ ActiveAdmin.register ImportSub do
     column :import_id do |is|
       is.import_id.presence || 'any'
     end
-    column :remove_regex do |is|
-      b { is.remove_regex }
+    column :use_regex
+    column :from do |is|
+      b { is.from }
+    end
+    column :to do |is|
+      b { is.to }
     end
     column :sample_text do |is|
       truncate is.sample_text, length: 30
@@ -35,20 +39,35 @@ ActiveAdmin.register ImportSub do
       f.input :import_id, as: :select, include_blank: 'any',
               collection: import_id_options(f.object.import_type),
               input_html: {class: 'import-id-list'}
-      f.input :remove_regex
+      f.input :use_regex
+      f.input :from
+      f.input :to
       f.input :sample_text #, input_html: {rows: 5}
     end
     actions
   end
 
   show do
-    default_main_content
-    panel 'Remove Regex Result' do
-      regex = Regexp.new(resource.remove_regex) rescue RegexpError
-      if regex == RegexpError
+    attributes_table do
+      row :import_type
+      row :import_id
+      row :use_regex
+      row :from do
+        pre { import_sub.from }
+      end
+      row :to do
+        pre { import_sub.to }
+      end
+      row :sample_text
+      row :created_at
+      row :updated_at
+    end
+    panel 'Substitution Result' do
+      res = resource.processed_sample rescue RegexpError
+      if res == RegexpError
         '<b style="color:red">REGEX ERROR</b>'.html_safe
       else
-        resource.sample_text.gsub(regex, '')
+        res
       end
     end
   end

@@ -13,4 +13,4 @@
         - invoice.enquiries.each do |lead|
           = link_to lead.id.to_s, admin_lead_url(lead)
       %td= link_to invoice.user.name, admin_user_url(invoice.user)
-      %td= invoice.total
+      %td £#{invoice.total}

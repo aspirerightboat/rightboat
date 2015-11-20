@@ -33,9 +33,10 @@
 .boat-title-block
   %h1 <b>#{@boat.manufacturer}</b>
   %h2 #{@boat.model}
-  %h2 #{boat_price(@boat, Currency.default)}
-  %h2 #{@boat.year_built} year
-  %h2 #{@boat.ref_no}
+  %h3 #{boat_price(@boat, Currency.default)}
+  %h3 #{@boat.year_built} year
+  %h3 #{@boat.ref_no}
+  %h3 #{@boat.source_id}
   .qr-code-block
     - boat_url = boat_url(@boat.slug)
     = render partial: 'shared/qr_code', locals: {url: boat_url, size: 8}

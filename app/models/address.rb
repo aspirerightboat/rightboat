@@ -25,7 +25,8 @@ class Address < ActiveRecord::Base
 
   def to_s(format = :html)
     state_zip = [county, zip].reject(&:blank?).join(', ')
-    lines = [line1, line2, town_city, state_zip, country].reject(&:blank?)
+    address = [line1, line2].reject(&:blank?).join(', ')
+    lines = [address, town_city, state_zip, country].reject(&:blank?)
 
     if format && format.to_sym == :html
       sanitize(lines.join('<br>'), tags: ['br'])

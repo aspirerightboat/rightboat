@@ -49,6 +49,7 @@ ActiveAdmin.register Boat do
     actions do |boat|
       item 'Stats', statistics_admin_boat_path(boat), class: 'member_link'
       item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link'
+      item 'PDF', boat_pdf_path(boat), target: '_blank', class: 'member_link'
     end
   end
 

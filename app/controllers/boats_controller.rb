@@ -7,12 +7,17 @@ class BoatsController < ApplicationController
 
   def show
     @boat = Boat.find_by(slug: params[:id])
-    redirect_to(manufacturers_path, notice: 'This boat does not exists anymore') && return if !@boat
+    redirect_to(root_path, alert: I18n.t('messages.boat_not_exist')) and return unless @boat
     store_recent
   end
 
   def pdf
-    @boat = Boat.find(params[:boat_id])
+    @boat = Boat.includes([user: :broker_info], :office).find_by(slug: params[:boat_id])
+
+    unless (current_user && current_user.admin?) || Enquiry.where(remote_ip: request.remote_ip, boat_id: @boat.id).any?
+      redirect_to(boat_path(@boat.slug, anchor: 'enquiry_popup'), alert: I18n.t('messages.not_authorized')) and return
+    end
+
     render pdf: 'pdf',
            layout: 'pdf',
            margin: { bottom: 16 },

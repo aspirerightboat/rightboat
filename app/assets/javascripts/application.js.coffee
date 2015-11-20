@@ -52,7 +52,7 @@ $.fn.rbValidetta = (opts = {}) ->
       username :
         pattern : /^[a-zA-Z][\w@.-]+$/,
         errorMessage : "Only include a-z, A-Z, digits and underline."
-  @.validetta($.extend(default_opts, opts))
+  @.validetta($.extend(opts, default_opts))
 
 window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')

@@ -7,6 +7,6 @@ class CountriesController < ApplicationController
 
   def show
     @country = Country.where(slug: params[:id]).first!
-    @boats = @country.boats.boat_view_includes.page(params[:page]).per(20)
+    @boats = @country.boats.not_deleted.boat_view_includes.page(params[:page]).per(20)
   end
 end

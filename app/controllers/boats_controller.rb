@@ -14,7 +14,10 @@ class BoatsController < ApplicationController
   def pdf
     @boat = Boat.includes([user: :broker_info], :office).find_by(slug: params[:boat_id])
 
-    if (!current_user || !current_user.admin?) && Enquiry.where(remote_ip: request.remote_ip, boat_id: @boat.id).none?
+    lead_requested = current_user.try(:admin?) ||
+        Enquiry.where(boat_id: @boat.id).where('remote_ip = ? OR user_id = ?', request.remote_ip, current_user.try(:id) || 0).exists?
+
+    if !lead_requested
       redirect_to(boat_path(@boat.slug, anchor: 'enquiry_popup'), alert: I18n.t('messages.not_authorized')) and return
     end
 

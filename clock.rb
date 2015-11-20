@@ -33,10 +33,6 @@ module DBBackedClockwork
     SavedSearchNoticesJob.new.perform
   end
 
-  every 1.day, 'update sitemap.xml', at: '10:00' do
-    `rake -s sitemap:refresh`
-  end
-
   every 1.day, 'update currency', at: '1:00' do
     `rake import:currency`
   end

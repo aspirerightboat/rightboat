@@ -19,7 +19,7 @@ class UserMailer < ApplicationMailer
     @confirm_href = confirm_email_url(user: user_id, token: @user.confirm_email_token)
 
     to_email = STAGING_EMAIL || @user.email
-    mail(to: to_email, subject: 'Confirm your email - Rightboat')
+    mail(to: to_email, subject: 'Rightboat.com - email verification')
   end
 
   def new_sell_request(boat_id, request_type)

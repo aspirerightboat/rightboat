@@ -26,9 +26,10 @@ class LeadsMailer < ApplicationMailer
     dist =  @boat.user.broker_info.lead_email_distribution
     to_emails << user_email if dist['user']
     to_emails << office_email if dist['office']
+    to_emails << 'info@rightboat.com'
     to_emails.uniq!
 
-    mail(to: to_emails, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
+    mail(to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}")
   end
 
   def lead_quality_check(enquiry_id)

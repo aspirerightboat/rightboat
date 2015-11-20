@@ -135,19 +135,17 @@ class Boat < ActiveRecord::Base
   end
 
   def length_ft
-    (length_m * 3.2808399).round(2) if length_m
+    length_m.m_to_ft.round(2) if length_m
   end
 
   def live?
-    return false if self.deleted?
-
-    manufacturer && model && valid_price?
+    !deleted? && manufacturer && model && valid_price?
   end
 
   def geocoded?
     return false if geo_location.blank? || country_id.nil?
     _l, _, _c = geo_location.rpartition(',')
-    _l == location.to_s.downcase ? true : false
+    _l == location.to_s.downcase
   end
 
   def favourited_by?(user)

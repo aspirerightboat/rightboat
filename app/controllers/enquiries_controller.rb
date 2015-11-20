@@ -59,13 +59,13 @@ class EnquiriesController < ApplicationController
 
   def require_broker
     if !can_view_as_broker(current_user)
-      redirect_to root_path, alert: 'You are not authorized to access the page.'
+      redirect_to root_path, alert: I18n.t('messages.not_authorized')
     end
   end
 
   def require_buyer_or_broker
     if !can_view_as_broker(current_user) && !can_view_as_buyer(current_user)
-      redirect_to root_path, alert: 'You are not authorized to access the page.'
+      redirect_to root_path, alert: I18n.t('messages.not_authorized')
     end
   end
 

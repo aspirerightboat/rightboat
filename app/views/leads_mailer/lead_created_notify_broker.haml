@@ -13,6 +13,7 @@
   - boat_url = boat_url(@boat.slug)
   %li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>
   %li <b>RB Ref:</b> #{@boat.ref_no}
+  %li <b>Broker source ID:</b> #{@boat.source_id}
 
 %p #{@enquiry.created_at.strftime('%d %b %Y')}
 

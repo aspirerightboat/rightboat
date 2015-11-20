@@ -7,7 +7,7 @@
         .h Request Details
       .modal-body
         %p.text-center Your details will be forwarded to the broker. The full boat specification and broker details will be available for immediate download and held in your 'My Rightboat', with a copy sent to your email.
-        = form_tag "/boats/#{@boat.slug}/request-details", class: 'enquiry-form' do
+        = form_tag (@boat ? "/boats/#{@boat.slug}/request-details" : '#'), class: 'enquiry-form' do
           = text_field_tag :honeypot, nil, class: 'hide'
           .row.login-toggle.active
             .col-sm-2.col-xs-12

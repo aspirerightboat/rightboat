@@ -5,6 +5,6 @@ class ModelsController < ApplicationController
 
   def show
     @model = Model.where(slug: params[:id]).first!
-    @boats = @model.manufacturer.boats.boat_view_includes.page(params[:page]).per(20)
+    @boats = @model.manufacturer.boats.not_deleted.boat_view_includes.page(params[:page]).per(20)
   end
 end

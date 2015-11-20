@@ -1,6 +1,7 @@
 class ManufacturersController < ApplicationController
   def index
     @manufacturers = Manufacturer.joins(:boats).group('manufacturers.name, manufacturers.slug')
+                         .where('boats.deleted_at IS NULL')
                          .order('COUNT(*) DESC').page(params[:page]).per(100)
                          .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
     @page = params[:page].try(:to_i)
@@ -9,7 +10,7 @@ class ManufacturersController < ApplicationController
 
   def show
     @manufacturer = Manufacturer.where(slug: params[:id]).first!
-    @boats = @manufacturer.boats.includes(:currency, :primary_image, :model, :vat_rate, :country).order(:name).page(params[:page]).per(20)
+    @boats = @manufacturer.boats.not_deleted.includes(:currency, :primary_image, :model, :vat_rate, :country).order(:name).page(params[:page]).per(20)
   end
 
   def by_letter

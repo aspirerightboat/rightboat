@@ -16,6 +16,17 @@ module Rightboat
         init_logger
         @import_trail.update(log_path: @log_path)
         @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
+
+        @agent = Mechanize.new
+        @agent.user_agent_alias = 'Mechanize'
+        @agent.ssl_version = 'SSLv3'
+        @agent.keep_alive = false
+        @agent.max_history = 3
+        @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        @agent.read_timeout = 120
+        @agent.open_timeout = 120
+
+        @user = @import.user
       end
 
       def run
@@ -32,19 +43,9 @@ module Rightboat
       def starting
         @import.param.each { |key, value| instance_variable_set("@#{key}", value) }
 
-        @agent = Mechanize.new
-        @agent.user_agent_alias = 'Mechanize'
-        @agent.ssl_version = 'SSLv3'
-        @agent.keep_alive = false
-        @agent.max_history = 3
-        @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        @agent.read_timeout = 120
-        @agent.open_timeout = 120
-
         @jobs_queue = Queue.new
         @jobs_mutex = Mutex.new
 
-        @user = @import.user
         @old_source_ids = @user.boats.pluck(:source_id)
         @scraped_source_ids = []
 

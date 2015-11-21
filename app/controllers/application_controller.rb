@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
+  #protect_from_forgery with: :exception # temporary comment out because "Can't verify CSRF token authenticity" error on prod
   before_action :configure_permitted_parameters, if: :devise_controller?
   after_action :set_visited
 

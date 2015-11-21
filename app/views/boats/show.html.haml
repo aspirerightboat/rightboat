@@ -1,5 +1,5 @@
 - @page_title = "#{@boat.to_s.truncate(64)}"
-- description = @boat.description ? truncate(@boat.description.gsub('&lt;br /&gt;', ' '), length: 400, omission: 'zzzzz', escape: false).gsub(/[^>.!]+zzzzz/, '') : ''
+- description = @boat.description ? truncate(@boat.description.gsub('&lt;br /&gt;', ' '), length: 480, omission: 'zzzzz', escape: false).gsub(/[^>.!]+zzzzz/, '') : ''
 - @page_description = reduced_description(description)
 - @canonical_url = boat_url(@boat.slug)
 - if @boat.primary_image

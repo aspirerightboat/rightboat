@@ -1,4 +1,5 @@
 class RegistrationsController < Devise::RegistrationsController
+  protect_from_forgery except: :create # temporary fix for "Can't verify CSRF token authenticity" error on prod
   skip_before_action :require_confirmed_email, only: [:resend_confirmation, :confirm_email]
 
   def update_resource(resource, params)

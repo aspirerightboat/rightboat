@@ -5,6 +5,8 @@ class EnquiriesController < ApplicationController
   before_action :require_buyer_or_broker, only: [:show]
   before_action :remember_when_broker_accessed, only: [:show]
 
+  protect_from_forgery except: :create # temporary fix for "Can't verify CSRF token authenticity" error on prod
+
   def create
     enquiry = Enquiry.new(enquiry_params)
 

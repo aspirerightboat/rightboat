@@ -1,4 +1,5 @@
 class SessionsController < Devise::SessionsController
+  protect_from_forgery except: :create # temporary fix for "Can't verify CSRF token authenticity" error on prod
   skip_before_action :require_confirmed_email, only: [:destroy]
   clear_respond_to
   respond_to :json

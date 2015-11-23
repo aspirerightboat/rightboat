@@ -78,8 +78,9 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.action_controller.default_url_options = {host: Figaro.env.rb_host}
-  config.action_mailer.default_url_options = {host: 'live.rightboat.com'}
+  config.action_mailer.default_url_options = {host: 'www.rightboat.com'}
   config.action_mailer.delivery_method = :smtp
+  config.action_mailer.asset_host = 'https://www.rightboat.com/'
   config.action_mailer.smtp_settings = {
       authentication: :plain,
       address: 'smtp.gmail.com',

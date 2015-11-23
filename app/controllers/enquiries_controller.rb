@@ -20,7 +20,11 @@ class EnquiriesController < ApplicationController
       sign_in(enquiry.user) if enquiry.have_account
       # session.delete(:captcha)
       LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
-      LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
+      if enquiry.boat.user.email == 'nick@popsells.com'
+        LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
+      else
+        LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
+      end
       enquiry.create_lead_trail(true)
       render json: enquiry, serializer: EnquirySerializer, root: false
     else

@@ -32,6 +32,23 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}")
   end
 
+  def lead_created_notify_pop_yachts(enquiry_id)
+    @enquiry = Enquiry.find(enquiry_id)
+    @boat = @enquiry.boat
+    @office = @boat.office
+
+    user_email = STAGING_EMAIL || @boat.user.email
+    office_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
+    to_emails = []
+    dist =  @boat.user.broker_info.lead_email_distribution
+    to_emails << user_email if dist['user']
+    to_emails << office_email if dist['office']
+    to_emails << 'info@rightboat.com'
+    to_emails.uniq!
+
+    mail(to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}")
+  end
+
   def lead_quality_check(enquiry_id)
     @enquiry = Enquiry.find(enquiry_id)
     to_email = [RBConfig[:lead_quality_check_email]]

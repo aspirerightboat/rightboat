@@ -129,12 +129,13 @@ module Rightboat
           media_nodes = advert_media.element_children
           media_nodes.select { |node| !node['type'].start_with?('video') } # ignore "video/youtube" so far; there could be also "application/octet-stream" pointing to jpg
 
-          if (primary_media = media_nodes.find { |n| prim = n['primary']; prim && prim =~ /true|1|yes/i }) # some sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
-            media_nodes.unshift(media_nodes.delete(primary_media)) if media_nodes.index(primary_media) > 0
+          media_urls = media_nodes.each_with_object([]) do |node, arr| # some sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
+            url = node.text
+            primary = node['primary']
+            primary && primary =~ /true|1|yes/i ? arr.unshift(url) : arr.push(url)
           end
 
-          boat.images = media_nodes.map do |node|
-            url = node.text
+          boat.images = media_urls.map do |url|
             url.strip!
             url = URI.encode(url)
             url.gsub!(/[\[\]]/) { |m| m == '[' ? '%5B' : '%5D' }

@@ -6,7 +6,9 @@ class CountriesController < ApplicationController
   end
 
   def show
-    @country = Country.where(slug: params[:id]).first!
+    @country = Country.find_by(slug: params[:id])
+    redirect_to root_path and return if !@country
+
     @boats = @country.boats.not_deleted.boat_view_includes.page(params[:page]).per(20)
   end
 end

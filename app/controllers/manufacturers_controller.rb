@@ -9,7 +9,9 @@ class ManufacturersController < ApplicationController
   end
 
   def show
-    @manufacturer = Manufacturer.where(slug: params[:id]).first!
+    @manufacturer = Manufacturer.find_by(slug: params[:id])
+    redirect_to root_path and return if !@manufacturer
+
     @boats = @manufacturer.boats.not_deleted.includes(:currency, :primary_image, :model, :vat_rate, :country).order(:name).page(params[:page]).per(20)
   end
 

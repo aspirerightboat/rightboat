@@ -1,3 +1,5 @@
+- boat_url = boat_url(@boat.slug)
+
 %p Dear
 %p We are pleased to inform you that you have an enquiry from #{link_to 'Rightboat', root_url}.
 
@@ -7,10 +9,8 @@
 
 %p Boat details:
 %ul
-
   %li <b>Make:</b> #{@boat.manufacturer}
   %li <b>Model:</b> #{@boat.model}
-  - boat_url = boat_url(@boat.slug)
   %li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>
   %li <b>RB Ref:</b> #{@boat.ref_no}
   %li <b>Broker source ID:</b> #{@boat.source_id}

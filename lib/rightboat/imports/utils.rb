@@ -28,7 +28,7 @@ module Rightboat
           return value.to_f.round(2) if unit.blank?
           case unit.downcase
             when 'feet', 'ft', 'f' then value = value.to_f.ft_to_m.round(2)
-            when /\A(metres?|meters?|m\z)/ then value = value.to_f.round(2)
+            when /\A(metres?|meters?|m)\z/ then value = value.to_f.round(2)
             when 'kg', 'kgs', 'k' then value = value.to_f.round(2)
             when 'g' then value = (value.to_f / 1000.0).round(3)
             when 'lbs' then value = (value.to_f * 0.453592).round(2)

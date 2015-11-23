@@ -53,7 +53,6 @@ module Rightboat
 
           log 'Scraping'
           broker_nodes = doc.xml.root.element_children
-          @broker_id = @import.param[:broker_id]
           broker_node = @broker_id == 'first' ? broker_nodes[0] : broker_nodes.find { |node| @broker_id == node['code'] }
 
           raise "No broker with ID=#{@broker_id} found" if !broker_node
@@ -130,14 +129,12 @@ module Rightboat
           media_nodes = advert_media.element_children
           media_nodes.select { |node| !node['type'].start_with?('video') } # ignore "video/youtube" so far; there could be also "application/octet-stream" pointing to jpg
 
-          medial_urls = []
-          unless (primary_media = media_nodes.find { |n| prim = n['primary']; prim && prim =~ /true|1|yes/i }).blank? # some sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
-            medial_urls << primary_media.text
-            media_nodes.delete(primary_media)
+          if (primary_media = media_nodes.find { |n| prim = n['primary']; prim && prim =~ /true|1|yes/i }) # some sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
+            media_nodes.unshift(media_nodes.delete(primary_media)) if media_nodes.index(primary_media) > 0
           end
-          medial_urls += media_nodes.map(&:text)
 
-          boat.images = medial_urls.map do |url|
+          boat.images = media_nodes.map do |node|
+            url = node.text
             url.strip!
             url = URI.encode(url)
             url.gsub!(/[\[\]]/) { |m| m == '[' ? '%5B' : '%5D' }

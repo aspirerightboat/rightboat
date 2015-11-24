@@ -6,12 +6,12 @@ class HomeController < ApplicationController
   def index
     if user_signed_in? && params[:popup_login]
       # root page is used as login page too routing: /sign-in
-      flash[:notice] = "You have signed in already."
+      flash[:notice] = 'You have signed in already.'
       return redirect_to(root_path)
     end
 
-    @featured_boats = Rails.cache.fetch "rb.featured_boats", expires_in: 1.hour do
-      Boat.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.limit(6)
+    @featured_boats = Rails.cache.fetch 'rb.featured_boats', expires_in: 1.hour do
+      Boat.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.not_deleted.limit(6)
     end
     recently_viewed_boat_ids = Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id)
     @recent_boats = Boat.where(id: recently_viewed_boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)

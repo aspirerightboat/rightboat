@@ -7,15 +7,20 @@
 
     - if @similar_boats.count > 0
       %p However, there are other similar listings which may be of interest to you.
-      %ul
-        - @similar_boats.each do |boat|
-          %li #{link_to boat.manufacturer_model, boat_url(boat)}
+      %table
+        - @similar_boats.each_with_index do |boat, i|
+          %tr
+            %td= render 'boats/mail_thumb', boat: boat, visible: i < 3
+      - if @similar_boats.count > 3
+        .clear
+          = link_to 'View More >', search_url(@boat.similar_options(@boat.currency)), id: 'view-more'
 
   - when 'price_changed'
     %p
       Your favourite boat #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
       New price is #{@boat.safe_currency.symbol}#{@boat.price}.
 
+%br
 %p
   Kind regards,
   %br

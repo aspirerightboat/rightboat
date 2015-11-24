@@ -1,0 +1,29 @@
+%table.boat(border=1 bordercolor='#1daeeb' style="#{'display: none;' unless visible}")
+  %tr
+    %td
+      .row
+        .col.col-3
+          .boat-thumb
+            - if boat.primary_image
+              = image_tag boat.primary_image.file.url(:thumb)
+            - else
+              = image_tag 'awaiting-image.png'
+        .col.col-9
+          .text-pad.clear
+            .pull-right.text-right
+              %h5.boat-price= number_to_currency(boat.price, unit: boat.currency.symbol, precision: 0)
+              .boat-spec.tax-status= boat.tax_paid? ? 'Tax paid' : ''
+              .boat-links
+                = mail_to boat.user.email, 'Contact Broker', class: 'btn'
+                = link_to 'View Detail', boat_url(id: boat.slug), class: 'btn'
+            .boat-specs
+              %h5
+                %span.text-uppercase
+                  %b= boat.manufacturer
+                = boat.model
+              .boat-spec
+                Length: #{boat_length(boat)}
+              .boat-spec
+                Year: #{boat.year_built}
+              .boat-spec
+                Location: #{boat.country.to_s}

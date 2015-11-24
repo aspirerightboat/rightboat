@@ -1,7 +1,7 @@
 class UserMailerPreview < ActionMailer::Preview
 
   def saved_search_updated
-    UserMailer.saved_search_updated(User.last.id, [SavedSearch.last.id])
+    UserMailer.saved_search_updated(User.last.id, SavedSearch.limit(2).pluck(:id))
   end
 
   def email_confirmation

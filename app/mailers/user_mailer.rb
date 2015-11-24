@@ -1,4 +1,5 @@
 class UserMailer < ApplicationMailer
+  add_template_helper BoatsHelper
   layout 'mailer'
 
   def saved_search_updated(user_id, searches)
@@ -34,7 +35,7 @@ class UserMailer < ApplicationMailer
     @user = User.find(user_id)
     @boat = Boat.find(boat_id)
     @reason = reason
-    @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options).results.take(5) if @reason == 'deleted'
+    @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options, includes: [:user, :currency, :manufacturer, :model, :primary_image, :vat_rate, :country]).results if @reason == 'deleted'
 
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: "Favourite boat status changed - #{@boat.manufacturer_model} - RightBoat")

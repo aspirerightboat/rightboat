@@ -14,7 +14,7 @@ ActiveAdmin.register ImportTrail do
   index do
     column :id
     column :user do |trail|
-      link_to trail.import.user.name, admin_user_path(trail.import.user)
+      link_to(trail.import.user.name, admin_user_path(trail.import.user)) if trail.import.user
     end
     column :import do |trail|
       link_to trail.import.import_type, admin_import_path(trail.import)

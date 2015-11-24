@@ -116,7 +116,7 @@ module Rightboat
       end
 
       def self.import_types
-        @@import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/sources/*"].map { |path| File.basename(path, '.*') }
+        @import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/sources/*"].map { |path| File.basename(path, '.*') }
       end
 
       # def self.import_classes
@@ -196,7 +196,7 @@ module Rightboat
 
       def remove_old_boats
         delete_source_ids = (@old_source_ids - @scraped_source_ids).reject(&:blank?)
-        delete_boats = @user.boats.where(source_id: delete_source_ids).to_a
+        delete_boats = @user.boats.not_deleted.where(source_id: delete_source_ids).to_a
         delete_boats.each do |boat|
           log "Deleting Boat id=#{boat.id} source_id=#{boat.source_id}"
           boat.destroy

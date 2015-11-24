@@ -33,16 +33,12 @@ module DBBackedClockwork
     SavedSearchNoticesJob.new.perform
   end
 
-  every 1.day, 'update sitemap.xml', at: '10:00' do
-    `rake -s sitemap:refresh`
-  end
-
   every 1.day, 'update currency', at: '1:00' do
-    `rake import:currency`
+    `bundle exec rake import:currency`
   end
 
   every 1.day, 'sitemap_refresh', at: '1:10' do
-    `rake rb_sitemap:refresh`
+    `bundle exec rake rb_sitemap:refresh`
   end
 
   # get the manager object

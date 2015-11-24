@@ -1,34 +1,26 @@
-%p
-  New lead from Right Boat!
+- boat_url = boat_url(@boat.slug)
 
-%p
-  Client details are as follows:
+%p Dear
+%p We are pleased to inform you that you have an enquiry from #{link_to 'Rightboat', root_url}.
 
+%p The client details are as follows:
 %ul
-  %li <b>Name:</b> #{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}
-  - if @enquiry.message.present?
-    %li <b>Message:</b> #{@enquiry.message}
+  %li <b>Name:</b> #{@enquiry.title} #{@enquiry.name}
 
-%p
-  Boat details:
-
+%p Boat details:
 %ul
-  %li <b>Ref No:</b> #{@boat.ref_no}
-  %li <b>Manufacturer:</b> #{@boat.manufacturer}
+  %li <b>Make:</b> #{@boat.manufacturer}
   %li <b>Model:</b> #{@boat.model}
-  - boat_url = boat_url(@boat.slug)
   %li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>
+  %li <b>RB Ref:</b> #{@boat.ref_no}
+  %li <b>Broker source ID:</b> #{@boat.source_id}
 
-%p
-  Enquiry received at: #{@enquiry.created_at}
+%p #{@enquiry.created_at.strftime('%d %b %Y')}
 
-%p
-  This lead is supplied subject to Rightboat Ltd standard terms and conditions.
+%p Please login to your #{link_to 'broker account', lead_url(@enquiry)} to view the full customer details
 
+%br
 %p
-  %a(href="#{lead_url(@enquiry)}") Get Customer Lead
-
-%p
-  Yours,
-  <br>Rightboat
-  <br>+44 333 322 2628
+  Kind regards
+  %br
+  The #{link_to 'Rightboat', root_url} Team

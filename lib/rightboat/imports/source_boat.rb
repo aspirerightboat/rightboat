@@ -107,7 +107,9 @@ module Rightboat
         NORMAL_ATTRIBUTES.each do |attr_name|
           if (value = send(attr_name)).present? && value.to_s !~ /^[\.0]+$/
             case attr_name
-            when :description then remove_contact_info!(value)
+            when :description
+              remove_contact_info!(value)
+              do_import_substitutions!(value)
             when :new_boat then value = value == /\A(New|N)\z/ if value.is_a?(String)
             end
           end
@@ -317,6 +319,17 @@ module Rightboat
         str
       end
 
+      def do_import_substitutions!(value)
+        import_subs.each { |is| is.process_text!(value) }
+      end
+
+      def import_subs
+        @@import_subs ||= begin
+          import_type = ['', import.import_type]
+          id = ['', import.id]
+          ImportSub.where(import_type: import_type, import_id: id).select(:use_regex, :from, :to).to_a
+        end
+      end
     end
   end
 end

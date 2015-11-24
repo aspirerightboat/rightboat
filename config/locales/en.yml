@@ -34,3 +34,6 @@ en:
     year_desc: "Age: new - old"
     length_m_desc: "LOA: long - short"
     length_m_asc: "LOA: short - long"
+  messages:
+    boat_not_exist: This boat does not exists anymore.
+    not_authorized: You are not authorized to access the page.

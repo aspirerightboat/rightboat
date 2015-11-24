@@ -6,4 +6,4 @@
 
 User-agent: *
 Allow: /
-Sitemap: http://www.rightboat.com/sitemap.xml
+Sitemap: http://www.rightboat.com/sitemap.xml.gz

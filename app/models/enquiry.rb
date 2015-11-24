@@ -32,7 +32,7 @@ class Enquiry < ActiveRecord::Base
   end
 
   def name
-    "#{first_name} #{surname}".strip
+    [first_name, surname].reject(&:blank?).join(' ')
   end
   alias_method :to_s, :name
 

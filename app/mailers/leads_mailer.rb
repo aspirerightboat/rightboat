@@ -15,21 +15,14 @@ class LeadsMailer < ApplicationMailer
   end
 
   def lead_created_notify_broker(enquiry_id)
-    @enquiry = Enquiry.find(enquiry_id)
-    @boat = @enquiry.boat
-    @office = @boat.office
+    mail_params = lead_broker_params(enquiry_id)
     attach_boat_pdf
+    mail(mail_params)
+  end
 
-    user_email = STAGING_EMAIL || @boat.user.email
-    office_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
-    to_emails = []
-    dist =  @boat.user.broker_info.lead_email_distribution
-    to_emails << user_email if dist['user']
-    to_emails << office_email if dist['office']
-    to_emails << 'info@rightboat.com'
-    to_emails.uniq!
-
-    mail(to: to_emails, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
+  def lead_created_notify_pop_yachts(enquiry_id)
+    mail_params = lead_broker_params(enquiry_id)
+    mail(mail_params)
   end
 
   def lead_quality_check(enquiry_id)
@@ -69,8 +62,24 @@ class LeadsMailer < ApplicationMailer
   private
 
   def attach_boat_pdf
-    file_name = "#{@boat.manufacturer.slug}-#{@boat.slug}.pdf"
+    file_name = "#{@boat.ref_no.downcase}-#{@boat.slug}.pdf"
     attachments[file_name] = WickedPdf.new.pdf_from_string(render 'boats/pdf', layout: 'pdf')
   end
 
+  def lead_broker_params(enquiry_id)
+    @enquiry = Enquiry.find(enquiry_id)
+    @boat = @enquiry.boat
+    @office = @boat.office
+
+    user_email = STAGING_EMAIL || @boat.user.email
+    office_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
+    to_emails = []
+    dist =  @boat.user.broker_info.lead_email_distribution
+    to_emails << user_email if dist['user']
+    to_emails << office_email if dist['office']
+    to_emails << 'info@rightboat.com'
+    to_emails.uniq!
+
+    return { to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}" }
+  end
 end

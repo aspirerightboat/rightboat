@@ -18,8 +18,8 @@ class Currency < ActiveRecord::Base
   end
 
   def self.cached_by_name(name)
-    @@cached_by_name ||= Currency.select('id, name, rate, symbol').index_by(&:name)
-    @@cached_by_name[name]
+    @cached_by_name ||= Currency.select('id, name, rate, symbol').index_by(&:name)
+    @cached_by_name[name]
   end
 
   def display_symbol

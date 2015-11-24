@@ -1,6 +1,6 @@
 class BrokerAreaController < ApplicationController
-  before_action :require_confirmed_email
-  before_action :require_broker_user
+  before_action :require_confirmed_email, except: [:tc]
+  before_action :require_broker_user, except: [:tc]
 
   def show
     redirect_to({action: :getting_started})
@@ -65,6 +65,9 @@ class BrokerAreaController < ApplicationController
     rel = current_user.broker_leads.includes(boat: [:manufacturer, :model]).order('id DESC')
     @pending_leads = Enquiry.where(status: %w(pending quality_check)).merge(rel).page(params[:page]).per(15)
     @history_leads = Enquiry.where(status: %w(approved rejected invoiced)).merge(rel).page(params[:page2]).per(15)
+  end
+
+  def tc
   end
 
   private

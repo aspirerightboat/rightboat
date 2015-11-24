@@ -4,7 +4,9 @@ class ModelsController < ApplicationController
   end
 
   def show
-    @model = Model.where(slug: params[:id]).first!
-    @boats = @model.manufacturer.boats.boat_view_includes.page(params[:page]).per(20)
+    @model = Model.find_by(slug: params[:id])
+    redirect_to root_path and return if !@model
+
+    @boats = @model.manufacturer.boats.not_deleted.boat_view_includes.page(params[:page]).per(20)
   end
 end

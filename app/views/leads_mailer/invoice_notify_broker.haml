@@ -10,21 +10,21 @@
         %td #{link_to lead.id, lead_url(lead)}
         %td #{lead.boat.length_ft}
         %td #{@broker_info.lead_rate}
-        %td #{(lead.boat.length_ft * @broker_info.lead_rate).round(2)}€
+        %td £#{lead.lead_price}
 
   %table.rb-table(style="max-width: 250px; margin-left: auto; text-align: right")
     %tr
       %th Sub Total
-      %th #{@invoice.subtotal}€
+      %th £#{@invoice.subtotal}
     %tr
       %td Broker Discount #{@invoice.discount_rate.percents}%
-      %td #{@invoice.discount}€
+      %td £#{@invoice.discount}
     %tr
       %th Total ex VAT
-      %th #{@invoice.total_ex_vat}€
+      %th £#{@invoice.total_ex_vat}
     %tr
       %td VAT #{@invoice.vat_rate.percents}%
-      %td #{@invoice.vat}€
+      %td £#{@invoice.vat}
     %tr
       %th Total
-      %th #{@invoice.total}€
+      %th £#{@invoice.total}

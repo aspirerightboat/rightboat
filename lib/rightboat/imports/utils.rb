@@ -26,17 +26,20 @@ module Rightboat
 
         def self.convert_unit(value, unit)
           return value.to_f.round(2) if unit.blank?
+
           case unit.downcase
-            when 'feet', 'ft', 'f' then value = value.to_f.ft_to_m.round(2)
-            when /\A(metres?|meters?|m)\z/ then value = value.to_f.round(2)
-            when 'kg', 'kgs', 'k' then value = value.to_f.round(2)
-            when 'g' then value = (value.to_f / 1000.0).round(3)
-            when 'lbs' then value = (value.to_f * 0.453592).round(2)
-            when 'tonnes' then value = (value.to_f * 1000).round(2)
-            when /gallon/ then value = (value.to_f * 3.78541).round(2)
-            when /liters?|litres?/ then value = (value.to_f).round(2)
-            else ImportMailer.new_unit(unit).deliver_now
+          when 'feet', 'ft', 'f' then value = value.to_f.ft_to_m.round(2)
+          when /\A(metres?|meters?|m)\z/ then value = value.to_f.round(2)
+          when 'kg', 'kgs', 'k' then value = value.to_f.round(2)
+          when 'g' then value = (value.to_f / 1000.0).round(3)
+          when 'lbs' then value = (value.to_f * 0.453592).round(2)
+          when 'tonnes' then value = (value.to_f * 1000).round(2)
+          when /gallon/ then value = (value.to_f * 3.78541).round(2)
+          when /liters?|litres?/ then value = (value.to_f).round(2)
+          when 'metres/feet' # invalid unit from http://www.nya.co.uk/boatsxml.php
+          else ImportMailer.new_unit(unit).deliver_now
           end
+
           value.to_s =~ /^[0\.]+$/ ? nil : value
         end
 

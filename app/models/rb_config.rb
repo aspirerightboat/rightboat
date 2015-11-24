@@ -3,7 +3,7 @@ class RBConfig < ActiveRecord::Base
   validates :key, uniqueness: true
 
   def self.cached_configs
-    @@cached_configs ||= begin
+    @cached_configs ||= begin
       RBConfig.pluck(:key, :value, :kind).map do |k, v, kind|
         v = case kind.to_sym
             when :integer then v.to_i
@@ -30,7 +30,7 @@ class RBConfig < ActiveRecord::Base
   end
 
   def self.repair
-    @@cached_configs = nil
+    @cached_configs = nil
     existing_keys = RBConfig.pluck(:key)
     default_configs = defaults
 

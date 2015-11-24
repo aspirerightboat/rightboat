@@ -1,5 +1,5 @@
 ActiveAdmin.register ImportTrail do
-  menu parent: 'Imports'
+  menu parent: 'Imports', priority: 10
 
   filter :import_type, collection: -> { Rightboat::Imports::Base.import_types }
 

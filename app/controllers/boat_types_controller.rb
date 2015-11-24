@@ -4,7 +4,9 @@ class BoatTypesController < ApplicationController
   end
 
   def show
-    @boat_type = BoatType.where(name: params[:id]).first!
-    @boats = @boat_type.boats.boat_view_includes.page(params[:page]).per(20)
+    @boat_type = BoatType.find_by(name: params[:id])
+    redirect_to root_path and return if !@boat_type
+
+    @boats = @boat_type.boats.not_deleted.boat_view_includes.page(params[:page]).per(20)
   end
 end

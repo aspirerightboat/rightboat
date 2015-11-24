@@ -206,7 +206,7 @@ module Rightboat
       end
 
       def init_logger
-        dir_path = Rails.root + "#{'../shared/' if !Rails.env.development?}log/imports/#{Time.current.strftime('%F')}"
+        dir_path = Rails.root + "#{'../../shared/' if !Rails.env.development?}log/imports/#{Time.current.strftime('%F')}"
         dir = FileUtils.mkdir_p(dir_path).first
         @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.id}-#{@import.import_type}-#{Time.current.strftime('%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)

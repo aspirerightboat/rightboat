@@ -155,6 +155,7 @@ Rails.application.routes.draw do
 
   # old site redirects
   get '/all/boats-for-sale/:name', to: redirect('/manufacturer/%{name}')
+  get '/all/boats-for-sale/*other', to: redirect('/')
   get '/about', to: redirect('/#about')
   get '/privacy-policy', to: redirect('/privacy_policy')
   get '/terms-of-use', to: redirect('/toc')

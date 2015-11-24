@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   after_action :set_visited
 
   before_action :global_current_user
+  before_action :clear_old_session
 
   serialization_scope :view_context
 
@@ -46,5 +47,9 @@ class ApplicationController < ActionController::Base
     if user_signed_in? && !current_user.email_confirmed
       redirect_to confirm_email_home_path
     end
+  end
+
+  def clear_old_session
+    cookies.delete(:_rightboat_session) if cookies[:_rightboat_session]
   end
 end

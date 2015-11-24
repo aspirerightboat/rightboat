@@ -50,6 +50,6 @@ class ApplicationController < ActionController::Base
   end
 
   def clear_old_session
-    cookies.delete(:_rightboat_session) if cookies[:_rightboat_session]
+    cookies.delete(:_rightboat_session, domain: '.rightboat.com') if cookies[:_rightboat_session]
   end
 end

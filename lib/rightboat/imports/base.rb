@@ -32,14 +32,7 @@ module Rightboat
       def starting
         @import.param.each { |key, value| instance_variable_set("@#{key}", value) }
 
-        @agent = Mechanize.new
-        @agent.user_agent_alias = 'Mechanize'
-        @agent.ssl_version = 'SSLv3'
-        @agent.keep_alive = false
-        @agent.max_history = 3
-        @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        @agent.read_timeout = 120
-        @agent.open_timeout = 120
+        init_mechanize_agent
 
         @jobs_queue = Queue.new
         @jobs_mutex = Mutex.new
@@ -140,7 +133,7 @@ module Rightboat
 
       private
 
-      def get(url, params = [], referer = nil, headers = {})
+      def get(url, params = [], referer = nil, headers = {'Accept-Encoding' => 'gzip, deflate'})
         retry_cnt = 0
         begin
           @agent.cookie_jar.clear!
@@ -225,6 +218,24 @@ module Rightboat
       def log_ex(e, short_msg)
         backtrace_lines_count = Rails.env.development? ? 50 : 8
         log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}", short_msg
+      end
+
+      def init_mechanize_agent
+        @agent = Mechanize.new
+        @agent.user_agent_alias = 'Mechanize'
+        @agent.ssl_version = 'SSLv3'
+        @agent.keep_alive = false
+        @agent.max_history = 3
+        @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        @agent.read_timeout = 120
+        @agent.open_timeout = 120
+
+        # fix issue when importing feed http://exports.boatshop24.com/om/1364
+        # see: http://stackoverflow.com/questions/18807599/problems-with-text-csv-content-encoding-utf-8-in-ruby-mechanize
+        func = lambda do |a, uri, resp, body_io|
+          resp['Content-Encoding'] = 'none' if resp['Content-Encoding'].to_s == 'UTF-8'
+        end
+        @agent.content_encoding_hooks << func
       end
 
       def advert_url(url, scheme='http')

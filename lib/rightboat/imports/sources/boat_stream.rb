@@ -2,8 +2,6 @@ module Rightboat
   module Imports
     module Sources
       class BoatStream < Base
-        include ActionView::Helpers::NumberHelper
-
         BOATSTREAM_XML_PATH = "#{Rails.root}/import_data/boat_stream.xml"
 
         def enqueue_jobs
@@ -19,9 +17,7 @@ module Rightboat
           remote_file = `echo 'ls -t upload/*.xml' | #{sftp} | grep -v "sftp>" | head -n1`.strip
 
           log "Download file #{remote_file}"
-          res = `echo "get -P #{remote_file} #{BOATSTREAM_XML_PATH}" | #{sftp}`
-          file_size = /\A[rwx-]+ \d+ \w+ \w+ (\d+)/.match(res)[1]
-          log "Downloaded #{BOATSTREAM_XML_PATH} #{number_to_human_size(file_size)}"
+          `echo "get -P #{remote_file} #{BOATSTREAM_XML_PATH}" | #{sftp}`
         end
 
         def self.validate_param_option

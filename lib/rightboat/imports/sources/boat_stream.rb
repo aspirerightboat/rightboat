@@ -8,7 +8,7 @@ module Rightboat
           @skip_thread_parsing_boat = true
           download_latest_file if Rails.env.production? # sftp access is configured for import.rightboat.com server only
           log "Parse file #{BOATSTREAM_XML_PATH}"
-          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_ids)).parse_file(file)
+          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_ids)).parse_file(BOATSTREAM_XML_PATH)
         end
 
         def download_latest_file

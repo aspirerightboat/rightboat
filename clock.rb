@@ -89,7 +89,7 @@ module DBBackedClockwork
       begin
         job = Import.find(id)
         if !job.active
-          job.stop!(false)
+          job.nonblock_stop!
           self.remove
         elsif job.updated_at != updated_at
           self.remove

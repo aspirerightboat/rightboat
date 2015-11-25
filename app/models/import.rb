@@ -1,7 +1,7 @@
 class Import < ActiveRecord::Base
   include BoatOwner
 
-  FREQUENCY_UNITS = [:hour, :day, :week, :month] # :second, :minute
+  FREQUENCY_UNITS = %w(hour day week month)
 
   belongs_to :user, inverse_of: :imports
   has_many :import_trails
@@ -15,11 +15,10 @@ class Import < ActiveRecord::Base
   validates_uniqueness_of :import_type, scope: :user_id, if: 'import_type != "eyb"'
 
   # scheduling options
-  validates_presence_of :frequency_quantity, :frequency_unit, if: :active
-  validates_inclusion_of :frequency_unit, within: FREQUENCY_UNITS.map(&:to_s), allow_blank: true, if: :active
-  validates_presence_of :tz, if: -> (import) { import.active? && import.at.present? }
-  validates_inclusion_of :tz, within: TZInfo::Timezone.all_identifiers, allow_blank: true, if: :active
-  validates_numericality_of :frequency_quantity, greater_than: 0, allow_blank: true, if: :active
+  validates_presence_of :frequency_quantity, :frequency_unit, :tz, if: :active?
+  validates_inclusion_of :frequency_unit, within: FREQUENCY_UNITS, if: :active?
+  validates_inclusion_of :tz, within: TZInfo::Timezone.all_identifiers, if: :active?
+  validates_numericality_of :frequency_quantity, greater_than: 0, if: :active?
   validate :validate_clockwork_params
   validate :validate_import_params
 
@@ -36,21 +35,16 @@ class Import < ActiveRecord::Base
     self.class.source_class(import_type)
   end
 
-  def running?(include_loading = true)
-    return true if include_loading && (self.pid.to_i == -1 && queued_at && queued_at > 1.minutes.ago)
-    return false if self.pid.to_i <= 0
-    Process.kill(0, self.pid.to_i)
-    true
-  rescue
-    false
+  def running?
+    loading? || process_running?
   end
 
-  def status
-    if running?
-      self.pid.to_i > 0 ? 'Running' : 'Loading'
-    else
-      active? && valid? ? 'Waiting' : 'Inactive'
-    end
+  def loading?
+    pid == -1 && queued_at
+  end
+
+  def process_running?
+    pid > 0 && (Process.getpgid(pid) rescue nil).present?
   end
 
   def run!
@@ -58,27 +52,29 @@ class Import < ActiveRecord::Base
     `bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
   end
 
-  def stop!(nonblock = true)
-    if nonblock
-      Process.kill(9, self.pid) if self.pid.to_i > 0
-    else
-      while running?
-        Process.kill(9, self.pid) if self.pid.to_i > 0
-      end
+  def stop!
+    Process.kill('SIGINT', pid)
+  rescue Errno::ESRCH => e # no such pid running
+    logger.info e.message
+  end
+
+  NONBLOCK_STOP_TIMEOUT = 30.seconds
+  def nonblock_stop!
+    time = Time.current
+    while process_running? && Time.current - time < NONBLOCK_STOP_TIMEOUT
+      Process.kill('SIGINT', pid)
+      sleep(0.2.seconds)
     end
-  rescue
-    retry unless nonblock
+    if Time.current - time >= NONBLOCK_STOP_TIMEOUT
+      Process.kill('SIGKILL', pid)
+    end
+  rescue Errno::ESRCH => e
+    logger.info e.message
   end
 
   def frequency
-    if self.class::FREQUENCY_UNITS.map(&:to_s).include?(self.frequency_unit.to_s)
-      if self.frequency_quantity.to_i > 0
-        eval "#{self.frequency_quantity}.#{self.frequency_unit}"
-      else
-        raise "Invalid frequency quantity."
-      end
-    else
-      raise "Invalid frequency unit."
+    if FREQUENCY_UNITS.include?(frequency_unit) && frequency_quantity > 0
+      frequency_quantity.send(frequency_unit)
     end
   end
 

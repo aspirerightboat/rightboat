@@ -5,7 +5,7 @@ class RunImportJob
 
   def perform
     import = Import.find(@import_id)
-    if import.active? && !import.running?(false)
+    if import.active? && !import.running?
       import.source_class.new(import).run
     end
   end

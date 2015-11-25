@@ -16,6 +16,8 @@ Rails.application.routes.draw do
           via: :all, constraints: { subdomain: /\A(?!import)/ }
   end
 
+  match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
+
   ActiveAdmin.routes(self)
   namespace :admin do
     resources :countries do

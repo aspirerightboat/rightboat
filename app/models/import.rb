@@ -17,7 +17,6 @@ class Import < ActiveRecord::Base
   # scheduling options
   validates_presence_of :frequency_quantity, :frequency_unit, :tz, if: :active?
   validates_inclusion_of :frequency_unit, within: FREQUENCY_UNITS, if: :active?
-  validates_inclusion_of :tz, within: TZInfo::Timezone.all_identifiers, if: :active?
   validates_numericality_of :frequency_quantity, greater_than: 0, if: :active?
   validate :validate_clockwork_params
   validate :validate_import_params

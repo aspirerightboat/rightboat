@@ -14,11 +14,10 @@
     = f.input :frequency_unit, as: :select, collection: Import::FREQUENCY_UNITS, include_blank: false, label: false
     %span(style="margin-left: 20px;") At:
     = f.input :at, label: false
-    = f.input :tz, as: :select, collection: TZInfo::Timezone.all_identifiers, label: false, include_blank: 'Select TimeZone'
+    = f.time_zone_select :tz, nil, default: 'UTC'
     %li
-      Example: Every 1 day at 01:30<br/><br/>
-      The `At` option is optional and format should be one of: <br/>
-      &nbsp;&nbsp;1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
+      The <i>At</i> option is optional and format should be one of:
+      <br/><b>1:30</b>, <b>**:30</b>, <b>9:**</b>, <b>12:00</b>, <b>18:00</b>, <b>Monday 16:20</b>
   = f.actions
 
 - j_params = Rightboat::Imports::Base.import_types.inject({}) { |h, type| h[type] = Import.source_class(type).validate_param_option; h }

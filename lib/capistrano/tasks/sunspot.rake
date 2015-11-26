@@ -13,13 +13,22 @@ namespace :solr do
     desc "#{command} solr"
     task command do
       on roles(:import) do
-        # if command == 'start' or (test "[ -f #{fetch :solr_pid_path} ]" and test "kill -0 $( cat #{fetch :solr_pid_path} )")
-          within current_path do
+        within current_path do
+          if fetch(:rails_env, '').to_s == 'staging'
+            def solr_cmd(cmd)
+              execute :bundle, 'exec', 'sunspot-solr', cmd,
+                      "--port=8983 --solr-home=#{release_path}/solr --data-directory=#{shared_path}/solr/data --pid-dir=#{shared_path}/pids"
+            end
+            start_or_restart = command =~ /start/
+            solr_cmd('stop') if start_or_restart and test "[ -f #{shared_path}/pids/sunspot-solr.pid ]"
+            cmd = start_or_restart ? 'start' : 'stop'
+            solr_cmd(cmd)
+          else
             with rails_env: fetch(:rails_env, 'production') do
               execute fetch(:solr_cmd) % {cmd: command}
             end
           end
-        # end
+        end
       end
     end
   end
@@ -30,7 +39,7 @@ namespace :solr do
   #   invoke 'solr:start'
   # end
 
-  after 'deploy:finished', 'solr:restart' unless ENV['SKIP_SOLR_RESTART']
+  after 'deploy:finished', 'solr:restart'
 
   desc 'reindex the whole solr database'
   task :reindex do

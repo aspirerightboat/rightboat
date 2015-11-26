@@ -2,12 +2,22 @@ module Rightboat
   module Imports
     module Sources
       class BoatStream < Base
+        BOATSTREAM_XML_PATH = "#{Rails.root}/import_data/boat_stream.xml"
 
         def enqueue_jobs
           @skip_thread_parsing_boat = true
-          file = "#{Rails.root}/import_data/boat_stream.xml"
-          log "Parsing file #{file}"
-          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_ids)).parse_file(file)
+          download_latest_file if Rails.env.production? # sftp access is configured for import.rightboat.com server only
+          log "Parse file #{BOATSTREAM_XML_PATH}"
+          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_ids)).parse_file(BOATSTREAM_XML_PATH)
+        end
+
+        def download_latest_file
+          log 'connect to sftp'
+          sftp = 'sshpass -e sftp -oBatchMode=no -b - rightboats@elba.boats.com'
+          remote_file = `echo 'ls -t upload/*.xml' | #{sftp} | grep -v "sftp>" | head -n1`.strip
+
+          log "Download file #{remote_file}"
+          `echo "get -P #{remote_file} #{BOATSTREAM_XML_PATH}" | #{sftp}`
         end
 
         def self.validate_param_option

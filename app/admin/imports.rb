@@ -37,14 +37,16 @@ ActiveAdmin.register Import do
   index download_links: [:csv] do
     column :id
     column :user, sortable: :user_id
-    column :active
     column 'Scheduling Status' do |job|
-      status = job.status
-      case status
-        when /running/i then status_tag(status, :ok)
-        when /loading/i then status_tag(status, :yes)
-        when /waiting/i then status_tag(status, :no)
-        when /inactive/i then status_tag(status, :error)
+      case
+      when job.loading?
+        status_tag('Loading', :yes)
+      when job.process_running?
+        status_tag('Running', :ok)
+      when job.active?
+        status_tag("Each #{job.frequency_quantity} #{job.frequency_unit} at #{job.at} #{job.tz}", :no)
+      else
+        status_tag('Inactive', :error)
       end
     end
     column :import_type
@@ -64,9 +66,8 @@ ActiveAdmin.register Import do
     end
 
     actions do |job|
-      if job.running?
-        # only show Stop button when rake task gets started
-        item 'Stop', stop_admin_import_path(job), method: :post, class: 'job-action job-action-danger' if job.running?(false)
+      if job.process_running?
+        item 'Stop', stop_admin_import_path(job), method: :post, class: 'job-action job-action-danger'
       elsif job.active? && job.valid?
         item 'Run', run_admin_import_path(job), method: :post, class: 'job-action'
       end

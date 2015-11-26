@@ -102,10 +102,11 @@ module Rightboat
       length_stats = search.stats(:length_m)
 
       country_facet = search.facet(:country_id).rows
-      countries_data = Country.where(id: country_facet.map(&:value)).order(:name).pluck(:id, :name).map do |id, name|
-        count = country_facet.find { |x| x.value == id }.count
+      filtered_country_ids = country_facet.map(&:value) + (country.presence || [])
+      countries_data = Country.where(id: filtered_country_ids).order(:name).pluck(:id, :name).map do |id, name|
+        count = country_facet.find { |x| x.value == id }.try(:count) || 0
         [id, name, count]
-      end.sort_by(&:third).reverse #.map { |id, name, count| ["#{name} (#{count})", id] }
+      end.sort_by(&:third).reverse
 
       @facets_data = {
           price_min:  (price_stats.data && price_stats.min.try(:floor)) || PRICES_RANGE.min,

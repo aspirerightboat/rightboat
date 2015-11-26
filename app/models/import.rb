@@ -44,7 +44,7 @@ class Import < ActiveRecord::Base
   end
 
   def process_running?
-    pid > 0 && (Process.getpgid(pid) rescue nil).present?
+    pid && pid > 0 && (Process.getpgid(pid) rescue nil).present?
   end
 
   def run!

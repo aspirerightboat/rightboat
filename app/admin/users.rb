@@ -96,9 +96,9 @@ ActiveAdmin.register User do
     if boats_count > 0 || inactive_count > 0
       s << '<p>'
       # s << link_to('Delete all permanently', {action: :activate_boats, id: user, do: :delete_perm}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
-      s << link_to('Delete all', {action: :activate_boats, id: user, do: :delete}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
-      # s << link_to('Mark all as deleted', {action: :activate_boats, id: user, do: :mark_deleted}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
-      # s << link_to('Unmark all as deleted', {action: :activate_boats, id: user, do: :unmark_deleted}, method: :post, class: 'button', style: 'margin-bottom: 8px', data: {disable_with: 'working...'}) if inactive_count > 0
+      # s << link_to('Delete all', {action: :activate_boats, id: user, do: :delete}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
+      s << link_to('Deactivate all', {action: :activate_boats, id: user, do: :mark_deleted}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
+      s << link_to('Activate all', {action: :activate_boats, id: user, do: :unmark_deleted}, method: :post, class: 'button', data: {disable_with: 'working...'}) if inactive_count > 0
       s << '</p><p>'
       s << link_to('View all', admin_boats_path(q: {user_id_eq: user.id}, commit: 'Filter', order: 'id_desc'))
       s << '</p>'
@@ -110,8 +110,8 @@ ActiveAdmin.register User do
     case params[:do]
     when 'delete_perm' then resource.boats.each { |b| b.destroy(:force) }
     when 'delete' then resource.boats.each { |b| b.destroy }
-    when 'mark_deleted' then resource.boats.not_deleted.update_all(deleted_at: Time.current)
-    when 'unmark_deleted' then resource.boats.deleted.update_all(deleted_at: nil)
+    when 'mark_deleted' then resource.boats.not_deleted.each { |b| b.touch(:deleted_at) }
+    when 'unmark_deleted' then resource.boats.deleted.each { |b| b.update_attribute(:deleted_at, nil) }
     end
 
     redirect_to (request.referer || {action: :index}), notice: "For all boats of #{resource.name} action was taken #{params[:do]}d"

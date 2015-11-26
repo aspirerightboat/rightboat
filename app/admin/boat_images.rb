@@ -65,22 +65,33 @@ ActiveAdmin.register BoatImage do
     end
   end
 
-  sidebar 'Tools', only: [:index] do
+  sidebar 'Boat Tools', only: [:index] do
     if (boat_id = (params[:q] && params[:q][:boat_id_equals])).present?
-      link_to 'View boat', admin_boat_path(Boat.find(boat_id))
+      s = '<p>'
+      s << link_to('View boat', admin_boat_path(Boat.find(boat_id)))
+      s << '</p><p>'
+      s << link_to('Delete boat images', {action: :delete_boat_images, boat_id: boat_id}, method: :post, class: 'button', data: {disable_with: 'working...', confirm: 'Are you sure?'})
+      s << '</p>'
+      s.html_safe
     end
   end
 
   member_action :inc_pos, method: :post do
     i = BoatImage.find(params[:id])
     i.update_attribute(:position, (i.position || 0) + 1)
-    redirect_to request.referer || admin_root_path
+    redirect_to request.referer || admin_boat_images_path
   end
 
   member_action :dec_pos, method: :post do
     i = BoatImage.find(params[:id])
     i.update_attribute(:position, (i.position || 0) - 1)
-    redirect_to request.referer || admin_root_path
+    redirect_to request.referer || admin_boat_images_path
+  end
+
+  collection_action :delete_boat_images, method: :post do
+    boat = Boat.find(params[:boat_id])
+    cnt = boat.boat_images.destroy_all.size
+    redirect_to request.referer || admin_boat_images_path, notice: "#{cnt} images destroyed"
   end
 
 end

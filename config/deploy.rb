@@ -10,7 +10,7 @@ set :format, :pretty
 set :log_level, :debug
 set :pty, true
 set :linked_files, %w(config/database.yml config/secrets.yml config/application.yml config/smtp.yml public/sitemap.xml.gz public/robots.txt)
-set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/uploads solr/data import_data)
+set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/uploads public/boat_images solr/data import_data)
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -28,7 +28,7 @@ require 'capistrano-db-tasks'
 # if you haven't already specified
 #set :rails_env, "production"
 # if you want to remove the local dump file after loading
-set :db_local_clean, true
+set :db_local_clean, false
 # if you want to remove the dump file from the server after downloading
 set :db_remote_clean, true
 # if you want to exclude table from dump

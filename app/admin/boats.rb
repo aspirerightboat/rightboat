@@ -18,6 +18,7 @@ ActiveAdmin.register Boat do
   filter :boat_type_name, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
 
   index do
+    selectable_column
     column :id
     column :images do |boat|
       if boat.primary_image
@@ -48,7 +49,7 @@ ActiveAdmin.register Boat do
     end
     actions do |boat|
       item 'Stats', statistics_admin_boat_path(boat), class: 'member_link'
-      item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link'
+      item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link', method: :post
       item 'PDF', boat_pdf_path(boat), target: '_blank', class: 'member_link'
     end
   end
@@ -91,17 +92,26 @@ ActiveAdmin.register Boat do
 
   if !Rails.env.production?
     sidebar 'Tools', only: [:index] do
-      res = link_to('Delete All Boats', {action: :delete_all_boats}, method: :post, class: 'button', style: 'margin-bottom: 10px',
+      link_to('Delete All Boats', {action: :delete_all_boats}, method: :post, class: 'button', style: 'margin-bottom: 10px',
               data: {confirm: 'Are you sure you want to delete all boat data?', disable_with: 'Deleting...'})
-      res << link_to('Activate All Models', {action: :activate_all_models}, method: :post, class: 'button')
-      res
     end
   end
 
   sidebar 'Tools', only: [:show, :edit] do
-    link_to boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat)
-    link_to('Delete images', {action: :delete_images}, method: :post, confirm: 'Are you sure?', disable_with: 'Deleting...') if boat.boat_images.any?
-    link_to 'Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}) if boat.boat_images.any?
+    img_cnt = boat.boat_images.not_deleted.count
+    s = ''
+    s << "<p>Images count: <b>#{img_cnt}</b></p>"
+    if boat.boat_images.any?
+      s << '<p>'
+      s << link_to('Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}))
+      s << '</p><p>'
+      s << link_to('Delete images', {action: :delete_images}, method: :post, class: 'button',
+                   data: {confirm: 'Are you sure?', disable_with: 'Working...'})
+      s << link_to(boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat), method: :post, class: 'button',
+                   data: {confirm: 'Are you sure?', disable_with: 'Working...'})
+      s << '</p>'
+    end
+    s.html_safe
   end
 
   member_action :statistics, method: :get do
@@ -110,19 +120,27 @@ ActiveAdmin.register Boat do
     @monthly = Rightboat::Statistics.monthly_boat_stats(@boat)
   end
 
-  member_action :toggle_active, method: :get do
+  member_action :toggle_active, method: :post do
     boat = Boat.find_by(slug: params[:id])
     activate = boat.deleted?
-    activate ? boat.revive : boat.destroy
+    activate ? boat.deleted_at = nil : boat.touch(:deleted_at)
 
-    redirect_to (request.referer || {action: :index}), notice: "boat #{boat.slug} was #{activate ? 'activated' : 'deactivated'}"
+    redirect_to (request.referer || {action: :index}), notice: "boat id=#{boat.id} was #{activate ? 'activated' : 'deactivated'}"
   end
 
   member_action :delete_images, method: :post do
     boat = Boat.find_by(slug: params[:id])
-    boat.boat_images.destroy_all
+    cnt = boat.boat_images.destroy_all.size
 
-    redirect_to (request.referer || {action: :index}), notice: "Images was deleted for boat #{boat.slug}"
+    redirect_to (request.referer || {action: :index}), notice: "#{cnt} images was deleted for boat id=#{boat.id}"
+  end
+
+  batch_action :delete_images do |ids|
+    cnt = 0
+    Boat.includes(:boat_images).find(ids).each do |b|
+      cnt += b.boat_images.destroy_all.size
+    end
+    redirect_to collection_path, notice: "#{cnt} boat images was deleted"
   end
 
   collection_action :delete_all_boats, method: :post do
@@ -135,11 +153,4 @@ ActiveAdmin.register Boat do
     redirect_to(action: :index)
   end
 
-  collection_action :activate_all_models, method: :post do
-    Boat.update_all(deleted_at: nil); Boat.reindex
-    Import.update_all(active: true)
-    Sunspot.commit
-
-    redirect_to({action: :index}, {notice: 'All models was activated'})
-  end
 end

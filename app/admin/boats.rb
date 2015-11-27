@@ -123,7 +123,7 @@ ActiveAdmin.register Boat do
   member_action :toggle_active, method: :post do
     boat = Boat.find_by(slug: params[:id])
     activate = boat.deleted?
-    activate ? boat.deleted_at = nil : boat.touch(:deleted_at)
+    activate ? boat.update(deleted_at: nil) : boat.touch(:deleted_at)
 
     redirect_to (request.referer || {action: :index}), notice: "boat id=#{boat.id} was #{activate ? 'activated' : 'deactivated'}"
   end

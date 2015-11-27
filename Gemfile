@@ -85,11 +85,11 @@ group :development, :test do
   gem 'letter_opener'
   gem 'quiet_assets'
   gem 'bullet'
+  gem 'wkhtmltopdf-binary'
 end
 
 group :development, :staging do
   gem 'sunspot_solr'
-  gem 'wkhtmltopdf-binary'
 end
 
 group :production, :staging do

@@ -8,7 +8,7 @@
     %p Seen a boat you like? Favourites allow you to save them so that you can find them quickly again.
     #favourites.row
       - @favourites.each do |favourite|
-        - if boat = favourite.boat
+        - if (boat = favourite.boat)
           = render layout: 'member/shared/boat', locals: {boat: boat} do
             .boat-links.boat-links-bottom
               .boat-price
@@ -18,3 +18,5 @@
 
   .top-tip
     *Top Tip: Make sure you're the first to know if anything changes with your favourite boats by setting your #{link_to 'alerts', member_user_alert_path}.
+
+= render 'shared/enquiry_popup'

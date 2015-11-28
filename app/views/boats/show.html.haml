@@ -1,4 +1,4 @@
-- @page_title = "#{@boat.to_s.truncate(64)}"
+- @page_title = @boat.to_s.truncate(64)
 - description = @boat.description ? truncate(@boat.description.gsub('&lt;br /&gt;', ' '), length: 480, omission: 'zzzzz', escape: false).gsub(/[^>.!]+zzzzz/, '') : ''
 - @page_description = reduced_description(description)
 - @canonical_url = boat_url(@boat.slug)
@@ -79,6 +79,8 @@
         .col-sm-7.col-md-5.col-xs-12
           %h1 About this #{@boat.manufacturer} / #{@boat.model}
           .truncated-description= description.html_safe
+
+= render 'shared/enquiry_popup'
 
 :javascript
   var gallery = null;

@@ -7,6 +7,14 @@ class BrokerInfo < ActiveRecord::Base
 
   after_save :change_lead_price
 
+  def distribution_options
+    if user && user.source == 'eyb' && user.imports.active.any?
+      LEAD_EMAIL_DISTRIBUTIONS + ['user_and_eyb']
+    else
+      LEAD_EMAIL_DISTRIBUTIONS
+    end
+  end
+
   private
 
   def change_lead_price

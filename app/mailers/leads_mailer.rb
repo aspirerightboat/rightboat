@@ -77,6 +77,7 @@ class LeadsMailer < ApplicationMailer
     dist =  @boat.user.broker_info.lead_email_distribution
     to_emails << user_email if dist['user']
     to_emails << office_email if dist['office']
+    to_emails << 'info@eyb.fr' if dist['eyb']
     to_emails << 'info@rightboat.com'
     to_emails.uniq!
 

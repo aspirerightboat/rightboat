@@ -44,7 +44,7 @@ ActiveAdmin.register Import do
       when job.process_running?
         status_tag('Running', :ok)
       when job.active?
-        tz = job.tz == 'UTC' ? job.tz : Time.now.in_time_zone(job.tz).strftime('%:::z')
+        tz = (job.tz == 'UTC' || job.tz.blank?) ? job.tz : Time.now.in_time_zone(job.tz).strftime('%:::z')
         status_tag(:no, :no, label: "Each #{job.frequency_quantity} #{job.frequency_unit} at #{job.at} #{tz}")
       else
         status_tag('Inactive', :error)

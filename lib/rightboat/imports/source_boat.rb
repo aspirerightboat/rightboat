@@ -212,7 +212,7 @@ module Rightboat
           img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
           img.cache_file_from_source_url
           if target.new_record?
-            if img.file.present?
+            if img.file_exists?
               target.boat_images << img
               self.images_count += 1
             end

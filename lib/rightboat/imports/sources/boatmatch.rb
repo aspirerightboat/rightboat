@@ -15,8 +15,14 @@ module Rightboat
           'type' => :boat_type,
           'description' => :description,
           'lying' => Proc.new do |boat, v|
-            boat.country, _, boat.location = v.to_s.rpartition(', ')
+            tmp = v.split(',')
+            boat.country = tmp.last.try(:strip)
+            boat.location = tmp[0..-2].map(&:strip).join(', ')
           end,
+          'length' => :length_m,
+          'draft' => :draft_m,
+          'beam' => :beam_m,
+          'lwl' => :lwl_m,
           'noofengines' => :engine_count,
           'manufacturer' => :manufacturer,
           'model' => :model,
@@ -40,112 +46,35 @@ module Rightboat
           boat = SourceBoat.new
 
           job[:item].element_children.each do |c|
-            attr = DATA_MAPPINGS[c.name]
-            value = cleanup_string(c.text)
-            if c.name =~ /unit$/
-              attr = c.name.gsub(/unit$/, '')
-              next unless attr
-              v = (attr == 'length') ? boat.length_m : boat.get_missing_attr(attr)
-              cv = convert_unit(v, cleanup_string(c.text))
-              attr == 'length' ? boat.length_m = cv : boat.set_missing_attr(attr, cv)
-            elsif !attr
-              c.name == 'length' ? boat.length_m = value : boat.set_missing_attr(c.name, value)
-            elsif attr.is_a?(Proc)
-              attr.call(boat, c)
+            key = c.name
+            val = cleanup_string(c.text)
+            next if val.blank?
+
+            if attr = DATA_MAPPINGS[key]
+              if attr.is_a?(Proc)
+                attr.call(boat, val)
+              else
+                boat.send("#{attr}=", val)
+              end
             else
-              boat.send("#{attr}=", value)
+              if key =~ /unit$/
+                attr = key.gsub(/unit$/, '')
+                unit = cleanup_string(c.text)
+                if %w(length beam draft lwl).include?(attr)
+                  attr_m = attr + '_m'
+                  cv = convert_unit(boat.send(attr_m), unit)
+                  boat.send("#{attr_m}=", cv)
+                else
+                  cv = convert_unit(boat.get_missing_attr(attr), unit)
+                  boat.set_missing_attr(attr, cv)
+                end
+              else
+                boat.set_missing_attr(key, val)
+              end
             end
           end
 
-        end
-
-        class Parser < Nokogiri::XML::SAX::Document
-          attr_accessor :boats
-          def initialize(member_id, boats, source_id)
-            @tree = []
-            @member_id = member_id
-            @boats = boats
-            @source_id = source_id
-          end
-
-          def start_element el, attr = []
-            @el = el
-            @attr = {}
-            attr.each do |a|
-              k,v = a
-              @attr[k] = v
-            end
-            @char = ""
-            @tree.push(el)
-            if el == "boat"
-              @boat = Imports::Boat.new
-            end
-          end
-
-          def characters char
-            return if @boat.nil?
-            char.strip!
-            return if (char.length == 0)
-            @char += char
-          end
-
-          def process
-            return if @boat.nil?
-            c = @char.to_s
-            #puts "#{@tree.join('>')} = #{@char}"  #useful for debugging
-            case @el
-              when "id"
-                @boat.id = c
-              when "manufacturer"
-                @boat.manufacturer = c
-              when "model"
-                @boat.model = c
-              when "price"
-                @boat.price = c
-              when "currency"
-                @boat.currency = c.upcase
-              when "taxstatus"
-                #handle this
-                @boat.vat_rate  = c
-              when "fuel"
-                @boat.fuel_type = c
-              when "year"
-                @boat.year_built = c
-              when "lying"
-                @boat.location, @boat.country = c.split(/\s*,\s*/)
-              when "description"
-                @boat.description = c
-              when "length"
-                @boat.length_ft_in = c
-              # @boat.length_m = c.to_f*0.3048
-              when "beam"
-                @boat.beam_ft = c
-              when "draft"
-                @boat.draft_ft = c
-              when "displacement"
-                @boat.displacement_kgs = c
-              when "url_pic"
-                @boat.images << c
-            end
-          end
-
-          def end_element el
-            @last_char = @char
-            process
-            @tree.pop
-            if el == "boat" && @boat
-              @boats << @boat.dup
-              @boat = nil
-            end
-          end
-        end
-
-        def process_advert id
-          #NOT SURE HOW THIS IS GOING TO WORK YET
-        end
-
-        def get_ids
-          @adverts.map(&:ref)
+          boat
         end
       end
     end

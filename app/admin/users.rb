@@ -83,7 +83,7 @@ ActiveAdmin.register User do
         ff.input :additional_email
         ff.input :vat_number
         ff.input :logo
-        ff.input :lead_email_distribution, as: :select, collection: BrokerInfo::LEAD_EMAIL_DISTRIBUTIONS
+        ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
       end
     end
     f.actions

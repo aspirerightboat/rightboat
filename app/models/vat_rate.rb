@@ -16,7 +16,7 @@ class VatRate < ActiveRecord::Base
   def tax_status(activated = nil)
     is_activated = activated.nil? ? true : activated
     if is_activated
-      tax_paid?(activated) ? 'Paid' : 'Not Paid'
+      tax_paid?(activated) ? 'Tax Paid' : 'Tax Unpaid'
     else
       'NA'
     end

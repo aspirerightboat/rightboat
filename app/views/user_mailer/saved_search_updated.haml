@@ -5,19 +5,21 @@
   New listings have been posted to Rightboat that match your following saved #{t('search_plural', count: @searches.size)}:
 
 - @searches.each do |saved_search, new_boats|
-  %p
-    Search for #{saved_search.search_title}:
-  %ul
-    - new_boats.each do |boat|
-      %li #{link_to boat.manufacturer_model, boat_url(boat)}
-  -#%p
-  -#  #{link_to 'Rerun the search', search_url(saved_search.to_search_params)}
-  -#  <br>#{link_to 'Turn this search alert off', member_saved_searches_url}
+  %p Search for #{saved_search.search_title}:
+  %table
+    - new_boats.each_with_index do |boat, i|
+      %tr
+        %td= render 'boats/mail_thumb', boat: boat, visible: i < 3
+  - if new_boats.count > 3
+    .clear
+      = link_to 'View More >', search_url(saved_search.to_search_params), id: 'view-more'
+  %br
 
-%p
-  You can manage your alert and email settings
-  from your #{link_to 'My Alerts', member_user_alert_url}
-  page within <i>My Rightboat</i>.
+%p You can manage your alerts and email settings from the #{link_to 'My Alerts', member_user_alert_url} page within #{link_to 'My Rightboat', member_root_url}.
+
+%p We will keep you up to date with new listings, price changes and great discounts and offers from Rightboat.
+
+%br
 %p
   Kind regards,
   %br

@@ -80,6 +80,7 @@ Rails.application.configure do
   config.action_controller.default_url_options = { host: 'staging.rightboat.com' }
   config.action_mailer.default_url_options = { host: 'staging.rightboat.com' }
   config.action_mailer.delivery_method = :smtp
+  config.action_mailer.asset_host = 'http://staging.rightboat.com/'
   config.action_mailer.smtp_settings = {
       authentication: :plain,
       address: 'smtp.gmail.com',

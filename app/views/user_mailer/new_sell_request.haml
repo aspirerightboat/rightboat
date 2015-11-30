@@ -26,7 +26,7 @@
   - @boat.boat_specifications.each do |spec|
     #{spec.specification.display_name}: #{spec.value}
     %br
-  Description: #{@boat.description}
+  Description: #{@boat.description.html_safe}
   %br
   Owners Comment: #{@boat.owners_comment}
   %br

@@ -37,6 +37,7 @@ class LeadsMailer < ApplicationMailer
 
     to_email = [RBConfig[:invoicing_report_email]]
     to_email << 'info@rightboat.com'
+    to_email.uniq!
     mail(to: to_email, subject: "Invoicing Report #{Time.current.to_date.to_s(:short)}")
   end
 
@@ -46,8 +47,9 @@ class LeadsMailer < ApplicationMailer
     @broker_info = @broker.broker_info
     @leads = @invoice.enquiries.includes(:boat).order('id DESC')
 
-    to_email = [STAGING_EMAIL || @broker.email]
+    to_email = [STAGING_EMAIL] # do not send emails to brokers temporarily # [STAGING_EMAIL || @broker.email]
     to_email << 'info@rightboat.com'
+    to_email.uniq!
     mail(to: to_email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
@@ -56,6 +58,7 @@ class LeadsMailer < ApplicationMailer
 
     to_email = [STAGING_EMAIL || @lead.boat.user.email]
     to_email << 'info@rightboat.com'
+    to_email.uniq!
     mail(to: to_email, subject: "Lead reviewed Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
@@ -81,6 +84,6 @@ class LeadsMailer < ApplicationMailer
     to_emails << 'info@rightboat.com'
     to_emails.uniq!
 
-    return { to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}" }
+    {to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}"}
   end
 end

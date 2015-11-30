@@ -1,10 +1,66 @@
-!!!
-%html
+!!! Strict
+%html{xmlns: 'http://www.w3.org/1999/xhtml'}
   %head
-    %title Rightboat
-    %meta(content="text/html; charset=utf-8" http-equiv="Content-Type")
+    %meta{content: 'text/html; charset=utf-8', 'http-equiv' => 'Content-Type'}
+    %meta{content: 'width=device-width', name: 'viewport'}
+    %title Rightboat Mail
     = stylesheet_link_tag 'mailer', media: 'all'
-    :css
-      a:visited, a:hover, a:focus { color: #149aff; }
-  %body
-    = yield
+    :javascript
+      function showMore() {
+        alert('fasdfa');
+      }
+
+  %body(bgcolor='#e2f3fb' leftmargin='0' marginheight='0' marginwidth='0' topmargin='0')
+    %table.head-wrap
+      %tr
+        %td
+        %td.container(align='')
+          %table
+            %tr
+              %td= image_tag 'mail_header.png', alt: 'Find Your Rightboat', class: 'img-responsive'
+            %tr
+              %td
+                .content.text-right= link_to 'Log in', new_user_session_url
+        %td
+
+    %table.body-wrap(bgcolor='')
+      %tr
+        %td
+        %td.container(align='' bgcolor='#FFFFFF')
+          .content
+            %table(bgcolor='')
+              = yield
+        %td
+
+    %table.footer-wrap
+      %tr
+        %td
+        %td.container(bgcolor='#13032b')
+          .content
+            .row
+              .col.col-3
+                %ul.list-unstyled.left-text-pad
+                  %li= link_to 'About Us', root_url(anchor: 'about')
+                  %li= link_to 'Contact Us', contact_home_url
+                  %li= link_to 'Articles and Guides', buyer_guides_url
+                  %li= link_to 'News', articles_url
+              .col.col-3
+                %ul.list-unstyled.left-text-pad
+                  %li= link_to 'Sell my boat', sell_my_boats_home_url
+                  %li= link_to 'Berths', root_url(anchor: 'berths-popup')
+                  %li= link_to 'Finance', root_url(anchor: 'finance-popup')
+                  %li= link_to 'Insurance', root_url(anchor: 'insurance-popup')
+              .col.col-3
+                %ul.list-unstyled.left-text-pad
+                  %li= link_to 'Policies', privacy_policy_home_url
+                  %li= link_to 'Terms and Conditions', toc_home_url
+                  %li= mail_to 'info@rightboat.com', 'info@rightboat.com'
+                  %li= link_to 'Cookies policy', cookies_policy_home_url
+              .col.col-3
+                %ul.list-unstyled.left-text-pad.last
+                  %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'social-link fb-link', rel: 'nofollow'
+                  %li= link_to '@rightboatdotcom', 'https://www.twitter.com/rightboatdotcom', class: 'social-link tw-link', rel: 'nofollow'
+                  %li= link_to '/rightboat', 'https://www.pinterest.com/rightboat', class: 'social-link pint-link', rel: 'nofollow'
+            .row
+              &copy;#{Date.today.year}&nbsp;&nbsp;&nbsp;Rightboat Ltd - All Rights Reserved
+        %td

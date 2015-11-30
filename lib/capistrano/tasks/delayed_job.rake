@@ -15,7 +15,6 @@ namespace :workers do
     task :setup do
       on roles(delayed_job_roles) do
         upload! StringIO.new(template('dj.monitrc.erb')), "#{shared_path}/dj.monitrc"
-        execute :sudo, 'monit stop dj_rightboat'
       end
     end
 
@@ -49,8 +48,8 @@ namespace :workers do
       on roles(delayed_job_roles) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :bundle, :exec, :'bin/delayed_job', args, :restart
-            # execute :sudo, 'monit restart dj_rightboat'
+            # execute :bundle, :exec, :'bin/delayed_job', args, :restart
+            execute :sudo, 'monit restart dj_rightboat'
           end
         end
       end

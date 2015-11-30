@@ -20,6 +20,7 @@ $ ->
 
     $this = $(e.target) # form
     $phone = $this.find('#phone')
+    $submit = $('button[type="submit"]', $this)
 
     if $phone.is(':visible')
       phoneNumber = $phone.val()
@@ -29,6 +30,7 @@ $ ->
         return false
 
     $this.find('.alert').remove()
+    $submit.attr('disabled', true)
     url = $this.attr('action')
     $.ajax
       url: url
@@ -69,6 +71,8 @@ $ ->
       $.each errors, (k, v)->
         $errors.append(k + ' ' + v + '<br>')
       $this.prepend($errors)
+    .always ->
+      $submit.removeAttr('disabled')
 
   $('.enquiry-form').rbValidetta(onValid: onSubmit)
 

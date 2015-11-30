@@ -27,8 +27,12 @@ $ ->
     $submit = $('button[type="submit"]', $form)
     $form
     .rbValidetta()
-    .on 'ajax:before', (e) -> $submit.addClass('inline-loading')
-    .on 'ajax:complete', (e) -> $submit.removeClass('inline-loading')
+    .on 'ajax:before', (e) ->
+      $submit.addClass('inline-loading')
+      $submit.attr('disabled', true)
+    .on 'ajax:complete', (e) ->
+      $submit.removeClass('inline-loading')
+      $submit.removeAttr('disabled')
     .on 'ajax:success', (e, data, status, xhr) ->
       $('.alert', $form).remove()
       if onComplete

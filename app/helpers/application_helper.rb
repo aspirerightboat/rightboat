@@ -16,8 +16,8 @@ module ApplicationHelper
     key_max = :"#{field}_max"
     min = options[:min] || convert_to_current_unit(field, general_facets[key_min])
     max = options[:max] || convert_to_current_unit(field, general_facets[key_max])
-    v0 = params[key_min].presence || convert_to_current_unit(field, @search_facets.try(:[], key_min))
-    v1 = params[key_max].presence || convert_to_current_unit(field, @search_facets.try(:[], key_max))
+    v0 = params[key_min].presence# || convert_to_current_unit(field, @search_facets.try(:[], key_min))
+    v1 = params[key_max].presence# || convert_to_current_unit(field, @search_facets.try(:[], key_max))
 
     html_options = {
       'data-input' => field,

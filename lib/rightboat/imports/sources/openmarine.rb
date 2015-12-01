@@ -63,11 +63,8 @@ module Rightboat
           handle_offices(offices_node.element_children)
           advert_nodes = inner_nodes['adverts'].element_children
           log "Found #{advert_nodes.size} boats"
-          i = 0
           advert_nodes.each do |advert_node|
             enqueue_job(advert_node: advert_node, office_id: @office_id_by_source_id[advert_node['office_id']])
-            i += 1
-            break if i > 2
           end
         end
 

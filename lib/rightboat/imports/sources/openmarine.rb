@@ -61,11 +61,13 @@ module Rightboat
           inner_nodes = broker_node.element_children.index_by(&:name)
           offices_node = inner_nodes['offices'] || broker_node.at_css('broker_details offices') # http://www.jdyachts.com/datafeed/datafeed.php - here offices are inside broker_details
           handle_offices(offices_node.element_children)
-
           advert_nodes = inner_nodes['adverts'].element_children
           log "Found #{advert_nodes.size} boats"
+          i = 0
           advert_nodes.each do |advert_node|
             enqueue_job(advert_node: advert_node, office_id: @office_id_by_source_id[advert_node['office_id']])
+            i += 1
+            break if i > 2
           end
         end
 
@@ -75,10 +77,11 @@ module Rightboat
 
           office_nodes.each do |office_node|
             nodes = office_node.element_children.index_by(&:name)
-            office_name = clean_text(nodes['office_name'])
-            office = user_offices.find { |o| o.name == office_name } || @user.offices.new(name: office_name)
-            office.name = @user.company_name if !office.name && user_offices.none?
+            office_id = office_node['id']
+            next if office_id.blank?
+            office = user_offices.find { |o| o.source_id == office_id } || @user.offices.new(source_id: office_id)
 
+            office.name = clean_text(nodes['office_name'])
             office.contact_name = (nodes['name'].element_children.map { |node| node.text }.join(' ').strip.presence if nodes['name'])
             office.email = clean_text(nodes['email'])
             office.daytime_phone = clean_text(nodes['daytime_phone'])
@@ -102,7 +105,7 @@ module Rightboat
             office.save! if office.changed?
             address.save! if address.changed?
 
-            @office_id_by_source_id[office_node['id']] = office.id
+            @office_id_by_source_id[office_id] = office.id
           end
         end
 

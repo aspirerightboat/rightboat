@@ -7,8 +7,8 @@ class Office < ActiveRecord::Base
 
   accepts_nested_attributes_for :address
 
-  validates_presence_of :user_id, :name
-  validates_uniqueness_of :name, scope: :user_id
+  validates_presence_of :user_id
+  # validates_uniqueness_of :name, scope: :user_id
 
   before_save :ensure_address
 

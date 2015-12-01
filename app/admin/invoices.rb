@@ -8,7 +8,8 @@ ActiveAdmin.register Invoice do
   filter :user, as: :select, collection: -> { User.companies.order(:company_name, :first_name) }
 
   index do
-    column :user
+    column :id
+    column :user, :user, sortable: 'users.first_name'
     column :subtotal
     column :discount
     column :total_ex_vat
@@ -24,7 +25,7 @@ ActiveAdmin.register Invoice do
 
   form do |f|
     f.inputs do
-      f.input :user, as: :select, collection: -> { User.where(id: f.object.id) }
+      f.input :user
       f.input :subtotal
       f.input :discount_rate
       f.input :discount
@@ -39,6 +40,12 @@ ActiveAdmin.register Invoice do
 
   sidebar 'Tools', only: [:index] do
     link_to('Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button')
+  end
+
+  controller do
+    def scoped_collection
+      Invoice.includes(:user, :enquiries)
+    end
   end
 
   collection_action :generate_invoices, method: :post do

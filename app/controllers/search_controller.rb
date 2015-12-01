@@ -16,7 +16,7 @@ class SearchController < ApplicationController
       object.is_a?(Model) ? object.name_with_manufacturer : object.name
     end
 
-    render json: ret.sort
+    render json: ret.sort_by{|x| x.downcase}
   end
 
   def results

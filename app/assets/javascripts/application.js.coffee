@@ -115,6 +115,8 @@ $ ->
       window.favLink = $(target)
     else
       scrollToTarget(target)
+  else if ['#berths-popup', '#finance-popup', 'insurance-popup'].indexOf(target) > -1 and $('.login-top').length > 0
+    $('#login_popup').modal('show')
 
   $('a[href*=#]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')

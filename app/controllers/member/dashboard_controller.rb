@@ -9,5 +9,8 @@ module Member
       current_user.build_address if current_user && current_user.address.nil?
       current_user.build_information if current_user && current_user.information.nil?
     end
+
+    def discounts
+    end
   end
 end

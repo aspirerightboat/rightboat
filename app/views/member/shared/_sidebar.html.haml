@@ -16,3 +16,5 @@
       - unless current_user.company?
         %li{class: ('active' if controller_name == 'boats')}
           = link_to 'Sell My Boat', member_boats_path
+      %li{class: nav_class_for('member/dashboard#discounts')}
+        = link_to 'Member Offers and Discounts', member_discounts_path

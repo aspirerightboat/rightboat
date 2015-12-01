@@ -6,9 +6,6 @@
   %p We hope you enjoy using the site to search for your right boat!
   %p Please let us know what you think, #{mail_to 'memberservices@rightboat.com', 'get in touch with us'}
   %p Good luck finding your next right boat!
-  %br
-  %p= link_to 'Discounted Boat Show Tickets', member_discounts_path, class: 'btn-flat btn-black'
-  %br
   - unless user_signed_in?
     .alert.alert-warning(role="alert")
       You need to #{link_to 'sign in', '#', class: 'user-login'} to continue.

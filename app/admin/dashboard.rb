@@ -8,9 +8,9 @@ ActiveAdmin.register_page 'Dashboard' do
   beginning_of_last_week = 1.week.ago.beginning_of_week
   beginning_of_last_month= 1.month.ago.beginning_of_month
   total_leads_last_week = Enquiry.where(created_at: beginning_of_last_week..beginning_of_week).count
-  total_approved_leads_last_week = Enquiry.approved.where(created_at: beginning_of_last_week..beginning_of_week).count
+  total_approved_leads_last_week = Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
   total_leads_last_month = Enquiry.where(created_at: beginning_of_last_month..beginning_of_month).count
-  total_approved_leads_last_month = Enquiry.approved.where(created_at: beginning_of_last_month..beginning_of_month).count
+  total_approved_leads_last_month = Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
 
   content title: proc{ I18n.t('active_admin.dashboard') } do
     columns do
@@ -38,7 +38,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Did not run:'
               end
               td class: 'text-red' do
-                text_node Import.joins('LEFT OUTER JOIN import_trails ON import_trails.import_id = imports.id').where('import_trails.import_id IS NULL OR import_trails.created_at < ?', Time.now.beginning_of_day).count
+                text_node Import.where('queued_at IS NULL OR queued_at < ?', Time.now.beginning_of_day).count
               end
             end
             tr do
@@ -61,7 +61,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Leads today:'
               end
               td do
-                text_node Enquiry.where('updated_at > ?', beginning_of_day).count
+                text_node Enquiry.approved.where('updated_at > ?', beginning_of_day).count
               end
             end
             tr do
@@ -69,7 +69,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Leads this week:'
               end
               td class: 'text-green' do
-                text_node Enquiry.where('updated_at > ?', beginning_of_week).count
+                text_node Enquiry.approved.where('updated_at > ?', beginning_of_week).count
               end
             end
             tr do
@@ -77,7 +77,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Leads this month:'
               end
               td class: 'text-green' do
-                text_node Enquiry.where('updated_at > ?', beginning_of_month).count
+                text_node Enquiry.approved.where('updated_at > ?', beginning_of_month).count
               end
             end
             tr do
@@ -89,7 +89,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Lead Value last week:'
               end
               td do
-                text_node Enquiry.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -97,7 +97,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Lead Value last month:'
               end
               td do
-                text_node Enquiry.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
               end
             end
           end

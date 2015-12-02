@@ -1,2 +1,7 @@
-Broker requested Quality Check for #{link_to "lead #{@enquiry.id}", lead_url(@enquiry)}
-(#{link_to 'Edit Lead', edit_admin_lead_url(@enquiry)})
+%p Dear Rightboat Admin,
+%p #{@enquiry.boat.user.name} has requested a quality check for #{link_to "##{@enquiry.id}", lead_url(@enquiry)}.
+%p #{link_to "View lead", lead_url(@enquiry)}
+%p Please respond to the client directly.
+%br
+%br
+%p Thank you!

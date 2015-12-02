@@ -29,7 +29,7 @@ class LeadsMailer < ApplicationMailer
     @enquiry = Enquiry.find(enquiry_id)
     to_email = [RBConfig[:lead_quality_check_email]]
     to_email << 'info@rightboat.com'
-    mail(to: to_email, subject: "Broker wants review lead #{@enquiry.id} - Rightboat")
+    mail(to: to_email, subject: "#{@enquiry.boat.user.name} wants to review lead ##{@enquiry.id}")
   end
 
   def invoicing_report(invoice_ids)
@@ -59,7 +59,7 @@ class LeadsMailer < ApplicationMailer
     to_email = [STAGING_EMAIL || @lead.boat.user.email]
     to_email << 'info@rightboat.com'
     to_email.uniq!
-    mail(to: to_email, subject: "Lead reviewed Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
+    mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
   end
 
   private

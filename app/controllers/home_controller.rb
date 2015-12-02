@@ -35,12 +35,15 @@ class HomeController < ApplicationController
     @page_title = 'Privacy Policy'
   end
 
-
   def cookies_policy
     @page_title = 'Cookies Policy'
   end
 
   def confirm_email
+  end
+
+  def welcome
+    render layout: false
   end
 
   private

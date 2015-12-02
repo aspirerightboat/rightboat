@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   root to: 'home#index'
+  get 'news/newsletter-2015-12', to: 'home#welcome', as: :newsletter
 
   controller :search do
     get 'manufacturer-model',

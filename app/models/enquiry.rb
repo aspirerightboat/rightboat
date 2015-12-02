@@ -23,6 +23,10 @@ class Enquiry < ActiveRecord::Base
   after_update :create_lead_trail
   after_update :admin_reviewed_email
 
+  scope :approved, -> { where(status: 'approved') }
+  scope :rejected, -> { where(status: 'rejected') }
+  scope :invoiced, -> { where(status: 'invoiced') }
+
   def self.not_invoiced
     where(invoice_id: nil)
   end

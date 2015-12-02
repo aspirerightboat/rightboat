@@ -10,4 +10,8 @@ module LeadsHelper
                  end
     content_tag :span, status.titleize, class: "label label-#{label_type}"
   end
+
+  def approved_percentage(total, approved)
+    total > 0 ? "#{((approved.to_f / total) * 10000).round.to_f / 100} %" : '-'
+  end
 end

@@ -1,2 +1,15 @@
+%p Dear #{@lead.boat.user.name}
+
+- if @lead.status == 'rejected'
+  %p We have reviewed #{@lead.name}, #{link_to "##{@lead.id}", lead_url(@lead.id)} enquiry and find that this was not a genuine lead.
+  %p Therefore you will not be charged for this lead.
+- elsif @lead.status == 'approved'
+  %p We have reviewed #{@lead.name}, #{link_to "##{@lead.id}", lead_url(@lead.id)} enquiry and find this to be a genuine lead.
+  %p Therefore you will be charged for this lead.
+
+%br
+%br
 %p
-  #{link_to "Lead ##{@lead.id}", lead_url(@lead)} was reviewed by Administration and was <b>#{@lead.status}</b>
+  Kind regards
+  %br
+  The #{link_to 'Rightboat', root_url} Team

@@ -1,7 +1,14 @@
 class CreateInvoicesJob
-  def perform
-    leads = Enquiry.where(invoice_id: nil).where(status: 'approved').where('created_at < ?', Time.current.beginning_of_day)
-                .includes(boat: [:currency, {user: :broker_info}]).to_a
+  def perform(only_broker_id = nil)
+    rel = Enquiry.not_deleted.where(invoice_id: nil).where(status: 'approved')
+              .where('enquiries.created_at < ?', Time.current.beginning_of_day)
+              .includes(boat: [:currency, {user: :broker_info}])
+
+    if only_broker_id
+      rel = rel.references(:boat).where(boats: {user_id: only_broker_id})
+    end
+
+    leads = rel.to_a
     invoice_ids = leads.group_by { |lead| lead.boat.user }.map do |broker, leads|
       broker_info = broker.broker_info
       i = Invoice.new

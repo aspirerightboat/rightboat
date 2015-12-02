@@ -39,7 +39,9 @@ ActiveAdmin.register Invoice do
   end
 
   sidebar 'Tools', only: [:index] do
-    link_to('Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button')
+    s = content_tag(:p, link_to('Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button'))
+    s << content_tag(:p, link_to('Gen Invoices for user=315', {action: :generate_test_invoices}, method: :post, class: 'button'))
+    s
   end
 
   controller do
@@ -50,6 +52,11 @@ ActiveAdmin.register Invoice do
 
   collection_action :generate_invoices, method: :post do
     CreateInvoicesJob.new.perform
+    redirect_to({action: :index}, {notice: 'Invoices were generated and report email was sent'})
+  end
+
+  collection_action :generate_test_invoices, method: :post do
+    CreateInvoicesJob.new.perform(315)
     redirect_to({action: :index}, {notice: 'Invoices were generated and report email was sent'})
   end
 

@@ -9,6 +9,14 @@ namespace :deploy do
 end
 
 namespace :solr do
+  desc 'Setup monitrc for solr process'
+  task :setup do
+    on roles(:import) do
+      conf = template('solr.monitrc.erb', solr_cmd: fetch(:solr_cmd), solr_pid: fetch(:solr_pid))
+      upload! StringIO.new(conf), "#{shared_path}/solr.monitrc"
+    end
+  end
+
   %w[start stop restart].each do |command|
     desc "#{command} solr"
     task command do

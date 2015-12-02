@@ -48,15 +48,16 @@ set :disallow_pushing, true
 
 
 namespace :deploy do
+  after :check,   :'solr:setup'
   after :check,   :'workers:delayed_job:setup'
   after :check,   :'workers:delayed_job:stop'
   after :restart, :'workers:clockwork:restart'
   after :restart, :'workers:delayed_job:start'
 end
 
-def template(file)
+def template(file, locals = {})
   erb = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
   b = binding
-  b.local_variable_set(:rails_env, fetch(:rails_env, 'production'))
+  locals.each { |k, v| b.local_variable_set(k, v) }
   ERB.new(erb).result(b)
 end

@@ -27,12 +27,12 @@ $ ->
     $submit = $('button[type="submit"]', $form)
     $form
     .rbValidetta()
-    .on 'ajax:before', (e) ->
+    .on 'ajax:beforeSend', (e) ->
       $submit.addClass('inline-loading')
-      $submit.attr('disabled', true)
+      $submit.prop('disabled', true)
     .on 'ajax:complete', (e) ->
       $submit.removeClass('inline-loading')
-      $submit.removeAttr('disabled')
+      $submit.prop('disabled', false)
     .on 'ajax:success', (e, data, status, xhr) ->
       $('.alert', $form).remove()
       if onComplete
@@ -42,10 +42,13 @@ $ ->
       else if message = $form.data('message')
         $('<div class="alert alert-info">' + message + '</div>').prependTo($form).hide().show(200)
     .on 'ajax:error', (e, xhr) ->
-      $('.alert', e.target).remove()
+      $('.alert', $form).remove()
       if xhr.status == '200' # goes here when attached file
-        window.location = JSON.parse(xhr.responseText).location
+        window.location = xhr.responseJSON.location
       else
-        $errors =  $('<div class="alert alert-danger">').prependTo(e.target)
-        $.each xhr.responseJSON, (i, msg) ->
+        json = xhr.responseJSON
+        errors = if $.isArray(json) then json else ['Something went wrong']
+        $errors =  $('<div class="alert alert-danger">').prependTo($form)
+        $.each errors, (i, msg) ->
           $errors.append('<div>' + msg + '</div>')
+        $errors.hide().show(200)

@@ -12,7 +12,7 @@ set :branch, ENV['BRANCH'] || 'master'
 set :passenger_roles, %w(app app1 app2)
 
 set :solr_data_path, '/var/solr/data'
-# set :solr_pid_path, '/var/solr/solr-8983.pid'
+set :solr_pid, '/var/solr/solr-8983.pid'
 set :solr_cmd, 'sudo /usr/bin/service solr %{cmd}'
 
 

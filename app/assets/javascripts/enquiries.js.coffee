@@ -1,54 +1,23 @@
 $ ->
-  # $('#enquiry_popup').on 'show.bs.modal', ->
-  #   $('form', @).renderCaptcha()
+# $('#enquiry_popup').on 'show.bs.modal', ->
+#   $('form', @).renderCaptcha()
 
-  phoneModalOpened = false
-  signedIn = false
-
-  $('#enquiry_result_popup').on 'hidden.bs.modal', ->
-    window.location = location.href if signedIn
-
-  $('#have_account').change ->
-    $('.login-toggle').toggleClass('active')
-
-  onSubmit = (e) ->
-    e.preventDefault()
-
-    # prevent spams to submit form
-    if $('#honeypot').val().length != 0
-      return false
-
-    $this = $(e.target) # form
-    $phone = $this.find('#phone')
-    $submit = $('button[type="submit"]', $this)
-
-    if $phone.is(':visible')
-      phoneNumber = $phone.val()
-      if phoneNumber == '' && !phoneModalOpened
-        $('#phone-popup').modal('show')
-        phoneModalOpened = true
-        return false
-
-    $this.find('.alert').remove()
-    $submit.attr('disabled', true)
-    url = $this.attr('action')
-    $.ajax
-      url: url
-      method: 'POST'
-      dataType: 'JSON'
-      data: { enquiry: $this.serializeObject() }
-    .success (enquiry) ->
+  $('.enquiry-form').each ->
+    $form = $(@)
+    $form.on 'ajax:before', (e) ->
+      $phone = $('#enquiry_phone')
+      if $phone.is(':visible') && !$phone.val() && !$('#phone_popup').is(':visible')
+        $('#phone_popup').modal('show')
+        false
+    .on 'ajax:success', (e, data, status, xhr) ->
+      enquiry = xhr.responseJSON
       $('#enquiry_result_popup').each ->
         $(@).displayPopup()
-        signedIn = !!enquiry.have_account
 
-        $('.signup-form-container', @).toggle(!enquiry.user_registered)
-        if !enquiry.user_registered
-          $enq_form = $('.enquiry-form')
-          $('.signup-email', @).val($('.enq-req-email', $enq_form).val())
-          $('select.signup-title', @)[0].selectize.setValue($('.enq-req-title', $enq_form).val())
-          $('.signup-first-name', @).val($('.enq-req-fname', $enq_form).val())
-          $('.signup-last-name', @).val($('.enq-req-lname', $enq_form).val())
+        $form.data('just-logged-in', enquiry.just_logged_in)
+        loggedIn = !$('.user-login').length || $form.data('just-logged-in')
+        $('#logged_in_result').toggleClass('hidden', !loggedIn)
+        $('#logged_out_result').toggleClass('hidden', loggedIn)
 
         $('#broker_name').html(enquiry.broker.name)
         $('#broker_phone').html(enquiry.broker.phone).before(', ') if enquiry.broker.phone
@@ -65,23 +34,27 @@ $ ->
             $('<div class="col-xs-4 col-sm-3 col-lg-2">').append(
               $('<a>').attr('href', '/boats-for-sale/' + @slug).append(
                 $('<img>').attr('src', @primary_image.mini))))
-    .error (resp)->
-      errors = resp.responseJSON.errors
-      $errors = $('<div class="alert alert-danger">')
-      $.each errors, (k, v)->
-        $errors.append(k + ' ' + v + '<br>')
-      $this.prepend($errors)
-    .always ->
-      $submit.removeAttr('disabled')
 
-  $('.enquiry-form').rbValidetta(onValid: onSubmit)
+    $('#enquiry_result_popup').on 'hidden.bs.modal', ->
+      window.location = location.href if $form.data('just-logged-in')
 
-  $('.hide-enquiry ').on 'ajax:success', (e, data, status, xhr) ->
-    $(this).parents('.boat-thumb-container').fadeOut()
+    $('.open-features-popup').click ->
+      $('#features_popup').modal('show')
+
+    $('.enquiry-without-phone').click ->
+      $('.enquiry-form').submit()
+
+    $('.signup-for-pdf-form').on 'ajax:before', (e) ->
+      $('#signup_email').val($('#enquiry_email').val())
+      $('#signup_title').val($('#enquiry_title').val())
+      $('#signup_first_name').val($('#enquiry_first_name').val())
+      $('#signup_last_name').val($('#enquiry_last_name').val())
+      $('#signup_phone').val($('#enquiry_country_code').val() + ' ' + $('#enquiry_phone').val())
+      $('#signup_boat').val($form.data('boat-slug'))
+
+  $('.hide-enquiry').on 'ajax:success', (e, data, status, xhr) ->
+    $(@).closest('.boat-thumb-container').fadeOut()
 
   $('.unhide-enquires').on 'ajax:success', (e, data, status, xhr) ->
     $('.boat-thumb-container').fadeIn()
-
-  $('.enquiry-without-phone').click ->
-    $('.enquiry-form').submit()
 

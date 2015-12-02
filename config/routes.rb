@@ -85,7 +85,8 @@ Rails.application.routes.draw do
   resources :finances, only: [:create]
 
   get 'search', to: 'search#results'
-  post 'boats/:boat_id/request-details', to: 'enquiries#create'
+  post 'boats/:id/request-details', to: 'enquiries#create', as: :request_details
+  post 'signup-and-view-pdf', to: 'enquiries#signup_and_view_pdf', as: :signup_and_view_pdf
   # get 'captcha', to: 'captcha#image'
   # get 'captcha/new', to: 'captcha#new'
 
@@ -139,7 +140,7 @@ Rails.application.routes.draw do
   resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:show, :create]
 
   namespace :member, path: 'my-rightboat' do
-    root to: 'dashboard#index'
+    root to: 'dashboard#index' # member_root_path
     get :about_me, to: 'dashboard#about_me'
     get :discounts, to: 'dashboard#discounts'
     get 'favourites', to: 'favourites#index', as: :favourites

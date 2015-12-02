@@ -8,8 +8,6 @@ window.initBoatView = (el) ->
     url = '/boats/' + boat_id + '/request-details'
     $('.enquiry-form').attr('action', url)
     # $('.enquiry-form').find('#message, #captcha').val('')
-    $('.enquiry-result-container').hide()
-    $('.enquiry-form-container').show()
     $('#enquiry_popup').displayPopup()
     false
 

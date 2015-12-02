@@ -97,6 +97,7 @@ Rails.application.routes.draw do
       get :cookies_policy
       get :sell_my_boats
       get :confirm_email
+      get :welcome
     end
   end
 

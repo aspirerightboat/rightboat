@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   root to: 'home#index'
+  get 'news/newsletter-2015-12', to: 'home#welcome', as: :newsletter
 
   controller :search do
     get 'manufacturer-model',
@@ -97,7 +98,6 @@ Rails.application.routes.draw do
       get :cookies_policy
       get :sell_my_boats
       get :confirm_email
-      get :welcome
     end
   end
 

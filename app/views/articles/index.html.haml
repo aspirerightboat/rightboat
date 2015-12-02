@@ -17,6 +17,8 @@
       #articles-list
         = render @articles
       = paginate @articles, theme: :stories, window: 2
+      %br
+      = link_to 'Newsletter for December 2015', newsletter_path
     .col-sm-4
       = render 'filter'
       #rb-tweets

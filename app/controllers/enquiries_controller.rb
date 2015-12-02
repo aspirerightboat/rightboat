@@ -1,21 +1,37 @@
 class EnquiriesController < ApplicationController
-  before_action :authenticate_user!, except: [:create]
+  before_action :authenticate_user!, except: [:create, :signup_and_view_pdf]
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
   before_action :remember_when_broker_accessed, only: [:show]
 
   def create
-    enquiry = Enquiry.new(enquiry_params)
-
     # disable captcha for easy use
     # if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
     #   enquiry.captcha_correct = false
     # end
+    if !request.xhr?
+      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
+    end
 
-    enquiry.boat = Boat.find(params[:boat_id])
+    just_logged_in = false
+    if params[:have_account].present? && !current_user
+      user = User.find_by(email: params[:email])
+
+      if user && user.valid_password?(params[:password])
+        sign_in(user)
+        user.remember_me! if params[:remember_me]
+        just_logged_in = true
+      else
+        render json: ['Invalid email or password'], root: false, status: 403 and return
+      end
+    end
+
+    enquiry = Enquiry.new(enquiry_params)
+    enquiry.just_logged_in = just_logged_in
+
+    enquiry.boat = Boat.find_by(slug: params[:id])
     if enquiry.save
-      sign_in(enquiry.user) if enquiry.have_account
       # session.delete(:captcha)
       LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
       if enquiry.boat.user.email == 'nick@popsells.com'
@@ -27,7 +43,7 @@ class EnquiriesController < ApplicationController
       render json: enquiry, serializer: EnquirySerializer, root: false
     else
       # session[:captcha] = Rightboat::Captcha.generate
-      render json: enquiry, serializer: ErrorSerializer, status: :unprocessable_entity, root: false
+      render json: enquiry.errors.full_messages, status: 422, root: false
     end
   end
 
@@ -49,11 +65,22 @@ class EnquiriesController < ApplicationController
     redirect_to({action: :show}, {notice: 'Lead will be reviewed by Rightboat staff'})
   end
 
+  def signup_and_view_pdf
+    user = User.new(params.permit(:title, :first_name, :last_name, :email, :password, :password_confirmation))
+    user.role = 'PRIVATE'
+
+    if user.save
+      sign_in(user)
+      render json: {location: boat_pdf_path(params[:boat_id])}
+    else
+      render json: user.errors.full_messages, root: false, status: 422
+    end
+  end
+
   private
 
   def enquiry_params
-    params.require(:enquiry)
-          .permit(:title, :first_name, :surname, :email, :country_code, :phone, :message, :have_account, :password, :honeypot)
+    params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
           .merge({user_id: current_user.try(:id), remote_ip: request.remote_ip, browser: request.env['HTTP_USER_AGENT']})
   end
 

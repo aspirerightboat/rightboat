@@ -1,17 +1,10 @@
 class EnquirySerializer < ActiveModel::Serializer
-  attributes :user_registered, :boat_pdf, :email, :broker, :similar_link, :have_account
+  attributes :just_logged_in, :boat_pdf, :email, :broker, :similar_link
 
   has_many :similar_boats
 
-  delegate :user_signed_in?, to: :scope
-
-  def user_registered
-    user_signed_in? || !!User.find_by_email(object.email)
-  end
-
   def boat_pdf
-    boat = object.boat
-    boat_pdf_path(boat.slug)
+    boat_pdf_path(object.boat)
   end
 
   def similar_boats

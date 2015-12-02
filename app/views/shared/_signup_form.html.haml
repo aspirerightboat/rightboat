@@ -5,12 +5,12 @@
         = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title signup-title'
     .col-sm-4.col-xs-12
       .form-group
-        = text_field_tag :first_name, nil, placeholder: 'First name', class: 'form-control signup-first-name', 'data-validetta' => 'required'
+        = text_field_tag :first_name, nil, placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required'
     .col-sm-6.col-xs-12
       .form-group
-        = text_field_tag :last_name, nil, placeholder: 'Last name', class: 'form-control signup-last-name', 'data-validetta' => 'required'
+        = text_field_tag :last_name, nil, placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
   .form-group
-    = email_field_tag :email, '', placeholder: 'Email', class: 'form-control signup-email', 'data-validetta' => 'required,email'
+    = email_field_tag :email, '', placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
   .form-group
     = password_field_tag :password, '', placeholder: 'Password', class: 'form-control', 'data-validetta' => 'required'
   .form-group

@@ -3,7 +3,7 @@ class Enquiry < ActiveRecord::Base
   STATUSES = %w(pending quality_check approved rejected invoiced)
   BAD_QUALITY_REASONS = %w(bad_contact other)
 
-  attr_accessor :have_account, :password, :honeypot#, :captcha_correct
+  attr_accessor :just_logged_in #:captcha_correct
 
   belongs_to :user
   belongs_to :boat
@@ -11,16 +11,12 @@ class Enquiry < ActiveRecord::Base
   belongs_to :accessed_by_broker, class_name: 'User'
   has_many :lead_trails, foreign_key: 'lead_id'
 
-  validate :check_user
-  validates_presence_of :email, :boat_id, :token
-  validates_presence_of :title, :first_name, :surname, :user, if: 'have_account == "0"'
-  # validates_inclusion_of :title, within: User::TITLES, allow_blank: true
-  validates_format_of :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/, allow_blank: true
-  validates_uniqueness_of :token, allow_blank: true
+  validates_presence_of :boat_id
+  validates_presence_of :email, :first_name, :surname, if: 'user_id.blank?'
+  validates_format_of :email, with: /\A\S+@\S+\z/, allow_blank: true
 
-  before_validation :generate_token
+  before_validation :fill_user_info
   # before_validation :add_captcha_error
-  before_validation :check_honeypot
 
   before_save :update_lead_price
   after_save :send_quality_check_email
@@ -49,20 +45,9 @@ class Enquiry < ActiveRecord::Base
 
   private
 
-  def generate_token
-    self.token ||= loop do
-      random_token = Devise.friendly_token(16)
-      break random_token unless Enquiry.exists?(token: random_token)
-    end
-  end
-
   # def add_captcha_error
   #   errors.add(:captcha, 'is invalid') if captcha_correct != nil && !captcha_correct
   # end
-
-  def check_honeypot
-    errors.add(:honeypot, 'is invalid') unless honeypot.blank?
-  end
 
   def send_quality_check_email
     if status_changed? && status == 'quality_check'
@@ -76,21 +61,13 @@ class Enquiry < ActiveRecord::Base
     end
   end
 
-  def check_user
-    if have_account
-      if (existing_user = User.find_by(email: email))
-        if existing_user.valid_password?(password)
-          self.title = existing_user.try(:title)
-          self.first_name = existing_user.try(:first_name)
-          self.surname = existing_user.try(:last_name)
-          self.phone = existing_user.try(:phone) || existing_user.try(:mobile)
-          self.user = existing_user
-        else
-          errors.add :password, 'is invalid'
-        end
-      else
-        errors.add :email, 'cannot be found'
-      end
+  def fill_user_info
+    if user_id_changed? && user_id.present?
+      self.email = user.email
+      self.title = user.title
+      self.first_name = user.first_name
+      self.surname = user.last_name
+      self.phone = user.phone || user.mobile
     end
   end
 

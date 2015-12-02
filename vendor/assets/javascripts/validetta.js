@@ -499,12 +499,16 @@
       if( typeof el === 'undefined' || ( el.length > 1 && el[0].getAttribute('type') !== 'checkbox' ) ) {
         _errorMessages = $( this.form ).find( '.'+ this.options.errorTemplateClass );
       }
-      else {
+      else if (el.length > 0) {
         _errorMessages = $( el[0].parentNode ).find( '.'+ this.options.errorTemplateClass );
       }
-      for ( var i = _errorMessages.length -1; i >= 0; i-- ) {
-        this.window.close.call( this, _errorMessages[ i ] );
+      else {
+        _errorMessages = null;
       }
+      if (_errorMessages)
+        for ( var i = _errorMessages.length -1; i >= 0; i-- ) {
+          this.window.close.call( this, _errorMessages[ i ] );
+        }
     },
 
     /**

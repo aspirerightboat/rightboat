@@ -11,7 +11,7 @@
           The full boat specification and broker details will be available
           for immediate viewing in #{link_to_if !current_user, 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}.
 
-        = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'enquiry-form simple-ajax-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
+        = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'enquiry-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
           - unless current_user
             .row
               .col-xs-12

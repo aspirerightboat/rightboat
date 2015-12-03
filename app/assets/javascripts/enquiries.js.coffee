@@ -3,7 +3,7 @@ $ ->
 #   $('form', @).renderCaptcha()
 
   $('.enquiry-form').each ->
-    $form = $(@)
+    $form = $(@).simpleAjaxForm()
     $form
     .on 'ajax:before', (e) ->
       $phone = $('#enquiry_phone')

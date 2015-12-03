@@ -20,8 +20,7 @@ class Enquiry < ActiveRecord::Base
 
   before_save :update_lead_price
   after_save :send_quality_check_email
-  after_update :create_lead_trail
-  after_update :admin_reviewed_email
+  after_update :create_lead_trail, :admin_reviewed_email, :send_enquiry_changed_email
 
   scope :approved, -> { where(status: 'approved') }
   scope :rejected, -> { where(status: 'rejected') }
@@ -62,6 +61,12 @@ class Enquiry < ActiveRecord::Base
   def admin_reviewed_email
     if $current_user.try(:admin?) && status_changed? && status.in?(%w(approved rejected))
       LeadsMailer.lead_reviewed_notify_broker(id).deliver_later
+    end
+  end
+
+  def send_enquiry_changed_email
+    if user.user_alert && user.user_alert.enquiry
+      LeadsMailer.lead_status_changed(id).deliver_later
     end
   end
 

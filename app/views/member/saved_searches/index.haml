@@ -1,7 +1,7 @@
 .member-content
   %h1 My Saved Searches
   %hr
-  %p Here we record your saved searches. You can re-run them again, amend and set email alerts for each search. To set a new saved search, simply click 'save this search' when browsing search results, or go to Advanced Search.
+  %p Here we record your saved searches. You can re-run them again, amend and set email alerts for each search. To set a new saved search, simply click 'save this search' when browsing search results, or go to #{link_to 'Advanced Search', '#', class: 'toggle-adv-search'}.
 
   - if @saved_searches.none?
     .alert.alert-warning

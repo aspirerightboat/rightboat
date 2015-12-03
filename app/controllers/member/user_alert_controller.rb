@@ -12,6 +12,6 @@ class Member::UserAlertController < Member::BaseController
   private
 
   def user_alert_params
-    params.require(:user_alert).permit(:favorites, :saved_searches, :suggestions, :newsletter)
+    params.require(:user_alert).permit(:favorites, :enquiry, :saved_searches, :suggestions, :newsletter)
   end
 end

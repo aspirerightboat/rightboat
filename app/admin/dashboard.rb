@@ -30,15 +30,23 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Ran with no Errors:'
               end
               td class: 'text-green' do
-                text_node ImportTrail.today.with_error.group(:import_id).count.length
+                text_node ImportTrail.today.with_no_error.group(:import_id).count.length
               end
             end
             tr do
               td do
-                text_node 'Did not run:'
+                text_node 'Run fault - import blank:'
+              end
+              td class: 'text-orange' do
+                link_to ImportTrail.today.where(error_msg: 'Import Blank').group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_ends_with: 'Blank'})
+              end
+            end
+            tr do
+              td do
+                text_node 'Inactive Imports:'
               end
               td class: 'text-red' do
-                text_node Import.where('queued_at IS NULL OR queued_at < ?', Time.now.beginning_of_day).count
+                text_node Import.inactive.count
               end
             end
             tr do
@@ -46,7 +54,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Ran with Errors:'
               end
               td class: 'text-orange' do
-                text_node ImportTrail.today.with_no_error.group(:import_id).count.length
+                link_to ImportTrail.today.where(error_msg: ['Unexpected Error', 'Save Boat Error', 'Parse Error', 'Thread error']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_ends_with: 'Error'})
               end
             end
           end
@@ -150,14 +158,6 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total inactive Boats:'
-              end
-              td class: 'text-red' do
-                text_node Boat.deleted.count
-              end
-            end
-            tr do
-              td do
                 text_node 'Total active Boats:'
               end
               td class: 'text-green' do
@@ -166,10 +166,18 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
+                text_node 'Total inactive Boats:'
+              end
+              td class: 'text-red' do
+                text_node Boat.deleted.count
+              end
+            end
+            tr do
+              td do
                 text_node 'Total active Power Boats:'
               end
               td do
-                text_node Boat.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('LOWER(boat_types.name) LIKE "%power%" OR LOWER(boat_types.name) LIKE "%motor%" OR LOWER(boat_types.name) LIKE "%cruiser%"').count
+                text_node Boat.not_deleted.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('LOWER(boat_types.name) LIKE "%power%" OR LOWER(boat_types.name) LIKE "%motor%" OR LOWER(boat_types.name) LIKE "%cruiser%"').count
               end
             end
             tr do
@@ -177,15 +185,15 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active Sail Boats:'
               end
               td do
-                text_node Boat.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('LOWER(boat_types.name) LIKE "%sail%"').count
+                text_node Boat.not_deleted.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('LOWER(boat_types.name) LIKE "%sail%"').count
               end
             end
             tr do
               td do
-                text_node 'Total not Power or Sail:'
+                text_node 'Total active, not Power or Sail'
               end
               td do
-                text_node Boat.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('boats.boat_type_id IS NULL OR LOWER(boat_types.name) NOT LIKE "%power%" AND LOWER(boat_types.name) NOT LIKE "%motor%" AND LOWER(boat_types.name) NOT LIKE "%cruiser%" AND LOWER(boat_types.name) NOT LIKE "%sail%"').count
+                text_node Boat.not_deleted.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('boats.boat_type_id IS NULL OR LOWER(boat_types.name) NOT LIKE "%power%" AND LOWER(boat_types.name) NOT LIKE "%motor%" AND LOWER(boat_types.name) NOT LIKE "%cruiser%" AND LOWER(boat_types.name) NOT LIKE "%sail%"').count
               end
             end
           end

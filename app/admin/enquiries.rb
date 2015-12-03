@@ -39,7 +39,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       }.compact.join('<br>').html_safe
       res
     end
-    column :broker do |lead|
+    column :broker, sortable: 'boats.user_id' do |lead|
       link_to lead.boat.user.name, admin_user_path(lead.boat.user)
     end
     column :boat, sortable: :boat_id do |lead|

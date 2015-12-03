@@ -76,21 +76,6 @@
         %p
           Thank you for your enquiry
 
-        -##logged_in_result
-        -#  %p
-        -#    The seller's details are: <b id="broker_name"></b><b id="broker_phone"></b>
-        -#    and they will be in touch.
-        -#    %br
-        -#    A downloadable PDF is available in #{link_to 'My Requests', member_enquiries_path, class: 'bold-link'}
-        -#    within #{link_to 'My Rightboat', member_root_path, class: 'bold-link'}
-        -#    and a copy has also been sent to your email address.
-        -#  %p
-        -#    = link_to 'View PDF', '#', id: 'pdf_link', class: 'btn-flat btn-black'
-        -#  .row.text-center
-        -#    %h4.similar-boats-link= link_to 'Similar Boats', '#'
-        -#    .similar-boats.row
-        -#- unless current_user
-        -#  #logged_out_result.hidden
         %p
           To view the full specification and PDF in #{link_to 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}
           simply enter a password:

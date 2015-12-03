@@ -44,7 +44,6 @@ class EnquiriesController < ApplicationController
       enquiry.create_lead_trail(true)
 
       render json: current_user ? {location: member_enquiries_path} : {show_result_popup: true}
-      # render json: enquiry, serializer: EnquirySerializer, root: false
     else
       # session[:captcha] = Rightboat::Captcha.generate
       render json: enquiry.errors.full_messages, status: 422, root: false

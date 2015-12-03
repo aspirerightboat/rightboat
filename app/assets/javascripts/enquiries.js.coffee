@@ -13,24 +13,6 @@ $ ->
     .on 'ajax:success', (e, data, status, xhr) ->
       if xhr.responseJSON.show_result_popup
         $('#enquiry_result_popup').displayPopup()
-#          $('#logged_in_result').toggleClass('hidden', !loggedIn)
-#          $('#logged_out_result').toggleClass('hidden', loggedIn)
-
-#          $('#broker_name').html(enquiry.broker.name)
-#          $('#broker_phone').html(enquiry.broker.phone).before(', ') if enquiry.broker.phone
-#
-#          $('#pdf_link').attr('href', enquiry.boat_pdf)
-
-#          any_similar = enquiry.similar_boats.length > 0
-#          if enquiry.similar_link
-#            $('.similar-boats-link a', @).attr('href', enquiry.similar_link)
-#          $('.similar-boats-link', @).toggle(any_similar)
-#          $similar_boats = $('.similar-boats', @).empty().toggle(any_similar)
-#          $.each enquiry.similar_boats, ->
-#            $similar_boats.append(
-#              $('<div class="col-xs-4 col-sm-3 col-lg-2">').append(
-#                $('<a>').attr('href', '/boats-for-sale/' + @slug).append(
-#                  $('<img>').attr('src', @primary_image.mini))))
 
     $('#enquiry_result_popup').on 'hidden.bs.modal', ->
       window.location = location.href if $form.data('just-logged-in')

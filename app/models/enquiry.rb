@@ -65,7 +65,8 @@ class Enquiry < ActiveRecord::Base
   end
 
   def send_enquiry_changed_email
-    if user.user_alert && user.user_alert.enquiry
+    if status_changed? && status_was == 'quality_check' && %w(approved rejected).include?(status) &&
+        user.user_alert && user.user_alert.enquiry
       LeadsMailer.lead_status_changed(id).deliver_later
     end
   end

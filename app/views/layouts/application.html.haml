@@ -12,6 +12,8 @@
     = render 'shared/google_tag_manager'
     - if cookies[:visited].nil?
       = render 'shared/cookies_warning'
+    - if flash.present? && !@custom_flashes
+      = render 'shared/messages'
     - if content_for? :header
       = yield :header
     - else

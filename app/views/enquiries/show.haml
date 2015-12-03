@@ -6,6 +6,7 @@
 #main-content.container
   .row
     .col-sm-12
+      - @custom_flashes = true
       - if notice
         .alert.alert-info= notice
       - if alert

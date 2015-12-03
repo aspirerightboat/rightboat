@@ -17,6 +17,7 @@
         .sidebar-nav
           %ul.nav.nav-pills.nav-stacked
             = sidebar
+    - @custom_flashes = true
     .col-xs-12.member-right(class="#{'col-sm-9' if sidebar.present?}")
       - if notice
         .alert.alert-info= notice

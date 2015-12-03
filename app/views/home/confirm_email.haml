@@ -4,6 +4,7 @@
 = render 'shared/search_bar'
 
 #main-content.container(style="max-width: 500px; padding-bottom: 100px; padding-top: 75px;")
+  - @custom_flashes = true
   - if notice
     .alert.alert-info= notice
   - if alert

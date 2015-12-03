@@ -2,6 +2,7 @@
   .navbar-h My Rightboat
 
 #main-content.container(style="max-width: 600px")
+  - @custom_flashes = true
   - if notice
     .alert.alert-info= notice
   - if alert

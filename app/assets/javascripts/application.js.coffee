@@ -147,3 +147,7 @@ $ ->
   $.fn.displayPopup = ->
     curPopup.modal('hide') if curPopup
     curPopup = @.modal('show')
+
+$ ->
+  $('.hide-parent').click ->
+    $(@).closest($(@).data('hide-parent')).hide(200)

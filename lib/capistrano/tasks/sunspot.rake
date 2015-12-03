@@ -28,7 +28,12 @@ namespace :solr do
                       "--port=8983 --solr-home=#{release_path}/solr --data-directory=#{shared_path}/solr/data --pid-dir=#{shared_path}/pids"
             end
             start_or_restart = command =~ /start/
-            solr_cmd('stop') if start_or_restart and test "[ -f #{shared_path}/pids/sunspot-solr.pid ]"
+
+            pid_path = "#{shared_path}/pids/sunspot-solr.pid"
+            if start_or_restart && test("[ -f #{pid_path} ]") && (pid = capture("cat #{pid_path}").strip) && test("[ -e /proc/#{pid} ]")
+              solr_cmd('stop')
+            end
+
             cmd = start_or_restart ? 'start' : 'stop'
             solr_cmd(cmd)
           else

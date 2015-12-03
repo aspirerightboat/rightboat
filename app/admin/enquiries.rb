@@ -1,6 +1,6 @@
 ActiveAdmin.register Enquiry, as: 'Lead' do
   permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone,
-                :message, :remote_ip, :browser, :token, :deleted_at, :created_at, :updated_at, :status
+                :message, :remote_ip, :browse, :deleted_at, :created_at, :updated_at, :status
 
 
   menu label: 'Leads', priority: 9
@@ -74,7 +74,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       f.input :phone
       f.input :remote_ip
       f.input :browser
-      f.input :token
     end
     actions
   end

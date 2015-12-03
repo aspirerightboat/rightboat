@@ -23,7 +23,7 @@ module Rightboat
         threaded_run
         finishing
       rescue StandardError => e # SystemExit, Interrupt
-        log_ex e, 'Unexpected error'
+        log_ex e, 'Unexpected Error'
         raise e
       ensure
         @import_trail.touch(:finished_at)
@@ -61,7 +61,7 @@ module Rightboat
                 sleep(2.seconds) if !job
               end
             rescue StandardError => e
-              log_ex e, 'Thread error'
+              log_ex e, 'Thread Error'
               raise e # exception will be swallowed by thread and not passed to main thread
             ensure
               ActiveRecord::Base.connection.close
@@ -183,7 +183,7 @@ module Rightboat
         increment_stats << ['boats_count', 1]
         ImportTrail.where(id: @import_trail.id).update_all(increment_stats.map { |col, cnt| "#{col} = #{col} + #{cnt}" }.join(', '))
       rescue StandardError => e
-        log_ex e, 'Save Error'
+        log_ex e, 'Save Boat Error'
         ImportMailer.process_result_error(e, @import).deliver_now
       end
 

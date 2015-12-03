@@ -10,7 +10,7 @@ class VatRate < ActiveRecord::Base
 
   def tax_paid?(activated = nil)
     is_activated = activated.nil? ? true : activated
-    is_activated && !!(self.name.to_s =~ /^tax paid|^paid|inc vat|vat paid|duty paid|£\s+\d+/i)
+    is_activated && !!(self.name.to_s =~ /^1$|^tax paid|^paid|inc vat|vat paid|vatincluded|duty paid|£\s+\d+/i)
   end
 
   def tax_status(activated = nil)

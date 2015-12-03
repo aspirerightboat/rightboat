@@ -24,6 +24,7 @@ class Import < ActiveRecord::Base
   before_destroy :stop!
 
   scope :active, -> { where active: true }
+  scope :inactive, -> { where active: false }
 
   def self.source_class(type)
     return if type.blank?

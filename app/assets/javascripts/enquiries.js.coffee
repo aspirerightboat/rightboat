@@ -4,11 +4,19 @@ $ ->
 
   $('.enquiry-form').each ->
     $form = $(@)
-    $form.on 'ajax:before', (e) ->
+    $submit = $form.find('[type="submit"]')
+    $form
+    .on 'ajax:before', (e) ->
       $phone = $('#enquiry_phone')
       if $phone.is(':visible') && !$phone.val() && !$('#phone_popup').is(':visible')
         $('#phone_popup').modal('show')
         false
+    .on 'ajax:beforeSend', (e) ->
+      $submit.addClass('inline-loading')
+      $submit.prop('disabled', true)
+    .on 'ajax:complete', (e) ->
+      $submit.removeClass('inline-loading')
+      $submit.prop('disabled', false)
     .on 'ajax:success', (e, data, status, xhr) ->
       if xhr.responseJSON.show_result_popup
         $('#enquiry_result_popup').displayPopup()

@@ -9,7 +9,7 @@ ActiveAdmin.register BerthEnquiry do
     column :name do |berth_enquiry|
       link_to berth_enquiry.user.name, admin_user_path(berth_enquiry.user)
     end
-    column :eamil do |berth_enquiry|
+    column :email do |berth_enquiry|
       link_to berth_enquiry.user.email, admin_user_path(berth_enquiry.user)
     end
     column :buy

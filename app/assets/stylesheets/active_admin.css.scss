@@ -67,12 +67,15 @@ a.job-action {
 
 .text-red {
   color: rgb(252, 13, 27);
+  a { color: rgb(252, 13, 27); }
 }
 
 .text-green {
   color: rgb(41, 253, 47);
+  a { color: rgb(41, 253, 47) }
 }
 
 .text-orange {
   color: rgb(253, 152, 39);
+  a { color: rgb(253, 152, 39); }
 }

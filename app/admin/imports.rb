@@ -79,12 +79,12 @@ ActiveAdmin.register Import do
 
   member_action :run, method: :post do
     resource.run!
-    redirect_to admin_imports_path
+    redirect_to :back
   end
 
   member_action :stop, method: :post do
     resource.stop!
-    redirect_to admin_imports_path
+    redirect_to :back
   end
 
   csv do

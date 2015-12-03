@@ -3,7 +3,9 @@
 
 - case @reason
   - when 'deleted'
-    %p Unfortunately the boat #{@boat.manufacturer_model} which you had in your favourites has now been sold.
+    %p
+      Unfortunately the boat #{@boat.manufacturer_model} which you
+      #{@alert_reason == 'favourite' ? 'had in your favourites' : 'have enquired about'} has now been sold.
 
     - if @similar_boats.count > 0
       %p However, there are other similar listings which may be of interest to you.
@@ -17,7 +19,8 @@
 
   - when 'price_changed'
     %p
-      Your favourite boat #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
+      #{@alert_reason == 'favourite' ? 'Your favourite boat' : 'The boat you have enquired about'}
+      #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
       New price is #{@boat.safe_currency.symbol}#{@boat.price}.
 
 %br

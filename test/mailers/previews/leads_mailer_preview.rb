@@ -27,8 +27,4 @@ class LeadsMailerPreview < ActionMailer::Preview
   def lead_reviewed_notify_broker
     LeadsMailer.lead_reviewed_notify_broker(Enquiry.last.id)
   end
-
-  def lead_status_changed
-    LeadsMailer.lead_status_changed(Enquiry.last.id)
-  end
 end

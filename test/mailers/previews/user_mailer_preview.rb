@@ -12,8 +12,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.new_sell_request(Boat.last.id, Boat::SELL_REQUEST_TYPES.sample)
   end
 
-  def favourite_boat_status_changed
-    UserMailer.favourite_boat_status_changed(User.last.id, Boat.last.id, 'deleted')
+  def boat_status_changed
+    UserMailer.boat_status_changed(User.last.id, Boat.last.id, 'deleted', 'favourite')
   end
 
   def new_berth_enquiry

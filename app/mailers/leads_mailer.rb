@@ -62,15 +62,6 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
   end
 
-  def lead_status_changed(enquiry_id)
-    @enquiry = Enquiry.find(enquiry_id)
-    @boat = @enquiry.boat
-    to_email = [STAGING_EMAIL || @enquiry.email]
-    to_email << 'info@rightboat.com'
-
-    mail(to: to_email, subject: "Enquiry status changed - Rightboat")
-  end
-
   private
 
   def attach_boat_pdf

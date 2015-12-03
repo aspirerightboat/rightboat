@@ -228,21 +228,33 @@ class Boat < ActiveRecord::Base
     end
   end
 
-  def notifiable_favourites
-    favourites.joins('INNER JOIN user_alerts ON favourites.user_id = user_alerts.user_id').where(user_alerts: {favorites: true})
+  def notifiable_favourites_users
+    favourites.joins('INNER JOIN user_alerts ON favourites.user_id = user_alerts.user_id')
+        .where(user_alerts: {favorites: true}).pluck(:user_id)
+  end
+
+  def notifiable_enquiry_users
+    enquiries.not_deleted.joins('INNER JOIN user_alerts ON enquiries.user_id = user_alerts.user_id')
+        .where(user_alerts: {enquiry: true}).pluck(:user_id)
   end
 
   def notify_changed
     if !id_changed? && price_changed?
-      notifiable_favourites.pluck(:user_id).each do |user_id|
-        UserMailer.favourite_boat_status_changed(user_id, id, 'price_changed').deliver_later
+      notifiable_favourites_users.each do |user_id|
+        UserMailer.boat_status_changed(user_id, id, 'price_changed', 'favourite').deliver_later
+      end
+      notifiable_enquiry_users.each do |user_id|
+        UserMailer.boat_status_changed(user_id, id, 'price_changed', 'enquiry').deliver_later
       end
     end
   end
 
   def notify_destroyed
-    notifiable_favourites.pluck(:user_id).each do |user_id|
-      UserMailer.favourite_boat_status_changed(user_id, id, 'deleted').deliver_later
+    notifiable_favourites_users.each do |user_id|
+      UserMailer.boat_status_changed(user_id, id, 'deleted', 'favourite').deliver_later
+    end
+    notifiable_enquiry_users.each do |user_id|
+      UserMailer.boat_status_changed(user_id, id, 'deleted', 'enquiry').deliver_later
     end
   end
 end

@@ -31,14 +31,18 @@ class UserMailer < ApplicationMailer
     mail(to: 'info@rightboat.com', subject: 'New sell my boat request - Rightboat')
   end
 
-  def favourite_boat_status_changed(user_id, boat_id, reason)
+  def boat_status_changed(user_id, boat_id, reason, alert_reason)
     @user = User.find(user_id)
     @boat = Boat.find(boat_id)
     @reason = reason
-    @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options, includes: [:user, :currency, :manufacturer, :model, :primary_image, :vat_rate, :country]).results if @reason == 'deleted'
+    @alert_reason = alert_reason
+    if @reason == 'deleted'
+      @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options, includes: [:user, :currency, :manufacturer, :model, :primary_image, :vat_rate, :country]).results
+    end
 
     to_email = STAGING_EMAIL || @user.email
-    mail(to: to_email, subject: "Favourite boat status changed - #{@boat.manufacturer_model} - Rightboat")
+    kind = @alert_reason == 'favourite' ? 'Favourite' : 'Enquired'
+    mail(to: to_email, subject: "#{kind} boat status changed - #{@boat.manufacturer_model} - Rightboat")
   end
 
   def new_berth_enquiry(berth_enquiry_id)

@@ -1,0 +1,19 @@
+%p Dear Manager,
+%p #{link_to @berth_enquiry.user.to_s, admin_user_url(@berth_enquiry.user.slug)} has posted new <b>berth enquiry</b> to Rightboat.
+
+%h4 Birth enquiry detail
+%p
+  <b>Looking to buy a berth:</b> #{@berth_enquiry.buy ? 'Yes' : 'No'}
+  %br
+  <b>Looking to rent a berth:</b> #{@berth_enquiry.rent ? 'Yes' : 'No'}
+  %br
+  <b>Looking for a home berth:</b> #{@berth_enquiry.home ? 'Yes' : 'No'}
+  %br
+  <b>Looking for a short term berth:</b> #{@berth_enquiry.short_term ? 'Yes' : 'No'}
+  %br
+  <b>The size of the berth look for:</b> #{@berth_enquiry.length_min} ~ #{@berth_enquiry.length_max} #{@berth_enquiry.length_unit}
+  %br
+  <b>Location:</b> #{@berth_enquiry.location}
+
+%br
+%p You can manage this boat on #{link_to 'here', admin_berth_enquiry_url(@berth_enquiry.id)}.

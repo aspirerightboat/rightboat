@@ -214,7 +214,8 @@ module Rightboat
           end
           boat.length_m = length_m
 
-          boat.images = doc.content.scan(/<img src="(http:\/\/newimages.yachtworld.com[^"]*)"/).flatten.map {|img| img.gsub(/([wh])=(\d+)/,'\1=600')}
+          boat.images = doc.content.scan(/<img src='(http:\/\/newimages.yachtworld.com[^"]*)'/).flatten.map {|img| img.gsub(/([wh])=(\d+)/,'\1=600')}
+          boat.images += doc.content.scan(/<img src="(http:\/\/newimages.yachtworld.com[^"]*)"/).flatten.map {|img| img.gsub(/([wh])=(\d+)/,'\1=600')}
           boat
         end
 

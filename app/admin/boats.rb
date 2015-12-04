@@ -90,13 +90,6 @@ ActiveAdmin.register Boat do
     end
   end
 
-  if !Rails.env.production?
-    sidebar 'Tools', only: [:index] do
-      link_to('Delete All Boats', {action: :delete_all_boats}, method: :post, class: 'button', style: 'margin-bottom: 10px',
-              data: {confirm: 'Are you sure you want to delete all boat data?', disable_with: 'Deleting...'})
-    end
-  end
-
   sidebar 'Tools', only: [:show, :edit] do
     img_cnt = boat.boat_images.not_deleted.count
     s = ''
@@ -112,6 +105,22 @@ ActiveAdmin.register Boat do
       s << '</p>'
     end
     s.html_safe
+  end
+
+  sidebar 'Tools', only: [:index] do
+    content_tag(:p, link_to('Reindex deleted boats', {action: :reindex_deleted_boats}, method: :post, class: 'button'))
+  end
+
+  collection_action :reindex_deleted_boats, method: :post do
+    search = Boat.solr_search do
+      with :live, true
+      paginate page: 1, per_page: Boat.count
+    end
+    live_boats = search.results
+    fix_boats = live_boats.select { |b| b.deleted? }
+    Sunspot.index! fix_boats if fix_boats.any?
+    redirect_to (request.referer || {action: :index}),
+                notice: "Found #{live_boats.size} live boats and #{fix_boats.size} of them are actually deleted. Reindex these boats"
   end
 
   member_action :statistics, method: :get do
@@ -141,16 +150,6 @@ ActiveAdmin.register Boat do
       cnt += b.boat_images.destroy_all.size
     end
     redirect_to collection_path, notice: "#{cnt} boat images was deleted"
-  end
-
-  collection_action :delete_all_boats, method: :post do
-    if !Rails.env.production?
-      Boat.each do |boat|
-        boat.destroy(:force)
-      end
-      flash.notice = 'All the boats were deleted'
-    end
-    redirect_to(action: :index)
   end
 
 end

@@ -16,6 +16,7 @@ class Manufacturer < ActiveRecord::Base
   validates_uniqueness_of :name, allow_blank: true
 
   searchable do
+    string :name
     text :name, boost: 2
     text :name_ngrme, as: :name_ngrme, boost: 2
   end

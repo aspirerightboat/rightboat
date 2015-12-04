@@ -35,26 +35,26 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Run fault - import blank:'
+                text_node 'Run Fault:'
               end
               td class: 'text-orange' do
-                link_to ImportTrail.today.where(error_msg: 'Import Blank').group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_ends_with: 'Blank'})
+                link_to ImportTrail.today.where(error_msg: 'Unexpected Error').group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_equals: 'Unexpected Error'})
+              end
+            end
+            tr do
+              td do
+                text_node 'Ran, but with Errors:'
+              end
+              td class: 'text-red' do
+                link_to ImportTrail.today.where(error_msg: ['Save Boat Error', 'Parse Error', 'Thread Error']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_in: ['Save Boat Error', 'Parse Error', 'Thread Error']})
               end
             end
             tr do
               td do
                 text_node 'Inactive Imports:'
               end
-              td class: 'text-red' do
-                text_node Import.inactive.count
-              end
-            end
-            tr do
               td do
-                text_node 'Ran with Errors:'
-              end
-              td class: 'text-orange' do
-                link_to ImportTrail.today.where(error_msg: ['Unexpected Error', 'Save Boat Error', 'Parse Error', 'Thread error']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_ends_with: 'Error'})
+                link_to Import.inactive.count, admin_imports_path(q: {active_eq: false})
               end
             end
           end
@@ -74,7 +74,7 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total Approved Leads this week:'
+                text_node "Total Approved Leads this week (Mon-#{now.strftime('%a')}):"
               end
               td class: 'text-green' do
                 text_node Enquiry.approved.where('updated_at > ?', beginning_of_week).count
@@ -94,7 +94,7 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total Approved Lead Value last week:'
+                text_node 'Total Approved Lead Value last week (Mon-Sun):'
               end
               td do
                 text_node Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
@@ -117,26 +117,34 @@ ActiveAdmin.register_page 'Dashboard' do
           table do
             tr do
               td do
-                text_node 'Total Users:'
+                text_node 'Total Private Users:'
               end
               td do
-                text_node User.count
-              end
-            end
-            tr do
-              td do
-                text_node 'Total new users last week:'
-              end
-              td do
-                text_node User.where(created_at: beginning_of_last_week..beginning_of_week).count
+                text_node User.general.count
               end
             end
             tr do
               td do
-                text_node 'Total new users last month:'
+                text_node "Total new Private Users last week (Mon-#{now.strftime('%a')}):"
               end
               td do
-                text_node User.where(created_at: beginning_of_last_month..beginning_of_month).count
+                text_node User.general.where('created_at > ?', beginning_of_week).count
+              end
+            end
+            tr do
+              td do
+                text_node 'Total new Private Users last week (Mon-Sun):'
+              end
+              td do
+                text_node User.general.where(created_at: beginning_of_last_week..beginning_of_week).count
+              end
+            end
+            tr do
+              td do
+                text_node 'Total new Private Users last month:'
+              end
+              td do
+                text_node User.general.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
           end
@@ -205,7 +213,7 @@ ActiveAdmin.register_page 'Dashboard' do
           table do
             tr do
               td do
-                text_node 'Total Leads last week:'
+                text_node 'Total Leads last week (Mon-Sun):'
               end
               td do
                 text_node total_leads_last_week
@@ -213,7 +221,7 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total Approved Leads last week:'
+                text_node 'Total Approved Leads last week (Mon-Sun):'
               end
               td class: 'text-green' do
                 text_node total_approved_leads_last_week
@@ -221,7 +229,7 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total Rejected Leads last week:'
+                text_node 'Total Rejected Leads last week (Mon-Sun):'
               end
               td class: 'text-red' do
                 text_node Enquiry.rejected.where(updated_at: beginning_of_last_week..beginning_of_week).count
@@ -276,39 +284,41 @@ ActiveAdmin.register_page 'Dashboard' do
       end
 
       column do
-        panel 'Account Management' do
-          table do
-            tr do
-              td do
-                text_node ''
+        if false
+          panel 'Account Management' do
+            table do
+              tr do
+                td do
+                  text_node ''
+                end
+                td do
+                  text_node 'Accounts'
+                end
+                td do
+                  text_node 'Total Active Boats'
+                end
               end
-              td do
-                text_node 'Accounts'
+              tr do
+                td do
+                  text_node 'Nicky'
+                end
+                td do
+                  text_node 'xx'
+                end
+                td do
+                  text_node 'xxx'
+                end
               end
-              td do
-                text_node 'Total Active Boats'
-              end
-            end
-            tr do
-              td do
-                text_node 'Nicky'
-              end
-              td do
-                text_node 'xx'
-              end
-              td do
-                text_node 'xxx'
-              end
-            end
-            tr do
-              td do
-                text_node 'Chris'
-              end
-              td do
-                text_node 'xx'
-              end
-              td do
-                text_node 'xxx'
+              tr do
+                td do
+                  text_node 'Chris'
+                end
+                td do
+                  text_node 'xx'
+                end
+                td do
+                  text_node 'xxx'
+                end
               end
             end
           end

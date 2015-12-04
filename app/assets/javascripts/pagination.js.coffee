@@ -43,7 +43,7 @@ $ ->
         $.each boats, ->
           $template = $(this.template)
           $template.appendTo($('#boats-list'))
-          initBoatView($template)
+          initBoatView($template.find('.boat-view'))
         currentPage += 1
         sessionStorage.setItem('currentPage', currentPage)
         unless pagination.total_pages > currentPage

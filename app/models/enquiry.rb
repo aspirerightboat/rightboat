@@ -1,7 +1,7 @@
 class Enquiry < ActiveRecord::Base
 
   STATUSES = %w(pending quality_check approved rejected invoiced)
-  BAD_QUALITY_REASONS = %w(bad_contact other)
+  BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
   attr_accessor :just_logged_in #:captcha_correct
 

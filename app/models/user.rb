@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   serialize :broker_ids, Array
 
   scope :active, -> { where active: true }
+  scope :inactive, -> { where active: false }
   scope :general, -> { where(role: ROLES['PRIVATE']) }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
   scope :organizations, -> { where(role: [ROLES['COMPANY'], ROLES['MANUFACTURER']]).order(:company_name) }

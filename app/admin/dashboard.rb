@@ -37,7 +37,7 @@ ActiveAdmin.register_page 'Dashboard' do
               td do
                 text_node 'Run Fault:'
               end
-              td class: 'text-orange' do
+              td class: 'text-red' do
                 link_to ImportTrail.today.where(error_msg: 'Unexpected Error').group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_equals: 'Unexpected Error'})
               end
             end
@@ -45,7 +45,7 @@ ActiveAdmin.register_page 'Dashboard' do
               td do
                 text_node 'Ran, but with Errors:'
               end
-              td class: 'text-red' do
+              td class: 'text-orange' do
                 link_to ImportTrail.today.where(error_msg: ['Save Boat Error', 'Parse Error', 'Thread Error']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_in: ['Save Boat Error', 'Parse Error', 'Thread Error']})
               end
             end
@@ -64,6 +64,14 @@ ActiveAdmin.register_page 'Dashboard' do
       column do
         panel 'Leads Tracker' do
           table do
+            tr do
+              td do
+                text_node 'Total Leads today:'
+              end
+              td do
+                text_node Enquiry.where('updated_at > ?', beginning_of_day).count
+              end
+            end
             tr do
               td do
                 text_node 'Total Approved Leads today:'
@@ -97,7 +105,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Lead Value last week (Mon-Sun):'
               end
               td do
-                text_node Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node number_to_currency(Invoice.where(created_at: beginning_of_last_week..beginning_of_week).sum(:total), unit: '£')
               end
             end
             tr do
@@ -105,7 +113,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Lead Value last month:'
               end
               td do
-                text_node Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node number_to_currency(Invoice.where(created_at: beginning_of_last_month..beginning_of_month).sum(:total), unit: '£')
               end
             end
           end
@@ -125,7 +133,7 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node "Total new Private Users last week (Mon-#{now.strftime('%a')}):"
+                text_node "Total new Private Users this week (Mon-#{now.strftime('%a')}):"
               end
               td do
                 text_node User.general.where('created_at > ?', beginning_of_week).count
@@ -284,41 +292,30 @@ ActiveAdmin.register_page 'Dashboard' do
       end
 
       column do
-        if false
-          panel 'Account Management' do
-            table do
-              tr do
-                td do
-                  text_node ''
-                end
-                td do
-                  text_node 'Accounts'
-                end
-                td do
-                  text_node 'Total Active Boats'
-                end
+        panel 'Broker status' do
+          table do
+            tr do
+              td do
+                text_node 'Total Brokers'
               end
-              tr do
-                td do
-                  text_node 'Nicky'
-                end
-                td do
-                  text_node 'xx'
-                end
-                td do
-                  text_node 'xxx'
-                end
+              td do
+                text_node User.companies.count
               end
-              tr do
-                td do
-                  text_node 'Chris'
-                end
-                td do
-                  text_node 'xx'
-                end
-                td do
-                  text_node 'xxx'
-                end
+            end
+            tr do
+              td do
+                text_node 'Active Brokers'
+              end
+              td class: 'text-green' do
+                link_to User.companies.active.count, admin_users_path(q: {role_eq: User::ROLES['COMPANY'], active_eq: true})
+              end
+            end
+            tr do
+              td do
+                text_node 'Inactive Brokers'
+              end
+              td class: 'text-orange' do
+                link_to User.companies.inactive.count, admin_users_path(q: {role_eq: User::ROLES['COMPANY'], active_eq: false})
               end
             end
           end

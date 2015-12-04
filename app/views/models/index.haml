@@ -1,6 +1,6 @@
 = render layout: 'shared/boats_for_sale' do
   %h1 All Models
-  %ul
+  %ul.four-columns
     - @models.each do |m|
-      %li= link_to m.name, model_path(m)
+      %li #{link_to m.name, model_path(m)} (#{m.boats_count})
   = paginate @models

@@ -6,8 +6,8 @@ namespace :workers do
     desc 'Setup monitrc for delayed_job process'
     task :setup do
       on roles(:db) do
-        conf = template('dj.monitrc.erb', rails_env: fetch(:rails_env, 'production'))
-        upload! StringIO.new(conf), "#{shared_path}/dj.monitrc"
+        conf = template('dj.monitrc.haml')
+        upload! StringIO.new(conf), "#{shared_path}/monit/dj.monitrc"
       end
     end
 
@@ -16,7 +16,6 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            # execute :bundle, :exec, :'bin/delayed_job', :stop
             execute :sudo, 'monit stop dj_rightboat'
           end
         end
@@ -28,7 +27,6 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            # execute :bundle, :exec, :'bin/delayed_job', args, :start
             execute :sudo, 'monit start dj_rightboat'
           end
         end
@@ -41,7 +39,6 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            # execute :bundle, :exec, :'bin/delayed_job', args, :restart
             execute :sudo, 'monit restart dj_rightboat'
           end
         end

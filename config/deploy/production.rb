@@ -4,6 +4,7 @@ server 'import.rightboat.com', user: 'rightboat', roles: %w{web app db import}
 
 set :ssh_options, {keys: ['~/.ssh/ProdKey.pem']}
 
+set :user, 'rightboat'
 set :application, 'rightboat.com'
 set :deploy_to, '/opt/applications/rightboat.com'
 set :log_level, :info
@@ -11,9 +12,10 @@ set :branch, ENV['BRANCH'] || 'master'
 
 set :passenger_roles, %w(app app1 app2)
 
+set :delayed_job_cmd, "/usr/bin/env RAILS_ENV=production /home/rightboat/.rvm/wrappers/default/ruby #{current_path}/bin/delayed_job %{cmd}"
 set :solr_data_path, '/var/solr/data'
 set :solr_pid, '/var/solr/solr-8983.pid'
-set :solr_cmd, 'sudo /usr/bin/service solr %{cmd}'
+set :solr_cmd, '/usr/bin/service solr %{cmd}'
 
 
 # bundle exec cap production deploy #=> deploy all

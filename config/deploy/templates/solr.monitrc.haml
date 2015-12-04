@@ -1,0 +1,8 @@
+check process solr_rightboat with pidfile #{solr_pid}
+group search
+start program = "#{solr_cmd % {cmd: 'start'}}"
+stop  program = "#{solr_cmd % {cmd: 'stop'}}"
+if failed host localhost port 8983 then restart
+if 5 restarts within 5 cycles then timeout
+alert don.fuller@cotoco.com with reminder on 10 cycles
+alert llukomskyy@n-ix.com with reminder on 10 cycles

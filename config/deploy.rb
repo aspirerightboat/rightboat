@@ -48,16 +48,20 @@ set :disallow_pushing, true
 
 
 namespace :deploy do
-  after :check,   :'solr:setup'
-  after :check,   :'workers:delayed_job:setup'
-  after :check,   :'workers:delayed_job:stop'
-  after :restart, :'workers:clockwork:restart'
-  after :restart, :'workers:delayed_job:start'
+  after :check,   'monit:setup'
+  after :check,   'solr:setup'
+  after :check,   'workers:delayed_job:setup'
+  # after :restart, 'monit:reload' # asks password on prod
+  after :restart, 'workers:clockwork:restart'
+  after :restart, 'workers:delayed_job:restart'
+  after :restart, 'solr:restart'
 end
 
+require 'haml'
+
 def template(file, locals = {})
-  erb = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
+  haml = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
   b = binding
   locals.each { |k, v| b.local_variable_set(k, v) }
-  ERB.new(erb).result(b)
+  Haml::Engine.new(haml).render(b)
 end

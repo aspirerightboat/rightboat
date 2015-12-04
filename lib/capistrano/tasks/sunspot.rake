@@ -11,57 +11,31 @@ end
 namespace :solr do
   desc 'Setup monitrc for solr process'
   task :setup do
-    on roles(:import) do
-      conf = template('solr.monitrc.erb', solr_cmd: fetch(:solr_cmd), solr_pid: fetch(:solr_pid))
-      upload! StringIO.new(conf), "#{shared_path}/solr.monitrc"
+    on roles(:db) do
+      conf = template('solr.monitrc.haml', solr_cmd: fetch(:solr_cmd), solr_pid: fetch(:solr_pid))
+      upload! StringIO.new(conf), "#{shared_path}/monit/solr.monitrc"
     end
   end
 
   %w[start stop restart].each do |command|
     desc "#{command} solr"
     task command do
-      on roles(:import) do
-        within current_path do
-          if fetch(:rails_env, '').to_s == 'staging'
-            def solr_cmd(cmd)
-              execute :bundle, 'exec', 'sunspot-solr', cmd,
-                      "--port=8983 --solr-home=#{release_path}/solr --data-directory=#{shared_path}/solr/data --pid-dir=#{shared_path}/pids"
-            end
-            start_or_restart = command =~ /start/
-
-            pid_path = "#{shared_path}/pids/sunspot-solr.pid"
-            if start_or_restart && test("[ -f #{pid_path} ]") && (pid = capture("cat #{pid_path}").strip) && test("[ -e /proc/#{pid} ]")
-              solr_cmd('stop')
-            end
-
-            cmd = start_or_restart ? 'start' : 'stop'
-            solr_cmd(cmd)
-          else
-            with rails_env: fetch(:rails_env, 'production') do
-              execute fetch(:solr_cmd) % {cmd: command}
-            end
-          end
+      on roles(:db) do
+        within release_path do
+          execute :sudo, "monit #{command} solr_rightboat"
         end
       end
     end
   end
 
-  # desc 'restart solr'
-  # task :restart do
-  #   invoke 'solr:stop'
-  #   invoke 'solr:start'
-  # end
-
-  after 'deploy:finished', 'solr:restart'
-
   desc 'reindex the whole solr database'
   task :reindex do
     invoke 'solr:stop'
-    on roles(:import) do
+    on roles(:db) do
       execute :rm, "-rf #{fetch :solr_data_path}"
     end
     invoke 'solr:start'
-    on roles(:import) do
+    on roles(:db) do
       within current_path do
         with rails_env: fetch(:rails_env, 'production') do
           info 'Reindexing Solr database'

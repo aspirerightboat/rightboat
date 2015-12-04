@@ -10,7 +10,7 @@
   %li <b>Ref No:</b> #{@boat.ref_no}
   %li <b>Broker source ID:</b> #{@boat.source_id}
 
-%p We have notified the yacht broker of your interest, and they will be in touch soon.  Their contact details are:
+%p We have notified the yacht broker of your interest, and they will be in touch soon. Their contact details are:
 
 %ul
   %li <b>Broker Name:</b> #{@office.try(:contact_name) || @boat.user.name}

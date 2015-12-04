@@ -1,7 +1,7 @@
 class CountriesController < ApplicationController
   def index
     @countries = Country.joins(:boats).group('countries.name, countries.slug')
-                     .order('COUNT(*) DESC').page(params[:page]).per(20)
+                     .order('COUNT(*) DESC').page(params[:page]).per(100)
                      .select('countries.name, countries.slug, COUNT(*) AS boats_count')
   end
 

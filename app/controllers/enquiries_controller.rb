@@ -14,23 +14,18 @@ class EnquiriesController < ApplicationController
       redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
     end
 
-    # just_logged_in = false
     if params[:have_account].present? && !current_user
       user = User.find_by(email: params[:email])
 
       if user && user.valid_password?(params[:password])
         sign_in(user)
         user.remember_me! if params[:remember_me]
-        # just_logged_in = true
-
-        render json: {location: member_enquiries_path} and return
       else
         render json: ['Invalid email or password'], root: false, status: 403 and return
       end
     end
 
     enquiry = Enquiry.new(enquiry_params)
-    enquiry.just_logged_in = false #just_logged_in
 
     enquiry.boat = Boat.find_by(slug: params[:id])
     if enquiry.save

@@ -105,7 +105,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Lead Value last week (Mon-Sun):'
               end
               td do
-                text_node number_to_currency(Invoice.where(created_at: beginning_of_last_week..beginning_of_week).sum(:total), unit: '£')
+                text_node Enquiry.approved.where(created_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -113,7 +113,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Approved Lead Value last month:'
               end
               td do
-                text_node number_to_currency(Invoice.where(created_at: beginning_of_last_month..beginning_of_month).sum(:total), unit: '£')
+                text_node Enquiry.approved.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
           end
@@ -304,18 +304,18 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Active Brokers'
+                text_node 'Brokers with Active Boats'
               end
               td class: 'text-green' do
-                link_to User.companies.active.count, admin_users_path(q: {role_eq: User::ROLES['COMPANY'], active_eq: true})
+                link_to User.companies.where('boats_count > ?', 0).count, admin_users_path(q: {role_eq: User::ROLES['COMPANY'], boats_count_greater_than: 0})
               end
             end
             tr do
               td do
-                text_node 'Inactive Brokers'
+                text_node 'Brokers with no Active Boats'
               end
               td class: 'text-orange' do
-                link_to User.companies.inactive.count, admin_users_path(q: {role_eq: User::ROLES['COMPANY'], active_eq: false})
+                link_to User.companies.where(boats_count: 0).count, admin_users_path(q: {role_eq: User::ROLES['COMPANY'], boats_count_eq: 0})
               end
             end
           end

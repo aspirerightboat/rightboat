@@ -52,14 +52,14 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  before_destroy :remove_activities
-  after_save :update_leads_price
+  before_destroy :remove_activities, :decrease_counter_cache
+  after_save :update_leads_price, :update_counter_cache
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
 
   has_many :favourites, dependent: :delete_all
   has_many :enquiries, dependent: :destroy
-  has_many :boat_specifications, dependent: :delete_all
+  has_many :boat_specifications, dependent: :destroy
   has_many :boat_images, -> { not_deleted }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
@@ -256,5 +256,13 @@ class Boat < ActiveRecord::Base
     notifiable_enquiry_users.each do |user_id|
       UserMailer.boat_status_changed(user_id, id, 'deleted', 'enquiry').deliver_later
     end
+  end
+
+  def update_counter_cache
+    user.update_column(:boats_count, user.boats.not_deleted.count)
+  end
+
+  def decrease_counter_cache
+    user.decrement(:boats_count)
   end
 end

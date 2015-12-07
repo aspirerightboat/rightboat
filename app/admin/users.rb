@@ -38,6 +38,7 @@ ActiveAdmin.register User do
     actions
   end
 
+  filter :first_name_or_last_name_or_email_or_username_cont, as: :string, label: 'Name | Email | Username'
   filter :role, collection: -> { User::ROLES }, as: :select
   filter :username
   filter :email

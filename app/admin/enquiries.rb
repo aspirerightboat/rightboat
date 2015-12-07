@@ -105,7 +105,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:phone)
     column(:email)
     column(:message)
-    column(:token)
     column(:remote_ip)
     column(:browser)
   end

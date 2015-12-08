@@ -5,7 +5,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   menu label: 'Leads', priority: 9
 
-  config.sort_order = 'created_at_desc'
+  config.sort_order = 'first_name_asc_and_surname_asc_and_created_at_desc'
 
   filter :user, collection: -> { User.organizations }
   filter :created_at, label: 'Date of Lead'

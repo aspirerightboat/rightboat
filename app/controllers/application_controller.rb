@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_visited
-    cookies[:visited] = true if cookies[:visited].nil?
+    cookies[:visited] = { value: true, expires: Time.now + 1.year } if cookies[:visited].nil?
   end
 
   def require_broker_user

@@ -6,7 +6,7 @@ ActiveAdmin.register User do
                 broker_info_attributes: [:id, :contact_name, :position, :description, :lead_rate, :discount,
                                          :website, :additional_email, :vat_number, :logo, :lead_email_distribution, :_destroy]
 
-  config.sort_order = 'role_asc'
+  config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'
   menu priority: 8
 
   before_save do |user|

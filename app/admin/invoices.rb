@@ -1,7 +1,7 @@
 ActiveAdmin.register Invoice do
   menu parent: 'Leads'
 
-  config.sort_order = 'id_desc'
+  config.sort_order = 'users.first_name_asc_and_users.last_name_asc_and_invoices.created_at_desc'
   permit_params :user_id, :subtotal, :discount_rate, :discount, :total_ex_vat,
                 :vat_rate, :vat, :total
 

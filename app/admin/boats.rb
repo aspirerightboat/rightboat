@@ -131,8 +131,12 @@ ActiveAdmin.register Boat do
 
   member_action :toggle_active, method: :post do
     boat = Boat.find_by(slug: params[:id])
-    activate = boat.deleted?
-    activate ? boat.revive : boat.destroy
+    if activate = boat.deleted?
+      boat.revive
+      boat.increase_counter_cache
+    else
+      boat.destroy
+    end
 
     redirect_to (request.referer || {action: :index}), notice: "boat id=#{boat.id} was #{activate ? 'activated' : 'deactivated'}"
   end

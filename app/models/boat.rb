@@ -53,7 +53,8 @@ class Boat < ActiveRecord::Base
   end
 
   before_destroy :remove_activities, :decrease_counter_cache
-  after_save :update_leads_price, :update_counter_cache
+  after_create :increase_counter_cache
+  after_save :update_leads_price
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
 
@@ -173,6 +174,10 @@ class Boat < ActiveRecord::Base
     currency || Currency.default
   end
 
+  def increase_counter_cache
+    user.increment!(:boats_count)
+  end
+
   private
 
   def slug_candidates
@@ -258,11 +263,7 @@ class Boat < ActiveRecord::Base
     end
   end
 
-  def update_counter_cache
-    user.update_column(:boats_count, user.boats.not_deleted.count)
-  end
-
   def decrease_counter_cache
-    user.decrement(:boats_count)
+    user.decrement!(:boats_count)
   end
 end

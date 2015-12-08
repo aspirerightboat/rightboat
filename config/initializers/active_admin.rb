@@ -238,6 +238,9 @@ ActiveAdmin.setup do |config|
   # You can enable or disable them for all resources here.
   #
   # config.filters = true
+
+  config.skip_before_action :load_visited
+  config.skip_after_action :set_visited
 end
 
 module ActiveAdmin::ViewHelpers

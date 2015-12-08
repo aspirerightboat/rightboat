@@ -32,6 +32,9 @@ ActiveAdmin.register User do
     column :role do |user|
       user.role_name
     end
+    column :no_of_active_boats, sortable: 'boats_count' do |user|
+      user.boats_count
+    end
     column :current_sign_in_at
     column :sign_in_count
     column :created_at

@@ -1,6 +1,6 @@
-- @page_title = @boat.to_s.truncate(64)
+- @page_title = boat_title(@boat)
 - description = @boat.description ? truncate(@boat.description.gsub('&lt;br /&gt;', ' '), length: 480, omission: 'zzzzz', escape: false).gsub(/[^>.!]+zzzzz/, '') : ''
-- @page_description = reduced_description(description)
+- @page_description = "#{@boat.manufacturer_model} for sale - #{truncate(reduced_description(description), length: 100)}"
 - @canonical_url = boat_url(@boat.slug)
 - if @boat.primary_image
   - @image_url = @boat.primary_image.file_url
@@ -37,17 +37,13 @@
            data-length="#{@boat.length_m.to_f}"
            data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}")
   .container
-    %h1.clearfix
-      %strong.text-nowrap= @boat.manufacturer
-      %span.text-nowrap= @boat.model
-      - if @boat.year_built.present?
-        %span.text-nowrap (#{@boat.year_built})
+    %h1= @page_title
 
   #slider.hide
     - @boat.boat_images.not_deleted.each do |boat_img|
       %figure
         = link_to boat_img.file_url, 'data-size' => "#{boat_img.width}x#{boat_img.height}" do
-          = image_tag boat_img.file_url
+          = image_tag boat_img.file_url, alt: @page_title
 
   = render 'shared/pswp'
 

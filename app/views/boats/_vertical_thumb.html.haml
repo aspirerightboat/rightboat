@@ -6,7 +6,7 @@
   = link_to boat_path(boat.slug) do
     .boat-img-thumb
       - if boat.primary_image
-        = image_tag boat.primary_image.file.url(:thumb)
+        = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
       - else
         .no-image
     .caption

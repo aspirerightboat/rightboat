@@ -93,6 +93,36 @@ ActiveAdmin.register User do
     f.actions
   end
 
+  csv do
+    column :id
+    column :title
+    column :first_name
+    column :last_name
+    column :email
+    column :username
+    column :slug
+    column :company_name
+    column :role
+    column :no_of_active_boats do |user|
+      user.boats_count
+    end
+    column :sign_in_count
+    column :phone
+    column :fax
+    column :mobile
+    column :security_question
+    column :security_answer
+    column :fax
+    column :mobile
+    column :description
+    column :contact1
+    column :contact2
+    column :source
+    column :company_weburl
+    column :active
+    column :email_confirmed
+  end
+
   sidebar 'User Boats', only: [:show, :edit] do
     boats_count = user.boats.not_deleted.count
     inactive_count = user.boats.deleted.count

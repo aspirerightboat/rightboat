@@ -245,7 +245,7 @@ module Rightboat
       private
 
       def cleansing
-        self.model ||= 'Unknown'
+        self.model = 'Unknown' if self.model.blank?
         if self.manufacturer
           self.model.gsub!(/#{self.manufacturer.downcase}\s+/i, '')
         end

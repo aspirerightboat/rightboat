@@ -12,7 +12,7 @@ class ManufacturersController < ApplicationController
     @manufacturer = Manufacturer.find_by(slug: params[:id])
     redirect_to root_path and return if !@manufacturer
 
-    @boats = @manufacturer.boats.not_deleted.includes(:currency, :primary_image, :model, :vat_rate, :country).order(:name).page(params[:page]).per(20)
+    @boats = @manufacturer.boats.not_deleted.includes(:currency, :primary_image, :model, :vat_rate, :country).order(:name).page(params[:page]).per(30)
   end
 
   def by_letter

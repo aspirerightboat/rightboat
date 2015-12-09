@@ -9,6 +9,6 @@ class CountriesController < ApplicationController
     @country = Country.find_by(slug: params[:id])
     redirect_to root_path and return if !@country
 
-    @boats = @country.boats.not_deleted.boat_view_includes.page(params[:page]).per(20)
+    @boats = @country.boats.not_deleted.boat_view_includes.page(params[:page]).per(30)
   end
 end

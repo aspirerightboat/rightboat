@@ -1,5 +1,4 @@
 class ImportMailer < ApplicationMailer
-
   default to: %w(don.fuller@cotoco.com llukomskyy@n-ix.com xmpolaris@hotmail.com)
 
   def importing_errors(import_trail_id)

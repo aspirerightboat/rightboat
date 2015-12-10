@@ -1,5 +1,4 @@
 class ContactMailer < ApplicationMailer
-
   add_template_helper(ApplicationHelper)
 
   def new_request(feedback)

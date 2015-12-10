@@ -14,7 +14,7 @@
               .boat-price= number_to_currency(boat.price, unit: boat.currency.symbol, precision: 0)
               .boat-spec.tax-status= boat.tax_paid? ? 'Tax paid' : ''
               .boat-links
-                = mail_to boat.user.email, 'Contact Broker', class: 'btn'
+                = link_to 'Contact Broker', boat_url(id: boat.slug, anchor: 'enquiry_popup'), class: 'btn'
                 = link_to 'View Detail', boat_url(id: boat.slug), class: 'btn'
             .boat-specs
               .manufacturer-model

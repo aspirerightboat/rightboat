@@ -9,8 +9,7 @@ class LeadsMailer < ApplicationMailer
     @office = @boat.office
     attach_boat_pdf
 
-    to_email = [STAGING_EMAIL || @enquiry.email]
-    to_email << 'info@rightboat.com'
+    to_email = STAGING_EMAIL || @enquiry.email
     mail(to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
@@ -27,17 +26,14 @@ class LeadsMailer < ApplicationMailer
 
   def lead_quality_check(enquiry_id)
     @enquiry = Enquiry.find(enquiry_id)
-    to_email = [RBConfig[:lead_quality_check_email]]
-    to_email << 'info@rightboat.com'
+    to_email = RBConfig[:lead_quality_check_email]
     mail(to: to_email, subject: "#{@enquiry.boat.user.name} wants to review lead ##{@enquiry.id}")
   end
 
   def invoicing_report(invoice_ids)
     @invoices = Invoice.where(id: invoice_ids).includes(:enquiries, :user).to_a
 
-    to_email = [RBConfig[:invoicing_report_email]]
-    to_email << 'info@rightboat.com'
-    to_email.uniq!
+    to_email = RBConfig[:invoicing_report_email]
     mail(to: to_email, subject: "Invoicing Report #{Time.current.to_date.to_s(:short)}")
   end
 
@@ -47,18 +43,14 @@ class LeadsMailer < ApplicationMailer
     @broker_info = @broker.broker_info
     @leads = @invoice.enquiries.includes(:boat).order('id DESC')
 
-    to_email = [STAGING_EMAIL] # do not send emails to brokers temporarily # [STAGING_EMAIL || @broker.email]
-    to_email << 'info@rightboat.com'
-    to_email.uniq!
+    to_email = STAGING_EMAIL # do not send emails to brokers temporarily # STAGING_EMAIL || @broker.email
     mail(to: to_email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
   def lead_reviewed_notify_broker(enquiry_id)
     @lead = Enquiry.find(enquiry_id)
 
-    to_email = [STAGING_EMAIL || @lead.boat.user.email]
-    to_email << 'info@rightboat.com'
-    to_email.uniq!
+    to_email = STAGING_EMAIL || @lead.boat.user.email
     mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
   end
 
@@ -81,7 +73,6 @@ class LeadsMailer < ApplicationMailer
     to_emails << user_email if dist['user']
     to_emails << office_email if dist['office']
     to_emails << 'info@eyb.fr' if dist['eyb']
-    to_emails << 'info@rightboat.com'
     to_emails.uniq!
 
     {to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}"}

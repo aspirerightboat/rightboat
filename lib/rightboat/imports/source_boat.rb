@@ -17,20 +17,24 @@ module Rightboat
       SPEC_ATTRS = [
         :hull_type, :hull_shape, :hull_material, :hull_color, :cockpit_type,
         :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig,
-        :range, :lwl_m, :draft_m,
+        :range, :lwl_m, :draft_m, :country_built, :displacement_net, :displacement_gross, :displacement_kgs,
         :engine_count, :engine_type, :engine_location, :engine_horse_power, :engine_hours, :engine, :engine_code, :engine_year,
-        :displacement_kgs, :ballast, :electrical_circuit, :max_speed, :cruising_speed, :beam_m,
+        :ballast, :electrical_circuit, :max_speed, :cruising_speed, :beam_m,
         :heads, :berths, :single_berths, :double_berths, :twin_berths, :cabins, :keel, :fresh_water_tanks, :holding_tanks,
         :fuel_tanks, :designer, :head_room, :builder, :length_on_deck, :propeller, :dry_weight, :passengers, :bathrooms,
-        :gps, :vhf, :plotter, :radar, :battery_charger, :generator, :inverter, :bimini,
+        :gps, :vhf, :plotter, :radar, :battery_charger, :generator, :generator_kw, :inverter, :bimini,
         :television, :cd_player, :dvd_player, :cylinders, :gearbox,
         :known_defects, :last_serviced, :air_draft, :hull_construction, :hull_number,
-        :super_structure_colour, :super_structure_construction, :deck_colour, :deck_construction, :spray_hood,
+        :super_structure_colour, :super_structure_construction, :deck_colour, :deck_construction, :deck_material, :spray_hood,
         :control_type, :keel_type, :oven, :microwave, :fridge, :freezer, :heating, :tankage, :gallons_per_hour,
         :litres_per_hour, :propeller_type, :starting_type, :cooling_system, :navigation_lights, :compass,
         :depth_instrument, :wind_instrument, :autopilot, :speed_instrument, :toilet, :shower, :bath, :life_raft,
-        :epirb, :bilge_pump, :fire_extinguisher, :mob_system, :genoa, :spinnaker, :tri_sail, :storm_jib,
+        :epirb, :bilge_pump, :fire_extinguisher, :mob_system, :genoa, :genoa_furling, :spinnaker, :tri_sail, :storm_jib,
         :main_sail, :winches, :battery, :shorepower, :fenders, :anchor, :seating_capacity, :drive_transmission_description,
+        :dinette_sleeps, :crew_cabins, :crew_berths, :echosounder, :steering_system, :compartments, :desalinator, :dinghy,
+        :jib, :jib_furling, :main_sail_furling, :main_sail_battened, :masts, :economy_speed, :trim_tabs, :shore_inverter,
+        :speed_log, :wind_speed_dir, :steering_indicator, :dual_station_navigation, :magnetic_compass, :searchlight,
+        :license, :date_of_refit, :wheel_steering, :bow_sprit, :warranty, :deadrise
       ]
 
       RELATION_ATTRIBUTES = [
@@ -60,10 +64,10 @@ module Rightboat
         # if not exists in db, use split method
         #  e.g. yachtworld: Marine Projects Sigma 38, Alloy Yachts Pilothouse
 
-        search = Sunspot.search(Boat) do |q|
-          q.with :manufacturer_model, mnm
-          q.order_by :live, :desc
-          q.paginate per_page: 1
+        search = Boat.solr_search do
+          with :manufacturer_model, mnm
+          order_by :live, :desc
+          paginate per_page: 1
         end
         if (boat = search.results.first)
           self.manufacturer = boat.manufacturer

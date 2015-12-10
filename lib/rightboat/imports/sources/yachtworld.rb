@@ -2,82 +2,134 @@ module Rightboat
   module Imports
     module Sources
       class Yachtworld < Base
-        MAIN_SITE = "http://www.yachtworld.com"
-
-        DATA_MAPPINGS = {
-          "Boat Name" => :name,
-          "Hull Material" => :hull_material,
-          "Year" => :year_built,
-          "Current Price" => Proc.new { |boat, data|
-            p = data.match(/^\s*(?<currency>[A-Z\$]{3})[^0-9]*(?<price>[0-9,]+)\s*(?<vat>.*)$/m)
-            if p
-              boat.currency = p[:currency].to_s.gsub(/\$/,'D')
-              vat = cleanup_string(p[:vat]) if p[:vat]
-              boat.price = p[:price].to_s.gsub(/[^0-9]/,"").to_i.to_s
-            else
-              p = data.match(/(?<price>[0-9,]+)\s*(?<vat>.*)$/)
-              boat.currency = "GBP"
-              if p
-                boat.price = p[:price].to_s.gsub(/[^0-9]/,"").to_i.to_s
-                vat = cleanup_string(p[:vat]) if p[:vat]
-              else
-                puts "No match: #{data}"
-              end
-            end
-            # puts "VAT: #{vat.inspect}"
-            if vat && (vat.to_s.include? "Tax Not Paid")
-              boat.vat_rate = "No Tax Paid"
-            elsif vat
-              boat.vat_rate = vat
-            end
-          },
-          "Engine Brand" => :engine_manufacturer,
-          "Engine Model" => :engine_model,
-          "Engine Type" =>  :engine_type,
-          "Propeller" =>    :propeller,
-          "Fuel Type" =>    :fuel_type,
-          "Engine/Fuel Type" => Proc.new { |boat, data|
-            engines, boat.fuel_type = data.to_s.strip.downcase.split(/\s+/)
-            case engines
-              when "single"
-                boat.engine_count = 1
-              when "twin"
-                boat.engine_count = 2
-            end
-          },
-          "LOA" => Proc.new { |boat, data|
-            if data.to_s.match(/m/)
-              boat.instance_variable_set :@_length_m, data.to_s.to_f
-            else
-              length_ft, length_in = data.to_s.split(/\s*ft\s*/)
-              boat.instance_variable_set :@_length_m, (length_ft.to_f.ft_to_m + length_in.to_f * 0.0254).round(2)
-            end
-          },
-          "LWL" => :lwl_m,
-          "Beam" => :beam_m,
-          "Minimum Draft" => :draft_m,
-          "Maximum Draft" => :draft_m,
-          "Maximum Speed" => :max_speed,
-          "Cruising Speed" => :cruising_speed,
-          "Engine(s) Total Power" => :engine_horse_power,
-          "Total Power" => :engine_horse_power,
-          "Headroom" => :head_room,
-          "Number of heads" => :heads,
-          "Number of single berths" => :single_berths,
-          "Number of double berths" => :double_berths,
-          "Year Built" => Proc.new{ |boat, data| boat.year_built = data unless boat.year_built },
-          "Engine Hours" => :engine_hours,
-          "Displacement" => :displacement_kgs,
-          "Ballast" => :ballast,
-          "Electrical Circuit" => :electrical_circuit,
-          "VehicleRemarketingEngine" => Proc.new { |boat, _|
-            boat.engine_count = boat.engine_count ? boat.engine_count + 1 : 1
-          },
-          "Drive Type" => :drive_type
-        }
+        def data_mapping
+          @data_mapping ||= {
+              'Boat Name' => :name,
+              'Hull Material' => :hull_material,
+              'Year' => :year_built,
+              'Current Price' => Proc.new { |boat, data|
+                if (m = data.match(/^(?:(?<currency>[A-Z$£]{1,3})\s+)?(?<price>[\d,]+)\s*(?<vat>.*)$/))
+                  boat.currency = ('USD' if m[:currency] == 'US$') || m[:currency] || Currency.default
+                  boat.price = m[:price].gsub(',', '') if m[:price]
+                  boat.vat_rate = m[:vat] if m[:vat]
+                end
+              },
+              'Engine Brand' => :engine_manufacturer,
+              'Engine Model' => :engine_model,
+              'Engine Type' => :engine_type,
+              'Propeller' => :propeller,
+              'Fuel Type' => :fuel_type,
+              'Engine/Fuel Type' => -> (_, _) {}, # nothing. parsed from summary table
+              'LOA' => -> (_, _) {}, # nothing. parsed from summary table
+              'LWL' => -> (boat, data) { read_spec_len(boat, data, :lwl_m) },
+              'Draft' => -> (boat, data) { read_spec_len(boat, data, :draft_m) },
+              'Beam' => -> (boat, data) { read_spec_len(boat, data, :beam_m) },
+              'Minimum Draft' => :draft_m,
+              'Maximum Draft' => :draft_m,
+              'Maximum Speed' => :max_speed,
+              'Cruising Speed' => :cruising_speed,
+              'Engine(s) Total Power' => :engine_horse_power,
+              'Total Power' => :engine_horse_power,
+              'Headroom' => :head_room,
+              'Number of heads' => :heads,
+              'Number of single berths' => :single_berths,
+              'Number of double berths' => :double_berths,
+              'Year Built' => Proc.new { |boat, data| boat.year_built = data },
+              'Engine Hours' => :engine_hours,
+              'Displacement' => :displacement_kgs,
+              'Ballast' => :ballast,
+              'Electrical Circuit' => :electrical_circuit,
+              'VehicleRemarketingEngine' => Proc.new { |boat, _|
+                boat.engine_count = boat.engine_count ? boat.engine_count + 1 : 1
+              },
+              'Drive Type' => :drive_type,
+              'Manufacturer' => :manufacturer,
+              'Model' => :model,
+              'Country of built' => :country_built,
+              'Net' => :displacement_net,
+              'Gross' => :displacement_gross,
+              'Hull' => -> (_, _) {}, # nothing. parsed from summary table
+              'Deck' => :deck_material,
+              'No. of guest cabins' => :cabins,
+              'No. of guest berths' => :berths,
+              'No. of WC' => :bathrooms,
+              'Dinette Sleeps' => :dinette_sleeps,
+              'No. of crew cabins' => :crew_cabins,
+              'No. of crew berths' => :crew_berths,
+              # 'Cruising Speed' => :cruising_speed,
+              'Max Speed' => :max_speed,
+              'Engine(s) Manufacturer' => :engine_manufacturer,
+              'Engine(s) Model/ HP' => :engine_model,
+              'Type of drive' => :drive_type,
+              'Type of fuel' => :fuel_type,
+              'Bow thruster' => :bow_thruster,
+              'Engine hours' => :engine_hours,
+              'Generator Manufacturer' => :generator,
+              'KW' => :generator_kw,
+              'Fuel tank' => :fuel_tanks,
+              'Fuel Tanks' => :fuel_tanks,
+              'Fresh water tank' => :fresh_water_tanks,
+              'Fresh Water Tanks' => :fresh_water_tanks,
+              'Radar' => :radar,
+              'Autopilot' => :autopilot,
+              'Echosounder' => :echosounder,
+              'GPS/ Plotter' => :gps,
+              'VHF with DSC/ GMDSS' => :vhf,
+              'Steering system' => :steering_system,
+              'Type' => :air_conditioning,
+              'Compartments' => :compartments,
+              'Electrical system' => :electrical_circuit,
+              'Desalinator' => :desalinator,
+              'Dinghy/ outboard' => :dinghy,
+              'EPIRB' => :epirb,
+              'Fire extinguishers auto' => :fire_extinguisher,
+              'Genoa' => :genoa,
+              'Genoa furling type' => :genoa_furling,
+              'Jib' => :jib,
+              'Jib furling type' => :jib_furling,
+              'Main Sail' => :main_sail,
+              'Main Sail furling system' => :main_sail_furling,
+              'Main Sail Fully battened' => :main_sail_battened,
+              'Spinnaker' => :spinnaker,
+              'Masts' => :masts,
+              'Flag' => :country_built,
+              'Flag of Registry' => :country_built,
+              'VAT' => :vat_rate,
+              'Length on Deck' => :length_on_deck,
+              'Builder' => :builder,
+              'Engine Power' => :engine_horse_power,
+              'Economy Speed' => :economy_speed,
+              'Stern thruster' => :stern_thruster,
+              'Trim Tabs (Flaps)' => :trim_tabs,
+              'Shore power connection' => :shorepower,
+              'Shore inverter' => :shore_inverter,
+              'Fire extinguishers portable' => :fire_extinguisher,
+              'Location' => :engine_location,
+              'Speed log' => :speed_log,
+              'Wind & speed direction' => :wind_speed_dir,
+              'Steering indicator' => :steering_indicator,
+              'Dual station navigation' => :dual_station_navigation,
+              'Magnetic compass' => :magnetic_compass,
+              'Searchlight' => :searchlight,
+              'Bilge Pumps' => :bilge_pump,
+              'License' => :license,
+              'Date of Refit' => :date_of_refit,
+              'Wheel steering' => :wheel_steering,
+              'Holding Tanks' => :holding_tanks,
+              'Designer' => :designer,
+              'Keel' => :keel,
+              'Hull Shape' => :hull_shape,
+              'Dry Weight' => :dry_weight,
+              'Bow sprit' => :bow_sprit,
+              'Warranty' => :warranty,
+              'Deadrise' => :deadrise,
+              'Number of cabins' => :cabins,
+              'Total Liferaft Capacity' => :life_raft,
+          }
+        end
 
         def self.validate_param_option
-          { homepage_url: :presence }
+          {homepage_url: :presence}
         end
 
         def enqueue_jobs
@@ -86,144 +138,181 @@ module Rightboat
             doc = get(url)
 
             rows = doc.root.css('table[summary=search_results] tr')
+            break if rows.blank?
             rows.shift # remove header row
 
             rows.each do |row|
-              job = {}
               tds = row.element_children
-              location = cleanup_string(tds[9].text)
+              location = tds[9].text
               next if location == 'Sold' || location == 'Sale Pending'
 
-              length = cleanup_string(tds[3].text)
-              if length =~ /^(\d+)'(\s(\d+)\s")?$/
-                job[:length_m] = ($1.to_f.ft_to_m + $3.to_f * 0.0254).round(2)
-              end
-              country, _, location = location.rpartition(/\s?,\s?/)
-              job[:country] = country.dup
-              job[:location] = location.dup
-              job[:codes] = tds[8].text.strip.split(nbsp_char)
-              job[:source_url] = doc.uri.merge(tds[4].at_css('a')['href'])
+              job = {}
+              job[:length_m] = read_length(tds[3].text)
+              job[:location] = location
+              job[:codes] = fix_whitespace(tds[8].text)
+              job[:source_url] = doc.uri.merge(tds[4].at_css('a')['href']).to_s
 
               enqueue_job(job)
             end
-            next_link = doc.search("//a[contains(text(), \"Next\")]").first
-            if next_link
-              url = MAIN_SITE + next_link[:href]
-            else
-              url = nil
-            end
+            next_link = doc.root.at_css('form[name=search_results] .feature a:contains("Next")')
+            url = (doc.uri.merge(next_link[:href]) if next_link.present?)
           end
         end
 
         private
-        # processes boat by source id
+
         def process_job(job)
-          source_url = job.delete(:source_url)
+          source_url = job[:source_url]
 
           doc = get(source_url)
-
-          if doc.search('span.active_field').select{|x| x.to_s =~ /Sold/}.first
-            puts "Sold boat #{source_url}"
-            return
-          end
 
           full_spec_link = doc.link_with(href: /pl_boat_full_detail/)
           full_spec_uri = doc.uri.merge(full_spec_link.uri)
 
           boat = SourceBoat.new(source_url: doc.uri.to_s)
 
-          boat.instance_variable_set :@_length_m, job.delete(:length_m)
-          job.merge(parse_codes(job.delete(:codes)))
-          job.each do |k, v|
-            boat.send "#{k}=", v
-          end
+          boat.length_m = job[:length_m]
+          process_codes(boat, job[:codes])
+          boat.location = job[:location]
+          boat.country = job[:location].split(', ').last
 
-          description = "<p>#{doc.search('tr[@align="left"]').first.try(&:text) || ''}</p>"
+          desc_td = doc.root.at_css('tr[align=left] td')
+          description = cleanup_description(desc_td)
 
           doc = get(full_spec_uri)
-          boat.under_offer = !doc.content.match(/Sale Pending/).nil?
-          boat.source_id = url_param(source_url.to_s, :boat_id)
-          details = doc.search("div:has(h2)")
-          m = doc.search("h3").text.match(/^\s*(?<length>\d{1,3})'/)
-          rough_length = (m[:length] if m)
+          boat.source_id = url_param(source_url, 'boat_id')
+          h3 = doc.root.at_css('h3')
+          h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
 
-          begin
-            boat.manufacturer_model = doc.search("h3").first.text.gsub(/^\s*\d+.\s*/,"")
-          rescue
-            puts "Couldn't match key field - moving onto next boat..."
-            return
+          h3.parent.css('li').each do |li|
+            attr, data = fix_whitespace(li.text).split(/\s*:\s*/)
+            assign_boat_attr(boat, attr, data)
           end
 
-          doc.search("td ul li").each do |li|
-            label, data = li.text.split(/:/)
-            attr = self.class::DATA_MAPPINGS[label]
-            next unless attr
-            if attr.is_a?(Symbol) || attr.is_a?(String)
-              boat.send "#{attr}=", data
-            elsif attr.is_a?(Proc)
-              attr.call(boat, data)
-            else
-              @missing_attrs ||= {}
-              @missing_attrs[label] ||= []
-              @missing_attrs[label] << [data, full_spec_uri.to_s]
+          details1 = doc.root.at_css('h2:contains("Additional Specs, Equipment")').ancestors('div').first
+          details1.css('h2').remove
+          section = nil
+          details1.traverse do |node|
+            if node.text?
+              str = fix_whitespace(node.text)
+              next if str.blank?
+
+              if node.parent.name == 'strong'
+                section = str
+              elsif str[':']
+                attr, data = str.split(/\s*:\s/)
+                assign_boat_attr(boat, attr, data)
+              elsif str.present? && section == 'Boat Name'
+                boat.name = data
+              end
             end
           end
 
-          sections = details.inner_html.split(/<strong>/)
-          sections.shift
-          sections.each do |section|
-            if (m = section.to_s.match(/(?<label>.*?)<\/strong>(?<data>.*)/m))
-              section_label = m[:label]
-              pair_list = []
-              if section_label == 'Engines'
-                m[:data].split(/<br>([\r\n\t\s]+)?<br>|Engine\s\d\:/).each do |group|
-                  data = group.gsub(/<br>/,"")
-                  next if data.blank?
-                  pair_list += data.scan(/\s*(.*?)\s*:\s*(.*)\s*/).map do |label, data|
-                    label == 'Engine/Fuel Type' ? ['Fuel Type', data] : [label, data]
-                  end
-                end
-              else
-                pair_list = m[:data].gsub(/<br>/,"").to_s.scan(/\s*(.*?)\s*:\s*(.*)\s*/)
-              end
-
-              pair_list.each do |label, data|
-                attr = self.class::DATA_MAPPINGS[label]
-                next unless attr
-                if attr.is_a?(Symbol) || attr.is_a?(String)
-                  boat.send "#{attr}=", data
-                elsif attr.is_a?(Proc)
-                  attr.call(boat, data)
+          details2_b = doc.root.at_css('b:contains("Yacht\'s Descriptions")')
+          details2 = (details2_b.ancestors('div').first if details2_b)
+          if details2_b
+            section = nil
+            attr = nil
+            details2.css('td').each do |td|
+              if td[:class] == 'sectHead'
+                section = fix_whitespace(td.text)
+              elsif td[:width] == '25%'
+                str = fix_whitespace(td.text)
+                if str.end_with?(':')
+                  attr = str.chomp(':')
+                  attr = 'Generator Manufacturer' if attr == 'Manufacturer' && section == 'Generators'
                 else
-                  @missing_attrs ||= {}
-                  @missing_attrs[label] ||= []
-                  @missing_attrs[label] << [data, full_spec_uri.to_s]
+                  assign_boat_attr(boat, attr, str)
                 end
               end
             end
           end
 
-          doc.search("td:has(b)").map do |detail_tag|
-            description += detail_tag.inner_html
+          cur_details = details2 || details1
+          while (cur_details = cur_details.next)
+            next if cur_details.name != 'div'
+            next if !cur_details.at_css('b')
+            next if cur_details.at_css('b:contains("Disclaimer")')
+            description << cleanup_description(cur_details)
           end
+
           boat.description = description
 
-          length_m = boat.instance_variable_get(:@_length_m)
-          if !length_m && rough_length
-            length_m = rough_length.to_f.ft_to_m.round(2)
+          if boat.manufacturer && !boat.model && h3_manufacturer_model[boat.manufacturer]
+            boat.model = h3_manufacturer_model.sub(boat.manufacturer, '').strip
           end
-          boat.length_m = length_m
+          boat.manufacturer_model = h3_manufacturer_model if !boat.manufacturer && !boat.model
 
-          boat.images = doc.content.scan(/<img src='(http:\/\/newimages.yachtworld.com[^"]*)'/).flatten.map {|img| img.gsub(/([wh])=(\d+)/,'\1=600')}
-          boat.images += doc.content.scan(/<img src="(http:\/\/newimages.yachtworld.com[^"]*)"/).flatten.map {|img| img.gsub(/([wh])=(\d+)/,'\1=600')}
+          boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map { |n| n[:src].sub(/\?.*/, '') }
           boat
         end
 
-        def parse_codes(codes)
-          {
-            boat_type: codes[0] == 'P' ? 'Power' : (codes[0] == 'S' ? 'Sail' : nil),
-            new_boat: codes[1] == 'N' ? true : false
-          }
+        def process_codes(boat, codes)
+          codes = codes.split(' ')
+          boat.boat_type = case codes[0] when 'P' then 'Power' when 'S' then 'Sail' end
+          boat.new_boat = case codes[1] when 'N' then true when 'U' then false end
+          boat.engine_count = case codes[2] when 'S' then 1 when 'T' then 2 end
+          boat.fuel_type = case codes[3] when 'D' then 'Diesel' when 'G' then 'Gas/Petrol' end
+          boat.hull_material = case codes.last # sometimes there are no fourth code, eg.: P U O   FG
+                               when 'W' then 'Wood'
+                               when 'ST' then 'Steel'
+                               when 'AL' then 'Aluminum'
+                               when 'FG' then 'Fiberglass'
+                               when 'CP' then 'Composite'
+                               when 'FC' then 'Ferro-Cement'
+                               end
+        end
+
+        def read_length(str)
+          m = str.match(/^(\d+)'\D(?:(\d+)\D"\D)?$/)
+          (m[1].to_f.ft_to_m + m[2].to_f.inch_to_m).round(2)
+        end
+
+        def read_spec_len(boat, data, attr)
+          case
+          when (m = data.match(/^([\d.]+) ?m/)) then boat.send "#{attr}=", m[1]
+          when (m = data.match(/^(\d+) ft (\d+) in/)) then boat.send "#{attr}=", m[1].to_f.ft_to_m + m[2].to_f.inch_to_m
+          end
+        end
+
+        WHITESPACE_REGEX = /[\s#{nbsp_char}]+/
+
+        def fix_whitespace(str)
+          str.gsub(WHITESPACE_REGEX, ' ').strip
+        end
+
+        def assign_boat_attr(boat, attr, data)
+          return if data.blank? || data == 'n/a' || data == 'No'
+          handler = data_mapping[attr]
+          if !handler
+            log_error "Attr not found. #{attr}: #{data}", 'Attr not found'
+          elsif handler.is_a?(Symbol)
+            boat.send "#{handler}=", data
+          elsif handler.is_a?(Proc)
+            handler.call(boat, data)
+          end
+        end
+
+        ALLOWED_TAGS = %w(p br i b strong)
+
+        def cleanup_description(parent_node)
+          parent_node.traverse do |node|
+            if node.elem? && node != parent_node
+              tag_name = node.name
+              if ALLOWED_TAGS.include?(tag_name)
+                node.each { |key, _| node.delete(key) }
+                node.remove if tag_name == 'p' && node.text.blank?
+                if tag_name == 'strong' && node.text =~ /Safeguarding|Surveyors|Transportation/
+                  node.ancestors('p').first.try(:remove)
+                end
+              elsif tag_name == 'table'
+                node.remove
+              else
+                node.replace(node.children)
+              end
+            end
+          end
+          fix_whitespace(parent_node.inner_html)
         end
 
       end

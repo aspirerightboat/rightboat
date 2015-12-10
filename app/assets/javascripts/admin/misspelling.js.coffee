@@ -1,12 +1,12 @@
 #= require twitter/bootstrap/tooltip
 #= require twitter/bootstrap/popover
 
-$(document).ready ->
+$ ->
   if ($buttons = $('.merge-record')).length
     path = window.location.pathname.replace(/\/$/, '')
     collection = null
 
-    $buttons.attr('disabled', 'disabled')
+    $buttons.prop('disabled', true)
 
     $.ajax
       url: path + '/all'
@@ -15,7 +15,7 @@ $(document).ready ->
     .success (response)->
       scope = path.substring(path.lastIndexOf('/') + 1);
       collection = response[scope]
-      $buttons.removeAttr('disabled')
+      $buttons.prop('disabled', false)
 
       $buttons.each ->
         $this = $(this)

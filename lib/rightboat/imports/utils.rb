@@ -8,8 +8,8 @@ module Rightboat
 
         private
         def self.url_param(url, k)
-          h = CGI::parse(url)
-          h[k.to_s].try(&:first)
+          h = Rack::Utils.parse_query(URI.parse(url).query)
+          h[k]
         end
 
         def self.cleanup_string(source)
@@ -21,7 +21,7 @@ module Rightboat
         end
 
         def self.nbsp_char
-          '&nbsp;'
+          Nokogiri::HTML('&nbsp;').text # nokogiri converts &nbsp; to some symbol if document is html
         end
 
         def self.convert_unit(value, unit)

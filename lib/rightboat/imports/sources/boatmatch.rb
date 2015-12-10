@@ -50,7 +50,7 @@ module Rightboat
             val = cleanup_string(c.text)
             next if val.blank?
 
-            if attr = DATA_MAPPINGS[key]
+            if (attr = DATA_MAPPINGS[key])
               if attr.is_a?(Proc)
                 attr.call(boat, val)
               else

@@ -1,39 +1,10 @@
 class ImportMailer < ApplicationMailer
 
-  default to: %w(xmpolaris@hotmail.com)
+  default to: %w(don.fuller@cotoco.com llukomskyy@n-ix.com xmpolaris@hotmail.com)
 
-  def process_error(error, import, job)
-    @error = error
-    @import = import
-    @job = job
-    mail(subject: 'Import Processing Error')
-  end
-
-  def import_blank(import)
-    @import = import
-    mail(subject: 'Import Blank Error')
-  end
-
-  def process_result_error(error, import)
-    @error = error
-    @import = import
-    mail(subject: 'Import Result Processing Error')
-  end
-
-  def invalid_boat(source_boat)
-    @source_boat = source_boat
-    @import = @source_boat.import
-    mail(subject: 'Invalid Boat Error')
-  end
-
-  def blank_currency(source_boat)
-    @source_boat = source_boat
-    @import = @source_boat.import
-    mail(subject: 'Blank Currency Error')
-  end
-
-  def new_unit(unit)
-    @unit = unit
-    mail(subject: 'New Unit')
+  def importing_errors(import_trail_id)
+    @import_trail = ImportTrail.find(import_trail_id)
+    @import = @import_trail.import
+    mail(subject: "Errors while importing #{@import.import_type} ##{@import.id}")
   end
 end

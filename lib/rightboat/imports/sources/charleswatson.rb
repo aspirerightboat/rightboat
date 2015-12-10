@@ -46,9 +46,9 @@ module Rightboat
               end
 
             end
-          rescue SocketError => e
-            log_error "#{e.message} Error: Cannot retrieve IDs - verify source id parameter in #{url}", 'Cannot retrieve IDs'
-            exit 1
+          rescue SocketError
+            log_error 'Cannot retrieve IDs', "Verify source id parameter in #{url}"
+            raise
           end
         end
 

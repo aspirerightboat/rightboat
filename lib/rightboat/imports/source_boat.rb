@@ -46,7 +46,7 @@ module Rightboat
         :office, :office_id, :target, :import_base
       ]
 
-      attr_accessor :missing_spec_attrs
+      attr_reader :missing_spec_attrs
       attr_accessor *DYNAMIC_ATTRIBUTES
       attr_accessor *SPEC_ATTRS
       attr_accessor *NORMAL_ATTRIBUTES
@@ -124,11 +124,9 @@ module Rightboat
         # target.revive(true) if target.deleted?
 
         spec_proc = Proc.new do |spec_name, value|
-          value ||= instance_variable_get("@#{spec_name}".to_sym)
-          value = nil if value.blank? || value.to_s =~ /^[\.0]+$/ || value =~ /^false$/i
-          value = 'Yes' if value =~ /^(true|1|yes)$/i
-
-          is_blank_value = value.blank? || value.to_s =~ /^[\.0]+$/
+          value ||= instance_variable_get("@#{spec_name}") if spec_name.is_a?(Symbol) || spec_name.is_a?(String) && spec_name =~ /^[a-z][a-z0-9_]+$/
+          value = nil if value.blank? || value.to_s =~ /^(?:[0.]+|false)$/i
+          value = 'Yes' if value && value.to_s =~ /^(?:true|1|yes)$/i
 
           spec = nil
           import_base.jobs_mutex.synchronize do
@@ -142,12 +140,12 @@ module Rightboat
           end
 
           if target.new_record?
-            target.boat_specifications.build(specification_id: spec.id, value: value) unless is_blank_value
+            target.boat_specifications.build(specification_id: spec.id, value: value) if value
           else
             @existing_boat_specs ||= target.boat_specifications.to_a
             boat_spec = @existing_boat_specs.find { |bs| bs.specification_id == spec.id }
             boat_spec ||= target.boat_specifications.build(specification_id: spec.id)
-            if is_blank_value
+            if !value
               boat_spec.destroy if boat_spec.persisted?
             elsif boat_spec.value != value
               boat_spec.value = value
@@ -159,6 +157,7 @@ module Rightboat
         SPEC_ATTRS.each { |spec_name| spec_proc.call(spec_name) }
         if @missing_spec_attrs.present?
           @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
+          import_base.log_error 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
         end
 
         RELATION_ATTRIBUTES.each do |attr_name|
@@ -169,11 +168,9 @@ module Rightboat
               value = nil
             elsif attr_name == :currency
               value = 'USD' if value == '$' # there are other currencies with $ symbol: AUD, CAD, HKD, NZD, SGD but USD is by default
-              value = Currency.where('name = ? OR symbol = ?', value, value).first
-              if value.nil?
-                self.error_msg = "Currency Not Found: #{value}"
-                ImportMailer.blank_currency(self).deliver_now
-              end
+              val = Currency.where('name = ? OR symbol = ?', value, value).first
+              log_error 'Unknown Currency', "#{value}" if !val
+              value = val
             else
               if attr_name == :model
                 query_option = { manufacturer_id: target.manufacturer_id }
@@ -236,7 +233,6 @@ module Rightboat
         success
       end
 
-      # boat spec that is not managed
       def set_missing_attr(attr, value)
         @missing_spec_attrs ||= {}
         @missing_spec_attrs[attr.to_s] = value

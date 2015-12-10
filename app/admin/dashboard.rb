@@ -1,7 +1,8 @@
 ActiveAdmin.register_page 'Dashboard' do
 
   menu priority: 1, label: proc{ I18n.t('active_admin.dashboard') }
-  now = Time.now
+  now = Time.current
+  day_ago = 1.day.ago
   beginning_of_day = now.beginning_of_day
   beginning_of_week = now.beginning_of_week
   beginning_of_month= now.beginning_of_month
@@ -30,7 +31,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Ran with no Errors:'
               end
               td class: 'text-green' do
-                text_node ImportTrail.today.with_no_error.group(:import_id).count.length
+                text_node ImportTrail.last_day.without_errors.group(:import_id).count.length
               end
             end
             tr do
@@ -38,7 +39,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Run Fault:'
               end
               td class: 'text-red' do
-                link_to ImportTrail.today.where(error_msg: 'Unexpected Error').group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_equals: 'Unexpected Error'})
+                link_to ImportTrail.last_day.where(error_msg: 'Unexpected Error').group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago.strftime('%F'), error_msg_equals: 'Unexpected Error'})
               end
             end
             tr do
@@ -46,7 +47,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Ran, but with Errors:'
               end
               td class: 'text-orange' do
-                link_to ImportTrail.today.where(error_msg: ['Save Boat Error', 'Parse Error', 'Thread Error']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: now.strftime('%F'), error_msg_in: ['Save Boat Error', 'Parse Error', 'Thread Error']})
+                link_to ImportTrail.last_day.with_errors.group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago.strftime('%F'), error_msg_present: 1})
               end
             end
             tr do

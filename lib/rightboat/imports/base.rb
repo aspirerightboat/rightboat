@@ -27,6 +27,10 @@ module Rightboat
         raise e
       ensure
         @import_trail.touch(:finished_at)
+
+        if @import_trail.error_msg
+          ImportMailer.importing_errors(@import_trail.id).deliver_now
+        end
       end
 
       def starting
@@ -78,14 +82,8 @@ module Rightboat
       def finishing
         (log 'Terminated'; return) if @exit_worker
 
-        if @missing_attrs.present?
-          log "MISSING ATTRIBUTES: #{@missing_attrs.inspect}"
-        end
-
         if @scraped_source_ids.none?
           log_error 'Import Blank'
-          ImportMailer.import_blank(@import).deliver_now
-          return
         end
 
         if @jobs_queue.empty? # all jobs processed
@@ -160,7 +158,6 @@ module Rightboat
         @skip_thread_parsing_boat ? job : process_job(job)
       rescue StandardError => e
         log_ex e, 'Parse Error'
-        ImportMailer.process_error(e, @import, job).deliver_now
         nil
       end
 
@@ -176,7 +173,7 @@ module Rightboat
           increment_stats << [source_boat.new_record ? 'new_count' : 'updated_count', 1]
           increment_stats << ['images_count', source_boat.images_count]
         else
-          log_error source_boat.error_msg, 'Save Boat Error'
+          log_error 'Save Boat Error', source_boat.error_msg
           increment_stats << ['not_saved_count', 1]
         end
 
@@ -184,7 +181,6 @@ module Rightboat
         ImportTrail.where(id: @import_trail.id).update_all(increment_stats.map { |col, cnt| "#{col} = #{col} + #{cnt}" }.join(', '))
       rescue StandardError => e
         log_ex e, 'Save Boat Error'
-        ImportMailer.process_result_error(e, @import).deliver_now
       end
 
       def remove_old_boats
@@ -210,14 +206,14 @@ module Rightboat
         puts str if Rails.env.development?
       end
 
-      def log_error(error_msg, short_msg = nil)
-        log error_msg
-        @import_trail.update_attribute(:error_msg, short_msg || error_msg)
+      def log_error(short_msg, debug_info = nil)
+        log "#{short_msg}. #{debug_info}"
+        @import_trail.update_attribute(:error_msg, short_msg) if !@import_trail.error_msg
       end
 
       def log_ex(e, short_msg)
-        backtrace_lines_count = Rails.env.development? ? 50 : 8
-        log_error "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}", short_msg
+        backtrace_lines_count = Rails.env.development? ? 50 : 10
+        log_error short_msg, "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}"
       end
 
       def init_mechanize_agent
@@ -244,6 +240,24 @@ module Rightboat
         uri.host ||= host
         uri.scheme ||= scheme
         uri.to_s
+      end
+
+      def convert_unit(value, unit)
+        return if unit.blank? || value.is_a?(String) && value =~ /^[0.]+$/
+
+        case unit.downcase
+        when 'feet', 'ft', 'f' then value = value.to_f.ft_to_m.round(2)
+        when /\A(metres?|meters?|m)\z/ then value = value.to_f.round(2)
+        when 'kg', 'kgs', 'k' then value = value.to_f.round(2)
+        when 'lbs' then value = (value.to_f * 0.453592).round(2)
+        when /\A(tonnes?|t)\z/ then value = (value.to_f * 1000).round(2)
+        when /\A(gallon|g)\z/ then value = (value.to_f * 3.78541).round(2)
+        when /\A(liters?|litres?|l)\z/ then value = (value.to_f).round(2)
+        when 'metres/feet' # invalid unit from http://www.nya.co.uk/boatsxml.php
+        else
+            log_error 'Unknown unit', "#{unit}: #{value}"
+            nil
+        end
       end
     end
   end

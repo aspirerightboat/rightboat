@@ -285,7 +285,7 @@ module Rightboat
           return if data.blank? || data == 'n/a' || data == 'No'
           handler = data_mapping[attr]
           if !handler
-            log_error "Attr not found. #{attr}: #{data}", 'Attr not found'
+            boat.set_missing_attr(attr, data)
           elsif handler.is_a?(Symbol)
             boat.send "#{handler}=", data
           elsif handler.is_a?(Proc)

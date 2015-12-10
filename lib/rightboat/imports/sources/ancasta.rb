@@ -65,7 +65,7 @@ module Rightboat::Imports
     }
 
     def read_currency(str)
-      CURRENCIES[str] || (log_error "Unexpected currency: #{str}"; nil)
+      CURRENCIES[str] || (log_error('Unknown currency', str); nil)
     end
 
     def prepare_description(str)

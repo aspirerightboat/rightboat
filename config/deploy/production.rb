@@ -15,7 +15,7 @@ set :passenger_roles, %w(app app1 app2)
 set :delayed_job_cmd, "/usr/bin/env RAILS_ENV=production /home/rightboat/.rvm/wrappers/default/ruby #{current_path}/bin/delayed_job %{cmd}"
 set :solr_data_path, '/var/solr/data'
 set :solr_pid, '/var/solr/solr-8983.pid'
-set :solr_cmd, '/usr/bin/service solr %{cmd}'
+set :solr_cmd, '/etc/init.d/solr %{cmd}'
 
 
 # bundle exec cap production deploy #=> deploy all

@@ -69,7 +69,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Leads today:'
               end
               td do
-                text_node Enquiry.where('updated_at > ?', beginning_of_day).count
+                text_node Enquiry.where('created_at > ?', beginning_of_day).count
               end
             end
             tr do

@@ -23,5 +23,6 @@ class BuyerGuidesController < ApplicationController
     @manufacturers = Manufacturer.joins(:buyer_guides)
                        .where('buyer_guides.published = ?', true)
                        .group('manufacturers.id').having('COUNT(buyer_guides.id) > 0')
+                       .order('manufacturers.name ASC')
   end
 end

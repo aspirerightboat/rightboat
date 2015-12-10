@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :load_visited
   after_action :set_visited
 
   before_action :global_current_user
@@ -29,8 +30,13 @@ class ApplicationController < ActionController::Base
     false
   end
 
+  def load_visited
+    @visited_attrs = { action: :visited, ip: request.remote_ip }
+    @visited_activity = Activity.where(@visited_attrs).first
+  end
+
   def set_visited
-    cookies[:visited] = { value: true, expires: Time.now + 1.year } if cookies[:visited].nil?
+    Activity.create(@visited_attrs) if @visited_activity.nil?
   end
 
   def require_broker_user

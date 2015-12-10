@@ -1,4 +1,8 @@
 module BoatsHelper
+  def boat_title(boat)
+    "#{boat.manufacturer_model} for sale"
+  end
+
   def boat_length(boat, unit = nil)
     return '' if !boat.length_m || boat.length_m <= 0
     unit ||= try(:current_length_unit) || 'm'

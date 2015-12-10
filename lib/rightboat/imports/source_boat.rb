@@ -97,6 +97,8 @@ module Rightboat
       end
 
       def save
+        cleansing
+
         if !valid?
           self.error_msg = "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}"
           return false
@@ -245,6 +247,13 @@ module Rightboat
       end
 
       private
+
+      def cleansing
+        self.model = 'Unknown' if self.model.blank?
+        if self.manufacturer
+          self.model.gsub!(/#{self.manufacturer.downcase}\s+/i, '')
+        end
+      end
 
       def adjust_location(target)
         if location.blank? && country.blank?

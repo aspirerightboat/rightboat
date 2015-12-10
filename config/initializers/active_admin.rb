@@ -170,6 +170,8 @@ ActiveAdmin.setup do |config|
   #
   # You can provide an options hash for more control, which is passed along to stylesheet_link_tag():
   #   config.register_stylesheet 'my_print_stylesheet.css', media: :print
+  config.register_stylesheet 'active_admin_print.css', media: :print
+
   #
   # To load a javascript file:
   #   config.register_javascript 'my_javascript.js'
@@ -238,6 +240,9 @@ ActiveAdmin.setup do |config|
   # You can enable or disable them for all resources here.
   #
   # config.filters = true
+
+  config.skip_before_action :load_visited
+  config.skip_after_action :set_visited
 end
 
 module ActiveAdmin::ViewHelpers

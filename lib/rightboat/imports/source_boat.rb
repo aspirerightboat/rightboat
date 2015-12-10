@@ -97,7 +97,7 @@ module Rightboat
       end
 
       def save
-        cleansing
+        handle_unknown_model
 
         if !valid?
           self.error_msg = "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}"
@@ -248,11 +248,9 @@ module Rightboat
 
       private
 
-      def cleansing
-        self.model = 'Unknown' if self.model.blank?
-        if self.manufacturer
-          self.model.gsub!(/#{self.manufacturer.downcase}\s+/i, '')
-        end
+      def handle_unknown_model
+        self.model = 'Unknown' if model.blank?
+        model.gsub!(/#{manufacturer}\s+/i, '') if manufacturer
       end
 
       def adjust_location(target)

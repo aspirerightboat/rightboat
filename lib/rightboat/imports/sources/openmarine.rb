@@ -180,7 +180,7 @@ module Rightboat
         end
 
         def handle_boat_features(boat, boat_features)
-          (boat_features.css('item') + boat_features.css('rb:item')).each do |item|
+          boat_features.css('item, rb:item').each do |item|
             attr = DATA_MAPPINGS[item['name']]
 
             value = item.text.strip
@@ -188,7 +188,11 @@ module Rightboat
               value = item['rb:description'].strip if value =~ /true/i
             end
             if (unit = (item['unit'] || item['units']))
-              value = convert_unit(value, unit)
+              if attr
+                value = convert_unit(value, unit)
+              else
+                value = "#{value} #{unit}"
+              end
             end
 
             if !attr

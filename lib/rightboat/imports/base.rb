@@ -247,13 +247,13 @@ module Rightboat
         return if unit.blank? || value.is_a?(String) && value =~ /^[0.]+$/
 
         case unit.downcase
-        when 'feet', 'ft', 'f' then value = value.to_f.ft_to_m.round(2)
-        when /\A(metres?|meters?|m)\z/ then value = value.to_f.round(2)
-        when 'kg', 'kgs', 'k' then value = value.to_f.round(2)
-        when 'lbs' then value = (value.to_f * 0.453592).round(2)
-        when /\A(tonnes?|t)\z/ then value = (value.to_f * 1000).round(2)
-        when /\A(gallon|g)\z/ then value = (value.to_f * 3.78541).round(2)
-        when /\A(liters?|litres?|l)\z/ then value = (value.to_f).round(2)
+        when 'feet', 'ft', 'f' then value.to_f.ft_to_m.round(2)
+        when /\A(?:metres?|meters?|m)\z/ then value.to_f.round(2)
+        when 'kg', 'kgs', 'k' then value.to_f.round(2)
+        when 'lbs' then (value.to_f * 0.453592).round(2)
+        when /\A(?:tonnes?|t)\z/ then (value.to_f * 1000).round(2)
+        when /\A(?:gallons?|g)\z/ then (value.to_f * 3.78541).round(2)
+        when /\A(?:liters?|litres?|l)\z/ then (value.to_f).round(2)
         when 'metres/feet' # invalid unit from http://www.nya.co.uk/boatsxml.php
         else
             log_error 'Unknown unit', "#{unit}: #{value}"

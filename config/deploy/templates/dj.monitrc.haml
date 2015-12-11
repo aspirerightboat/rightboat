@@ -1,4 +1,4 @@
-check process dj_rightboat with pidfile #{current_path}/tmp/pids/delayed_job.pid
+check process dj_rightboat with pidfile #{shared_path}/tmp/pids/delayed_job.pid
 start program = "#{fetch(:delayed_job_cmd) % {cmd: 'start'}}" as uid #{env.fetch :user} and gid #{env.fetch :user}
 stop  program = "#{fetch(:delayed_job_cmd) % {cmd: 'stop'}}" as uid #{env.fetch :user} and gid #{env.fetch :user}
 -#- if fetch(:rails_env) == :production

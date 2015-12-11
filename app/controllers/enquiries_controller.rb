@@ -14,7 +14,7 @@ class EnquiriesController < ApplicationController
       redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
     end
 
-    if params[:have_account].present? && !current_user
+    if params[:password].present? && !current_user
       user = User.find_by(email: params[:email])
 
       if user && user.valid_password?(params[:password])

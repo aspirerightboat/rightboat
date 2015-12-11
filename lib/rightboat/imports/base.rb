@@ -129,6 +129,22 @@ module Rightboat
         @jobs_queue.push(job.clone)
       end
 
+
+      def log(str)
+        @logger.info str
+        puts str if Rails.env.development?
+      end
+
+      def log_error(short_msg, debug_info = nil)
+        log "#{short_msg}. #{debug_info}"
+        @import_trail.update_attribute(:error_msg, short_msg) if !@import_trail.error_msg
+      end
+
+      def log_ex(e, short_msg)
+        backtrace_lines_count = Rails.env.development? ? 50 : 10
+        log_error short_msg, "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}"
+      end
+
       private
 
       def get(url, params = [], referer = nil, headers = {'Accept-Encoding' => 'gzip, deflate'})
@@ -199,21 +215,6 @@ module Rightboat
         dir = FileUtils.mkdir_p(dir_path).first
         @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.id}-#{@import.import_type}-#{Time.current.strftime('%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)
-      end
-
-      def log(str)
-        @logger.info str
-        puts str if Rails.env.development?
-      end
-
-      def log_error(short_msg, debug_info = nil)
-        log "#{short_msg}. #{debug_info}"
-        @import_trail.update_attribute(:error_msg, short_msg) if !@import_trail.error_msg
-      end
-
-      def log_ex(e, short_msg)
-        backtrace_lines_count = Rails.env.development? ? 50 : 10
-        log_error short_msg, "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}"
       end
 
       def init_mechanize_agent

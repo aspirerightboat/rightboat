@@ -7,8 +7,8 @@ module Rightboat
 
     attr_reader :facets_data, :search
     
-    attr_reader :q, :manufacturer_model, :category, :country, :boat_type,
-                :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
+    attr_reader :q, :manufacturer_model, :category, :country, :boat_type, :manufacturer_id, :model_id,
+                :year_min, :year_max, :price_min, :price_max, :length_min, :length_max, :country_id, :boat_type_id,
                 :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
     attr_reader :with_facets, :includes, :per_page
@@ -48,6 +48,11 @@ module Rightboat
             with :manufacturer_model, manufacturer_model
           end
         end
+
+        with(:manufacturer_id, manufacturer_id) if manufacturer_id
+        with(:model_id, model_id) if model_id
+        with(:country_id, country_id) if country_id
+        with(:boat_type_id, boat_type_id) if boat_type_id
 
         with(:price).greater_than_or_equal_to(price_min) if price_min
         with(:price).less_than_or_equal_to(price_max) if price_max
@@ -122,6 +127,10 @@ module Rightboat
     def read_params(params)
       @q = read_str(params[:q])
       @manufacturer_model = read_tags(params[:manufacturer_model])
+      @manufacturer_id = params[:manufacturer_id] if params[:manufacturer_id].present?
+      @model_id = params[:model_id] if params[:model_id].present?
+      @country_id = params[:country_id] if params[:country_id].present?
+      @boat_type_id = params[:boat_type_id] if params[:boat_type_id].present?
       @category = read_tags(params[:category])
       @country = read_tags(params[:country])
       @boat_type = read_str(params[:boat_type])

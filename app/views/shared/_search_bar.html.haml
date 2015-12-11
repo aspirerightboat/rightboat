@@ -15,7 +15,7 @@
           .result-popup
             Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
 
-    - unless local_assigns[:simple_search_bar]
+    - if @boats
       %ul.nav.navbar-nav.navbar-right.display-options
         %li
           .navbar-text

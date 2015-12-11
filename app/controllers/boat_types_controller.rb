@@ -7,10 +7,14 @@ class BoatTypesController < ApplicationController
     @boat_type = BoatType.find_by(name: params[:id])
     redirect_to root_path and return if !@boat_type
 
-    if params[:id] == 'RIB'
-      @boats = Rightboat::BoatSearch.new.do_search({q: 'RIB', page: params[:page] || 1}).results
-    else
-      @boats = @boat_type.boats.not_deleted.boat_view_includes.page(params[:page]).per(30)
-    end
+    search_params = if params[:id] == 'RIB'
+                      { q: 'RIB' }
+                    else
+                      { boat_type_id: @boat_type.id }
+                    end
+
+    search_params[:order] = params[:order] if params[:order].present?
+    search_params[:page] = params[:page] || 1
+    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
   end
 end

@@ -157,7 +157,7 @@ module Rightboat
           end
           boat.description = feature_nodes['marketing_descs'].element_children.map do |node|
             lang = node['language']
-            if !lang || lang =~ /\Aen/i || lang == 'ISO-8859-1'
+            if !lang || lang =~ /\A(en|gb)/i || lang == 'ISO-8859-1'
               str = node.inner_html.gsub('&nbsp;', ' ').strip
               str = simple_format(str) if !str['<']
               str

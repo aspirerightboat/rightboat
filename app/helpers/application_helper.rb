@@ -58,7 +58,7 @@ module ApplicationHelper
 
   def search_order_options
     opts = Rightboat::BoatSearch::ORDER_TYPES.map { |type| [t("search_orders.#{type}"), type] }
-    options_for_select(opts, current_search_order)
+    options_for_select(opts, params[:order] || current_search_order)
   end
 
   def layout_mode_options

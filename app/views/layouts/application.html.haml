@@ -2,7 +2,7 @@
 %html
   %head
     = render 'shared/meta_tags'
-    %title= @page_title.present? ? "#{@page_title}" : 'Rightboat'
+    %title= @page_title.present? ? @page_title : 'Rightboat'
     = favicon_link_tag "/favicon.png", type: 'image/png'
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true

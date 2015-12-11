@@ -34,6 +34,7 @@ class Boat < ActiveRecord::Base
     end
     integer :drive_type_id
     integer :country_id
+    integer :boat_type_id
     integer :year do |boat|
       boat.year_built
     end

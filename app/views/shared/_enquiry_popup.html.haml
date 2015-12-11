@@ -2,22 +2,17 @@
   .modal-dialog
     .modal-content
       .modal-header
+        = link_to 'Sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
         .h Request Details
       .modal-body
         %p
-          Your enquiry will be forwarded to the selling broker.
-          The full boat specification and broker details will be available
-          for immediate viewing in #{link_to_if !current_user, 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}.
+          The full boat specifications and broker details will be available for immediate viewing and your enquiry will be forwarded to the selling broker.
+          This request is free and you are under no obligation.
 
         = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'enquiry-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
           - unless current_user
-            .row
-              .col-xs-12
-                .form-group
-                  = check_box_tag :have_account, nil, false, class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
-                  = label_tag :have_account, 'Already a Member?'
             .row.ha-toggle
               .col-sm-2.col-xs-12
                 .form-group

@@ -14,8 +14,8 @@
       .boat-links.text-right.pull-right
         - if controller_name == 'enquiries'
           .clearfix
-            .broker-logo.pull-left
-              - if !!boat.user.avatar.file
+            - if !!boat.user.avatar.file
+              .broker-logo.pull-left
                 = image_tag boat.user.avatar_url(:thumb), alt: boat.user.name, class: 'img-responsive'
             .pull-right
               = link_to 'Hide', member_enquiry_path(enquiry), method: :delete, remote: true, class: 'hide-enquiry btn-flat btn-white'

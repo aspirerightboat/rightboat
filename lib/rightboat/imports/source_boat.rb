@@ -320,7 +320,7 @@ module Rightboat
         # email
         str.gsub!(/\s+[^.,?!]*(email)?[^.,?!]*[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}[^.?!]*[.?!]/i, '')
         # phone number
-        str.gsub!(/\s+[^.,?!]*(call)?[^.,?!]*[\d\-\s\(\)]{9,20}[^.?!]*[.?!]/i, '')
+        #str.gsub!(/\s+[^.,?!]*(call)?[^.,?!]*[\d\-\s\(\)]{9,20}[^.?!]*[.?!]/i, '') # causing hanging up on import 201 for boat source_id=4586474
         # url
         str.gsub!(/\s+[^.,?!]*(:?http|https|ftp):\/\/[a-z0-9.-]+\.[a-z]{2,4}(:[a-z0-9]*)?\/?([a-z0-9._\?,'\\+&;%\$#=~"-])*/i, '')
         str

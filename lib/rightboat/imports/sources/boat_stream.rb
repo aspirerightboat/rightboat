@@ -29,7 +29,7 @@ module Rightboat
             @party_ids = party_ids.split(', ')
             @source = source
             @tree = []
-            @country_id_by_iso = Country.pluck(:iso, :id).each_with_object({}) { |(iso, id), h| h[iso] = id }
+            @country_id_by_iso = Country.pluck(:iso, :id).to_h
           end
 
           def start_element(el, attr = [])

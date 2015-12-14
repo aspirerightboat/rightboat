@@ -90,6 +90,10 @@ module Rightboat
           remove_old_boats
         end
 
+        boats_count = @user.boats.not_deleted.count
+        log "updating boats count cache #{boats_count}"
+        @user.update boats_count: boats_count
+
         log 'Finished'
       end
 

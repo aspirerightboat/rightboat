@@ -8,8 +8,9 @@
         .h Request Details
       .modal-body
         %p
-          The full boat specifications and broker details will be available for immediate viewing and your enquiry will be forwarded to the selling broker.
-          This request is free and you are under no obligation.
+          %b
+            The full boat specifications and broker details will be available for immediate viewing and your enquiry will be forwarded to the selling broker.
+            This request is free and you are under no obligation.
 
         = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'enquiry-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
           - unless current_user

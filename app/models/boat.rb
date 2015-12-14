@@ -54,7 +54,6 @@ class Boat < ActiveRecord::Base
   end
 
   before_destroy :remove_activities, :decrease_counter_cache
-  after_create :increase_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
@@ -173,10 +172,6 @@ class Boat < ActiveRecord::Base
 
   def safe_currency
     currency || Currency.default
-  end
-
-  def increase_counter_cache
-    user.increment!(:boats_count)
   end
 
   private

@@ -1,0 +1,7 @@
+= render layout: 'shared/boats_for_sale' do
+  = render 'model_letters'
+  %h1 Models by letter #{@letter}
+  %ul.four-columns
+    - @models.each do |m|
+      %li #{link_to m.name, model_path(m.slug)}
+  = paginate @models

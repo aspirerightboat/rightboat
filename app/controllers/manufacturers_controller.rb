@@ -25,6 +25,10 @@ class ManufacturersController < ApplicationController
     @letter = params[:id]
     redirect_to(action: :index) if @letter.blank? || @letter !~ /\A[a-z]\z/
 
-    @manufacturers = Manufacturer.where('name LIKE ?', "#{@letter}%").order(:name).page(params[:page]).per(100)
+    @manufacturers = Manufacturer.joins(:boats).group('manufacturers.name, manufacturers.slug')
+                         .where('manufacturers.name LIKE ?', "#{@letter}%")
+                         .where('boats.deleted_at IS NULL')
+                         .order(:name).page(params[:page]).per(100)
+                         .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
   end
 end

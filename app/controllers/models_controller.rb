@@ -20,4 +20,15 @@ class ModelsController < ApplicationController
     search_params[:order] = params[:order] if params[:order].present?
     @boats = Rightboat::BoatSearch.new.do_search(search_params).results
   end
+
+  def by_letter
+    @letter = params[:id]
+    redirect_to(action: :index) if @letter.blank? || @letter !~ /\A[a-z]\z/
+
+    @models = Model.joins(:boats).group('models.name, models.slug')
+                       .where('models.name LIKE ?', "#{@letter}%")
+                       .where('boats.deleted_at IS NULL')
+                       .order(:name).page(params[:page]).per(100)
+                       .select('models.name, models.slug, COUNT(*) AS boats_count')
+  end
 end

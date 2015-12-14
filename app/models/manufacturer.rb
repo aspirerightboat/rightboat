@@ -17,6 +17,7 @@ class Manufacturer < ActiveRecord::Base
 
   searchable do
     string :name
+    string :name_ngrme, as: :name_ngrme
     text :name, boost: 2
     text :name_ngrme, as: :name_ngrme, boost: 2
   end

@@ -7,10 +7,12 @@ $ ->
     $form
     .on 'ajax:before', (e) ->
       $('#has_account').val $('.enquiry-form #password').is(':visible')
+      ###
       $phone = $('#enquiry_phone')
       if $phone.is(':visible') && !$phone.val() && !$('#phone_popup').is(':visible')
         $('#phone_popup').modal('show')
         false
+      ###
     .on 'ajax:success', (e, data, status, xhr) ->
       if xhr.responseJSON.show_result_popup
         $('#enquiry_result_popup').displayPopup()

@@ -2,7 +2,8 @@
   .modal-dialog
     .modal-content
       .modal-header
-        = link_to 'Sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
+        - unless current_user
+          = link_to 'Sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
         .h Request Details
@@ -117,4 +118,4 @@
             %li Discounts off Boat Show tickets
             %li Personalise your experience
 
-  = render 'shared/phone_popup'
+  /= render 'shared/phone_popup'

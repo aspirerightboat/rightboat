@@ -45,7 +45,7 @@ class BoatsController < ApplicationController
     attrs = { target_id: @boat.id, action: :show, ip: request.remote_ip }
 
     if (activity = Activity.where(attrs).first)
-      activity.inc(count: 1)
+      activity.update(count: activity.count + 1)
     else
       Activity.create(attrs.merge(user_id: current_user.try(:id)))
     end

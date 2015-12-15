@@ -46,7 +46,12 @@ ActiveAdmin.register Model do
 
   controller do
     def scoped_collection
-      Model.includes(:manufacturer)
+      if params[:manufacturer_id]
+        manufacturer = Manufacturer.find(params[:manufacturer_id])
+        manufacturer.models
+      else
+        Model.includes(:manufacturer)
+      end
     end
   end
 end

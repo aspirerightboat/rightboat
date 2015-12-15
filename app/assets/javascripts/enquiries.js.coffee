@@ -6,6 +6,7 @@ $ ->
     $form = $(@).simpleAjaxForm()
     $form
     .on 'ajax:before', (e) ->
+      $('#has_account').val $('.enquiry-form #password').is(':visible')
       $phone = $('#enquiry_phone')
       if $phone.is(':visible') && !$phone.val() && !$('#phone_popup').is(':visible')
         $('#phone_popup').modal('show')

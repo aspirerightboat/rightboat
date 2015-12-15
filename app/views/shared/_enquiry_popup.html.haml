@@ -14,6 +14,7 @@
 
         = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'enquiry-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
           - unless current_user
+            = hidden_field_tag :has_account
             .row.ha-toggle
               .col-sm-2.col-xs-12
                 .form-group

@@ -6,6 +6,11 @@
 %p The client details are as follows:
 %ul
   %li <b>Name:</b> #{@enquiry.title} #{@enquiry.name}
+  - if @enquiry.boat.user.email == 'yachts@edwardsyachtsales.com'
+    %li <b>Customer Email:</b> #{@enquiry.email}
+    - unless @enquiry.phone.blank?
+      %li <b>Customer Tel:</b> #{@enquiry.country_code} #{@enquiry.phone}
+    %li <b>Customer message:</b> #{@enquiry.message}
 
 %p Boat details:
 %ul

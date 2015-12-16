@@ -37,5 +37,9 @@ module Rightboat
     config.logger = Logger.new(config.paths['log'].first,
                                5, # 5 files total
                                50*1024*1024) # 50 megabytes each
+
+    config.to_prepare do
+      Devise::Mailer.layout 'mailer'
+    end
   end
 end

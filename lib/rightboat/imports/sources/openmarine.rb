@@ -42,6 +42,7 @@ module Rightboat
             'Bimini' => :bimini,
             'reg_details' => nil,
             'Anchor' => :anchor,
+            'where' => nil,
         )
 
         def self.validate_param_option

@@ -3,5 +3,5 @@
   %h1 Manufacturers by letter #{@letter}
   %ul.four-columns
     - @manufacturers.each do |m|
-      %li #{link_to m.name, manufacturer_path(m.slug)}
+      %li #{link_to m.name, manufacturer_path(m.slug)} (#{m.boats_count})
   = paginate @manufacturers

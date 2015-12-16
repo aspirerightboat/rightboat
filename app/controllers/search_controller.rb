@@ -3,13 +3,9 @@ class SearchController < ApplicationController
   after_filter :log_search_terms, only: :results
 
   def manufacturer_model
-    search = Sunspot.search(Manufacturer, Model) do |q|
-      if params[:q].blank?
-        # all manufacturer_models
-        q.order_by(:name)
-      else
-        q.with :name_ngrme,  params[:q]
-      end
+    search = Sunspot.search(Manufacturer, Model) do
+      fulltext params[:q] unless params[:q].blank?
+      order_by :name, :asc
     end
 
     ret = search.results.map do |object|

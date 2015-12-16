@@ -116,6 +116,7 @@ Rails.application.routes.draw do
   resources :boat_types, path: 'boat-type', only: [:index, :show]
   resources :countries, path: 'location', only: [:index, :show]
   resources :models, only: [:index, :show]
+  get 'models-by-letter/:id', to: 'models#by_letter', as: :models_by_letter
 
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve

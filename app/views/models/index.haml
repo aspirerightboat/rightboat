@@ -1,6 +1,7 @@
 - @page_title = 'Boats for sale by model on Rightboat.com'
 
 = render layout: 'shared/boats_for_sale' do
+  = render 'model_letters'
   %h1 All Models
   %ul.four-columns
     - @models.each do |m|

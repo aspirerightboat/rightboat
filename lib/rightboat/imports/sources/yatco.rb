@@ -13,7 +13,7 @@ module Rightboat
           'currency' => :currency,
           'location_country' => :country,
           'location_city' => :location,
-          'description_short_description' => :description,
+          'description_short_description' => :short_description,
           'loa_meters' => :length_m,
           'beam_meters' => :beam_m,
           'min_draft_meters' => :draft_m,

@@ -1,6 +1,6 @@
 ActiveAdmin.register Boat do
   permit_params :manufacturer_id, :model_id, :price, :currency_id, :year_built, :poa,
-                :featured, :recently_reduced, :under_offer, :new_boat, :description,
+                :featured, :recently_reduced, :under_offer, :new_boat, :description, :short_description,
                 :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id
 
   menu priority: 2
@@ -67,6 +67,7 @@ ActiveAdmin.register Boat do
       f.input :currency
       f.input :new_boat, as: :boolean
       f.input :year_built
+      f.input :short_description
       f.input :description
       f.input :boat_type
       f.input :fuel_type
@@ -131,7 +132,7 @@ ActiveAdmin.register Boat do
 
   member_action :toggle_active, method: :post do
     boat = Boat.find_by(slug: params[:id])
-    if activate = boat.deleted?
+    if (activate = boat.deleted?)
       boat.revive
       boat.increase_counter_cache
     else

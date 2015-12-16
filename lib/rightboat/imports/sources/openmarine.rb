@@ -19,7 +19,6 @@ module Rightboat
       # http://www.nya.co.uk/boatsxml.php
 
       class Openmarine < Base
-        include ActionView::Helpers::TextHelper # for simple_format
 
         DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
             'name' => :name,
@@ -40,7 +39,9 @@ module Rightboat
             'horse_power' => :engine_horse_power,
             'engine_manufacturer' => :engine_manufacturer,
             'engine_quantity' => :engine_count,
-            'Bimini' => :bimini
+            'Bimini' => :bimini,
+            'reg_details' => nil,
+            'Anchor' => :anchor,
         )
 
         def self.validate_param_option
@@ -155,14 +156,13 @@ module Rightboat
           if (vat_rate = asking_price['vat_included'])
             boat.vat_rate = read_vat_rate(vat_rate)
           end
-          boat.description = feature_nodes['marketing_descs'].element_children.map do |node|
+          marketing_descs = feature_nodes['marketing_descs'].element_children
+          boat.description = marketing_descs.each_with_object('') do |node, desc|
             lang = node['language']
-            if !lang || lang =~ /\A(en|gb)/i || lang == 'ISO-8859-1'
-              str = node.inner_html.gsub('&nbsp;', ' ').strip
-              str = simple_format(str) if !str['<']
-              str
+            if !lang || lang =~ /\A(en|gb)/i || lang == 'ISO-8859-1' || marketing_descs.one?
+              desc << node.inner_html
             end
-          end.join("\n\n").strip
+          end
           if feature_nodes['other']
             boat.source_url = feature_nodes['other'].element_children.find { |n| n['name'] == 'external_url' }.try(:text)
           end
@@ -182,6 +182,7 @@ module Rightboat
         def handle_boat_features(boat, boat_features)
           boat_features.css('item, rb:item').each do |item|
             attr = DATA_MAPPINGS[item['name']]
+            next if !attr
 
             value = item.text.strip
             if item['rb:description'].present?

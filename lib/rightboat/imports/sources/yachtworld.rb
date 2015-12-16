@@ -177,7 +177,7 @@ module Rightboat
           boat.country = job[:location].split(', ').last
 
           desc_td = doc.root.at_css('tr[align=left] td')
-          description = cleanup_description(desc_td)
+          description = prepare_description(desc_td)
 
           doc = get(full_spec_uri)
           boat.source_id = url_param(source_url, 'boat_id')
@@ -203,7 +203,7 @@ module Rightboat
                 attr, data = str.split(/\s*:\s/)
                 assign_boat_attr(boat, attr, data)
               elsif str.present? && section == 'Boat Name'
-                boat.name = data
+                boat.name = str
               end
             end
           end
@@ -220,7 +220,7 @@ module Rightboat
                 str = fix_whitespace(td.text)
                 if str.end_with?(':')
                   attr = str.chomp(':')
-                  attr = 'Generator Manufacturer' if attr == 'Manufacturer' && section == 'Generators'
+                  attr = 'Generator Manufacturer' if section == 'Generators' && attr == 'Manufacturer'
                 else
                   assign_boat_attr(boat, attr, str)
                 end
@@ -233,7 +233,7 @@ module Rightboat
             next if cur_details.name != 'div'
             next if !cur_details.at_css('b')
             next if cur_details.at_css('b:contains("Disclaimer")')
-            description << cleanup_description(cur_details)
+            description << prepare_description(cur_details)
           end
 
           boat.description = description
@@ -275,10 +275,8 @@ module Rightboat
           end
         end
 
-        WHITESPACE_REGEX = /[\s#{nbsp_char}]+/
-
         def fix_whitespace(str)
-          str.gsub(WHITESPACE_REGEX, ' ').strip
+          str.gsub(WHITESPACES_REGEX, ' ').strip
         end
 
         def assign_boat_attr(boat, attr, data)
@@ -293,26 +291,13 @@ module Rightboat
           end
         end
 
-        ALLOWED_TAGS = %w(p br i b strong)
-
-        def cleanup_description(parent_node)
-          parent_node.traverse do |node|
-            if node.elem? && node != parent_node
-              tag_name = node.name
-              if ALLOWED_TAGS.include?(tag_name)
-                node.each { |key, _| node.delete(key) }
-                node.remove if tag_name == 'p' && node.text.blank?
-                if tag_name == 'strong' && node.text =~ /Safeguarding|Surveyors|Transportation/
-                  node.ancestors('p').first.try(:remove)
-                end
-              elsif tag_name == 'table'
-                node.remove
-              else
-                node.replace(node.children)
-              end
+        def prepare_description(parent_node)
+          parent_node.css('strong').each do |node|
+            if node.text =~ /Safeguarding|Surveyors|Transportation/
+              node.ancestors('p').first.try(:remove)
             end
           end
-          fix_whitespace(parent_node.inner_html)
+          parent_node.inner_html
         end
 
       end

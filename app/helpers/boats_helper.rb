@@ -37,17 +37,6 @@ module BoatsHelper
     link_to 'Favourite', "#favourite-#{boat.id}", id: "favourite-#{boat.id}", class: fav_class, title: fav_title, data: {toggle: 'tooltip', placement: 'top'}
   end
 
-  def reduced_description(desc=nil)
-    return '' if desc.blank?
-    description = []
-    Nokogiri::HTML.parse(desc).search('//body').first.children.each do |node|
-      x = node.text
-      description << x
-    end
-
-    description.join('\n')
-  end
-
   def boat_specs(boat, full_spec = false)
     ret = []
     ret << ['Seller', boat.user.name] if full_spec

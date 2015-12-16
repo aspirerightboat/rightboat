@@ -46,7 +46,6 @@ module Rightboat
 
           def characters(str)
             return if !@boat || str.blank?
-            str.strip!
             @char << str
           end
 
@@ -115,7 +114,8 @@ module Rightboat
                 when 'NumberOfBerthsNumeric' then @boat.berths = c
                 when 'NumberOfCabinsNumeric' then @boat.cabins = c
                 when 'NumberOfHeadsNumeric' then @boat.heads = c
-                when 'GeneralBoatDescription' then @boat.description = read_description(c)
+                when 'GeneralBoatDescription'
+                  @boat.description = @boat.short_description = c
                 # when 'BuilderName'
                 when 'BoatName' then @boat.name = c
                 when 'FuelTankCapacityMeasure' then @boat.tankage = c
@@ -184,15 +184,15 @@ module Rightboat
               when 'AdditionalDetailDescription'
                 case @el
                 when 'Title'
-                  @last_title = c
+                  @last_title = c.titleize
                 when 'Description'
-                  if (url = c[/href="([^"]+)"/, 1])
-                    @boat.source_url = url
-                  end
                   @boat.description ||= ''
-                  if @last_title != 'customContactInformation'
-                    @boat.description << "<h3>#{@last_title}</h3>#{c}"
-                  end
+                  return if @last_title == 'Custom Contact Information'
+                  return if @last_title == 'Disclaimer'
+                  return if @last_title == 'Important Information'
+                  return if @last_title == 'Prueba'
+                  return if @last_title == 'Cláusula De Responsabilidad'
+                  @boat.description << "<h3>#{@last_title}</h3>#{c}"
                 end
               end
             end
@@ -206,12 +206,6 @@ module Rightboat
           def to_meters(value_str, unit)
             return value_str if unit == 'meter'
             value_str.to_f.ft_to_m.round(2).to_s if unit == 'feet'
-          end
-
-          def read_description(str)
-            str = CGI.unescapeHTML(str)
-            str.gsub!('&nbsp;', '')
-            str
           end
         end
 

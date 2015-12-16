@@ -3,15 +3,15 @@ require 'nokogiri'
 module Rightboat
   module Imports
     class SourceBoat
-      class_attribute :mnm_fixes
-
+      include ActionView::Helpers::TextHelper # for simple_format
       include ActiveModel::Validations
       include Utils
 
       validates_presence_of :user, :source_id, :manufacturer, :model
 
       NORMAL_ATTRIBUTES = [
-        :source_id, :name, :description, :poa, :price, :year_built, :under_offer, :length_m, :new_boat, :source_url, :owners_comment
+        :source_id, :name, :description, :short_description, :poa, :price, :year_built, :under_offer, :length_m,
+        :new_boat, :source_url, :owners_comment
       ]
 
       SPEC_ATTRS = [
@@ -111,15 +111,17 @@ module Rightboat
         adjust_location(target)
 
         NORMAL_ATTRIBUTES.each do |attr_name|
-          if (value = send(attr_name)).present? && value.to_s !~ /^[\.0]+$/
-            case attr_name
-            when :description
-              remove_contact_info!(value)
-              do_import_substitutions!(value)
-            when :new_boat then value = value == /\A(New|N)\z/ if value.is_a?(String)
-            end
+          value = send(attr_name)
+          case attr_name
+          when :description
+            target.description = cleanup_description(value)
+          when :short_description
+            target.short_description = cleanup_short_description(short_description || target.description)
+          when :new_boat
+            target.new_boat = value.present? && value.is_a?(String) ? (value =~ /\A(?:New|N)\z/).present? : value
+          else
+            target.send("#{attr_name}=", value) if value.present?
           end
-          target.send "#{attr_name}=", value
         end
         # target.revive(true) if target.deleted?
 
@@ -316,27 +318,56 @@ module Rightboat
         end
       end
 
-      def remove_contact_info!(str)
-        # email
-        str.gsub!(/\s+[^.,?!]*(email)?[^.,?!]*[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}[^.?!]*[.?!]/i, '')
-        # phone number
-        #str.gsub!(/\s+[^.,?!]*(call)?[^.,?!]*[\d\-\s\(\)]{9,20}[^.?!]*[.?!]/i, '') # causing hanging up on import 201 for boat source_id=4586474
-        # url
-        str.gsub!(/\s+[^.,?!]*(:?http|https|ftp):\/\/[a-z0-9.-]+\.[a-z]{2,4}(:[a-z0-9]*)?\/?([a-z0-9._\?,'\\+&;%\$#=~"-])*/i, '')
-        str
-      end
-
       def do_import_substitutions!(value)
         import_subs.each { |is| is.process_text!(value) }
       end
 
       def import_subs
-        @@import_subs ||= begin
+        @@import_subs ||= {}
+        @@import_subs[import.import_type] ||= begin
           import_type = ['', import.import_type]
           id = ['', import.id]
           ImportSub.where(import_type: import_type, import_id: id).select(:use_regex, :from, :to).to_a
         end
       end
+
+      ALLOWED_TAGS = %w(p br i b strong h3 ul ol li)
+
+      def cleanup_description(str)
+        return '' if str.blank?
+        str = simple_format(str) if !str['<']
+        body = Nokogiri::HTML(str).at_css('body')
+        body.css('table').remove
+
+        body.traverse do |node|
+          if node.elem? && node != body
+            tag_name = node.name
+            if tag_name.in?(ALLOWED_TAGS)
+              node.each { |attr, _| node.delete(attr) }
+              node.remove if tag_name == 'p' && node.text.blank?
+            else
+              node.replace(node.children)
+            end
+          end
+        end
+        str = body.inner_html(save_with: 0) # save_with: 0 to remove newlines between tags
+        str.gsub!(Rightboat::Imports::Utils::WHITESPACES_REGEX, ' ')
+        str.strip!
+        do_import_substitutions!(str)
+        str
+      end
+
+      def cleanup_short_description(desc)
+        return '' if desc.blank?
+        # desc = desc[%r{<p>[^<]+</p>}] || desc
+        desc = desc[0..480]
+        desc = desc.sub(/[^>.!]+\z/, '').presence || "#{desc}..."
+        desc.gsub!(/\S+@\S(?:\.\S)+/, '') # remove email
+        desc.gsub!(/[\d\(\) -]{9,20}/, '') # remove phone
+        desc.gsub!(%r{(?:https?://|www\.)\S+}, '') # remove url
+         Nokogiri::HTML.fragment(desc).to_html
+      end
+
     end
   end
 end

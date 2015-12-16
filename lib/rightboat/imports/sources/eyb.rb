@@ -75,7 +75,7 @@ module Rightboat
             end
           end
 
-          unless comments_en.blank?
+          if comments_en.present?
             boat.description = comments_en # Replace foreign descriptions with English one
           end
 

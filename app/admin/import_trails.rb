@@ -59,7 +59,10 @@ ActiveAdmin.register ImportTrail do
       log_path = import_trail.log_path
       if log_path && File.exists?(log_path)
         File.open(log_path, 'r').each_line do |line|
-          div { "#{line}<br>".html_safe }
+          div do
+            line.sub!(/\bid=(\d+)/) { "id=#{link_to $1, admin_boat_path($1)}" }
+            line.html_safe
+          end
         end
       end
     end

@@ -41,7 +41,7 @@ module DBBackedClockwork
     `bundle exec rake rb_sitemap:refresh`
   end
 
-  every 1.day, 'restart_solr', at: '1:20' do # sometimes we have stale search results
+  every 1.day, 'restart_solr', at: '6:20' do # sometimes we have stale search results
     `sudo monit restart solr_rightboat`
   end
 

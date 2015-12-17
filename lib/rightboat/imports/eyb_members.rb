@@ -82,7 +82,8 @@ module Rightboat
       end
 
       def enqueue_jobs
-        doc = @_agent.get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+        # doc = @_agent.get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+        doc = Nokogiri::XML(File.read("/Users/chen/work/chen/rightboat_v2/import_data/eyb.xml"))
         doc.search("//AD").each do |ad|
           job = { ad: ad }
           enqueue_job(job)

@@ -328,7 +328,8 @@ module Rightboat
         end
 
         def enqueue_jobs
-          doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+          # doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
+          doc = Nokogiri::XML(File.read("/Users/chen/work/chen/rightboat_v2/import_data/eyb.xml"))
 
           doc.search("An_Broker[text()='#{@import.param['broker_id']}']").each do |broker|
             job = { ad: broker.parent }

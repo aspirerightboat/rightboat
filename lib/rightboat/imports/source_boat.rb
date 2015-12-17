@@ -191,7 +191,7 @@ module Rightboat
         SPEC_ATTRS.each { |spec_name| spec_proc.call(spec_name) }
         if @missing_spec_attrs.present?
           @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
-          import_base.log_error 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
+          import_base.log_warning 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
         end
 
         RELATION_ATTRIBUTES.each do |attr_name|

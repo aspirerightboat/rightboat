@@ -134,15 +134,20 @@ module Rightboat
         @jobs_queue.push(job.clone)
       end
 
-
-      def log(str)
-        @logger.info str
+      # log levels: :debug, :info, :warn, :error, :fatal
+      def log(str, kind = :info)
+        @logger.send kind, str
         puts str if Rails.env.development?
       end
 
       def log_error(short_msg, debug_info = nil)
-        log "#{short_msg}. #{debug_info}"
+        log "#{short_msg}. #{debug_info}", :error
         @import_trail.update_attribute(:error_msg, short_msg) if !@import_trail.error_msg
+      end
+
+      def log_warning(short_msg, debug_info = nil)
+        log "#{short_msg}. #{debug_info}", :warn
+        @import_trail.update_attribute(:warning_msg, short_msg) if !@import_trail.warning_msg
       end
 
       def log_ex(e, short_msg)
@@ -220,6 +225,7 @@ module Rightboat
         dir = FileUtils.mkdir_p(dir_path).first
         @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.id}-#{@import.import_type}-#{Time.current.strftime('%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)
+        @logger.level = 0 # log all
       end
 
       def init_mechanize_agent

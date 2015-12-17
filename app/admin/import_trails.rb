@@ -33,7 +33,8 @@ ActiveAdmin.register ImportTrail do
       trail.duration.strftime('%H:%M:%S')
     end
     column :error do |trail|
-      status_tag(trail.error_msg, :red) if trail.error_msg.present?
+      status_tag(trail.error_msg, :red) if trail.error_msg
+      status_tag(trail.warning_msg, :orange) if trail.warning_msg
     end
 
     actions
@@ -52,6 +53,7 @@ ActiveAdmin.register ImportTrail do
       row :images_count
       row :not_saved_count
       row :error_msg
+      row :warning_msg
       row :created_at
       row :finished_at
     end

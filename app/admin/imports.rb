@@ -58,8 +58,9 @@ ActiveAdmin.register Import do
       link_to('view log', admin_import_trail_path(import.last_import_trail)) if import.last_import_trail
     end
     column :last_error, sortable: 'import_trails.error_msg' do |import|
-      if import.last_import_trail && import.last_import_trail.error_msg.present?
-        status_tag(import.last_import_trail.error_msg, :red)
+      if (trail = import.last_import_trail)
+        status_tag(trail.error_msg, :red) if trail.error_msg
+        status_tag(trail.warning_msg, :orange) if trail.warning_msg
       end
     end
     column :last_duration do |import|

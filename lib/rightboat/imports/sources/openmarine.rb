@@ -53,10 +53,10 @@ module Rightboat
 
         def enqueue_jobs
           log 'Loading XML file'
-          doc = get(@import.param[:url])
+          doc = Nokogiri::XML(open(@import.param[:url]))
 
           log 'Scraping'
-          broker_nodes = doc.xml.root.element_children
+          broker_nodes = doc.root.element_children
           broker_node = @broker_id == 'first' ? broker_nodes[0] : broker_nodes.find { |node| @broker_id == node['code'] }
 
           raise "No broker with ID=#{@broker_id} found" if !broker_node

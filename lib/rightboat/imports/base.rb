@@ -85,6 +85,8 @@ module Rightboat
 
         if @scraped_source_ids.none?
           log_error 'Import Blank'
+
+          return if @import_trail.error_msg.present?
         end
 
         if @jobs_queue.empty? # all jobs processed

@@ -20,30 +20,32 @@ module Rightboat
 
       class Openmarine < Base
 
-        DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
-            'name' => :name,
-            'boat_name' => :name,
-            'url' => :source_url,
-            'owners_comment' => :owners_comment,
-            'drive_type' => :drive_type,
-            'passenger_capacity' => :passengers,
-            'beam' => :beam_m, #Proc.new { |boat, item| boat.beam_m = unit_processor.call(item)},
-            'draft' => :draft_m, # Proc.new { |boat, item| boat.draft_m = unit_processor.call(item)},
-            'loa' => :length_m, # Proc.new { |boat, item| boat.length_m = unit_processor.call(item)},
-            'lwl' => :lwl_m, #Proc.new { |boat, item| boat.lwl_m = unit_processor.call(item)},
-            'displacement' => :displacement_kgs, #Proc.new { |boat, item| boat.displacement_kgs = unit_processor.call(item)},
-            'year' => :year_built,
-            'hull_colour' => :hull_color,
-            'fuel' => :fuel_type,
-            'hours' => :engine_hours,
-            'horse_power' => :engine_horse_power,
-            'engine_manufacturer' => :engine_manufacturer,
-            'engine_quantity' => :engine_count,
-            'Bimini' => :bimini,
-            'reg_details' => nil,
-            'Anchor' => :anchor,
-            'where' => nil,
-        )
+        def data_mapping
+          @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
+              'name' => :name,
+              'boat_name' => :name,
+              'url' => :source_url,
+              'owners_comment' => :owners_comment,
+              'drive_type' => :drive_type,
+              'passenger_capacity' => :passengers,
+              'beam' => :beam_m, #Proc.new { |boat, item| boat.beam_m = unit_processor.call(item)},
+              'draft' => :draft_m, # Proc.new { |boat, item| boat.draft_m = unit_processor.call(item)},
+              'loa' => :length_m, # Proc.new { |boat, item| boat.length_m = unit_processor.call(item)},
+              'lwl' => :lwl_m, #Proc.new { |boat, item| boat.lwl_m = unit_processor.call(item)},
+              'displacement' => :displacement_kgs, #Proc.new { |boat, item| boat.displacement_kgs = unit_processor.call(item)},
+              'year' => :year_built,
+              'hull_colour' => :hull_color,
+              'fuel' => :fuel_type,
+              'hours' => :engine_hours,
+              'horse_power' => :engine_horse_power,
+              'engine_manufacturer' => :engine_manufacturer,
+              'engine_quantity' => :engine_count,
+              'Bimini' => :bimini,
+              'reg_details' => '',
+              'Anchor' => :anchor,
+              'where' => '',
+          )
+        end
 
         def self.validate_param_option
           {url: :presence, broker_id: [:presence, /\A(first|\d+)\z/]}
@@ -182,8 +184,8 @@ module Rightboat
 
         def handle_boat_features(boat, boat_features)
           boat_features.css('item, rb:item').each do |item|
-            attr = DATA_MAPPINGS[item['name']]
-            next if !attr
+            attr = data_mapping[item['name']]
+            next if attr == ''
 
             value = item.text.strip
             if item['rb:description'].present?

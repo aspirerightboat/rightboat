@@ -101,7 +101,7 @@ module Rightboat
       end
 
       def safe_threads_count
-        threads_count = @import.threads.to_i
+        threads_count = ENV['SAVE_ONE_BOAT'] ? 1 : @import.threads.to_i
         available_db_conn_count = ActiveRecord::Base.connection_pool.size - ActiveRecord::Base.connection_pool.connections.size
         raise 'No free DB connections left' if available_db_conn_count <= 0
 
@@ -209,6 +209,8 @@ module Rightboat
         ImportTrail.where(id: @import_trail.id).update_all(increment_stats.map { |col, cnt| "#{col} = #{col} + #{cnt}" }.join(', '))
       rescue StandardError => e
         log_ex e, 'Save Boat Error'
+      ensure
+        @exit_worker = true if ENV['SAVE_ONE_BOAT']
       end
 
       def remove_old_boats

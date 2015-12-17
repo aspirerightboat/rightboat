@@ -45,6 +45,10 @@ module DBBackedClockwork
     `sudo monit restart solr_rightboat`
   end
 
+  every 1.day, 'download eyb xml', at: '2:00' do
+    `sh ./eyb.sh`
+  end
+
   # get the manager object
   def self.manager
     Clockwork.instance_variable_get(:@manager)

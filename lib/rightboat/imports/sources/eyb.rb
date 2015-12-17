@@ -8,8 +8,10 @@ module Rightboat
               'boat_price' => :price,
               'currency_code' => :currency,
               'vat' => :vat_rate,
-              'lying_country_name' => :country,
-              'lying_town' => :location,
+              'lying_country_name' => :country, # FR
+              'lying_country_code' => '', # 55
+              'lying_town' => :location, # AJACCIO
+              'lying_harbour' => '', # PORT GINESTA
               'weight' => :dry_weight,
               'hull_name' => :hull_type,
               'model' => :model,
@@ -28,8 +30,10 @@ module Rightboat
               'number_cabins' => :cabins,
               'comments' => :owners_comment,
               'exhibitcomments' => :description,
-              'type_name' => :boat_type,
-              'working' => '',
+              'type_name' => :boat_type, # Motor boat
+              'type' => '', # M
+              'working' => :working,
+              'working_characs' => :working,
               'winter_cover' => :winter_cover,
               'winter' => :winter,
               'windspeed_year' => :windspeed_year,
@@ -47,7 +51,6 @@ module Rightboat
               'vcr' => :vcr,
               'valid' => '',
               'upholstery_replacement' => :upholstery_replacement,
-              'type' => '',
               'tv_year' => :tv_year,
               'tv' => :tv,
               'trailor' => :trailor,
@@ -134,7 +137,6 @@ module Rightboat
               'mainsail_cover' => :mainsail_cover, # 0
               'mainsail_cars' => :mainsail_cars, # 1
               'mainsail' => :mainsail, # 1
-              'lying_country_code' => '', # 55
               'log_year' => :log_year, # 0
               'log' => :log, # 1
               'leathercoveredsteeringwheel' => :leather_covered_steering_wheel, # 1
@@ -186,7 +188,7 @@ module Rightboat
               'dvd_year' => :dvd_year, # 0
               'dvd' => :dvd_player, # 1
               'dishwasher' => :dishwasher, # 1
-              'dinghy_year_engine' => :dinghy_year_engine, # 0
+              'dinghy_year_engine' => '', # 0
               'diesel_code' => :diesel_code, # D
               'depth_sounder_year' => :depth_sounder_year, # 0
               'depth_sounder' => :depth_sounder, # 1
@@ -228,6 +230,8 @@ module Rightboat
               'barbecue' => :barbecue, # 0
               'backstay' => :backstay, # 1
               'autopilot_year' => :autopilot_year, # 0
+              'autopilot_characs' => :autopilot, # ST 6000 PLUS
+              'autopilot_makemodel' => :autopilot, # RAYMARINE ST 7000
               'antiuvstrips' => :anti_uv_strips, # 1
               'antiosmosistreatment' => :anti_osmosis_treatment, # 0
               'antifouling_year' => :antifouling_year, # 0
@@ -258,7 +262,6 @@ module Rightboat
               'fuelwatertanks_number' => :fuel_water_tanks_number, # 1000 L
               'freshwatertanks_number' => :fresh_water_tanks_number, # 1000 L
               'freshwatermaker_make' => :freshwatermaker, # 80 L/HR
-              'autopilot_makemodel' => :autopilot, # RAYMARINE ST 7000
               'antenna_characs' => :antenna, # Antena de radar Radome Digital Raymarine
               'compass_makemodel' => :compass, # OFFSHORE
               'plotter_makemodel' => :plotter, # RAYMARINE E 120
@@ -266,7 +269,6 @@ module Rightboat
               'fishing_depth_sounder_makemodel' => :fishing_depth_sounder, # Sonda Lowrance HDI
               'battery_comments' => :battery, # 12v
               'radar_makemodel' => :radar, # Radome Seul
-              'lying_harbour' => :lying_harbour, # PORT GINESTA
               'cd_makemodel' => :cd_player, # y lector MP3 con altavoces interiores y exteriores
               'vhf_characs' => :vhf, # Fija
               'fridge_capa' => :fridge_capacity, # 42l
@@ -274,7 +276,50 @@ module Rightboat
               'gps_makemodel' => :gps, # map 276C Garmin
               'windlass_power' => :windlass_power, # 1000 W SUBIDA / BAJADA - MANDO
               'alternator_year' => :alternator_year, # 0
-              'windspeed_makemodel' => :windspeed # RAYMARINE ST 60
+              'windspeed_makemodel' => :windspeed, # RAYMARINE ST 60
+              'ropecutter' => :rope_cutter, # 1
+              'tv_characs' => :tv, # 3 x
+              'dinghy_year' => :dinghy_year, # 0
+              'dinghy_make' => :dinghy, # Yamaha 230 + Yamaha 5 HP
+              'chemicalheads_number' => :chemical_heads, # 2
+              'idb' => '', # 23340MSF
+              'spinnaker_pole_characs' => :spinnaker_pole, # ALUMINIUM
+              'regata' => :regata, # 1
+              'navcenter_makemodel' => :navcenter, # BetG HERCULE 2000
+              'heat_make' => :heating, # EBERPACHER
+              'electronicchart_makemodel' => :electronicchart, # BetG Deckman
+              'hull_painting_year' => :hull_painting_year, # 0
+              'spi_characs' => :spinnaker, # ASSY
+              'solarpanels_year' => :solar_panels_year, # 0
+              'dinghy_engine' => :dinghy_engine, # 0
+              'tv_makemodel' => :tv, # DANS CARRE
+              'log_makemodel' => :log, # SPEED SOND RAYMARINE
+              'inverter_make' => :inverter, # 1500 W
+              'antenna_makemodel' => :antenna, # TV
+              'upholstery_replacement_year' => :upholstery_replacement_year, # 0
+              'launching_trailor_year' => :launching_trailor_year, # 0
+              'windlass_make' => :windlass, # Double commande
+              'repeater_year' => :repeater_year, # 0
+              'number_people' => :number_people, # 6
+              'life_raft_age' => :life_raft_age, # 2012
+              'dinghy_type' => :dinghy_type, # suzuki
+              'radar_characs' => :radar, # RAYMARINE
+              'radardetector_year' => :radar_detector_year, # 2008
+              'navcenter_characs' => :navcenter, # RAYMARINE
+              'steering_wheel_characs' => :steering_wheel, # 2
+              'dinghy_engine_power' => :dinghy_engine_power, # 40
+              'radiotapeplayer_characs' => :radiotape_player, # SONIC HUB
+              'gps_characs' => :gps, # HDS 7
+              'electronicchart_characs' => :electronicchart, # lowrance HDS 7
+              'depth_sounder_characs' => :depth_sounder, # HDS 7 TOUCH
+              'repeater_makemodel' => :repeater, # RAYMARINE E120
+              'trailor_year' => :trailor_year, # 0
+              'trailor_model' => :trailor, # PAM B401 M
+              'antiosmosistreatment_year' => :anti_osmosis_treatment_year, # 0
+              'electric_winch_characs' => :electric_winch, # Harken X 4
+              'main_sheet_traveller_characs' => :mainsheet_traveller, # HARKEN
+              'mainsail_characs' => :mainsail, # HARKEN
+              'battened_characs' => :battened, # Performance Mylar - Taffetas (2 ris automatiques)
           )
         end
 

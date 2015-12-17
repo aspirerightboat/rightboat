@@ -267,7 +267,7 @@ module Rightboat
         when /\A(?:liters?|litres?|l)\z/ then (value.to_f).round(2)
         when 'metres/feet' # invalid unit from http://www.nya.co.uk/boatsxml.php
         else
-            log_error 'Unknown unit', "#{unit}: #{value}"
+            log_warning 'Unknown unit', "#{unit}: #{value}"
             nil
         end
       end

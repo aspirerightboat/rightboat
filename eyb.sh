@@ -10,6 +10,6 @@ xml validate -q ./tmp/eyb.xml
 if [ $? == "1" ]; then
   echo "Error - file invalid"
 else
-  mv ./tmp/eyb.xml /import_data/eyb.xml
+  mv ./tmp/eyb.xml ./import_data/eyb.xml
   echo "Done"
 fi

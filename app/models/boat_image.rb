@@ -23,7 +23,7 @@ class BoatImage < ActiveRecord::Base
       return
     end
 
-    puts "[#{id}] Downloading #{url}"
+    puts "[#{id}] Downloading #{url}" if !Rails.env.production?
     begin
       open(url, 'If-Modified-Since' => http_last_modified_string) do |f|
         _t_file = Tempfile.new('import', encoding: 'binary')
@@ -38,26 +38,26 @@ class BoatImage < ActiveRecord::Base
         if f.meta['last-modified']
           self.http_last_modified = Time.parse(f.meta['last-modified'].to_s)
         end
-        puts "[#{id}] - OK"
+        puts "[#{id}] - OK" if !Rails.env.production?
       end
     rescue Exception => e
       if e.is_a?(Errno::ECONNREFUSED) || e.is_a?(Net::ReadTimeout)
         if retries > 5
-          puts "[#{id}] Max retries reached. Failed"
+          puts "[#{id}] Max retries reached. Failed" if !Rails.env.production?
         else
           retries += 1
-          puts "[#{id}] Retry #{retries}"
+          puts "[#{id}] Retry #{retries}" if !Rails.env.production?
           sleep 5
           retry
         end
       elsif e.is_a?(OpenURI::HTTPError)
         case e.message[0,3]
           when '404'
-            puts "[#{id}] 404 - Not found, destroy"
+            puts "[#{id}] 404 - Not found, destroy" if !Rails.env.production?
             remove_file!
             destroy if persisted?
           when '304'
-            puts "[#{id}] 304 - Not modified, continue"
+            puts "[#{id}] 304 - Not modified, continue" if !Rails.env.production?
           else
             logger.error "[#{id}] #{url} #{e.message}"
         end

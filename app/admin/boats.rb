@@ -134,7 +134,7 @@ ActiveAdmin.register Boat do
     boat = Boat.find_by(slug: params[:id])
     if (activate = boat.deleted?)
       boat.revive
-      boat.increase_counter_cache
+      boat.user.increment(:boats_count)
     else
       boat.destroy
     end

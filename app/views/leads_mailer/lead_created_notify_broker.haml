@@ -6,7 +6,7 @@
 %p The client details are as follows:
 %ul
   %li <b>Name:</b> #{@enquiry.title} #{@enquiry.name}
-  - if @enquiry.boat.user.email == 'yachts@edwardsyachtsales.com'
+  - if %w(yachts@edwardsyachtsales.com jamie.coombes@sunseekertorquay.com).include?(@enquiry.boat.user.email)
     %li <b>Customer Email:</b> #{@enquiry.email}
     - unless @enquiry.phone.blank?
       %li <b>Customer Tel:</b> #{@enquiry.country_code} #{@enquiry.phone}

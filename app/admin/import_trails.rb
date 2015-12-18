@@ -1,7 +1,8 @@
 ActiveAdmin.register ImportTrail do
   menu parent: 'Imports', priority: 10
 
-  filter :import_type, collection: -> { Rightboat::Imports::Base.import_types }
+  filter :import_import_type, as: :select, collection: Rightboat::Imports::Base.import_types
+  filter :import_user_id, as: :select, collection: User.companies.order(:company_name)
   filter :error_msg
   filter :created_at
 

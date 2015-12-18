@@ -31,7 +31,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Ran with no Errors:'
               end
               td class: 'text-green' do
-                text_node ImportTrail.last_day.without_errors.group(:import_id).count.length
+                text_node ImportTrail.where('created_at > ?', day_ago).without_errors.group(:import_id).count.length
               end
             end
             tr do
@@ -39,7 +39,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Run Fault:'
               end
               td class: 'text-red' do
-                link_to ImportTrail.last_day.where(error_msg: ['Unexpected Error', 'Import Blank']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago.strftime('%F'), error_msg_in: ['Unexpected Error', 'Import Blank']})
+                link_to ImportTrail.where('created_at > ?', day_ago).where(error_msg: ['Unexpected Error', 'Import Blank']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago.strftime('%F'), error_msg_in: ['Unexpected Error', 'Import Blank']})
               end
             end
             tr do
@@ -47,7 +47,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Ran, but with Errors:'
               end
               td class: 'text-orange' do
-                link_to ImportTrail.last_day.with_errors.group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago.strftime('%F'), error_msg_present: 1})
+                link_to ImportTrail.where('created_at > ?', day_ago).with_errors.group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago.strftime('%F'), error_msg_present: 1})
               end
             end
             tr do

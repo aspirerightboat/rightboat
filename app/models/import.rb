@@ -48,6 +48,7 @@ class Import < ActiveRecord::Base
   end
 
   def run!
+    return if running?
     update_attributes!(queued_at: Time.current, pid: -1)
     `bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
   end

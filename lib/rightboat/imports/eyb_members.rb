@@ -151,6 +151,9 @@ module Rightboat
             member[:password] = password
             member[:password_confirmation] = password
             member[:username] = member[:company_name].underscore.gsub(/[^\w@.-]/, '_')
+            if User.find_by(username: member[:username])
+              member[:username] = member[:username] + '_' + rand(1000).to_s
+            end
             member[:broker_ids] = [member[:broker_id]]
             user = User.create(member.except(:broker_id))
           end

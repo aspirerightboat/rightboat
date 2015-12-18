@@ -56,7 +56,7 @@ module Rightboat
           # uri = URI.parse(@import.param[:url])
           # doc = Nokogiri::XML(uri.open)
 
-          doc = Nokogiri::XML(open(@import.param[:url]))
+          doc = Nokogiri::XML(open(@import.param[:url].strip))
 
           log 'Scraping'
           broker_nodes = doc.root.element_children

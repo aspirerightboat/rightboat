@@ -46,7 +46,7 @@ module DBBackedClockwork
   end
 
   every 1.day, 'download eyb xml', at: '22:00' do
-    `sh ./eyb.sh`
+    `/bin/bash eyb.sh`
   end
 
   # get the manager object

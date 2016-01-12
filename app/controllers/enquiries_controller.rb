@@ -38,7 +38,12 @@ class EnquiriesController < ApplicationController
       end
       enquiry.create_lead_trail(true)
 
-      render json: current_user ? {location: member_enquiries_path} : {show_result_popup: true}
+      redirect_to_enquiries = current_user.present?
+      google_conversion = render_to_string(partial: 'shared/google_lead_conversion',
+                                           locals: {lead_price: enquiry.lead_price, redirect_to_enquiries: redirect_to_enquiries})
+      json = {google_conversion: google_conversion}
+      json[:show_result_popup] = true if !current_user
+      render json: json
     else
       # session[:captcha] = Rightboat::Captcha.generate
       render json: enquiry.errors.full_messages, status: 422, root: false

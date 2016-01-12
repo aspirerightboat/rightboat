@@ -14,7 +14,9 @@ $ ->
         false
       ###
     .on 'ajax:success', (e, data, status, xhr) ->
-      if xhr.responseJSON.show_result_popup
+      json = xhr.responseJSON
+      $(document.body).append(json.google_conversion)
+      if json.show_result_popup
         $('#enquiry_result_popup').displayPopup()
 
     $('#enquiry_result_popup').on 'hidden.bs.modal', ->

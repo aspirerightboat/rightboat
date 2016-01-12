@@ -1,6 +1,6 @@
 require 'mechanize'
 require 'nokogiri'
-require 'rightboat/imports/source_boat' # to fix "Circular dependency detected while autoloading constant" error while running multithreaded import
+require 'rightboat/imports/source_boat' # fix "Circular dependency" error while running multithreaded import
 
 module Rightboat
   module Imports

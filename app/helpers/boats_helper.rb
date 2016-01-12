@@ -48,7 +48,7 @@ module BoatsHelper
     ret << ['LOA', boat_length(boat), 'loa']
     ret << ['Location', boat.country.to_s]
     ret << ['Tax Status', boat.tax_status]
-    ret << ['Engine Make', boat.engine_model]
+    ret << ['Engine Make', boat.engine_manufacturer.try(:name)]
     ret << ['Fuel', boat.fuel_type]
 
     if full_spec

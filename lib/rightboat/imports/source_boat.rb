@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'rightboat/imports/utils' # fix "Circular dependency" error while running multithreaded import
 
 module Rightboat
   module Imports
@@ -157,14 +158,20 @@ module Rightboat
         # target.revive(true) if target.deleted?
 
         spec_proc = Proc.new do |spec_name, value|
+          spec_name_str = spec_name.to_s
           value ||= instance_variable_get("@#{spec_name}") if spec_name.is_a?(Symbol) || spec_name.is_a?(String) && spec_name =~ /^[a-z][a-z0-9_]+$/
           value = nil if value.blank? || value.to_s =~ /^(?:[0.]+|false)$/i
-          value = 'Yes' if value && value.to_s =~ /^(?:true|1|yes)$/i
+          if value && value.to_s =~ /^(?:true|1|yes)$/i
+            if value == '1' && (spec_name_str.end_with?('_count') || spec_name_str.in?(%w(cabins crew_cabins heads berths single_berths double_berths twin_berths triple_berths)))
+              # leave numerical value
+            else
+              value = 'Yes'
+            end
+          end
 
           spec = nil
           import_base.jobs_mutex.synchronize do
             @@existing_specs ||= Specification.select(:id, :name).to_a
-            spec_name_str = spec_name.to_s
             spec = @@existing_specs.find { |s| s.name == spec_name_str }
             if !spec
               spec = Specification.create(name: spec_name_str, display_name: spec_name_str.titleize)

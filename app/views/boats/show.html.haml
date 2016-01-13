@@ -72,7 +72,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
         -#  %p.owners-commnet= @boat.owners_comment
 
         .col-sm-7.col-md-5.col-xs-12
-          %h1 About this #{@boat.manufacturer} / #{@boat.model}
+          %h1 About this #{@boat.manufacturer_model}
           .truncated-description
             != @boat.short_description
 

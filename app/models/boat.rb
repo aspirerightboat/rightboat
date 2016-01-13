@@ -120,6 +120,7 @@ class Boat < ActiveRecord::Base
   end
 
   def manufacturer_model
+    return manufacturer.to_s if !model || model.name == 'Unknown'
     [manufacturer.to_s, model.to_s].reject(&:blank?).join(' ')
   end
 
@@ -184,8 +185,8 @@ class Boat < ActiveRecord::Base
   end
 
   def model_inclusion_of_manufacturer
-    if model && model.manufacturer != self.manufacturer
-      self.errors.add :model_id, "[#{self.mdoel}] should belongs to manufacturer[#{self.manufacturer}]"
+    if (model_changed? || manufacturer_changed?) && model && model.manufacturer != manufacturer
+      errors.add :model_id, "[#{model}] should belongs to manufacturer[#{manufacturer}]"
     end
   end
 

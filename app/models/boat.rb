@@ -59,7 +59,7 @@ class Boat < ActiveRecord::Base
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
 
   has_many :favourites, dependent: :delete_all
-  has_many :enquiries, dependent: :destroy
+  has_many :enquiries
   has_many :boat_specifications, dependent: :destroy
   has_many :boat_images, -> { not_deleted }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'

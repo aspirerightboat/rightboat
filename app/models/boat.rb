@@ -190,7 +190,7 @@ class Boat < ActiveRecord::Base
   end
 
   def model_inclusion_of_manufacturer
-    if (model_changed? || manufacturer_changed?) && model && model.manufacturer != manufacturer
+    if (model_id_changed? || manufacturer_id_changed?) && model && model.manufacturer != manufacturer
       errors.add :model_id, "[#{model}] should belongs to manufacturer[#{manufacturer}]"
     end
   end

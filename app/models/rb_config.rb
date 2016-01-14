@@ -25,7 +25,8 @@ class RBConfig < ActiveRecord::Base
         {key: 'leads_approve_delay', value: '72', kind: :integer, description: 'Lead delay before approved in hours'},
         {key: 'invoicing_report_email', value: 'boats@rightboat.com', kind: :string, description: 'Where to send report summary about generated invoices'},
         {key: 'lead_price_coef', value: '0.0002', kind: :float, description: 'If boat has price is £100.000 then invoice price will be eg. 100_000 * 0.0002 = £20'},
-        {key: 'lead_flat_fee', value: '99', kind: :integer, description: 'If no boat price nor length present then invoice price will be flat fee in £'},
+        {key: 'lead_flat_fee', value: '99', kind: :float, description: 'If no boat price nor length present then invoice price will be flat fee in £'},
+        {key: 'min_lead_price', value: '2', kind: :float, description: 'Min lead price in £'},
     ]
   end
 

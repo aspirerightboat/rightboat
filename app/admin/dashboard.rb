@@ -1,19 +1,20 @@
 ActiveAdmin.register_page 'Dashboard' do
 
   menu priority: 1, label: proc{ I18n.t('active_admin.dashboard') }
-  now = Time.current
-  day_ago = 1.day.ago
-  beginning_of_day = now.beginning_of_day
-  beginning_of_week = now.beginning_of_week
-  beginning_of_month= now.beginning_of_month
-  beginning_of_last_week = 1.week.ago.beginning_of_week
-  beginning_of_last_month= 1.month.ago.beginning_of_month
-  total_leads_last_week = Enquiry.where(created_at: beginning_of_last_week..beginning_of_week).count
-  total_approved_leads_last_week = Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
-  total_leads_last_month = Enquiry.where(created_at: beginning_of_last_month..beginning_of_month).count
-  total_approved_leads_last_month = Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
 
   content title: proc{ I18n.t('active_admin.dashboard') } do
+    now = Time.current
+    day_ago = 1.day.ago
+    beginning_of_day = now.beginning_of_day
+    beginning_of_week = now.beginning_of_week
+    beginning_of_month= now.beginning_of_month
+    beginning_of_last_week = 1.week.ago.beginning_of_week
+    beginning_of_last_month= 1.month.ago.beginning_of_month
+    total_leads_last_week = Enquiry.where(created_at: beginning_of_last_week..beginning_of_week).count
+    total_approved_leads_last_week = Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
+    total_leads_last_month = Enquiry.where(created_at: beginning_of_last_month..beginning_of_month).count
+    total_approved_leads_last_month = Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
+
     columns do
       column do
         panel 'Imports - Last 24 hours' do

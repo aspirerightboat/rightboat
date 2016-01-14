@@ -14,7 +14,8 @@
               .boat-price
                 %span(data-attr-name='price')= boat_price(boat)
                 %span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
-              = link_to 'Request Details', '#', class: 'btn-flat pull-right btn-black request-details'
+              - if boat.offer_status == 'available'
+                = link_to 'Request Details', '#', class: 'btn-flat pull-right btn-black request-details'
 
   .top-tip
     *Top Tip: Make sure you're the first to know if anything changes with your favourite boats by setting your #{link_to 'alerts', member_user_alert_path}.

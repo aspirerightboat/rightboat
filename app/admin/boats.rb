@@ -1,6 +1,6 @@
 ActiveAdmin.register Boat do
   permit_params :manufacturer_id, :model_id, :price, :currency_id, :year_built, :poa,
-                :featured, :recently_reduced, :under_offer, :new_boat, :description, :short_description,
+                :featured, :recently_reduced, :offer_status, :new_boat, :description, :short_description,
                 :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id
 
   menu priority: 2
@@ -9,11 +9,11 @@ ActiveAdmin.register Boat do
   filter :id
   filter :user, as: :select, collection: User.companies.order(:company_name)
   filter :country, as: :select, collection: Country.order(:name)
-  filter :manufacturer, as: :select, collection: Manufacturer.order(:name)
-  filter :model, collection: []
+  filter :manufacturer_name_cont
+  filter :model_name_cont
   filter :featured
   filter :recently_reduced
-  filter :under_offer
+  filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES
   filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
   filter :boat_type_name, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
 
@@ -74,8 +74,8 @@ ActiveAdmin.register Boat do
       f.input :drive_type
       f.input :location
       f.input :country, as: :select, collection: Country.order(:name)
+      f.input :offer_status, as: :select, collection: Boat::OFFER_STATUSES
       f.input :featured, as: :boolean
-      f.input :under_offer, as: :boolean
       f.input :recently_reduced, as: :boolean
     end
     actions

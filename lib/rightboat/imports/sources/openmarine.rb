@@ -115,14 +115,11 @@ module Rightboat
 
         def process_job(job)
           advert_node = job[:advert_node]
-          if advert_node['status'] =~ /sold/i
-            log 'Boat Sold'
-            return
-          end
-
           boat = SourceBoat.new
+
           boat.office_id = job[:office_id]
           boat.source_id = advert_node['ref']
+          boat.offer_status = advert_node['status'].underscore if advert_node['status'] =~ /Available|UnderOffer|Sold/i
 
           inner_nodes = advert_node.element_children.index_by(&:name)
           handle_advert_media(boat, inner_nodes['advert_media'])

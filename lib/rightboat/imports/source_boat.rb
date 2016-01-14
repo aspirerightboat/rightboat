@@ -11,7 +11,7 @@ module Rightboat
       validates_presence_of :user, :source_id, :manufacturer, :model
 
       NORMAL_ATTRIBUTES = [
-        :source_id, :name, :description, :short_description, :poa, :price, :year_built, :under_offer, :length_m,
+        :source_id, :name, :description, :short_description, :poa, :price, :year_built, :offer_status, :length_m,
         :new_boat, :source_url, :owners_comment
       ]
 

@@ -5,6 +5,7 @@ class Boat < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
+  OFFER_STATUSES = %w(available under_offer sold)
 
   attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy
 
@@ -173,6 +174,10 @@ class Boat < ActiveRecord::Base
 
   def safe_currency
     currency || Currency.default
+  end
+
+  def offer_available?
+    offer_status == 'available'
   end
 
   private

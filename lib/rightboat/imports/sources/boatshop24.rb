@@ -85,7 +85,7 @@ module Rightboat
           boat.manufacturer, boat.model = doc.css("#rightColumnContainer h2").text.split(/\s+/,2)
           price = doc.css("#priceArea h4").text
           if doc.to_s.match(/UNDER OFFER/)
-            boat.under_offer = true
+            boat.offer_status = 'under_offer'
           end
           puts "manufacturer: #{boat.manufacturer}"
           puts "model: #{boat.model}"

@@ -5,7 +5,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   menu label: 'Leads', priority: 9
 
-  config.sort_order = 'first_name_asc_and_surname_asc_and_created_at_desc'
+  config.sort_order = 'created_at_desc_and_first_name_asc_and_surname_asc'
 
   filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
   filter :created_at, label: 'Date of Lead'
@@ -38,6 +38,9 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
         "<b>#{html_escape k}</b>: #{html_escape v}" if v.present?
       }.compact.join('<br>').html_safe
       res
+    end
+    column 'Member?' do |lead|
+      lead.user ? status_tag('Yes', :yes) : status_tag('No', :no)
     end
     column :broker, sortable: 'boats.user_id' do |lead|
       link_to lead.boat.user.name, admin_user_path(lead.boat.user)

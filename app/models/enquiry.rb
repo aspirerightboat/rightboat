@@ -22,6 +22,7 @@ class Enquiry < ActiveRecord::Base
   after_save :send_quality_check_email
   after_update :create_lead_trail, :admin_reviewed_email
 
+  scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: 'approved') }
   scope :rejected, -> { where(status: 'rejected') }
   scope :invoiced, -> { where(status: 'invoiced') }

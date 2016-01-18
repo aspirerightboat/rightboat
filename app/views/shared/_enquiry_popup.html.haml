@@ -1,4 +1,5 @@
-%script(type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8")
+- content_for :head_scripts do
+  %script(type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8")
 
 #enquiry_popup.modal.fade
   .modal-dialog
@@ -119,5 +120,3 @@
             %li Customised keyword searches
             %li Discounts off Boat Show tickets
             %li Personalise your experience
-
-  /= render 'shared/phone_popup'

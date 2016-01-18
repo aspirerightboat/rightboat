@@ -11,4 +11,6 @@
 
 - if redirect_to_enquiries
   :javascript
-    window.location = '#{member_enquiries_path}'
+    setTimeout(function() { // wait some time for google conversion call
+      window.location = '#{member_enquiries_path}'
+    }, 100);

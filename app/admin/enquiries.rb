@@ -7,7 +7,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   config.sort_order = 'first_name_asc_and_surname_asc_and_created_at_desc'
 
-  filter :user, collection: -> { User.organizations }
+  filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
   filter :created_at, label: 'Date of Lead'
   filter :status, as: :select, collection: -> { Enquiry::STATUSES }
 
@@ -24,7 +24,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       date = l record.created_at, format: :short
       "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
     end
-    column :customer, sortable: :user_id do |lead|
+    column :customer, sortable: :first_name do |lead|
       res = ''.html_safe
       res << link_to(lead.user.name, admin_user_path(lead.user)) if lead.user
       res << '<br>'.html_safe

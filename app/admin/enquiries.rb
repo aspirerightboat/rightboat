@@ -39,7 +39,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       }.compact.join('<br>').html_safe
       res
     end
-    column 'Member?' do |lead|
+    column 'Member?', sortable: :user_id do |lead|
       lead.user ? status_tag('Yes', :yes) : status_tag('No', :no)
     end
     column :broker, sortable: 'boats.user_id' do |lead|

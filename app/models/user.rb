@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
   before_validation :ensure_username
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
+  after_create :send_new_email, if: :private?
   after_create :own_enquiry
   attr_accessor :updated_by_admin, :current_password
 
@@ -149,6 +150,10 @@ class User < ActiveRecord::Base
       send_email_confirmation
     end
     true
+  end
+
+  def send_new_email
+    UserMailer.new_private_user(id).deliver_now
   end
 
   def ensure_username

@@ -201,7 +201,7 @@ module Rightboat
           increment_stats << [source_boat.new_record ? 'new_count' : 'updated_count', 1]
           increment_stats << ['images_count', source_boat.images_count]
         else
-          log_error 'Save Boat Error', source_boat.error_msg
+          log_error 'Save Boat Error', "#{source_boat.error_msg} source_id=#{source_boat.source_id}"
           increment_stats << ['not_saved_count', 1]
         end
 

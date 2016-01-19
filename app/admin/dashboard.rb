@@ -11,9 +11,9 @@ ActiveAdmin.register_page 'Dashboard' do
     beginning_of_last_week = 1.week.ago.beginning_of_week
     beginning_of_last_month= 1.month.ago.beginning_of_month
     total_leads_last_week = Enquiry.where(created_at: beginning_of_last_week..beginning_of_week).count
-    total_approved_leads_last_week = Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
+    total_approved_leads_last_week = LeadTrail.approved.where(created_at: beginning_of_last_week..beginning_of_week).count
     total_leads_last_month = Enquiry.where(created_at: beginning_of_last_month..beginning_of_month).count
-    total_approved_leads_last_month = Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
+    total_approved_leads_last_month = LeadTrail.approved.where(created_at: beginning_of_last_week..beginning_of_week).count
 
     columns do
       column do
@@ -79,11 +79,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Pending/Approved/Invoiced Leads today:'
               end
               td do
-                text_node Enquiry.pending.where('updated_at > ?', beginning_of_day).count
+                text_node LeadTrail.pending.where('created_at > ?', beginning_of_day).count
                 text_node '/'
-                text_node Enquiry.approved.where('updated_at > ?', beginning_of_day).count
+                text_node LeadTrail.approved.where('created_at > ?', beginning_of_day).count
                 text_node '/'
-                text_node Enquiry.invoiced.where('updated_at > ?', beginning_of_day).count
+                text_node LeadTrail.invoiced.where('created_at > ?', beginning_of_day).count
               end
             end
             tr do
@@ -91,11 +91,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node "Total Pending/Approved/Invoiced Leads this week (Mon-#{now.strftime('%a')}):"
               end
               td class: 'text-green' do
-                text_node Enquiry.pending.where('updated_at > ?', beginning_of_week).count
+                text_node LeadTrail.pending.where('created_at > ?', beginning_of_week).count
                 text_node '/'
-                text_node Enquiry.approved.where('updated_at > ?', beginning_of_week).count
+                text_node LeadTrail.approved.where('created_at > ?', beginning_of_week).count
                 text_node '/'
-                text_node Enquiry.invoiced.where('updated_at > ?', beginning_of_week).count
+                text_node LeadTrail.invoiced.where('created_at > ?', beginning_of_week).count
               end
             end
             tr do
@@ -103,11 +103,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Pending/Approved/Invoiced Leads this month:'
               end
               td class: 'text-green' do
-                text_node Enquiry.pending.where('updated_at > ?', beginning_of_month).count
+                text_node LeadTrail.pending.where('created_at > ?', beginning_of_month).count
                 text_node '/'
-                text_node Enquiry.approved.where('updated_at > ?', beginning_of_month).count
+                text_node LeadTrail.approved.where('created_at > ?', beginning_of_month).count
                 text_node '/'
-                text_node Enquiry.invoiced.where('updated_at > ?', beginning_of_month).count
+                text_node LeadTrail.invoiced.where('created_at > ?', beginning_of_month).count
               end
             end
             tr do
@@ -119,11 +119,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Pending/Approved/Invoiced Lead Value last week (Mon-Sun):'
               end
               td do
-                text_node Enquiry.pending.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node LeadTrail.pending.where(created_at: beginning_of_last_week..beginning_of_week).count
                 text_node '/'
-                text_node Enquiry.approved.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node LeadTrail.approved.where(created_at: beginning_of_last_week..beginning_of_week).count
                 text_node '/'
-                text_node Enquiry.invoiced.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node LeadTrail.invoiced.where(created_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -131,11 +131,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Pending/Approved/Invoiced Lead Value last month:'
               end
               td do
-                text_node Enquiry.pending.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node LeadTrail.pending.where(created_at: beginning_of_last_month..beginning_of_month).count
                 text_node '/'
-                text_node Enquiry.approved.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node LeadTrail.approved.where(created_at: beginning_of_last_month..beginning_of_month).count
                 text_node '/'
-                text_node Enquiry.invoiced.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node LeadTrail.invoiced.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
           end
@@ -254,11 +254,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Pending/Approved/Invoiced Leads last week (Mon-Sun):'
               end
               td class: 'text-green' do
-                text_node Enquiry.pending.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node LeadTrail.pending.where(created_at: beginning_of_last_week..beginning_of_week).count
                 text_node '/'
                 text_node total_approved_leads_last_week
                 text_node '/'
-                text_node Enquiry.invoiced.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node LeadTrail.invoiced.where(created_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -266,7 +266,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Rejected Leads last week (Mon-Sun):'
               end
               td class: 'text-red' do
-                text_node Enquiry.rejected.where(updated_at: beginning_of_last_week..beginning_of_week).count
+                text_node LeadTrail.rejected.where(created_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -294,11 +294,11 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Pending/Approved/Invoiced Leads last month:'
               end
               td class: 'text-green' do
-                text_node Enquiry.pending.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node LeadTrail.pending.where(created_at: beginning_of_last_month..beginning_of_month).count
                 text_node '/'
                 text_node total_approved_leads_last_month
                 text_node '/'
-                text_node Enquiry.invoiced.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node LeadTrail.invoiced.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
             tr do
@@ -306,7 +306,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Rejected Leads last month:'
               end
               td class: 'text-red' do
-                text_node Enquiry.rejected.where(updated_at: beginning_of_last_month..beginning_of_month).count
+                text_node LeadTrail.rejected.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
             tr do

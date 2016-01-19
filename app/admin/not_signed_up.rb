@@ -23,14 +23,11 @@ ActiveAdmin.register Enquiry, as: 'Not Signed Up' do
       "#{enquiry.country_code} #{enquiry.phone}"
     end
     column :emailed, sortable: :email_sent do |enquiry|
-     if enquiry.email_sent
-       'Yes'
-       else
-         form_for enquiry, url: admin_lead_path(enquiry), method: :put do |f|
-           f.hidden_field :email_sent, value: true
-           f.submit 'Sent'
-         end
-       end
-     end
+      if enquiry.email_sent
+        'Yes'
+      else
+        link_to 'Sent', admin_lead_path(enquiry, enquiry: {email_sent: true}), method: :put
+      end
+    end
   end
 end

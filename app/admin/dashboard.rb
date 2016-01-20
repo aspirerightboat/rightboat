@@ -17,6 +17,15 @@ ActiveAdmin.register_page 'Dashboard' do
 
     columns do
       column do
+        panel 'Leads Statistics' do
+          div id: 'lead-graph' do
+          end
+        end
+      end
+    end
+
+    columns do
+      column do
         panel 'Imports - Last 24 hours' do
           table do
             tr do
@@ -352,5 +361,7 @@ ActiveAdmin.register_page 'Dashboard' do
         end
       end
     end
+
+    render partial: 'charts'
   end
 end

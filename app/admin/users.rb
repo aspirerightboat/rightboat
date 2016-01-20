@@ -144,8 +144,8 @@ ActiveAdmin.register User do
     case params[:do]
     when 'delete_perm' then resource.boats.each { |b| b.destroy(:force) }
     when 'delete' then resource.boats.each { |b| b.destroy }
-    when 'mark_deleted' then resource.boats.not_deleted.each { |b| b.touch(:deleted_at) }
-    when 'unmark_deleted' then resource.boats.deleted.each { |b| b.update_attribute(:deleted_at, nil) }
+    when 'mark_deleted' then resource.boats.not_deleted.each { |b| b.destroy }
+    when 'unmark_deleted' then resource.boats.deleted.each { |b| b.revive }
     end
 
     redirect_to (request.referer || {action: :index}), notice: "For all boats of #{resource.name} action was taken #{params[:do]}d"

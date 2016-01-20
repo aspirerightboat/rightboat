@@ -19,4 +19,8 @@ class UserMailerPreview < ActionMailer::Preview
   def new_berth_enquiry
     UserMailer.new_berth_enquiry(BerthEnquiry.last.id)
   end
+
+  def new_private_user
+    UserMailer.new_private_user(User.last.id)
+  end
 end

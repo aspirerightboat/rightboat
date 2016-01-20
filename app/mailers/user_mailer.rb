@@ -49,4 +49,9 @@ class UserMailer < ApplicationMailer
     @berth_enquiry = BerthEnquiry.find(berth_enquiry_id)
     mail(to: 'info@rightboat.com', subject: 'New berth enquiry - Rightboat')
   end
+
+  def new_private_user(user_id)
+    @user = User.find(user_id)
+    mail(to: 'info@rightboat.com', subject: 'New private user - Rightboat')
+  end
 end

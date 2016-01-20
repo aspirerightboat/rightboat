@@ -65,7 +65,7 @@ $ ->
             drilldown:
               categories: weeks
               series: _.map statuses, (st) ->
-                name: status
+                name: st
                 data: _.map weeks, (week) ->
                   _.size(_.where leadTrails, { year: year, month: month, week: week, new_status: st })
       year += 1

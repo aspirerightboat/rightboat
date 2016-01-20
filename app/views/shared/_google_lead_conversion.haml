@@ -2,12 +2,14 @@
   :javascript
     window.google_trackConversion({
         google_conversion_id: 953777258,
+        google_conversion_language: "en",
+        google_conversion_format: "3",
+        google_conversion_color: "ffffff",
+        google_conversion_label: "G6jvCOilq2IQ6vjlxgM",
         google_remarketing_only: false,
-        google_custom_params: {
-          conversion_value: #{Rails.env.development? ? 0 : lead_price}
-        }
+        google_conversion_currency: "GBP",
+        google_conversion_value: #{Rails.env.development? ? 0 : lead_price},
     });
-    console.log('google conversion sent');
 
 - if redirect_to_enquiries
   :javascript

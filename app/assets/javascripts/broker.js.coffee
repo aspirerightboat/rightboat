@@ -54,9 +54,9 @@ $ ->
         $(@).remove()
         updateNoDataText()
     else
-      $nameInput = $('input[name$="name]"]', $item)
-      name = $nameInput.attr('name').replace('[name]', '[_destroy]')
-      $nameInput.prepend('<input type="text" name="'+name+'" value="1">').addClass('hidden')
+      $idInput = $('input[name$="id]"]', $item)
+      name = $idInput.attr('name').replace('[id]', '[_destroy]')
+      $idInput.after('<input type="text" name="'+name+'" value="1">').addClass('hidden')
       $item.hide(200)
       updateNoDataText()
   $('.upd-office-btn').click ->

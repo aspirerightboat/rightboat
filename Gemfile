@@ -71,6 +71,8 @@ gem 'cocoon'
 
 gem 'redis-rails'
 
+gem 'xeroizer'
+
 group :development, :test do
   # gem 'byebug'
   # gem 'web-console', '~> 2.0'

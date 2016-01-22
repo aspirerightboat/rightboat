@@ -41,7 +41,7 @@ class Enquiry < ActiveRecord::Base
   end
 
   def update_lead_price
-    self.lead_price = calc_lead_price.round(2)
+    self.lead_price = calc_lead_price
     if persisted? && lead_price_changed?
       update_column :lead_price, lead_price
     end
@@ -77,13 +77,13 @@ class Enquiry < ActiveRecord::Base
 
   def calc_lead_price
     res = if !boat.poa? && boat.price > 0
-            Currency.convert(boat.price, boat.currency, Currency.default) * RBConfig[:lead_price_coef]
+            boat.price / boat_currency_rate * RBConfig[:lead_price_coef]
           elsif boat.length_m && boat.length_m > 0
             lead_rate = boat.user.broker_info.lead_rate
-            Currency.convert(boat.length_ft * lead_rate, Currency.cached_by_name('EUR'), Currency.default)
+            boat.length_ft * lead_rate / eur_rate
           else
             RBConfig[:lead_flat_fee]
           end
-    [res, RBConfig[:min_lead_price]].max
+    [res, RBConfig[:min_lead_price]].max.round(2)
   end
 end

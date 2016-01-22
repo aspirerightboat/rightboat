@@ -51,13 +51,13 @@ ActiveAdmin.register Invoice do
   end
 
   collection_action :generate_invoices, method: :post do
-    CreateInvoicesJob.new.perform
-    redirect_to({action: :index}, {notice: 'Invoices were generated and report email was sent'})
+    res = CreateInvoicesJob.new.perform
+    redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
   end
 
   collection_action :generate_test_invoices, method: :post do
-    CreateInvoicesJob.new.perform(315)
-    redirect_to({action: :index}, {notice: 'Invoices were generated and report email was sent'})
+    res = CreateInvoicesJob.new.perform(315)
+    redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
   end
 
 end

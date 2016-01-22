@@ -26,8 +26,10 @@ class EnquiriesController < ApplicationController
     end
 
     enquiry = Enquiry.new(enquiry_params)
-
     enquiry.boat = Boat.find_by(slug: params[:id])
+    enquiry.boat_currency_rate = (enquiry.boat.currency || Currency.default).rate
+    enquiry.eur_rate = Currency.find_by(name: 'EUR').rate
+
     if enquiry.save
       # session.delete(:captcha)
       LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later

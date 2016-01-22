@@ -85,6 +85,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:id)
     column('Date of Lead') { |record| record.created_at }
     column('User') { |record| record.user.try(&:name) }
+    column('Member?') { |record| record.user ? 'Yes' : 'No' }
     column('Boat') { |record| record.boat.try(&:manufacturer_model) }
     column('Length(m)') { |record|
       l = record.boat.try(&:length_m)

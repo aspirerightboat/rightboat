@@ -54,7 +54,9 @@
             = ff.file_field :logo, class: 'form-control'
     .row
       .col-xs-12#offices_table_block
-        %h2 Offices
+        %h2
+          Offices
+          %small (These offices are all auto updated/created from the data in the feed. However, you still have the ability to edit these or create new ones, as you see fit.)
         %table.rb-table#offices_table
           %tr
             %th Name

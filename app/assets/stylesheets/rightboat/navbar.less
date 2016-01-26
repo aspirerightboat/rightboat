@@ -16,6 +16,7 @@ h1.navbar-brand {
   position: fixed;
   right: 10px;
   top: 10px;
+  z-index: 3000;
 }
 #top-navbar .navbar-header {
   height: 98px;
@@ -73,12 +74,16 @@ a.navbar-brand {
     background: transparent;
   }
 }
-.nabvar-tools.navbar-default .navbar-nav > li > a {
-  text-decoration: underline;
-  text-decoration-color: rgba(98, 98, 98, 0.8);
-  -webkit-text-decoration-color: rgba(98, 98, 98, 0.8);
-  -moz-text-decoration-color: rgba(98, 98, 98, 0.8);
-  &, &:hover, &:active, &:focus { color: @rb-color-dark; }
+.page-links > li > a {
+  background-color: #2d83a8;
+  padding: 2px 6px !important;
+  text-decoration: none;
+  margin-top: 8px;
+  margin-left: 5px;
+
+  &:hover, &:focus {
+    background-color: #2d83a8 !important;
+  }
 }
 .view-mode-icon {
   vertical-align: top;
@@ -198,7 +203,7 @@ a.navbar-brand {
     top: 0;
     width: 100%;
     margin: 0 !important;
-    z-index: 10;
+    z-index: 2000;
 
     .navbar-right {
       padding-top: 40px;

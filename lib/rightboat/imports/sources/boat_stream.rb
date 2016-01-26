@@ -160,12 +160,13 @@ module Rightboat
                 when 'DraftMeasure' then @boat.draft_m = to_meters(c, get_attr('unitCode'))
                 # when 'BoatDraftCode' then
                 end
-              when 'VehicleRemarketingBoatLineItem'
-                case @el
-                when 'SalesStatus' then (@boat = nil; return) if c == 'Delete'
+              # when 'VehicleRemarketingBoatLineItem'
+                # case @el
                 # when 'Co-OpIndicator' then
                 # when 'CentralIndicator' then
-                end
+                # end
+              when 'SalesStatus'
+                @boat.offer_status = 'under_offer' if c != 'Active'
               # when 'BoatClassGroup'
               when 'VehicleRemarketingEngine'
                 case @el

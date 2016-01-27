@@ -88,6 +88,7 @@ ActiveAdmin.register User do
         ff.input :vat_number
         ff.input :logo
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
+        ff.input :xero_contact_id
       end
     end
     f.actions

@@ -12,6 +12,8 @@ set :branch, ENV['BRANCH'] || 'master'
 
 set :passenger_roles, %w(app app1 app2)
 
+set :linked_files, fetch(:linked_files) + %w(config/xero/privatekey.pem)
+
 set :delayed_job_cmd, "/usr/bin/env RAILS_ENV=production /home/rightboat/.rvm/wrappers/default/ruby #{current_path}/bin/delayed_job %{cmd}"
 set :solr_data_path, '/var/solr/data'
 set :solr_pid, '/var/solr/solr-8983.pid'

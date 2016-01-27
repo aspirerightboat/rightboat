@@ -5,7 +5,7 @@ class CreateInvoicesJob
     init_logger
     inv_logger.info('Fetch leads')
     all_leads = fetch_leads(only_broker_id)
-    return if all_leads.none?
+    return true if all_leads.none?
 
     leads_by_broker = all_leads.group_by { |lead| lead.boat.user }
     brokers = leads_by_broker.keys
@@ -61,7 +61,7 @@ class CreateInvoicesJob
         xi.sub_total = i.subtotal
         xi.total_tax = i.vat
         xi.total = i.total
-        xi.invoice_number = i.id
+        xi.reference = i.id
         xi.currency_code = Currency.default.name
         xi.build_contact(contact_id: broker_info.xero_contact_id, name: broker.name, contact_status: 'ACTIVE')
         xero_invoices << xi

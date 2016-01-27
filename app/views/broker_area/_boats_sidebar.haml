@@ -1,3 +1,18 @@
 %li{class: ('active' if action_name == 'boats_overview')}= link_to 'Boats Overview', boats_overview_broker_area_path
 %li{class: ('active' if action_name == 'my_boats')}= link_to 'My Boats', my_boats_broker_area_path
 %li{class: ('active' if action_name == 'boats_manager')}= link_to 'Boat Manager Tool', boats_manager_broker_area_path
+
+- if action_name == 'my_boats'
+  %h5 Offices
+  .boat-office-search
+    = form_tag my_boats_broker_area_path, method: :get do
+      = select_tag :office_id, options_from_collection_for_select(@offices, :id, :name, params[:office_id]), prompt: 'All', class: 'select-full select-general'
+
+  :javascript
+    $(function () {
+      $(document).ready(function () {
+        $('.boat-office-search select').change(function () {
+          $(this).parent().submit()
+        });
+      });
+    })

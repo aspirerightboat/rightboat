@@ -24,5 +24,6 @@
   %td
     %button.icon-btn.edt-office-btn(type="button")
       %i.glyphicon.glyphicon-pencil
-    %button.icon-btn.del-office-btn(type="button")
-      %i.glyphicon.glyphicon-remove
+    - if defined?(office) && office.boats.count == 0
+      %button.icon-btn.del-office-btn(type="button")
+        %i.glyphicon.glyphicon-remove

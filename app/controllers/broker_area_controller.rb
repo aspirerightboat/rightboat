@@ -56,6 +56,8 @@ class BrokerAreaController < ApplicationController
 
   def my_boats
     @boats = current_user.boats.not_deleted.boat_view_includes.includes(:country).page(params[:page]).per(15)
+    @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
+    @offices = current_user.offices.order(:name)
   end
 
   def boats_manager

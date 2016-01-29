@@ -12,6 +12,7 @@ class CreateInvoicesJob
     inv_logger.info("Found #{all_leads.size} leads for #{brokers.size} brokers")
 
     ensure_contacts(brokers)
+    contact_by_broker = fetch_contacts_map_for_brokers(brokers)
 
     Invoice.transaction do
       xero_invoices = []
@@ -63,7 +64,7 @@ class CreateInvoicesJob
         xi.total = i.total
         xi.reference = i.id
         xi.currency_code = Currency.default.name
-        xi.build_contact(contact_id: broker_info.xero_contact_id, name: broker.name, contact_status: 'ACTIVE')
+        xi.build_contact(contact_id: broker_info.xero_contact_id, name: contact_by_broker[broker].name, contact_status: 'ACTIVE')
         xero_invoices << xi
         i
       end
@@ -118,6 +119,7 @@ class CreateInvoicesJob
         contact.email_address = broker.email
         contact.contact_status = 'ACTIVE'
         contact.tax_number = broker_info.vat_number
+        contact.is_customer = true
         if (address = broker.address)
           contact.add_address(type: 'STREET',
                               line1: address.line1,
@@ -146,5 +148,14 @@ class CreateInvoicesJob
       end
     end
     inv_logger.info('All brokers are linked')
+  end
+
+  def fetch_contacts_map_for_brokers(brokers)
+    inv_logger.info('Fetch contacts for brokers')
+    contacts = $xero.Contact.all(where: brokers.map { |b| %(ContactID.ToString()=="#{b.broker_info.xero_contact_id}") }.join(' OR '))
+    contacts.each_with_object({}) do |c, h|
+      b = brokers.find { |b| b.broker_info.xero_contact_id == c.contact_id }
+      h[b] = c
+    end
   end
 end

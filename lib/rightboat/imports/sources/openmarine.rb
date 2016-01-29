@@ -222,7 +222,7 @@ module Rightboat
           case
           when str =~ /true|1|yes/i then true
           when str =~ /false|0|no/i then false
-          else log "Unexpected poa: #{str}"; nil
+          else log_warning "Unexpected poa: #{str}"; nil
           end
         end
 
@@ -231,7 +231,7 @@ module Rightboat
           case
           when str =~ /true|inc vat|1/i then 'Inc VAT'
           when str =~ /false|ex vat|0/i then 'Ex VAT'
-          else log "Unexpected vat_rate: #{str}"; nil
+          else log_warning "Unexpected vat_rate: #{str}"; nil
           end
         end
 
@@ -240,7 +240,7 @@ module Rightboat
           case
           when str =~ /new|N/i then 'new'
           when str =~ /used|U/i then 'used'
-          else log "Unexpected new_or_used: #{str}"; nil
+          else log_warning "Unexpected new_or_used: #{str}"; nil
           end
         end
       end

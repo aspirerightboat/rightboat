@@ -46,7 +46,10 @@ module DBBackedClockwork
   end
 
   every 1.day, 'download eyb xml', at: '22:00' do
-    `/bin/bash eyb.sh`
+    res = `/bin/bash eyb.sh`
+    if res =~ /Error/
+      ImportMailer.download_feed_error('EYB').deliver_now
+    end
   end
 
   # get the manager object

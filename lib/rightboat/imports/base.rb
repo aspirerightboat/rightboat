@@ -101,7 +101,7 @@ module Rightboat
       end
 
       def safe_threads_count
-        threads_count = ENV['SAVE_ONE_BOAT'] ? 1 : @import.threads.to_i
+        threads_count = ENV['ONE_IMPORT_THREAD'] || ENV['SAVE_ONE_BOAT'] ? 1 : @import.threads.to_i
         available_db_conn_count = ActiveRecord::Base.connection_pool.size - ActiveRecord::Base.connection_pool.connections.size
         raise 'No free DB connections left' if available_db_conn_count <= 0
 

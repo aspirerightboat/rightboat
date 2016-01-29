@@ -3,7 +3,7 @@ module Rightboat
     module Sources
       class Eyb < Base
         def data_mapping
-          @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
+          @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h}.merge(
               'id' => :source_id,
               'boat_price' => :price,
               'currency_code' => :currency,
@@ -324,33 +324,38 @@ module Rightboat
         end
 
         def self.validate_param_option
-          { broker_id: [:presence, /\A\d+\z/]}
+          {broker_id: [:presence, /\A\d+\z/]}
         end
 
         def enqueue_jobs
-          # doc = get('http://www.eyb.fr/exports/RGB/out/auto/RGB_Out.xml')
-          doc = Nokogiri::XML(File.read("#{Rails.root}/import_data/eyb.xml"))
+          feed_file = "#{Rails.root}/import_data/eyb.xml"
+          if @import.last_ran_at && @import.last_ran_at > File.mtime(feed_file) && !ENV['IGNORE_FEED_MTIME']
+            log_warning 'Feed file not updated since last run. Nothing to update'
+            @exit_worker = true
+            return
+          end
 
-          doc.search("An_Broker[text()='#{@import.param['broker_id']}']").each do |broker|
-            job = { ad: broker.parent }
-            enqueue_job(job)
+          doc = Nokogiri::XML(File.read(feed_file))
+
+          doc.css("An_Broker[text()='#{@import.param['broker_id']}']").each do |broker|
+            enqueue_job(ad: broker.parent)
           end
         end
 
         def process_job(job)
           doc = job[:ad]
-          comments_en = nil
           boat = SourceBoat.new
 
-          doc.children.each do |node|
-            key = node.name.gsub('An_', '').downcase
-            next if key =~ /^deal/i || key == 'broker'
-            val = node.children.text
-            next if val.blank?
+          doc.element_children.each do |node|
+            next if node.name.start_with?('Deal_') || node.name == 'An_Broker'
 
-            if key == 'url_photo'
-              boat.images = node.children.map(&:text).reject(&:blank?)
+            if node.name == 'URL_Photo'
+              boat.images = node.element_children.map(&:text)
             else
+              key = node.name.sub('An_', '').downcase
+              val = node.text
+              next if val.blank?
+
               if (attr = data_mapping[key])
                 next if attr == ''
                 if attr.is_a?(Proc)
@@ -360,16 +365,12 @@ module Rightboat
                 end
               else
                 if key == 'comments_en'
-                  comments_en = val
+                  boat.description = val # Replace foreign descriptions with English one
                 elsif val.length < 256 # Ignore other long values
                   boat.set_missing_attr(key, val)
                 end
               end
             end
-          end
-
-          if comments_en.present?
-            boat.description = comments_en # Replace foreign descriptions with English one
           end
 
           boat

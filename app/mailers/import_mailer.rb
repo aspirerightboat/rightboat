@@ -6,4 +6,9 @@ class ImportMailer < ApplicationMailer
     @import = @import_trail.import
     mail(subject: "Errors while importing #{@import.import_type} ##{@import.id}")
   end
+
+  def download_feed_error(feed_name)
+    @feed_name = feed_name
+    mail(subject: "Errors while downloading feed #{feed_name}")
+  end
 end

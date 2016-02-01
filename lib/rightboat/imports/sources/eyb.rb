@@ -329,7 +329,7 @@ module Rightboat
 
         def enqueue_jobs
           feed_file = "#{Rails.root}/import_data/eyb.xml"
-          if @import.last_ran_at && @import.last_ran_at > File.mtime(feed_file) && !ENV['IGNORE_FEED_MTIME']
+          if @prev_import_ran_at && @prev_import_ran_at > File.mtime(feed_file) && !ENV['IGNORE_FEED_MTIME']
             log_warning 'Feed file not updated since last run. Nothing to update'
             @exit_worker = true
             return

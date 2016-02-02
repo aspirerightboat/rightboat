@@ -7,6 +7,7 @@ class BoatSpecification < ActiveRecord::Base
   scope :front, -> { joins(:specification).where('specifications.visible = ?', true) }
   scope :not_blank, -> { where.not(value: [nil, '']) }
   scope :not_url, -> { where.not('value LIKE ?', '%http%') }
+  scope :by_name, ->(name) { joins(:specification).where('specifications.name = ?', name) }
 
   def self.visible_ordered_specs
     joins(:specification).where('specifications.visible = ?', true).order('specifications.position')

@@ -39,17 +39,25 @@ module BoatsHelper
 
   def boat_specs(boat, full_spec = false)
     ret = []
-    ret << ['Seller', boat.user.name] if full_spec
+    #ret << ['Seller', boat.user.name] if full_spec
     ret << ['Price', boat_price_with_converted(boat), 'price']
-    ret << ['Year Built', boat.year_built]
-    ret << ['Manufacturer', boat.manufacturer]
+    ret << ['Year', boat.year_built]
+    ret << ['Make', boat.manufacturer]
     ret << ['Model', boat.model]
     ret << ['Boat Type', boat.boat_type]
     ret << ['LOA', boat_length(boat), 'loa']
+    ret << ['Beam(m)', boat.boat_specifications.by_name('beam_m').first.try(:value)]
+    ret << ['Draft(m)', boat.boat_specifications.by_name('draft_m').first.try(:value)]
+    ret << ['Engine Make', boat.boat_specifications.by_name('engine_manufacturer').first.try(:value)]
+    ret << ['HP', boat.boat_specifications.by_name('engine_horse_power').first.try(:value)]
+    ret << ['Engine Count', boat.boat_specifications.by_name('engine_count').first.try(:value)]
+    ret << ['Fuel', boat.boat_specifications.by_name('fuel_type').first.try(:value)]
+    ret << ['Berths', boat.boat_specifications.by_name('berths').first.try(:value)]
+    ret << ['Cabin', boat.boat_specifications.by_name('cabins').first.try(:value)]
     ret << ['Location', boat.country.to_s]
     ret << ['Tax Status', boat.tax_status]
-    ret << ['Engine Make', boat.engine_manufacturer.try(:name)]
-    ret << ['Fuel', boat.fuel_type]
+    ret << ['RB Ref', boat.ref_no]
+    ret << ['Hull Material', boat.boat_specifications.by_name('hull_material').first.try(:value)]
 
     if full_spec
       ret.concat boat.boat_specifications.visible_ordered_specs
@@ -57,8 +65,15 @@ module BoatsHelper
       ret.concat Specification.visible_ordered_boat_specs(boat)
     end
 
-    ret << ['RB Ref', boat.ref_no]
-    ret.map { |k, v| [k, v.presence || 'N/A'] }
+    keys = []
+    uniq_ret = []
+    ret.each do |k, v|
+      unless keys.include?(k)
+        keys << k
+        uniq_ret << [k, v.presence || 'N/A']
+      end
+    end
+    uniq_ret
   end
 
   def implicit_boats_count(count)

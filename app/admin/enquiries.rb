@@ -7,6 +7,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   config.sort_order = 'created_at_desc_and_first_name_asc_and_surname_asc'
 
+  filter :first_name_or_surname_or_email_cont, as: :string, label: 'Customer'
   filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
   filter :created_at, label: 'Date of Lead'
   filter :status, as: :select, collection: -> { Enquiry::STATUSES }

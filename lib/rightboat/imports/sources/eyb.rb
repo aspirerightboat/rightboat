@@ -320,6 +320,7 @@ module Rightboat
               'main_sheet_traveller_characs' => :mainsheet_traveller, # HARKEN
               'mainsail_characs' => :mainsail, # HARKEN
               'battened_characs' => :battened, # Performance Mylar - Taffetas (2 ris automatiques)
+              'deal_pending' => :deal_pending, # 0
           )
         end
 

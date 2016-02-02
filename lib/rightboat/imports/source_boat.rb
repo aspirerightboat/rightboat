@@ -66,7 +66,7 @@ module Rightboat
         :antifouling, :antenna_year, :antenna, :alternator, :alternator_year, :air_conditioning_year,
         :fuel_water_tanks, :head_year, :fuel_water_tanks_number, :fresh_water_tanks_number, :heat_year,
         :fridge_capacity, :rope_cutter, :dinghy, :dinghy_year, :dinghy_type, :dinghy_engine, :dinghy_engine_power, :regata, :number_people,
-        :working
+        :working, :deal_pending,
       ]
 
       RELATION_ATTRIBUTES = [

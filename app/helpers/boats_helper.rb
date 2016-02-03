@@ -38,42 +38,41 @@ module BoatsHelper
   end
 
   def boat_specs(boat, full_spec = false)
+    spec_names = %w(beam_m draft_m engine_manufacturer engine_horse_power engine_count fuel_type berths cabins)
+    spec_value_by_name = boat.boat_specifications.name_values_hash(spec_names)
+
     ret = []
     #ret << ['Seller', boat.user.name] if full_spec
     ret << ['Price', boat_price_with_converted(boat), 'price']
     ret << ['Year', boat.year_built]
-    ret << ['Make', boat.manufacturer]
-    ret << ['Model', boat.model]
+    ret << ['Make', boat.manufacturer.name]
+    ret << ['Model', boat.model.name]
     ret << ['Boat Type', boat.boat_type]
     ret << ['LOA', boat_length(boat), 'loa']
-    ret << ['Beam(m)', boat.boat_specifications.by_name('beam_m').first.try(:value)]
-    ret << ['Draft(m)', boat.boat_specifications.by_name('draft_m').first.try(:value)]
-    ret << ['Engine Make', boat.boat_specifications.by_name('engine_manufacturer').first.try(:value)]
-    ret << ['HP', boat.boat_specifications.by_name('engine_horse_power').first.try(:value)]
-    ret << ['Engine Count', boat.boat_specifications.by_name('engine_count').first.try(:value)]
-    ret << ['Fuel', boat.boat_specifications.by_name('fuel_type').first.try(:value)]
-    ret << ['Berths', boat.boat_specifications.by_name('berths').first.try(:value)]
-    ret << ['Cabin', boat.boat_specifications.by_name('cabins').first.try(:value)]
+    ret << ['Beam(m)', spec_value_by_name['beam_m']]
+    ret << ['Draft(m)', spec_value_by_name['draft_m']]
+    ret << ['Engine Make', spec_value_by_name['engine_manufacturer']]
+    ret << ['HP', spec_value_by_name['engine_horse_power']]
+    ret << ['Engine Count', spec_value_by_name['engine_count']]
+    ret << ['Fuel', spec_value_by_name['fuel_type']]
+    ret << ['Berths', spec_value_by_name['berths']]
+    ret << ['Cabin', spec_value_by_name['cabins']]
     ret << ['Location', boat.country.to_s]
     ret << ['Tax Status', boat.tax_status]
     ret << ['RB Ref', boat.ref_no]
-    ret << ['Hull Material', boat.boat_specifications.by_name('hull_material').first.try(:value)]
+    ret << ['Hull Material', spec_value_by_name['hull_material']]
 
-    if full_spec
-      ret.concat boat.boat_specifications.visible_ordered_specs
-    else
-      ret.concat Specification.visible_ordered_boat_specs(boat)
+    rest = if full_spec
+             boat.boat_specifications.visible_ordered_specs
+           else
+             Specification.visible_ordered_boat_specs(boat)
+           end
+
+    rest.each do |pair|
+      ret << pair if ret.none? { |k, v| k == pair[0] }
     end
 
-    keys = []
-    uniq_ret = []
-    ret.each do |k, v|
-      unless keys.include?(k)
-        keys << k
-        uniq_ret << [k, v.presence || 'N/A']
-      end
-    end
-    uniq_ret
+    ret.each { |pair| pair[1] = 'N/A' if pair[1].blank? }
   end
 
   def implicit_boats_count(count)

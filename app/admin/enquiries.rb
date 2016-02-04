@@ -87,6 +87,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column('Date of Lead') { |record| record.created_at }
     column('User') { |record| record.user.try(&:name) }
     column('Member?') { |record| record.user ? 'Yes' : 'No' }
+    column('Broker') { |record| record.boat.user.name }
     column('Boat') { |record| record.boat.try(&:manufacturer_model) }
     column('Length(m)') { |record|
       l = record.boat.try(&:length_m)
@@ -110,6 +111,9 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:phone)
     column(:email)
     column(:message)
+    column(:status)
+    column(:lead_price) { |record| number_to_currency(record.lead_price, unit: '£') }
+    column(:eur_rate)
     column(:remote_ip)
     column(:browser)
   end

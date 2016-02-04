@@ -11,8 +11,7 @@ class CreateInvoicesJob
     brokers = leads_by_broker.keys
     inv_logger.info("Found #{all_leads.size} leads for #{brokers.size} brokers")
 
-    ensure_contacts(brokers)
-    contact_by_broker = fetch_contacts_map_for_brokers(brokers)
+    contact_by_broker = ensure_contacts(brokers)
 
     Invoice.transaction do
       xero_invoices = []
@@ -103,59 +102,75 @@ class CreateInvoicesJob
   end
 
   def ensure_contacts(brokers)
-    inv_logger.info('Ensure brokers are linked to xero contacts')
-    unlinked_brokers = brokers.select { |b| !b.broker_info.xero_contact_id }
+    inv_logger.info('Fetch contacts for brokers')
+    fetched_contacts = []
+    synced_brokers = brokers.select { |b| b.broker_info.xero_contact_id.present? }
+    synced_brokers.each_slice(10) do |some_brokers| # slice in groups by 10 because Xero throws "Xeroizer::ObjectNotFound" if there are too many
+      search_str = some_brokers.map { |b| %(ContactID.ToString()=="#{b.broker_info.xero_contact_id}") }.join(' OR ')
+      fetched_contacts.concat $xero.Contact.all(where: search_str)
+    end
+    inv_logger.info("Fetched #{fetched_contacts.size} contacts")
 
+    if (invalid_contact_id_count = synced_brokers.size - fetched_contacts.size) > 0
+      inv_logger.info("#{invalid_contact_id_count} brokers have xero_contact_id saved but corresponding contacts not found on xero")
+    end
+
+    contact_by_broker = {}
+    brokers.each do |broker|
+      contact_id = broker.broker_info.xero_contact_id
+      if contact_id && (contact = fetched_contacts.find { |c| c.contact_id == contact_id })
+        contact_by_broker[broker] = contact
+      end
+    end
+
+    unlinked_brokers = brokers - contact_by_broker.keys
     if unlinked_brokers.any?
       inv_logger.info("#{unlinked_brokers.size} brokers are not linked. Create corresponding contacts")
 
-      contacts = unlinked_brokers.map do |broker|
-        broker_info = broker.broker_info
-        contact = $xero.Contact.build
-        contact.name = broker.name
-        contact.contact_number = broker.id
-        contact.first_name = broker.first_name
-        contact.last_name = broker.last_name
-        contact.email_address = broker.email
-        contact.contact_status = 'ACTIVE'
-        contact.tax_number = broker_info.vat_number
-        contact.is_customer = true
-        if (address = broker.address)
-          contact.add_address(type: 'STREET',
-                              line1: address.line1,
-                              line2: address.line2,
-                              line3: address.line3,
-                              city: address.town_city,
-                              region: address.county,
-                              postal_code: address.zip,
-                              country: address.country.try(:iso))
-        end
-        country_code = address.country.try(:country_code)
-        contact.add_phone(type: 'DEFAULT', area_code: country_code, number: broker.phone) if broker.phone.present?
-        contact.add_phone(type: 'MOBILE', area_code: country_code, number: broker.mobile) if broker.mobile.present?
-        contact
-      end
+      new_contacts = unlinked_brokers.map { |broker| build_contact_for_broker(broker) }
 
-      if !$xero.Contact.save_records(contacts)
-        contacts.each do |contact|
+      if !$xero.Contact.save_records(new_contacts)
+        new_contacts.each do |contact|
           raise "Contact Not Saved: #{contact.errors}" if contact.errors.any?
         end
       end
 
-      contacts.each do |contact|
-        broker = brokers.find { |b| b.id.to_s == contact.contact_number.to_s }
+      new_contacts.each do |contact|
+        broker = unlinked_brokers.find { |b| b.id.to_s == contact.contact_number.to_s }
         broker.broker_info.update_attribute(:xero_contact_id, contact.contact_id)
+        contact_by_broker[broker] = contact
       end
     end
+
     inv_logger.info('All brokers are linked')
+
+    contact_by_broker
   end
 
-  def fetch_contacts_map_for_brokers(brokers)
-    inv_logger.info('Fetch contacts for brokers')
-    contacts = $xero.Contact.all(where: brokers.map { |b| %(ContactID.ToString()=="#{b.broker_info.xero_contact_id}") }.join(' OR '))
-    contacts.each_with_object({}) do |c, h|
-      b = brokers.find { |b| b.broker_info.xero_contact_id == c.contact_id }
-      h[b] = c
+  def build_contact_for_broker(broker)
+    broker_info = broker.broker_info
+    contact = $xero.Contact.build
+    contact.name = broker.name
+    contact.contact_number = broker.id
+    contact.first_name = broker.first_name
+    contact.last_name = broker.last_name
+    contact.email_address = broker.email
+    contact.contact_status = 'ACTIVE'
+    contact.tax_number = broker_info.vat_number
+    contact.is_customer = true
+    if (address = broker.address)
+      contact.add_address(type: 'STREET',
+                          line1: address.line1,
+                          line2: address.line2,
+                          line3: address.line3,
+                          city: address.town_city,
+                          region: address.county,
+                          postal_code: address.zip,
+                          country: address.country.try(:iso))
     end
+    country_code = address.country.try(:country_code)
+    contact.add_phone(type: 'DEFAULT', area_code: country_code, number: broker.phone) if broker.phone.present?
+    contact.add_phone(type: 'MOBILE', area_code: country_code, number: broker.mobile) if broker.mobile.present?
+    contact
   end
 end

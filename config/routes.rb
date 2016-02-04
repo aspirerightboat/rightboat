@@ -133,10 +133,12 @@ Rails.application.routes.draw do
     get :charges
     get :messages
     get :boats_overview
-    get :my_boats
     get :boats_manager
     get :my_leads
     get :tc
+  end
+  namespace :broker_area, path: 'broker-area' do
+    resources :my_boats, path: 'my-boats', only: [:index, :new]
   end
   resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:show, :create]
 

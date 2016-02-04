@@ -13,7 +13,11 @@ class BoatSpecification < ActiveRecord::Base
         .pluck('specifications.display_name, boat_specifications.value')
   end
 
-  def self.name_values_hash(names)
+  def self.specs_hash
+    joins(:specification).pluck('specifications.name, boat_specifications.value').to_h
+  end
+
+  def self.custom_specs_hash(names)
     joins(:specification).where(specifications: {name: names}).pluck('specifications.name, boat_specifications.value').to_h
   end
 

@@ -39,7 +39,7 @@ module BoatsHelper
 
   def boat_specs(boat, full_spec = false)
     spec_names = %w(beam_m draft_m engine_manufacturer engine_horse_power engine_count fuel_type berths cabins)
-    spec_value_by_name = boat.boat_specifications.name_values_hash(spec_names)
+    spec_value_by_name = boat.boat_specifications.custom_specs_hash(spec_names)
 
     ret = []
     #ret << ['Seller', boat.user.name] if full_spec

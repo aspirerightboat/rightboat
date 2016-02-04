@@ -40,6 +40,7 @@
 #= require validetta
 #= require jquery.remotipart
 #= require cocoon
+#= require dropzone
 #= require_self
 #= require_tree .
 

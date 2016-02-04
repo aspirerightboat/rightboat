@@ -6,6 +6,8 @@ class Boat < ActiveRecord::Base
 
   SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
   OFFER_STATUSES = %w(available under_offer sold)
+  VOLUME_UNITS = %w(gallons litres)
+  WEIGHT_UNITS = %w(kgs lbs tonnes)
 
   attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy
 
@@ -61,7 +63,7 @@ class Boat < ActiveRecord::Base
 
   has_many :favourites, dependent: :delete_all
   has_many :enquiries
-  has_many :boat_specifications, dependent: :destroy
+  has_many :boat_specifications
   has_many :boat_images, -> { not_deleted }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
@@ -80,12 +82,11 @@ class Boat < ActiveRecord::Base
   belongs_to :currency
   belongs_to :country
 
-  # solr_update_association :country, :manufacturer, :model, :fuel_type, :boat_type, fields: []
   validates_presence_of :manufacturer, :model
-  validate :model_inclusion_of_manufacturer
-  validate :require_price
-  validate :active_of
-  validate :violation
+  validate :valid_manufacturer_model
+  validate :valid_price
+  validate :valid_featured
+  validate :valid_terms
 
   accepts_nested_attributes_for :boat_specifications, reject_if: 'value.blank?'
   accepts_nested_attributes_for :boat_images, reject_if: :all_blank
@@ -189,13 +190,13 @@ class Boat < ActiveRecord::Base
     ]
   end
 
-  def model_inclusion_of_manufacturer
+  def valid_manufacturer_model
     if (model_id_changed? || manufacturer_id_changed?) && model && model.manufacturer != manufacturer
       errors.add :model_id, "[#{model}] should belongs to manufacturer[#{manufacturer}]"
     end
   end
 
-  def require_price
+  def valid_price
     unless valid_price?
       self.errors.add :price, 'can\'t be blank'
     end
@@ -203,7 +204,7 @@ class Boat < ActiveRecord::Base
 
   # featured and reduced attrs are used without solr in some queries
   # so it should be set as true only for live boats
-  def active_of
+  def valid_featured
     return if deleted?
 
     [:featured, :recently_reduced].each do |attr_name|
@@ -217,7 +218,7 @@ class Boat < ActiveRecord::Base
     activities.destroy_all
   end
 
-  def violation
+  def valid_terms
     if accept_toc && accept_toc != '1'
       errors.add :base, 'You should accept Rightboat terms and conditions.'
     end

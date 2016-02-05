@@ -21,7 +21,11 @@ module SpellFixable
     end
 
     base.send :collection_action, :all, method: :get, format: :json do
-      collection = resource_class.select(:id, :name).order(:name).map{ |r|
+      obj = resource_class
+      if resource_class.name == 'Model'
+        obj = obj.where(manufacturer_id: obj.find(params[:id]).manufacturer_id)
+      end
+      collection = obj.select(:id, :name).order(:name).map{ |r|
         { id: r.id, name: r.name }
       }
 

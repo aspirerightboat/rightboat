@@ -1,7 +1,7 @@
-- @page_title = 'Boats for sale by type on Rightboat.com'
+- @page_title = 'Boats for sale by category on Rightboat.com'
 
 = render layout: 'shared/boats_for_sale' do
-  %h1 Boat Types
+  %h1 Boat Categories
   %ul
     - @boat_types.each do |bt|
       %li #{link_to bt.name, boat_type_path(bt.name)}

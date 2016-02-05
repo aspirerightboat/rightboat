@@ -5,44 +5,50 @@ $ ->
   if ($buttons = $('.merge-record')).length
     path = window.location.pathname.replace(/\/$/, '')
     collection = null
+    fetched = false
 
-    $buttons.prop('disabled', true)
+    togglePopup = ($button) ->
+      content = ''
+      $.each collection, ->
+        unless @id == $button.data('id')
+          link = '<a data-method="post" href="' + $button.data('url') + '?to=' + @id + '">' + @name + '</a>'
+          content += link
 
-    $.ajax
-      url: path + '/all'
-      method: 'Get'
-      dataType: 'JSON'
-    .success (response)->
-      scope = path.substring(path.lastIndexOf('/') + 1);
-      collection = response[scope]
-      $buttons.prop('disabled', false)
+      $button.popover('destroy')
+      $button.popover
+        content: content
+        html: true
+        placement: 'bottom'
+        trigger: 'manual'
+        title: "Select target"
 
-      $buttons.each ->
-        $this = $(this)
-        actionUrl = $this.data('url')
+      popoverId = $button.attr('aria-describedby')
+      if popoverId && popoverId.length
+        if $('#' + popoverId).is(':visible')
+          return $button.popover('hide')
+      $buttons.popover('hide')
+      $button.popover('show')
 
-        content = ''
-        $.each collection, ->
-          unless @id == $this.data('id')
-            link = '<a data-method="post" href="' + actionUrl + '?to=' + @id + '">' + @name + '</a>'
-            content += link
+    $buttons.click (e)->
+      e.preventDefault()
+      $this = $(this)
+      if $this.next('.popover:visible').length > 0
+        $this.popover('hide')
+        return false
 
-        $this.popover('destroy')
-        $this.popover
-          content: content
-          html: true
-          placement: 'bottom'
-          trigger: 'manual'
-          title: "Select target"
-
-      $buttons.click (e)->
-        e.preventDefault()
-        popoverId = $(this).attr('aria-describedby')
-        if popoverId && popoverId.length
-          if $('#' + popoverId).is(':visible')
-            return $(this).popover('hide')
-        $buttons.popover('hide')
-        $(this).popover('show')
-
-    .error ->
-      alert("Sorry, expexpected error occured. You can't use merge feature.")
+      if !fetched || /admin\/models/.test(path)
+        $.ajax
+          url: path + '/all'
+          method: 'Get'
+          data: { id: $this.data('id') }
+          dataType: 'JSON'
+        .success (response)->
+          fetched = true
+          scope = path.substring(path.lastIndexOf('/') + 1);
+          collection = response[scope]
+          togglePopup($this)
+        .error ->
+          alert("Sorry, unexpected error occured. You can't use merge feature.")
+          return false
+      else
+        togglePopup($this)

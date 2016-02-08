@@ -15,6 +15,10 @@ class BrokerInfo < ActiveRecord::Base
     end
   end
 
+  def unique_hash
+    Digest::SHA1::hexdigest("#{id}ribbs!")
+  end
+
   private
 
   def change_lead_price

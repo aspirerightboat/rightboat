@@ -38,7 +38,7 @@ module BoatsHelper
   end
 
   def boat_specs(boat, full_spec = false)
-    spec_names = %w(beam_m draft_m engine_manufacturer engine_horse_power engine_count fuel_type berths cabins)
+    spec_names = %w(beam_m draft_m engine_horse_power engine_count berths cabins hull_material)
     spec_value_by_name = boat.boat_specifications.custom_specs_hash(spec_names)
 
     ret = []
@@ -51,10 +51,10 @@ module BoatsHelper
     ret << ['LOA', boat_length(boat), 'loa']
     ret << ['Beam(m)', spec_value_by_name['beam_m']]
     ret << ['Draft(m)', spec_value_by_name['draft_m']]
-    ret << ['Engine Make', spec_value_by_name['engine_manufacturer']]
+    ret << ['Engine Make', boat.engine_manufacturer.try(:name)]
     ret << ['HP', spec_value_by_name['engine_horse_power']]
     ret << ['Engine Count', spec_value_by_name['engine_count']]
-    ret << ['Fuel', spec_value_by_name['fuel_type']]
+    ret << ['Fuel', boat.fuel_type.try(:name)]
     ret << ['Berths', spec_value_by_name['berths']]
     ret << ['Cabin', spec_value_by_name['cabins']]
     ret << ['Location', boat.country.to_s]

@@ -44,6 +44,10 @@ module Rightboat
               'reg_details' => '',
               'Anchor' => :anchor,
               'where' => '',
+              'television' => :tv,
+              'shorepower' => :shore_power,
+              'sprayhood' => :spray_hood,
+              'tankage' => :engine_tankage,
           )
         end
 

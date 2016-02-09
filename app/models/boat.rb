@@ -143,7 +143,7 @@ class Boat < ActiveRecord::Base
   end
 
   def live?
-    !deleted? && manufacturer && model && valid_price?
+    !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
   end
 
   def geocoded?

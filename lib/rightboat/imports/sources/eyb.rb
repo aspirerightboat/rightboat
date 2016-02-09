@@ -70,7 +70,7 @@ module Rightboat
               'steering_wheel' => :wheel_steering, # 1
               'steeringwheel_cover' => :steering_wheel_cover, # 1
               'stay' => :stay, # 1
-              'sprayhood' => :sprayhood, # 0
+              'sprayhood' => :spray_hood, # 0
               'spinnaker_sock' => :spinnaker_sock, # 0
               'spinnaker_rigging' => :spinnaker_rigging, # 0
               'spinnaker_pole' => :spinnaker_pole, # 0
@@ -320,7 +320,7 @@ module Rightboat
               'main_sheet_traveller_characs' => :mainsheet_traveller, # HARKEN
               'mainsail_characs' => :mainsail, # HARKEN
               'battened_characs' => :battened, # Performance Mylar - Taffetas (2 ris automatiques)
-              'deal_pending' => :deal_pending, # 0
+              'deal_pending' => -> (boat, val) { boat.offer_status = 'under_offer' if val && val == '1'}, # 0
           )
         end
 

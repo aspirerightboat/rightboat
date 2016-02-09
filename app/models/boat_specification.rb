@@ -14,7 +14,7 @@ class BoatSpecification < ActiveRecord::Base
   end
 
   def self.specs_hash
-    joins(:specification).pluck('specifications.name, boat_specifications.value').to_h
+    joins(:specification).pluck('specifications.name, boat_specifications.value').to_h.with_indifferent_access
   end
 
   def self.custom_specs_hash(names)

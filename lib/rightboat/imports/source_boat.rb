@@ -20,19 +20,20 @@ module Rightboat
         :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig, :cockpit_type,
         :range, :lwl_m, :draft_m, :country_built, :displacement_net, :displacement_gross, :displacement_kgs,
         :engine_count, :engine_type, :engine_location, :engine_horse_power, :engine_hours, :engine, :engine_code, :engine_year,
-        :ballast, :electrical_circuit, :max_speed, :cruising_speed, :beam_m, :fresh_water_tanks, :holding_tanks,
+        :ballast, :ballast_weight, :electrical_circuit, :max_speed, :cruising_speed, :beam_m,
+        :fresh_water_tanks, :water_tanks_capacity, :holding_tanks, :holding_tanks_capacity,
         :heads, :berths, :single_berths, :double_berths, :twin_berths, :triple_berths, :cabins, :keel, :keel_type, :keel_code,
-        :fuel_tanks, :designer, :head_room, :builder, :length_on_deck, :propeller, :propeller_type, :propeller_code,
+        :fuel_tanks, :fuel_tanks_capacity, :designer, :head_room, :builder, :length_on_deck, :propeller, :propeller_type, :propeller_code,
         :dry_weight, :passengers, :bathrooms, :gps, :gps_year, :vhf, :vhf_year, :plotter, :plotter_year,
         :radar, :radar_year, :battery_charger, :generator, :generator_kw, :inverter, :bimini,
-        :television, :cd_player, :cd_year, :dvd_player, :dvd_year, :cylinders, :gearbox,
-        :known_defects, :last_serviced, :air_draft, :tv, :tv_year,
+        :cd_player, :cd_year, :dvd_player, :dvd_year, :cylinders, :gearbox,
+        :known_defects, :last_serviced, :air_draft, :tv, :tv_year, :cabin_headroom,
         :super_structure_colour, :super_structure_construction, :deck_colour, :deck_construction, :deck_material, :spray_hood,
-        :control_type, :oven, :microwave, :fridge, :freezer, :heating, :tankage, :gallons_per_hour,
+        :control_type, :oven, :microwave, :fridge, :freezer, :heating, :engine_tankage, :gallons_per_hour,
         :litres_per_hour, :starting_type, :cooling_system, :navigation_lights, :compass, :compass_year,
         :depth_instrument, :wind_instrument, :autopilot, :speed_instrument, :toilet, :shower, :bath, :life_raft, :life_raft_age,
         :epirb, :bilge_pump, :fire_extinguisher, :mob_system, :genoa, :genoa_furling, :genoa_cover, :tri_sail, :storm_jib,
-        :main_sail, :winches, :battery, :shorepower, :fenders, :anchor, :seating_capacity, :drive_transmission_description,
+        :main_sail, :winches, :battery, :shore_power, :fenders, :anchor, :seating_capacity, :drive_transmission_description,
         :dinette_sleeps, :crew_cabins, :crew_berths, :echosounder, :steering_system, :compartments, :desalinator,
         :jib, :jib_furling, :main_sail_furling, :main_sail_battened, :masts, :economy_speed, :trim_tabs, :shore_inverter,
         :speed_log, :wind_speed_dir, :steering_indicator, :dual_station_navigation, :magnetic_compass, :searchlight,
@@ -40,14 +41,14 @@ module Rightboat
         :windscreen_cover, :windscreen_wipers, :windlass, :windlass_year, :windlass_name, :windlass_code, :windlass_power, :wind_generator,
         :washing_machine, :vcr, :upholstery_replacement, :upholstery_replacement_year, :trailor, :trailor_year, :toerail_name, :toerail_code, :tiller,
         :teak_swimming_platform, :teak_side_decks, :teak_cockpit_table, :teak_cockpit, :swimming_platform, :swimming_ladder,
-        :surveyed, :sun_cover, :storm_jib, :stern_sunbathing, :steering_wheel, :steering_wheel_cover, :stay, :sprayhood,
+        :surveyed, :sun_cover, :stern_sunbathing, :steering_wheel, :steering_wheel_cover, :stay, :spray_hood,
         :spinnaker, :spinnaker_sock, :spinnaker_rigging, :spinnaker_pole, :solent, :solar_panels, :solar_panels_year, :shore_power_inlet,
         :seawater_pump, :saloon, :rod_holders, :rig_code, :repeater, :repeater_year, :windspeed, :windspeed_year, :winch_cover,
         :removable_cockpit_table, :radiotape_player_year, :radiotape_player, :radar_detector, :radar_detector_year, :radar_reflector,
         :power_24v, :power_220v, :power_12v, :power_110v, :power, :pilothouse_cover, :photos,
         :panelcontrol_cover, :outsidewindow_covers, :outboardengine_cover, :outboardengine_brackets, :othersails,
         :number_cockpit_cushions, :number_seawater_pump, :nb_spreader_levels, :navcenter_year, :navcenter,
-        :motor_tiller, :motor_steering_wheel, :motor_boat_name, :mooring_cover, :draft_min, :draft_max,
+        :motor_tiller, :motor_steering_wheel, :motor_boat_name, :mooring_cover, :draft_min, :draft_max, :drive_up,
         :material_code, :mast_pulpit, :marine_heads, :manual_bilge_pump, :mainsheet_traveller,
         :mainsail_furler, :mainsail_cover, :mainsail_cars, :mainsail, :log_year, :log,
         :leather_covered_steering_wheel, :lazyjacks, :lazybag, :launching_trailor, :launching_trailor_year, :inverter_year,
@@ -57,7 +58,7 @@ module Rightboat
         :flybridge_cover, :flaps, :fishing_depth_sounder, :fishing_depth_sounder_year, :engine_year_built, :engine_type_name,
         :electronicchart_year, :electronicchart, :electric_winch, :electricheads_number, :electricheads,
         :electric_bilge_pump, :dishwasher, :diesel_code, :depth_sounder, :depth_sounder_year,
-        :deck_name, :deck_code, :davits, :cutlery, :currency, :crockery, :cooker, :computer_year,
+        :deck_name, :deck_code, :davits, :cutlery, :crockery, :cooker, :computer_year,
         :computer, :compressor, :cockpit_cover, :cockpit_table_cover, :cockpit_table, :cockpit_speakers,
         :cockpit_shower, :cockpit_lightning, :cockpit_cushions, :chemical_heads, :chart_table,
         :cabriolet_dodger, :burner_stove, :bridge_clearance, :boiler,
@@ -66,7 +67,7 @@ module Rightboat
         :antifouling, :antenna_year, :antenna, :alternator, :alternator_year, :air_conditioning_year,
         :fuel_water_tanks, :head_year, :fuel_water_tanks_number, :fresh_water_tanks_number, :heat_year,
         :fridge_capacity, :rope_cutter, :dinghy, :dinghy_year, :dinghy_type, :dinghy_engine, :dinghy_engine_power, :regata, :number_people,
-        :working, :deal_pending,
+        :working, :free_board
       ]
 
       RELATION_ATTRIBUTES = [
@@ -131,10 +132,7 @@ module Rightboat
       def save
         cleanup_model
 
-        if !valid?
-          self.error_msg = "SAVE BOAT ERROR1: #{errors.full_messages.join(', ')}"
-          return false
-        end
+        return false if !valid?
 
         user_id = user.respond_to?(:id) ? user.id : user
         self.target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
@@ -157,46 +155,9 @@ module Rightboat
         end
         # target.revive(true) if target.deleted?
 
-        spec_proc = Proc.new do |spec_name, value|
-          spec_name_str = spec_name.to_s
-          value ||= instance_variable_get("@#{spec_name}") if spec_name.is_a?(Symbol) || spec_name.is_a?(String) && spec_name =~ /^[a-z][a-z0-9_]+$/
-          value = nil if value.blank? || value.to_s =~ /^(?:[0.]+|false)$/i
-          if value && value.to_s =~ /^(?:true|1|yes)$/i
-            if value == '1' && (spec_name_str.end_with?('_count') || spec_name_str.in?(%w(cabins crew_cabins heads berths single_berths double_berths twin_berths triple_berths)))
-              # leave numerical value
-            else
-              value = 'Yes'
-            end
-          end
+        handle_specs
 
-          spec = nil
-          import_base.jobs_mutex.synchronize do
-            @@existing_specs ||= Specification.select(:id, :name).to_a
-            spec = @@existing_specs.find { |s| s.name == spec_name_str }
-            if !spec
-              spec = Specification.create(name: spec_name_str, display_name: spec_name_str.titleize)
-              @@existing_specs << spec
-            end
-          end
-
-          if target.new_record?
-            target.boat_specifications.build(specification_id: spec.id, value: value) if value
-          else
-            @existing_boat_specs ||= target.boat_specifications.to_a
-            boat_spec = @existing_boat_specs.find { |bs| bs.specification_id == spec.id }
-            boat_spec ||= target.boat_specifications.build(specification_id: spec.id)
-            if !value
-              boat_spec.destroy if boat_spec.persisted?
-            elsif boat_spec.value != value
-              boat_spec.value = value
-              boat_spec.save!
-            end
-          end
-        end
-
-        SPEC_ATTRS.each { |spec_name| spec_proc.call(spec_name) }
         if @missing_spec_attrs.present?
-          @missing_spec_attrs.each { |attr_name, v| spec_proc.call(attr_name, v) }
           import_base.log_warning 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
         end
 
@@ -266,11 +227,46 @@ module Rightboat
         end
 
         self.new_record = target.new_record?
-        success = target.save
-        if !success
-          self.error_msg = "SAVE BOAT ERROR2: #{target.errors.full_messages.join(', ')}"
+
+        target.save
+      end
+
+      def handle_specs
+        new_specs_hash = SPEC_ATTRS.each_with_object({}.with_indifferent_access) do |spec_name, h|
+          spec_name_str = spec_name.to_s
+          value = send(spec_name).presence
+          value = nil if value.to_s =~ /^(?:[0.]+|false|no)$/i
+          if value && value.to_s =~ /^(?:true|1|yes)$/i
+            if value == '1' && (spec_name_str.end_with?('_count') || spec_name_str.in?(%w(cabins crew_cabins heads berths single_berths double_berths twin_berths triple_berths)))
+              # leave numerical value
+            else
+              value = 'Yes'
+            end
+          end
+          h[spec_name_str] = value if value
         end
-        success
+
+        # ensure spec records exists
+        import_base.jobs_mutex.synchronize do
+          @@spec_id_by_name ||= Specification.pluck(:name, :id).to_h
+          new_specs_hash.each_key do |name|
+            @@spec_id_by_name[name] ||= Specification.create(name: name, display_name: name.titleize).id
+          end
+        end
+
+        # crud boat specs
+        if target.new_record?
+          new_specs_hash.each { |name, value| target.boat_specifications.build(specification_id: @@spec_id_by_name[name], value: value) }
+        else
+          existing_specs = target.boat_specifications.specs_hash
+
+          create_specs = new_specs_hash.except(*existing_specs.keys)
+          create_specs.each { |name, value| target.boat_specifications.create(specification_id: @@spec_id_by_name[name], value: value) }
+          delete_spec_names = existing_specs.keys - new_specs_hash.keys
+          target.boat_specifications.where(specification_id: delete_spec_names.map { |name| @@spec_id_by_name[name] }).delete_all if delete_spec_names.any?
+          update_specs = new_specs_hash.except(*create_specs.keys)
+          update_specs.each { |name, value| target.boat_specifications.where(specification_id: @@spec_id_by_name[name]).update_all(value: value) if existing_specs[name] != value }
+        end
       end
 
       def set_missing_attr(attr, value)

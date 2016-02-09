@@ -52,6 +52,10 @@ module DBBackedClockwork
     end
   end
 
+  every 1.day, 'export openmarine boats', at: '8:00' do
+    `bundle exec rake export:openmarine`
+  end
+
   # get the manager object
   def self.manager
     Clockwork.instance_variable_get(:@manager)

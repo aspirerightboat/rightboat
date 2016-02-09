@@ -76,7 +76,7 @@ module Rightboat
 
       DYNAMIC_ATTRIBUTES = [
         :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location,
-        :office, :office_id, :target, :import_base
+        :office, :office_id, :target, :importer
       ]
 
       attr_reader :missing_spec_attrs
@@ -158,7 +158,7 @@ module Rightboat
         handle_specs
 
         if @missing_spec_attrs.present?
-          import_base.log_warning 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
+          importer.log_warning 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
         end
 
         RELATION_ATTRIBUTES.each do |attr_name|
@@ -188,7 +188,7 @@ module Rightboat
         end
 
         if office.present?
-          import_base.jobs_mutex.synchronize do
+          importer.jobs_mutex.synchronize do
             @@user_offices ||= user.offices.includes(:address).to_a
 
             office_attrs = office.symbolize_keys
@@ -247,7 +247,7 @@ module Rightboat
         end
 
         # ensure spec records exists
-        import_base.jobs_mutex.synchronize do
+        importer.jobs_mutex.synchronize do
           @@spec_id_by_name ||= Specification.pluck(:name, :id).to_h
           new_specs_hash.each_key do |name|
             @@spec_id_by_name[name] ||= Specification.create(name: name, display_name: name.titleize).id

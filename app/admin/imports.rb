@@ -3,7 +3,7 @@ ActiveAdmin.register Import do
 
   filter :user, collection: -> { User.companies }
   filter :active
-  filter :import_type, as: :select, collection: -> { Rightboat::Imports::Base.import_types }
+  filter :import_type, as: :select, collection: -> { Rightboat::Imports::ImporterBase.import_types }
   filter :last_ran_at
 
   controller do

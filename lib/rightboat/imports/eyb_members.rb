@@ -2,7 +2,7 @@
 
 module Rightboat
   module Imports
-    class EybMembers < Base
+    class EybMembers < ImporterBase
       USER_DATA_MAPPINGS = {
         'name' => :company_name,
         'email1' => :email,

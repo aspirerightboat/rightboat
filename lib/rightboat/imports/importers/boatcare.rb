@@ -2,8 +2,8 @@
 
 module Rightboat
   module Imports
-    module Sources
-      class Boatcare < Base
+    module Importers
+      class Boatcare < ImporterBase
         DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
           'year_of_manufacture' => :year_built,
           'engine' => :engine_type,

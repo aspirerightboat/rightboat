@@ -1,7 +1,7 @@
 module Rightboat
   module Imports
-    module Sources
-      class Yachtworld < Base
+    module Importers
+      class Yachtworld < ImporterBase
         def data_mapping
           @data_mapping ||= {
               'Boat Name' => :name,

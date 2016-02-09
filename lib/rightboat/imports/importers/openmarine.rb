@@ -1,6 +1,6 @@
 module Rightboat
   module Imports
-    module Sources
+    module Importers
 
       # example feeds:
       # http://www.idealboat.com/theyachtmarket_feed.php
@@ -18,7 +18,7 @@ module Rightboat
       # http://www.macasailor.com/openmarine.asp
       # http://www.nya.co.uk/boatsxml.php
 
-      class Openmarine < Base
+      class Openmarine < ImporterBase
 
         def data_mapping
           @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(

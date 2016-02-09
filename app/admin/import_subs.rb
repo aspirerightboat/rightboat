@@ -3,7 +3,7 @@ ActiveAdmin.register ImportSub do
 
   permit_params :import_type,  :import_id,  :use_regex, :from, :to,  :sample_text
 
-  filter :import_type, collection: -> { ['any'] + Rightboat::Imports::Base.import_types }
+  filter :import_type, collection: -> { ['any'] + Rightboat::Imports::ImporterBase.import_types }
   filter :import_id
 
   index do
@@ -32,7 +32,7 @@ ActiveAdmin.register ImportSub do
   form do |f|
     f.inputs do
       f.input :import_type, as: :select, include_blank: 'any',
-              collection: Rightboat::Imports::Base.import_types,
+              collection: Rightboat::Imports::ImporterBase.import_types,
               input_html: {class: 'sync-select', data: {target: 'import-id-list',
                                                         action: url_for(action: :import_id_by_type),
                                                         include_blank: 'any'}}

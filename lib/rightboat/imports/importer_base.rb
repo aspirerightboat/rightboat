@@ -4,7 +4,7 @@ require 'rightboat/imports/source_boat' # fix "Circular dependency" error while 
 
 module Rightboat
   module Imports
-    class Base
+    class ImporterBase
       MAX_RETRIES = 5
 
       include Utils
@@ -115,7 +115,7 @@ module Rightboat
       end
 
       def self.import_types
-        @import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/sources/*"].map { |path| File.basename(path, '.*') }
+        @import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/importers/*"].map { |path| File.basename(path, '.*') }
       end
 
       # def self.import_classes
@@ -194,7 +194,7 @@ module Rightboat
         increment_stats = []
         source_boat.user = @user
         source_boat.import = @import
-        source_boat.import_base = self
+        source_boat.importer = self
 
         success = source_boat.save
         if success

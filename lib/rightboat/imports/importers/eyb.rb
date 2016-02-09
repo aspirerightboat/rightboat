@@ -1,7 +1,7 @@
 module Rightboat
   module Imports
-    module Sources
-      class Eyb < Base
+    module Importers
+      class Eyb < ImporterBase
         def data_mapping
           @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h}.merge(
               'id' => :source_id,

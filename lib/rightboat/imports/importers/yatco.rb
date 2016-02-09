@@ -2,8 +2,8 @@
 
 module Rightboat
   module Imports
-    module Sources
-      class Yatco < Base
+    module Importers
+      class Yatco < ImporterBase
         DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
           'vessel_id' => :source_id,
           'vessel_type' => :boat_type,

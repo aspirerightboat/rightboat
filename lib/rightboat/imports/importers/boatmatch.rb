@@ -2,8 +2,8 @@
 
 module Rightboat
   module Imports
-    module Sources
-      class Boatmatch < Base
+    module Importers
+      class Boatmatch < ImporterBase
         DATA_MAPPINGS = {
           'id' => :source_id,
           'url' => :source_url,

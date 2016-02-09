@@ -11,7 +11,7 @@ class Import < ActiveRecord::Base
 
   validates_presence_of :user_id, :import_type
   validates_numericality_of :threads, greater_than: 0, less_than: 10, allow_blank: true
-  validates_inclusion_of :import_type, in: -> (_) { Rightboat::Imports::Base.import_types }, allow_blank: true
+  validates_inclusion_of :import_type, in: -> (_) { Rightboat::Imports::ImporterBase.import_types }, allow_blank: true
   validates_uniqueness_of :import_type, scope: :user_id, if: 'import_type != "eyb"'
 
   # scheduling options
@@ -28,7 +28,7 @@ class Import < ActiveRecord::Base
 
   def self.source_class(type)
     return if type.blank?
-    Rightboat::Imports::Sources.const_get(type.camelcase)
+    Rightboat::Imports::Importers.const_get(type.camelcase)
   end
 
   def source_class

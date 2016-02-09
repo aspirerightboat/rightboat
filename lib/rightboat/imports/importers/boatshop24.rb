@@ -2,8 +2,8 @@
 
 module Rightboat
   module Imports
-    module Sources
-      class Boatshop24 < Base
+    module Importers
+      class Boatshop24 < ImporterBase
         DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
           'currency' => :currency,
           'manufacturer' => :manufacturer,

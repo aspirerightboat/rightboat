@@ -1,5 +1,5 @@
 module Rightboat::Imports
-  class Sources::Ancasta < Base
+  class Importers::Ancasta < ImporterBase
     include ActionView::Helpers::TextHelper # for simple_format
 
     def self.validate_param_option

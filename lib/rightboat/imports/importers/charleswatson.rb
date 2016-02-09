@@ -2,8 +2,8 @@
 
 module Rightboat
   module Imports
-    module Sources
-      class Charleswatson < Base
+    module Importers
+      class Charleswatson < ImporterBase
         DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
           'boat_name' => :name,
           'boat_reference' => :source_id,

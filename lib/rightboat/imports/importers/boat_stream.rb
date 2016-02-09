@@ -1,7 +1,7 @@
 module Rightboat
   module Imports
-    module Sources
-      class BoatStream < Base
+    module Importers
+      class BoatStream < ImporterBase
         BOATSTREAM_XML_PATH = "#{Rails.root}/import_data/boat_stream.xml"
 
         def enqueue_jobs

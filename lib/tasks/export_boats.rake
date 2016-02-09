@@ -1,4 +1,4 @@
-require 'open_marine'
+require 'rightboat/exports/open_marine'
 
 namespace :export do
   desc 'Export boats in OpenMarine format'
@@ -11,20 +11,8 @@ namespace :export do
         52, # Liberty Yachts
         262, # York Marina
     ]
-    User.find(export_users_ids).each do |user|
-      export_user_boats(user)
-    end
-  end
-
-  def export_user_boats(user)
-    dir = FileUtils.mkdir_p("#{Rails.root}/public/exports").first
-
-    om = OpenMarine.new(target: File.open("#{dir}/#{user.slug}-#{user.broker_info.unique_hash}.xml", 'w+'))
-    om.begin do
-      om.add_broker do
-        om.add_offices(user)
-        om.add_boats(user)
-      end
+    User.includes(:broker_info).find(export_users_ids).each do |user|
+      Rightboat::Exports::OpenMarine.export_user_boats(user)
     end
   end
 end

@@ -1,29 +1,30 @@
 - ind = defined?(i) ? i : '{{I}}'
-%tr.office-item
-  %td
-    - if defined?(office)
-      %input(type="hidden" name="user[offices_attributes][#{i}][id]" value="#{office.id}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][name]" value="#{office.name if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][contact_name]" value="#{office.contact_name if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][daytime_phone]" value="#{office.daytime_phone if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][evening_phone]" value="#{office.evening_phone if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][mobile]" value="#{office.mobile if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][fax]" value="#{office.fax if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][email]" value="#{office.email if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][website]" value="#{office.website if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][line1]" value="#{office.address.line1 if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][line2]" value="#{office.address.line2 if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][town_city]" value="#{office.address.town_city if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][county]" value="#{office.address.county if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][zip]" value="#{office.address.zip if defined?(office)}")
-    %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][country_id]" value="#{office.address.country_id if defined?(office)}")
-    .office-name= office.name if defined?(office)
-  %td.office-email= office.email if defined?(office)
-  %td.office-address= office.address.display_string if defined?(office)
-  %td.office-dphone= nice_phone(office.daytime_phone) if defined?(office)
-  %td
-    %button.icon-btn.edt-office-btn(type="button")
-      %i.glyphicon.glyphicon-pencil
-    - if defined?(office) && office.boats.count == 0
-      %button.icon-btn.del-office-btn(type="button")
-        %i.glyphicon.glyphicon-remove
+- unless defined?(office) && office.boats.not_deleted.count == 0 && office.boats.deleted.count > 0
+  %tr.office-item
+    %td
+      - if defined?(office)
+        %input(type="hidden" name="user[offices_attributes][#{i}][id]" value="#{office.id}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][name]" value="#{office.name if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][contact_name]" value="#{office.contact_name if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][daytime_phone]" value="#{office.daytime_phone if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][evening_phone]" value="#{office.evening_phone if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][mobile]" value="#{office.mobile if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][fax]" value="#{office.fax if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][email]" value="#{office.email if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][website]" value="#{office.website if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][line1]" value="#{office.address.line1 if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][line2]" value="#{office.address.line2 if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][town_city]" value="#{office.address.town_city if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][county]" value="#{office.address.county if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][zip]" value="#{office.address.zip if defined?(office)}")
+      %input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][country_id]" value="#{office.address.country_id if defined?(office)}")
+      .office-name= office.name if defined?(office)
+    %td.office-email= office.email if defined?(office)
+    %td.office-address= office.address.display_string if defined?(office)
+    %td.office-dphone= nice_phone(office.daytime_phone) if defined?(office)
+    %td
+      %button.icon-btn.edt-office-btn(type="button")
+        %i.glyphicon.glyphicon-pencil
+      - if defined?(office) && office.boats.count == 0
+        %button.icon-btn.del-office-btn(type="button")
+          %i.glyphicon.glyphicon-remove

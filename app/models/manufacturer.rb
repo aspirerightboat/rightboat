@@ -6,6 +6,8 @@ class Manufacturer < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
+  OUTBOARDS = %w(Johnson Torqeedo Honda Mariner SELVA Yamaha Mercury Hidea Other)
+
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
   has_many :buyer_guides, class_name: 'BuyerGuide', inverse_of: :manufacturer, dependent: :destroy
 
@@ -25,6 +27,10 @@ class Manufacturer < ActiveRecord::Base
 
   def to_s
     name.gsub(/&amp;/i, '&')
+  end
+
+  def regular?
+    !OUTBOARDS.include?(name)
   end
 
   private

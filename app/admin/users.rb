@@ -3,7 +3,8 @@ ActiveAdmin.register User do
                 :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
                 :avatar, :avatar_cache,
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
-                broker_info_attributes: [:id, :contact_name, :position, :description, :lead_rate, :discount,
+                broker_info_attributes: [:id, :contact_name, :position, :description, :discount,
+                                         :lead_length_rate, :lead_min_price, :lead_max_price,
                                          :website, :additional_email, :vat_number, :logo, :lead_email_distribution, :_destroy]
 
   config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'
@@ -81,7 +82,9 @@ ActiveAdmin.register User do
         ff.input :contact_name
         ff.input :position
         ff.input :description
-        ff.input :lead_rate
+        ff.input :lead_length_rate
+        ff.input :lead_min_price
+        ff.input :lead_max_price
         ff.input :discount
         ff.input :website
         ff.input :additional_email
@@ -122,6 +125,27 @@ ActiveAdmin.register User do
     column :company_weburl
     column :active
     column :email_confirmed
+  end
+
+  show do
+    columns do
+      column do
+        panel 'User Details' do
+          attributes_table_for resource do
+            User.columns.each { |column| row column.name.to_sym }
+          end
+        end
+      end
+      if resource.company?
+        column do
+          panel 'Broker Details' do
+            attributes_table_for resource.broker_info do
+              BrokerInfo.columns.each { |column| row column.name.to_sym }
+            end
+          end
+        end
+      end
+    end
   end
 
   sidebar 'User Boats', only: [:show, :edit] do

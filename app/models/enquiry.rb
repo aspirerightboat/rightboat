@@ -73,14 +73,20 @@ class Enquiry < ActiveRecord::Base
   end
 
   def calc_lead_price
+    broker_info = boat.user.broker_info
     res = if !boat.poa? && boat.price > 0
-            boat.price / boat_currency_rate * RBConfig[:lead_price_coef]
+            price_gbp = boat.price / boat_currency_rate
+            bound = RBConfig[:lead_price_coef_bound] # 500_000
+            if price_gbp > bound
+              bound * RBConfig[:lead_low_price_coef] + (price_gbp - bound) * RBConfig[:lead_high_price_coef]
+            else
+              price_gbp * RBConfig[:lead_low_price_coef]
+            end
           elsif boat.length_m && boat.length_m > 0
-            lead_rate = boat.user.broker_info.lead_rate
-            boat.length_ft * lead_rate / eur_rate
+            boat.length_ft * broker_info.lead_length_rate
           else
             RBConfig[:lead_flat_fee]
           end
-    [res, RBConfig[:min_lead_price]].max.round(2)
+    res.clamp(broker_info.lead_min_price, broker_info.lead_max_price).round(2)
   end
 end

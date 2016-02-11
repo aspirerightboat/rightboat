@@ -37,7 +37,6 @@ module Rightboat
               'where' => :where_built,
               'year' => :year_built,
               'hull_colour' => :hull_color,
-              'displacement' => :displacement_kgs,
               'fuel' => :fuel_type,
               'hours' => :engine_hours,
               'horse_power' => :engine_horse_power,

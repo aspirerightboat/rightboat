@@ -64,7 +64,7 @@ class Boat < ActiveRecord::Base
   has_many :favourites, dependent: :delete_all
   has_many :enquiries
   has_many :boat_specifications
-  has_many :boat_images, -> { not_deleted }, dependent: :destroy
+  has_many :boat_images, -> { not_deleted.order(:position, :id) }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
   belongs_to :user
@@ -126,8 +126,12 @@ class Boat < ActiveRecord::Base
     [manufacturer.to_s, model.to_s].reject(&:blank?).join(' ')
   end
 
-  def to_s
+  def display_name
     name.blank? ? manufacturer_model : name
+  end
+
+  def to_s
+    display_name
   end
 
   def ref_no

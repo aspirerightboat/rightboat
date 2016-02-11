@@ -17,7 +17,7 @@ module Rightboat
           'lwl' => Proc.new { |boat, val| boat.lwl_m = get_value_m(val) },
           'beam' => Proc.new { |boat, val| boat.beam_m = get_value_m(val) },
           'displacement' => Proc.new { |boat, val| boat.displacement_kgs = get_value_m(val) },
-          'ballast' => :ballast,
+          'ballast' => :ballast_kgs,
           'engine(s)' => :engine_count,
           'engine_horsepower' => :engine_horse_power,
           'fuel_type' => :fuel_type,

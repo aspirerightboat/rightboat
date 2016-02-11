@@ -36,4 +36,8 @@ class Address < ActiveRecord::Base
   end
 
   def display_string; to_s(:str) end
+
+  def all_lines
+    [line1, line2, line3].select { |l| l.present? }.join(', ')
+  end
 end

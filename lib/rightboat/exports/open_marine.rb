@@ -123,15 +123,15 @@ module Rightboat
                   spec_item specs.delete(:control_type), 'control_type'
                   spec_item specs.delete(:flybridge), 'flybridge', with_description: true
                   spec_item specs.delete(:keel_type), 'keel_type'
-                  spec_item specs.delete(:ballast_kgs), 'ballast', units: 'kgs' # TODO: check if unit is included in ballast
-                  spec_item specs.delete(:displacement_kgs), 'displacement', units: 'kgs'
+                  spec_item specs.delete(:ballast_kgs), 'ballast', unit: 'kgs' # TODO: check if unit is included in ballast
+                  spec_item specs.delete(:displacement_kgs), 'displacement', unit: 'kgs'
                 }
                 @x.galley {
                   spec_item specs.delete(:oven), 'oven', with_description: true
                   spec_item specs.delete(:microwave), 'microwave', with_description: true
                   spec_item specs.delete(:fridge), 'fridge', with_description: true
                   spec_item specs.delete(:freezer), 'freezer', with_description: true
-                  spec_item specs.delete(:heating), 'heating', type: '', with_description: true
+                  spec_item specs.delete(:heating), 'heating', type: specs.delete(:heating_type), with_description: true
                   spec_item specs.delete(:air_conditioning), 'air_conditioning', with_description: true
                   rb_spec_item specs, :dishwasher, with_description: true
                   # rb_spec_item specs, :galley_hob, with_description: true
@@ -159,7 +159,7 @@ module Rightboat
                   spec_item specs.delete(:propeller_type), 'propeller_type'
                   spec_item specs.delete(:starting_type), 'starting_type'
                   spec_item boat.drive_type.try(:name), 'drive_type'
-                  spec_item specs.delete(:cooling_system), 'cooling_system', type: '', with_description: true
+                  spec_item specs.delete(:cooling_system), 'cooling_system', type: specs.delete(:cooling_system_type), with_description: true
                 }
                 @x.navigation {
                   spec_item specs.delete(:navigation_lights), 'navigation_lights', with_description: true
@@ -185,7 +185,7 @@ module Rightboat
                   spec_item specs.delete(:epirb), 'epirb', with_description: true
                   spec_item specs.delete(:bilge_pump), 'bilge_pump', with_description: true
                   spec_item specs.delete(:fire_extinguisher), 'fire_extinguisher', type: specs.delete(:fire_extinguisher_type), with_description: true
-                  spec_item specs.delete(:mob_system), 'mob_system', type: '', with_description: true
+                  spec_item specs.delete(:mob_system), 'mob_system', type: specs.delete(:mob_system_type), with_description: true
                 }
                 @x.rig_sails {
                   spec_item specs.delete(:genoa), 'genoa', material: specs.delete(:genoa_material), furling: specs.delete(:genoa_furling).try(:camelize), with_description: true
@@ -237,7 +237,7 @@ module Rightboat
                     # rb_spec_item specs, :stainless_steel_sliding_door_to_aft_cockpit, with_description: true
                     # rb_spec_item specs, :hydraulic_trim_tabs, with_description: true
                     # rb_spec_item specs, :hot_cold_swimming_shower, with_description: true
-                    # rb_spec_item specs, :freshwater_capacity, :units => specs.freshwater_capacity_units
+                    # rb_spec_item specs, :freshwater_capacity, :unit => specs.freshwater_capacity_units
                     specs.keys.each { |name| rb_spec_item specs, name }
                   }
                 end

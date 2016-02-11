@@ -53,6 +53,7 @@ module Rightboat
               'sprayhood' => :spray_hood,
               'Bimini' => :bimini,
               'shorepower' => :shore_power,
+              'max_speed' => :max_speed_knots,
           )
         end
 
@@ -193,7 +194,8 @@ module Rightboat
 
         def handle_boat_features(boat, boat_features)
           boat_features.css('item, rb:item').each do |item|
-            attr = data_mapping[item['name']]
+            item_name = item['name']
+            attr = data_mapping[item_name]
             next if attr == ''
 
             value = item.text.strip
@@ -207,9 +209,12 @@ module Rightboat
                 value = "#{value} #{unit}"
               end
             end
+            boat.send("#{item_name}_capacity=", item['capacity']) if item['capacity'].present?
+            boat.send("#{item_name}_type=", item['type']) if item['type'].present?
+            boat.send("#{item_name}_material=", item['material']) if item['material'].present?
 
             if !attr
-              boat.set_missing_attr(item['name'], value)
+              boat.set_missing_attr(item_name, value)
             elsif attr.is_a?(Proc)
               attr.call(boat, item)
             else

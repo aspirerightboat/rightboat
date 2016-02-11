@@ -29,10 +29,10 @@ module Rightboat
         :cd_player, :cd_year, :dvd_player, :dvd_year, :cylinders_count, :gearbox,
         :known_defects, :last_serviced, :air_draft_m, :tv, :tv_year, :cabin_headroom,
         :super_structure_colour, :super_structure_construction, :deck_colour, :deck_construction, :deck_material, :spray_hood,
-        :control_type, :oven, :microwave, :fridge, :freezer, :heating, :engine_tankage, :gallons_per_hour,
-        :litres_per_hour, :starting_type, :cooling_system, :navigation_lights, :compass, :compass_year,
+        :control_type, :oven, :microwave, :fridge, :freezer, :heating, :heating_type, :engine_tankage, :gallons_per_hour,
+        :litres_per_hour, :starting_type, :cooling_system, :cooling_system_type, :navigation_lights, :compass, :compass_year,
         :depth_instrument, :wind_instrument, :autopilot, :speed_instrument, :toilet, :shower, :bath, :life_raft, :life_raft_capacity, :life_raft_age,
-        :epirb, :bilge_pump, :fire_extinguisher, :fire_extinguisher_type, :mob_system, :genoa, :genoa_furling, :genoa_material, :genoa_cover,
+        :epirb, :bilge_pump, :fire_extinguisher, :fire_extinguisher_type, :mob_system, :mob_system_type, :genoa, :genoa_furling, :genoa_material, :genoa_cover,
         :tri_sail, :tri_sail_material, :storm_jib, :storm_jib_material, :main_sail_material,
         :main_sail, :winches_count, :winch_handles, :winch_cover, :battery, :shore_power, :fenders, :anchor, :seating_capacity,
         :dinette_sleeps, :crew_cabins_count, :crew_berths_count, :echosounder, :steering_system, :compartments, :desalinator,
@@ -395,13 +395,12 @@ module Rightboat
 
       def cleanup_short_description(desc)
         return '' if desc.blank?
-        # desc = desc[%r{<p>[^<]+</p>}] || desc
         desc = desc[0..480]
         desc = desc.sub(/[^>.!]+\z/, '').presence || "#{desc}..."
         desc.gsub!(/\S+@\S(?:\.\S)+/, '') # remove email
         desc.gsub!(/[\d\(\) -]{9,20}/, '') # remove phone
         desc.gsub!(%r{(?:https?://|www\.)\S+}, '') # remove url
-         Nokogiri::HTML.fragment(desc).to_html
+         Nokogiri::HTML.fragment(desc).to_html # ensure html is valid
       end
 
     end

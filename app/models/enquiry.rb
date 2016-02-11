@@ -26,10 +26,7 @@ class Enquiry < ActiveRecord::Base
   scope :approved, -> { where(status: 'approved') }
   scope :rejected, -> { where(status: 'rejected') }
   scope :invoiced, -> { where(status: 'invoiced') }
-
-  def self.not_invoiced
-    where(invoice_id: nil)
-  end
+  scope :not_invoiced, -> { where(invoice_id: nil) }
 
   def name
     [first_name, surname].reject(&:blank?).join(' ')

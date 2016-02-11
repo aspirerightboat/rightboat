@@ -15,7 +15,7 @@
             %td= render 'boats/mail_thumb', boat: boat, visible: i < 10
       - if @other_boats.count > 10
         .clear
-          = link_to 'View More >', search_url(q: @boat.manufacturer_model), id: 'view-more'
+          = link_to 'View More >', search_url(manufacturer_model: @boat.manufacturer_model), id: 'view-more'
       %br
     - if @similar_boats.count > 0
       %p There are other similar listings which may be of interest to you.

@@ -1,0 +1,15 @@
+= render 'shared/search_bar'
+
+#main-content.container(style="max-width: 500px; padding-bottom: 100px; padding-top: 75px;")
+  - @custom_flashes = true
+  - if notice
+    .alert.alert-info= notice
+  - if alert
+    .alert.alert-warning= alert
+
+  %h1 Define Payment Method
+  %p(style="margin: 25px 0")
+    Your customer is waiting for your contact, however your account set up is incomplete.
+    Please phone <b>+44 (0) 333 322 2628</b> with your card or bank details.
+  .nice-buttons.text-center
+    %button.nice-button(type="button" onclick="window.location = window.location") Refresh

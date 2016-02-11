@@ -3,6 +3,7 @@ class EnquiriesController < ApplicationController
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
+  before_action :require_broker_payment_method, only: [:show]
   before_action :remember_when_broker_accessed, only: [:show]
 
   def create
@@ -82,6 +83,9 @@ class EnquiriesController < ApplicationController
     end
   end
 
+  def define_payment_method
+  end
+
   private
 
   def enquiry_params
@@ -102,6 +106,12 @@ class EnquiriesController < ApplicationController
   def require_buyer_or_broker
     if !can_view_as_broker(current_user) && !can_view_as_buyer(current_user)
       redirect_to root_path, alert: I18n.t('messages.not_authorized')
+    end
+  end
+
+  def require_broker_payment_method
+    if current_user.company? && current_user.broker_info.payment_method == 'none'
+      render action: :define_payment_method
     end
   end
 

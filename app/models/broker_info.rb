@@ -1,5 +1,6 @@
 class BrokerInfo < ActiveRecord::Base
   LEAD_EMAIL_DISTRIBUTIONS = %w(user_and_office user_only office_only)
+  PAYMENT_METHODS = %w(none card dd)
 
   belongs_to :user
 

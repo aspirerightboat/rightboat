@@ -43,7 +43,7 @@ ActiveAdmin.register User do
   end
 
   filter :first_name_or_last_name_or_email_or_username_cont, as: :string, label: 'Name | Email | Username'
-  filter :role, collection: -> { User::ROLES }, as: :select
+  filter :role, as: :select, collection: -> { User::ROLES }
   filter :username
   filter :email
   filter :first_name
@@ -52,9 +52,10 @@ ActiveAdmin.register User do
   filter :current_sign_in_at
   filter :sign_in_count
   filter :created_at
+  filter :broker_info_payment_method, collection: -> { BrokerInfo::PAYMENT_METHODS }, as: :select, label: 'Brokers payment method'
 
   form do |f|
-    f.inputs "User Details" do
+    f.inputs 'User Details' do
       f.input :role, as: :select, collection: User::ROLES, include_blank: false
       f.input :avatar, as: :file, hint: image_tag(f.object.avatar_url(:thumb))
       f.input :avatar_cache, as: :hidden
@@ -69,7 +70,7 @@ ActiveAdmin.register User do
       f.input :mobile
       f.input :fax
 
-      f.has_many :address, allow_destroy: true do |ff|
+      f.has_many :address, allow_destroy: false, new_record: false do |ff|
         ff.input :line1
         ff.input :line2
         ff.input :town_city
@@ -78,7 +79,7 @@ ActiveAdmin.register User do
         ff.input :zip
       end
 
-      f.has_many :broker_info, allow_destroy: true do |ff|
+      f.has_many :broker_info, allow_destroy: false, new_record: false do |ff|
         ff.input :contact_name
         ff.input :position
         ff.input :description
@@ -92,6 +93,7 @@ ActiveAdmin.register User do
         ff.input :logo
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
         ff.input :xero_contact_id
+        ff.input :payment_method, as: :select, collection: BrokerInfo::PAYMENT_METHODS, include_blank: false
       end
     end
     f.actions
@@ -125,6 +127,9 @@ ActiveAdmin.register User do
     column :company_weburl
     column :active
     column :email_confirmed
+    column :payment_method do |user|
+      user.broker_info.payment_method if user.company?
+    end
   end
 
   show do
@@ -140,7 +145,7 @@ ActiveAdmin.register User do
         column do
           panel 'Broker Details' do
             attributes_table_for resource.broker_info do
-              BrokerInfo.columns.each { |column| row column.name.to_sym }
+              BrokerInfo.columns.each { |column| row column.name.to_sym unless column.name.in?(%w(id user_id)) }
             end
           end
         end

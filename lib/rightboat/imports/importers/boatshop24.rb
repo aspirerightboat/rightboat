@@ -118,7 +118,7 @@ module Rightboat
                 when "Engine Power"
                   boat.engine_horse_power = data.to_i.to_s
                 when "Max Speed"
-                  boat.max_speed = data.to_i.to_s
+                  boat.max_speed_knots = data.to_i.to_s
                 when "Fuel"
                   boat.fuel_type = data.to_s
                 when "Berths"

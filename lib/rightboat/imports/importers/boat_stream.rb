@@ -220,33 +220,33 @@ module Rightboat
                         when 'BoatHullMaterialCode' then @boat.hull_material = chars
                         when 'BoatHullDesignCode' then @boat.hull_type = chars # Monohull | Deep Vee | RIB | Displacement | Catamaran | Planing | Modified Vee | Semi Displacement | Flat | Pontoon | Trimaran | Tunnel
                         end
-                      when 'MaximumSpeedMeasure' then @boat.max_speed = to_knots(chars, get_attr('unitCode'))
-                      when 'NumberOfBerthsNumeric' then @boat.berths = chars # eg. 7
-                      when 'NumberOfHeadsNumeric' then @boat.heads = chars # eg. 7
+                      when 'MaximumSpeedMeasure' then @boat.max_speed_knots = to_knots(chars, get_attr('unitCode'), false)
+                      when 'NumberOfBerthsNumeric' then @boat.berths_count = chars # eg. 7
+                      when 'NumberOfHeadsNumeric' then @boat.heads_count = chars # eg. 7
                       when 'Accommodation'
                         case @tree[6]
                         when 'AccommodationTypeCode' then @acc_type_code = chars
                         when 'Description' then @acc_desc = chars
                         when 'AccommodationCountNumeric'
                           case @acc_type_code
-                          when 'Head' then @boat.heads = chars
-                          when 'Bathroom' then @boat.bathrooms = chars
-                          when 'SingleBerth' then @boat.single_berths = chars
-                          when 'DoubleBerth' then @boat.double_berths = chars
-                          when 'TwinBerth' then @boat.twin_berths = chars
-                          when 'Cabin' then @boat.cabins = chars
-                          when 'Other' && @acc_desc == 'Seating Capacity' then @boat.seating_capacity = chars
+                          when 'Head' then @boat.heads_count = chars # eg. 7
+                          when 'Bathroom' then @boat.bathrooms = chars # eg. 7
+                          when 'SingleBerth' then @boat.single_berths_count = chars # eg. 7
+                          when 'DoubleBerth' then @boat.double_berths_count = chars # eg. 7
+                          when 'TwinBerth' then @boat.twin_berths_count = chars # eg. 7
+                          when 'Cabin' then @boat.cabins_count = chars # eg. 7
+                          when 'Other' && @acc_desc == 'Seating Capacity' then @boat.seating_capacity = chars # eg. 7
                           end
                         end
                       when 'DryWeightMeasure' then @boat.dry_weight = to_kilograms(chars, get_attr('unitCode'))
-                      when 'NumberOfCabinsNumeric' then @boat.cabins = chars # eg. 7
+                      when 'NumberOfCabinsNumeric' then @boat.cabins_count = chars # eg. 7
                       # when 'VehicleStockString' # Ashore Larkmans | PB1201 | DS | Sales Area | ...
-                      when 'BallastWeightMeasure' then @boat.ballast_weight = to_kilograms(chars, get_attr('unitCode'))
+                      when 'BallastWeightMeasure' then @boat.ballast_weight = to_kilograms(chars, get_attr('unitCode'), false)
                       when 'HoldingTankCapacityMeasure' then @boat.holding_tanks_capacity = to_liters(chars, get_attr('unitCode'))
                       when 'BridgeClearanceMeasure' then @boat.bridge_clearance = to_meters(chars, get_attr('unitCode'))
                       when 'CabinHeadroomMeasure' then @boat.cabin_headroom = to_meters(chars, get_attr('unitCode'))
                       when 'DeadriseMeasure' then @boat.deadrise = to_degrees(chars, get_attr('unitCode'))
-                      when 'MaximumNumberOfPassengersNumeric' then @boat.passengers = chars
+                      when 'MaximumNumberOfPassengersNumeric' then @boat.passengers_count = chars
                       when 'FreeBoardMeasure' then @boat.free_board = to_meters(chars, get_attr('unitCode'))
                       end
                     when 'VehicleRemarketingEngineLineItem'
@@ -345,23 +345,23 @@ module Rightboat
             "#{res} liters" if res
           end
 
-          def to_knots(value_str, unit)
+          def to_knots(value_str, unit, include_unit = true)
             res = case unit
                   when 'knots' then value_str
                   when 'miles per hour' then value_str.to_f.kph_to_knots.round(2).to_s
                   when 'kilometers per hour' then value_str.to_f.mph_to_knots.round(2).to_s
                   else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
-            "#{res} knots"
+            res && include_unit ? "#{res} knots" : res
           end
 
-          def to_kilograms(value_str, unit)
+          def to_kilograms(value_str, unit, include_unit = true)
             res = case unit
                   when 'kilogram' then value_str
                   when 'pound' then value_str.to_f.pounds_to_kilograms.round(2).to_s
                   else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
-            "#{res} kilograms"
+            res && include_unit ? "#{res} kilograms" : res
           end
 
           def to_degrees(value_str, unit)
@@ -371,6 +371,11 @@ module Rightboat
                   end
             "#{res} degrees"
           end
+        end
+
+        # do in console: doc = Rightboat::Imports::Importers::BoatStream.doc_for_testing;1
+        def self.doc_for_testing
+          Nokogiri::XML(open("#{Rails.root}/import_data/boat_stream.xml"))
         end
 
       end

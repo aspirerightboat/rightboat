@@ -20,4 +20,15 @@ class Specification < ActiveRecord::Base
         .pluck('specifications.display_name, boat_specifications.value')
   end
 
+  def self.rename(from, to)
+    if (from_spec = Specification.where(name: from).first)
+      if (to_spec = Specification.where(name: to).first)
+        from_spec.boat_specifications.update_all(specification_id: to_spec.id)
+        from_spec.destroy
+      else
+        from_spec.update_attribute(:name, to)
+      end
+    end
+  end
+
 end

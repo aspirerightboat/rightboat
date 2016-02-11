@@ -19,7 +19,7 @@ module Rightboat
       def export
         @x.instruct! :xml, version: '1.0'
         @x.open_marine(version: '1.7', 'xmlns:rb' => 'rightboat.com',
-                       language: 'english', origin: 'rightboat.com',
+                       language: 'en', origin: 'rightboat.com',
                        date: Time.current.iso8601) {
           @x.broker(code: @user.id) { # actually here could be many broker tags but for our purpose there is always 1 broker
             @x.broker_details {
@@ -32,25 +32,6 @@ module Rightboat
       end
 
       def add_offices
-        # head_office = Office.new(
-        #     name: "#{@user.company_name} Head Office",
-        #     contact_name: @user.broker_info.contact_name,
-        #     # daytime_phone: 123,
-        #     # evening_phone: 123,
-        #     mobile: @user.phone,
-        #     # fax: 123,
-        #     email: @user.email,
-        #     website: @user.broker_info.website,
-        #     address_attributes: {
-        #         line1: @user.address.line1,
-        #         line2: @user.address.line2,
-        #         town_city: @user.address.town_city,
-        #         county: @user.address.county,
-        #         country_id: @user.address.country_id,
-        #         zip: @user.address.zip,
-        #     }
-        # )
-        # offices = [head_office] + @user.offices.includes(address: :country)
         offices = @user.offices.includes(address: :country)
 
         @x.offices {
@@ -59,11 +40,12 @@ module Rightboat
               @x.office_name office.name
               @x.email office.email
               @x.name {
-                @x.title nil # office.title
-                @x.forename office.contact_name.to_s.split(' ').first
-                @x.surname office.contact_name.to_s.split(' ').last
+                title, forename, surname = office.contact_name_parts # TODO: make these tree model fields in db
+                @x.title title
+                @x.forename forename
+                @x.surname surname
               }
-              @x.address "#{office.address.line1} #{office.address.line2} #{office.address.line3}".strip
+              @x.address office.address.all_lines
               @x.town office.address.town_city
               @x.county office.address.county
               @x.country office.address.country.name
@@ -79,49 +61,55 @@ module Rightboat
       end
 
       def add_boats
-        boats = @user.boats.not_deleted.includes(:manufacturer, :model, :currency, :country, :vat_rate, :boat_images, :fuel_type, :engine_manufacturer, :drive_type)
+        boats = @user.boats.not_deleted.includes(:manufacturer, :model, :currency, :country, :vat_rate, :boat_images,
+                                                 :fuel_type, :engine_manufacturer, :drive_type, :boat_type, :category)
         @x.adverts {
           boats.each do |boat|
             specs = boat.boat_specifications.specs_hash
-            @x.advert(ref: boat.id, office_id: boat.office_id || 0, status: boat.offer_status.camelize) {
+            @x.advert(ref: boat.id, office_id: boat.office_id, status: boat.offer_status.camelize) {
               @x.advert_media {
-                primary = true
-                boat.boat_images.not_deleted.order(:position, :id).each do |image|
+                primary = 'True'
+                boat.boat_images.each do |image|
                   next unless image.file.file
                   content_type = MIME::Types.type_for(image.file.file.filename).first.content_type
-                  @x.media image.file.url, content_type: content_type, caption: nil, primary: primary
-                  primary = false
+                  @x.media image.file.url, content_type: content_type, caption: nil, primary: primary # TODO: make content_type & caption fields in model
+                  primary = 'False'
                 end
               }
               @x.advert_features {
+                @x.boat_type boat.boat_type.try(:name_stripped)
+                @x.boat_category boat.category.try(:name)
                 @x.new_or_used (boat.new_boat? ? 'new' : 'used').camelize
-                @x.vessel_lying boat.location, country: boat.country.try(:iso) || Country.find_by(iso: 'GB')
-                currency = boat.currency || Currency.find_by(name: 'GBP')
-                @x.asking_price boat.price.to_i, poa: boat.poa, currency: currency.name, vat_included: boat.vat_rate.try(:tax_paid?)
+                @x.vessel_lying boat.location, country: boat.country.try(:iso)
+                @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency.try(:name), vat_included: boat.vat_rate.try(:tax_paid?).try(:camelize)
                 @x.marketing_descs {
-                  @x.marketing_desc boat.description, language: 'en_GB'
+                  @x.marketing_desc(language: 'en') { @x.cdata! boat.description.to_s }
                 }
                 @x.manufacturer boat.manufacturer.name
                 @x.model boat.model.name
+                @x.other {
+                  @x.item "https://www.rightboat.com/boats-for-sale/#{boat.slug}", name: 'external_url', label: boat.display_name
+                }
               }
               @x.boat_features {
                 spec_item boat.name, 'name'
                 spec_item boat.owners_comment, 'owners_comment'
+                spec_item specs.delete(:reg_details), 'reg_details'
                 spec_item specs.delete(:known_defects), 'known_defects'
-                spec_item specs.delete(:range), 'range'
+                spec_item specs.delete(:engine_range_nautical_miles), 'range'
                 spec_item specs.delete(:last_serviced), 'last_serviced'
-                spec_item specs.delete(:passengers), 'passenger_capacity'
+                spec_item specs.delete(:passengers_count), 'passenger_capacity'
                 @x.dimensions {
                   spec_item specs.delete(:beam_m), 'beam', unit: 'metres'
                   spec_item specs.delete(:draft_m), 'draft', unit: 'metres'
                   spec_item boat.length_m, 'loa', unit: 'metres'
                   spec_item specs.delete(:lwl_m), 'lwl', unit: 'metres'
-                  spec_item specs.delete(:air_draft), 'air_draft', unit: 'metres'
+                  spec_item specs.delete(:air_draft_m), 'air_draft', unit: 'metres'
                 }
                 @x.build {
                   spec_item specs.delete(:designer), 'designer'
                   spec_item specs.delete(:builder), 'builder'
-                  #spec_item boat.where, 'where'
+                  spec_item specs.delete(:where_built), 'where'
                   spec_item boat.year_built, 'year'
                   spec_item specs.delete(:hull_color), 'hull_colour'
                   spec_item specs.delete(:hull_construction), 'hull_construction'
@@ -135,22 +123,22 @@ module Rightboat
                   spec_item specs.delete(:control_type), 'control_type'
                   spec_item specs.delete(:flybridge), 'flybridge', with_description: true
                   spec_item specs.delete(:keel_type), 'keel_type'
-                  spec_item specs.delete(:ballast), 'ballast', units: 'kg'
-                  spec_item specs.delete(:displacement_kgs), 'displacement', units: 'kgs'
+                  spec_item specs.delete(:ballast_kgs), 'ballast', unit: 'kgs' # TODO: check if unit is included in ballast
+                  spec_item specs.delete(:displacement_kgs), 'displacement', unit: 'kgs'
                 }
                 @x.galley {
                   spec_item specs.delete(:oven), 'oven', with_description: true
                   spec_item specs.delete(:microwave), 'microwave', with_description: true
                   spec_item specs.delete(:fridge), 'fridge', with_description: true
                   spec_item specs.delete(:freezer), 'freezer', with_description: true
-                  spec_item specs.delete(:heating), 'heating', with_description: true
+                  spec_item specs.delete(:heating), 'heating', type: specs.delete(:heating_type), with_description: true
                   spec_item specs.delete(:air_conditioning), 'air_conditioning', with_description: true
-                  # rb_spec_item specs.galley_hob, 'galley_hob', with_description: true
-                  rb_spec_item specs.delete(:dishwasher), 'dishwasher', with_description: true
-                  # rb_spec_item specs.delete(:sink_drainer), 'sink_drainer', with_description: true
-                  # rb_spec_item specs.delete(:washer_dryer), 'washer_dryer', with_description: true
-                  # rb_spec_item specs.delete(:overhead_lowlevel_courtesy_lighting), 'overhead_lowlevel_courtesy_lighting', with_description: true
-                  # rb_spec_item specs.delete(:hot_cold_water_system), 'hot_cold_water_system', with_description: true
+                  rb_spec_item specs, :dishwasher, with_description: true
+                  # rb_spec_item specs, :galley_hob, with_description: true
+                  # rb_spec_item specs, :sink_drainer, with_description: true
+                  # rb_spec_item specs, :washer_dryer, with_description: true
+                  # rb_spec_item specs, :overhead_lowlevel_courtesy_lighting, with_description: true
+                  # rb_spec_item specs, :hot_cold_water_system, with_description: true
                 }
                 @x.engine {
                   spec_item specs.delete(:stern_thruster), 'stern_thruster', with_description: true
@@ -158,20 +146,20 @@ module Rightboat
                   spec_item boat.fuel_type.try(:name), 'fuel'
                   spec_item specs.delete(:engine_hours), 'hours'
                   spec_item specs.delete(:cruising_speed), 'cruising_speed'
-                  spec_item specs.delete(:max_speed), 'max_speed'
-                  spec_item specs.delete(:engine_horse_power), 'horse_power'
+                  spec_unit_item specs.delete(:max_speed_knots), 'max_speed'
+                  spec_item specs.delete(:engine_horse_power), 'horse_power' # TODO: check importers - should be HP of a single engine
                   spec_item boat.engine_manufacturer.try(:name), 'engine_manufacturer'
                   spec_item specs.delete(:engine_count), 'engine_quantity'
-                  spec_item specs.delete(:engine_tankage), 'tankage', unit: 'gallons/litres'
+                  spec_unit_item specs.delete(:engine_tankage), 'tankage'
                   spec_item specs.delete(:gallons_per_hour), 'gallons_per_hour'
                   spec_item specs.delete(:litres_per_hour), 'litres_per_hour'
                   spec_item specs.delete(:engine_location), 'engine_location'
-                  #spec_item boat.gearbox, 'gearbox', with_description: true
-                  #spec_item boat.cylinders, 'cylinders', with_description: true
+                  spec_item specs.delete(:gearbox), 'gearbox'
+                  spec_item specs.delete(:cylinders_count), 'cylinders'
                   spec_item specs.delete(:propeller_type), 'propeller_type'
                   spec_item specs.delete(:starting_type), 'starting_type'
                   spec_item boat.drive_type.try(:name), 'drive_type'
-                  spec_item specs.delete(:cooling_system), 'cooling_system', type: ''
+                  spec_item specs.delete(:cooling_system), 'cooling_system', type: specs.delete(:cooling_system_type), with_description: true
                 }
                 @x.navigation {
                   spec_item specs.delete(:navigation_lights), 'navigation_lights', with_description: true
@@ -186,26 +174,26 @@ module Rightboat
                   spec_item specs.delete(:radar), 'radar', with_description: true
                 }
                 @x.accommodation {
-                  spec_item specs.delete(:cabins), 'cabins'
-                  spec_item specs.delete(:berths), 'berths'
+                  spec_item specs.delete(:cabins_count), 'cabins'
+                  spec_item specs.delete(:berths_count), 'berths'
                   spec_item specs.delete(:toilet), 'toilet', with_description: true
                   spec_item specs.delete(:shower), 'shower', with_description: true
                   spec_item specs.delete(:bath), 'bath', with_description: true
                 }
                 @x.safety_equipment {
-                  spec_item specs.delete(:life_raft), 'life_raft', capacity: '', with_description: true
+                  spec_item specs.delete(:life_raft), 'life_raft', capacity: specs.delete(:life_raft_capacity), with_description: true
                   spec_item specs.delete(:epirb), 'epirb', with_description: true
                   spec_item specs.delete(:bilge_pump), 'bilge_pump', with_description: true
-                  spec_item specs.delete(:fire_extinguisher), 'fire_extinguisher', type: '', with_description: true
-                  spec_item specs.delete(:mob_system), 'mob_system', type: '', with_description: true
+                  spec_item specs.delete(:fire_extinguisher), 'fire_extinguisher', type: specs.delete(:fire_extinguisher_type), with_description: true
+                  spec_item specs.delete(:mob_system), 'mob_system', type: specs.delete(:mob_system_type), with_description: true
                 }
                 @x.rig_sails {
-                  spec_item specs.delete(:genoa), 'genoa', material: '', with_description: true
-                  spec_item specs.delete(:spinnaker), 'spinnaker', material: '', with_description: true
-                  spec_item specs.delete(:tri_sail), 'tri_sail', material: '', with_description: true
-                  spec_item specs.delete(:storm_jib), 'storm_jib', material: '', with_description: true
-                  spec_item specs.delete(:main_sail), 'main_sail', material: '', with_description: true
-                  spec_item specs.delete(:winches), 'winches'
+                  spec_item specs.delete(:genoa), 'genoa', material: specs.delete(:genoa_material), furling: specs.delete(:genoa_furling).try(:camelize), with_description: true
+                  spec_item specs.delete(:spinnaker), 'spinnaker', material: specs.delete(:spinnaker_material), with_description: true
+                  spec_item specs.delete(:tri_sail), 'tri_sail', material: specs.delete(:tri_sail_material), with_description: true
+                  spec_item specs.delete(:storm_jib), 'storm_jib', material: specs.delete(:storm_jib_material), with_description: true
+                  spec_item specs.delete(:main_sail), 'main_sail', material: specs.delete(:main_sail_material), with_description: true
+                  spec_item specs.delete(:winches_count), 'winches'
                 }
                 @x.electronics {
                   spec_item specs.delete(:battery), 'battery', with_description: true
@@ -217,40 +205,42 @@ module Rightboat
                   spec_item specs.delete(:tv), 'television', with_description: true
                   spec_item specs.delete(:cd_player), 'cd_player', with_description: true
                   spec_item specs.delete(:dvd_player), 'dvd_player', with_description: true
-                  #rb_spec_item specs.delete(:surround_sound_system), 'surround_sound_system', with_description: true
-                  #rb_spec_item specs.delete(:satellite_tv), 'satellite_tv', with_description: true
-                  #rb_spec_item specs.delete(:satellite_phone), 'satellite_phone', with_description: true
+                  #rb_spec_item specs, :surround_sound_system, with_description: true
+                  #rb_spec_item specs, :satellite_tv, with_description: true
+                  #rb_spec_item specs, :satellite_phone, with_description: true
                 }
                 @x.equipment {
                   spec_item specs.delete(:anchor), 'anchor', with_description: true
                   spec_item specs.delete(:spray_hood), 'spray_hood', with_description: true
-                  #spec_item boat.bimini, 'bimini', with_description: true
+                  spec_item specs.delete(:bimini), 'bimini', with_description: true
                   spec_item specs.delete(:fenders), 'fenders', with_description: true
                   spec_item specs.delete(:shore_power), 'shorepower', with_description: true
                 }
-                @x.rb(:additional) {
-                  # rb_spec_item specs.delete(:water_heater), 'water_heater', with_description: true
-                  # rb_spec_item specs.delete(:vacuum_toilets), 'vacuum_toilets', with_description: true
-                  rb_spec_item specs.delete(:holding_tanks), 'holding_tank', with_description: true
-                  # rb_spec_item specs.delete(:anchor_winch), 'anchor_winch', with_description: true
-                  # rb_spec_item specs.delete(:covers), 'covers', with_description: true
-                  # rb_spec_item specs.delete(:bathing_platform), 'bathing_platform', with_description: true
-                  # rb_spec_item specs.delete(:hydraulic_passarelle), 'hydraulic_passarelle', with_description: true
-                  # rb_spec_item specs.delete(:garage), 'garage', with_description: true
-                  # rb_spec_item specs.delete(:tender), 'tender', with_description: true
-                  # rb_spec_item specs.delete(:stern_docking_winches), 'stern_docking_winches', with_description: true
-                  # rb_spec_item specs.delete(:underwater_lighting), 'underwater_lighting', with_description: true
-                  # rb_spec_item specs.delete(:teak_laid_cockpit), 'teak_laid_cockpit', with_description: true
-                  # rb_spec_item specs.delete(:teak_laid_flybridge), 'teak_laid_flybridge', with_description: true
-                  # rb_spec_item specs.delete(:teak_laid_side_decks), 'teak_laid_side_decks', with_description: true
-                  # rb_spec_item specs.delete(:wetbar), 'wetbar', with_description: true
-                  # rb_spec_item specs.delete(:sunbather), 'sunbather', with_description: true
-                  # rb_spec_item specs.delete(:stainless_steel_sliding_door_to_aft_cockpit), 'stainless_steel_sliding_door_to_aft_cockpit', with_description: true
-                  # rb_spec_item specs.delete(:hydraulic_trim_tabs), 'hydraulic_trim_tabs', with_description: true
-                  # rb_spec_item specs.delete(:hot_cold_swimming_shower), 'hot_cold_swimming_shower', with_description: true
-                  # rb_spec_item specs.delete(:freshwater_capacity), 'freshwater_capacity', :units => specs.freshwater_capacity_units
-                  specs.each { |name, value| rb_spec_item value, name }
-                }
+                if specs.any?
+                  @x.rb(:additional) {
+                    # rb_spec_item specs, :water_heater, with_description: true
+                    # rb_spec_item specs, :vacuum_toilets, with_description: true
+                    # rb_spec_item specs, :holding_tanks, with_description: true
+                    # rb_spec_item specs, :anchor_winch, with_description: true
+                    # rb_spec_item specs, :covers, with_description: true
+                    # rb_spec_item specs, :bathing_platform, with_description: true
+                    # rb_spec_item specs, :hydraulic_passarelle, with_description: true
+                    # rb_spec_item specs, :garage, with_description: true
+                    # rb_spec_item specs, :tender, with_description: true
+                    # rb_spec_item specs, :stern_docking_winches, with_description: true
+                    # rb_spec_item specs, :underwater_lighting, with_description: true
+                    # rb_spec_item specs, :teak_laid_cockpit, with_description: true
+                    # rb_spec_item specs, :teak_laid_flybridge, with_description: true
+                    # rb_spec_item specs, :teak_laid_side_decks, with_description: true
+                    # rb_spec_item specs, :wetbar, with_description: true
+                    # rb_spec_item specs, :sunbather, with_description: true
+                    # rb_spec_item specs, :stainless_steel_sliding_door_to_aft_cockpit, with_description: true
+                    # rb_spec_item specs, :hydraulic_trim_tabs, with_description: true
+                    # rb_spec_item specs, :hot_cold_swimming_shower, with_description: true
+                    # rb_spec_item specs, :freshwater_capacity, :unit => specs.freshwater_capacity_units
+                    specs.keys.each { |name| rb_spec_item specs, name }
+                  }
+                end
               }
             }
           end
@@ -262,8 +252,8 @@ module Rightboat
           attributes = {name: spec_name}
 
           if options.delete(:with_description)
-            attributes['rb:description'] = spec_value if spec_value !~ /true|1|yes/i
-            spec_value = 'Yes'
+            attributes['rb:description'] = spec_value if spec_value.to_s !~ /true|1|yes/i
+            spec_value = 'True'
           end
 
           if options.delete(:rb_item)
@@ -274,8 +264,22 @@ module Rightboat
         end
       end
 
-      def rb_spec_item(spec_value, spec_name, options = {})
-        spec_item(spec_value, spec_name, options.merge!(rb_item: true))
+      def rb_spec_item(specs, spec_name, options = {})
+        spec_item(specs.delete(spec_name), spec_name, options.merge!(rb_item: true))
+      end
+
+      def spec_unit_item(spec_value, spec_name, options = {})
+        value, unit = extract_unit(spec_value)
+        unit = 'litres' if unit == 'liters'
+        spec_item value, spec_name, options.merge(unit: unit)
+      end
+
+      def extract_unit(spec_value)
+        if spec_value.present? && spec_value =~ /([\d.]+) ([\w ]+)/
+          [$1, $2]
+        else
+          spec_value
+        end
       end
     end
 

@@ -17,24 +17,25 @@ module Rightboat
 
       SPEC_ATTRS = [
         :hull_type, :hull_shape, :hull_material, :hull_color, :hull_construction, :hull_number, :hull_painting, :hull_painting_year,
-        :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig, :cockpit_type,
-        :range, :lwl_m, :draft_m, :country_built, :displacement_net, :displacement_gross, :displacement_kgs,
+        :flybridge, :air_conditioning, :stern_thruster, :bow_thruster, :bridge, :rig, :cockpit_type, :engine_range_nautical_miles,
+        :lwl_m, :draft_m, :country_built, :displacement_net, :displacement_gross, :displacement_kgs,
         :engine_count, :engine_type, :engine_location, :engine_horse_power, :engine_hours, :engine, :engine_code, :engine_year,
-        :ballast, :ballast_weight, :electrical_circuit, :max_speed, :cruising_speed, :beam_m,
+        :ballast_kgs, :electrical_circuit, :max_speed_knots, :cruising_speed, :beam_m,
         :fresh_water_tanks, :water_tanks_capacity, :holding_tanks, :holding_tanks_capacity,
-        :heads, :berths, :single_berths, :double_berths, :twin_berths, :triple_berths, :cabins, :keel, :keel_type, :keel_code,
+        :heads_count, :berths_count, :single_berths_count, :double_berths_count, :twin_berths_count, :triple_berths_count, :cabins_count, :keel, :keel_type, :keel_code,
         :fuel_tanks, :fuel_tanks_capacity, :designer, :head_room, :builder, :length_on_deck, :propeller, :propeller_type, :propeller_code,
-        :dry_weight, :passengers, :bathrooms, :gps, :gps_year, :vhf, :vhf_year, :plotter, :plotter_year,
+        :dry_weight, :passengers_count, :bathrooms, :gps, :gps_year, :vhf, :vhf_year, :plotter, :plotter_year,
         :radar, :radar_year, :battery_charger, :generator, :generator_kw, :inverter, :bimini,
-        :cd_player, :cd_year, :dvd_player, :dvd_year, :cylinders, :gearbox,
-        :known_defects, :last_serviced, :air_draft, :tv, :tv_year, :cabin_headroom,
+        :cd_player, :cd_year, :dvd_player, :dvd_year, :cylinders_count, :gearbox,
+        :known_defects, :last_serviced, :air_draft_m, :tv, :tv_year, :cabin_headroom,
         :super_structure_colour, :super_structure_construction, :deck_colour, :deck_construction, :deck_material, :spray_hood,
-        :control_type, :oven, :microwave, :fridge, :freezer, :heating, :engine_tankage, :gallons_per_hour,
-        :litres_per_hour, :starting_type, :cooling_system, :navigation_lights, :compass, :compass_year,
-        :depth_instrument, :wind_instrument, :autopilot, :speed_instrument, :toilet, :shower, :bath, :life_raft, :life_raft_age,
-        :epirb, :bilge_pump, :fire_extinguisher, :mob_system, :genoa, :genoa_furling, :genoa_cover, :tri_sail, :storm_jib,
-        :main_sail, :winches, :battery, :shore_power, :fenders, :anchor, :seating_capacity, :drive_transmission_description,
-        :dinette_sleeps, :crew_cabins, :crew_berths, :echosounder, :steering_system, :compartments, :desalinator,
+        :control_type, :oven, :microwave, :fridge, :freezer, :heating, :heating_type, :engine_tankage, :gallons_per_hour,
+        :litres_per_hour, :starting_type, :cooling_system, :cooling_system_type, :navigation_lights, :compass, :compass_year,
+        :depth_instrument, :wind_instrument, :autopilot, :speed_instrument, :toilet, :shower, :bath, :life_raft, :life_raft_capacity, :life_raft_age,
+        :epirb, :bilge_pump, :fire_extinguisher, :fire_extinguisher_type, :mob_system, :mob_system_type, :genoa, :genoa_furling, :genoa_material, :genoa_cover,
+        :tri_sail, :tri_sail_material, :storm_jib, :storm_jib_material, :main_sail_material,
+        :main_sail, :winches_count, :winch_handles, :winch_cover, :battery, :shore_power, :fenders, :anchor, :seating_capacity,
+        :dinette_sleeps, :crew_cabins_count, :crew_berths_count, :echosounder, :steering_system, :compartments, :desalinator,
         :jib, :jib_furling, :main_sail_furling, :main_sail_battened, :masts, :economy_speed, :trim_tabs, :shore_inverter,
         :speed_log, :wind_speed_dir, :steering_indicator, :dual_station_navigation, :magnetic_compass, :searchlight,
         :license, :date_of_refit, :wheel_steering, :bow_sprit, :warranty, :deadrise, :winter, :winter_cover,
@@ -42,15 +43,16 @@ module Rightboat
         :washing_machine, :vcr, :upholstery_replacement, :upholstery_replacement_year, :trailor, :trailor_year, :toerail_name, :toerail_code, :tiller,
         :teak_swimming_platform, :teak_side_decks, :teak_cockpit_table, :teak_cockpit, :swimming_platform, :swimming_ladder,
         :surveyed, :sun_cover, :stern_sunbathing, :steering_wheel, :steering_wheel_cover, :stay, :spray_hood,
-        :spinnaker, :spinnaker_sock, :spinnaker_rigging, :spinnaker_pole, :solent, :solar_panels, :solar_panels_year, :shore_power_inlet,
-        :seawater_pump, :saloon, :rod_holders, :rig_code, :repeater, :repeater_year, :windspeed, :windspeed_year, :winch_cover,
+        :spinnaker, :spinnaker_material, :spinnaker_sock, :spinnaker_rigging, :spinnaker_pole,
+        :solent, :solar_panels, :solar_panels_year, :shore_power_inlet,
+        :seawater_pump, :saloon, :rod_holders, :rig_code, :repeater, :repeater_year, :windspeed, :windspeed_year,
         :removable_cockpit_table, :radiotape_player_year, :radiotape_player, :radar_detector, :radar_detector_year, :radar_reflector,
         :power_24v, :power_220v, :power_12v, :power_110v, :power, :pilothouse_cover, :photos,
         :panelcontrol_cover, :outsidewindow_covers, :outboardengine_cover, :outboardengine_brackets, :othersails,
         :number_cockpit_cushions, :number_seawater_pump, :nb_spreader_levels, :navcenter_year, :navcenter,
         :motor_tiller, :motor_steering_wheel, :motor_boat_name, :mooring_cover, :draft_min, :draft_max, :drive_up,
         :material_code, :mast_pulpit, :marine_heads, :manual_bilge_pump, :mainsheet_traveller,
-        :mainsail_furler, :mainsail_cover, :mainsail_cars, :mainsail, :log_year, :log,
+        :mainsail_furler, :mainsail_cover, :mainsail_cars, :mainsail, :log_year, :log, :drive_transmission_description,
         :leather_covered_steering_wheel, :lazyjacks, :lazybag, :launching_trailor, :launching_trailor_year, :inverter_year,
         :icebox, :hydraulic_gangway, :hydraulic_winch, :hot_cockpit_shower, :halyards_cockpit,
         :gennaker, :generator_year, :generator_power, :gangway_year, :gangway, :fullbattened,
@@ -62,12 +64,12 @@ module Rightboat
         :computer, :compressor, :cockpit_cover, :cockpit_table_cover, :cockpit_table, :cockpit_speakers,
         :cockpit_shower, :cockpit_lightning, :cockpit_cushions, :chemical_heads, :chart_table,
         :cabriolet_dodger, :burner_stove, :bridge_clearance, :boiler,
-        :fishing_chair, :beaching_legs, :battery_charger_number,
-        :battened, :barbecue, :backstay, :autopilot_year, :anti_uv_strips, :anti_osmosis_treatment, :anti_osmosis_treatment_year, :antifouling_year,
+        :fishing_chair, :beaching_legs, :battery_charger_number, :battened, :barbecue, :backstay, :autopilot_year,
+        :anti_uv_strips, :anti_osmosis_treatment, :anti_osmosis_treatment_year, :antifouling_year,
         :antifouling, :antenna_year, :antenna, :alternator, :alternator_year, :air_conditioning_year,
         :fuel_water_tanks, :head_year, :fuel_water_tanks_number, :fresh_water_tanks_number, :heat_year,
         :fridge_capacity, :rope_cutter, :dinghy, :dinghy_year, :dinghy_type, :dinghy_engine, :dinghy_engine_power, :regata, :number_people,
-        :working, :free_board
+        :working, :free_board, :reg_details, :where_built
       ]
 
       RELATION_ATTRIBUTES = [
@@ -237,7 +239,7 @@ module Rightboat
           value = send(spec_name).presence
           value = nil if value.to_s =~ /^(?:[0.]+|false|no)$/i
           if value && value.to_s =~ /^(?:true|1|yes)$/i
-            if value == '1' && (spec_name_str.end_with?('_count') || spec_name_str.in?(%w(cabins crew_cabins heads berths single_berths double_berths twin_berths triple_berths)))
+            if value == '1' && spec_name_str.end_with?('_count')
               # leave numerical value
             else
               value = 'Yes'
@@ -393,13 +395,12 @@ module Rightboat
 
       def cleanup_short_description(desc)
         return '' if desc.blank?
-        # desc = desc[%r{<p>[^<]+</p>}] || desc
         desc = desc[0..480]
         desc = desc.sub(/[^>.!]+\z/, '').presence || "#{desc}..."
         desc.gsub!(/\S+@\S(?:\.\S)+/, '') # remove email
         desc.gsub!(/[\d\(\) -]{9,20}/, '') # remove phone
         desc.gsub!(%r{(?:https?://|www\.)\S+}, '') # remove url
-         Nokogiri::HTML.fragment(desc).to_html
+         Nokogiri::HTML.fragment(desc).to_html # ensure html is valid
       end
 
     end

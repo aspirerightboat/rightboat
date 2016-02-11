@@ -27,7 +27,7 @@ module Rightboat
               'engine_model' => :engine_model,
               'engine_make' => :engine_manufacturer,
               'hours_engine' => :engine_hours,
-              'number_cabins' => :cabins,
+              'number_cabins' => :cabins_count,
               'comments' => :owners_comment,
               'exhibitcomments' => :description,
               'type_name' => :boat_type, # Motor boat
@@ -44,7 +44,7 @@ module Rightboat
               'windlass_name' => :windlass_name,
               'windlass_code' => :windlass_code,
               'windgenerator' => :wind_generator,
-              'winch_handles' => :winches,
+              'winch_handles' => :winch_handles,
               'winch_cover' => :winch_cover,
               'washingmachine' => :washing_machine,
               'vhf_year' => :vhf_year,
@@ -108,12 +108,12 @@ module Rightboat
               'outboardengine_brackets' => :outboardengine_brackets, # 1
               'othersails' => :othersails, # 0
               'oneoff' => '', # 0
-              'number_heads' => :heads, # 2
+              'number_heads' => :heads_count, # 2
               'number_cockpit_cushions' => :number_cockpit_cushions, # 0
-              'number_births_3' => :triple_berths, # 0
-              'number_births_2' => :double_berths, # 3
-              'number_births_1' => :single_berths, # 0
-              'number_births' => :berths, # 6
+              'number_births_3' => :triple_berths_count, # 0
+              'number_births_2' => :double_berths_count, # 3
+              'number_births_1' => :single_berths_count, # 0
+              'number_births' => :berths_count, # 6
               'number_bathrooms' => :bathrooms, # 0
               'numberseawaterpump' => :number_seawater_pump, # 0
               'nb_spreaderlevels' => :nb_spreader_levels, # 3
@@ -254,7 +254,7 @@ module Rightboat
               'stay_characs' => :stay, # ENROLLABLE AUTOVIRANTE SANDWICH 27.4 m
               'othersails_characs' => :othersails, # VELAS NUEVAS DE 2013
               'number_cockpitcushions' => :number_cockpit_cushions, # 0
-              'life_raft_type' => :life_raft, # 10 plazas
+              'life_raft_type' => :life_raft_capacity, # 10 plazas
               'heat_year' => :heat_year, # 0
               'genoa_characs' => :genoa, # TRIRRADIAL EN SANDWICH 93.6M
               'generator_make' => :generator, # ONAN MASE IS 6.5-3

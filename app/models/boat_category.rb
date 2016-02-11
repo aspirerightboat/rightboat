@@ -2,7 +2,7 @@ class BoatCategory < ActiveRecord::Base
   include AdvancedSolrIndex
   include FixSpelling
 
-  has_many :boats, inverse_of: :category, foreign_key: :category_id, dependent: :restrict_with_error
+  has_many :boats, foreign_key: :category_id, dependent: :restrict_with_error
 
   # solr_update_association :boats
 

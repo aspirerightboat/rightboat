@@ -15,7 +15,7 @@ module BrokerArea
       @specs_hash = @boat.boat_specifications.specs_hash
     end
 
-    # EDITABLE_SPEC_NAMES = %w(beam_m draft_m air_draft lwl_m fresh_water_tanks displacement_kgs
+    # EDITABLE_SPEC_NAMES = %w(beam_m draft_m air_draft_m lwl_m fresh_water_tanks displacement_kgs
     #                          engine_type engine_horse_power engine_count hull_type number_on_cabins number_on_berths)
     #
     # def build_specifications

@@ -22,17 +22,19 @@ module Rightboat
 
         def data_mapping
           @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
+              'url' => :source_url,
               'name' => :name,
               'boat_name' => :name,
-              'url' => :source_url,
               'owners_comment' => :owners_comment,
-              'drive_type' => :drive_type,
-              'passenger_capacity' => :passengers,
-              'beam' => :beam_m, #Proc.new { |boat, item| boat.beam_m = unit_processor.call(item)},
-              'draft' => :draft_m, # Proc.new { |boat, item| boat.draft_m = unit_processor.call(item)},
-              'loa' => :length_m, # Proc.new { |boat, item| boat.length_m = unit_processor.call(item)},
-              'lwl' => :lwl_m, #Proc.new { |boat, item| boat.lwl_m = unit_processor.call(item)},
-              'displacement' => :displacement_kgs, #Proc.new { |boat, item| boat.displacement_kgs = unit_processor.call(item)},
+              'passenger_capacity' => :passengers_count,
+              'range' => :engine_range_nautical_miles,
+              'beam' => :beam_m,
+              'draft' => :draft_m,
+              'loa' => :length_m,
+              'lwl' => :lwl_m,
+              'air_draft' => :air_draft_m,
+              'displacement' => :displacement_kgs,
+              'where' => :where_built,
               'year' => :year_built,
               'hull_colour' => :hull_color,
               'fuel' => :fuel_type,
@@ -40,14 +42,18 @@ module Rightboat
               'horse_power' => :engine_horse_power,
               'engine_manufacturer' => :engine_manufacturer,
               'engine_quantity' => :engine_count,
-              'Bimini' => :bimini,
-              'reg_details' => '',
-              'Anchor' => :anchor,
-              'where' => '',
-              'television' => :tv,
-              'shorepower' => :shore_power,
-              'sprayhood' => :spray_hood,
               'tankage' => :engine_tankage,
+              'cylinders' => :cylinders_count,
+              'drive_type' => :drive_type,
+              'cabins' => :cabins_count,
+              'berths' => :berths_count,
+              'winches' => :winches_count,
+              'television' => :tv,
+              'Anchor' => :anchor,
+              'sprayhood' => :spray_hood,
+              'Bimini' => :bimini,
+              'shorepower' => :shore_power,
+              'max_speed' => :max_speed_knots,
           )
         end
 
@@ -188,7 +194,8 @@ module Rightboat
 
         def handle_boat_features(boat, boat_features)
           boat_features.css('item, rb:item').each do |item|
-            attr = data_mapping[item['name']]
+            item_name = item['name']
+            attr = data_mapping[item_name]
             next if attr == ''
 
             value = item.text.strip
@@ -202,9 +209,12 @@ module Rightboat
                 value = "#{value} #{unit}"
               end
             end
+            boat.send("#{item_name}_capacity=", item['capacity']) if item['capacity'].present?
+            boat.send("#{item_name}_type=", item['type']) if item['type'].present?
+            boat.send("#{item_name}_material=", item['material']) if item['material'].present?
 
             if !attr
-              boat.set_missing_attr(item['name'], value)
+              boat.set_missing_attr(item_name, value)
             elsif attr.is_a?(Proc)
               attr.call(boat, item)
             else

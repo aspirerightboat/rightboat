@@ -16,7 +16,7 @@
       - if @other_boats.count > 10
         .clear
           = link_to 'View More >', search_url(@boat.similar_options(@boat.currency)), id: 'view-more'
-
+      %br
     - if @similar_boats.count > 0
       %p There are other similar listings which may be of interest to you.
       %table

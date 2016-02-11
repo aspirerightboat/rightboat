@@ -9,7 +9,7 @@ module Rightboat
     
     attr_reader :q, :manufacturer_model, :category, :country, :boat_type, :manufacturer_id, :model_id,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max, :country_id, :boat_type_id,
-                :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
+                :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no, :offer_status
 
     attr_reader :with_facets, :includes, :per_page
 
@@ -66,6 +66,7 @@ module Rightboat
         any_of { country.each { |country_id| with :country_id, country_id } } if country
         any_of { category.each { |category_id| with :category_id, category_id } } if category
         with :boat_type, boat_type if boat_type
+        with :offer_status, offer_status if offer_status
 
         if with_facets
           facet :country_id
@@ -150,6 +151,7 @@ module Rightboat
         @order_col = params[:order].gsub(/_(?:asc|desc)\z/, '')
       end
       @exclude_ref_no = params[:exclude_ref_no]
+      @offer_status = params[:offer_status] if params[:offer_status].present?
     end
 
     def read_str(str)

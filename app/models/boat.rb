@@ -53,6 +53,7 @@ class Boat < ActiveRecord::Base
     boolean :live do |boat|
       boat.live?
     end
+    string :offer_status
     time :created_at
   end
 

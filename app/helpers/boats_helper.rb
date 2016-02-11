@@ -10,6 +10,15 @@ module BoatsHelper
     "#{length} #{unit}"
   end
 
+  def converted_size(size, unit = nil)
+    return nil if !size
+    size = size.to_f
+    return nil if size <= 0
+    unit ||= try(:current_length_unit) || 'm'
+    size = unit == 'ft' ? size.m_to_ft.round : size
+    "#{size} #{unit}"
+  end
+
   def boat_price(boat, target_currency = nil)
     if boat.poa?
       I18n.t('poa')
@@ -49,8 +58,8 @@ module BoatsHelper
     ret << ['Model', boat.model.name]
     ret << ['Boat Type', boat.boat_type]
     ret << ['LOA', boat_length(boat), 'loa']
-    ret << ['Beam(m)', spec_value_by_name['beam_m']]
-    ret << ['Draft(m)', spec_value_by_name['draft_m']]
+    ret << ['Beam', converted_size(spec_value_by_name['beam_m'])]
+    ret << ['Draft', converted_size(spec_value_by_name['draft_m'])]
     ret << ['Engine Make', boat.engine_manufacturer.try(:name)]
     ret << ['HP', spec_value_by_name['engine_horse_power']]
     ret << ['Engine Count', spec_value_by_name['engine_count']]

@@ -78,6 +78,8 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       f.input :phone
       f.input :remote_ip
       f.input :browser
+      f.input :bad_quality_reason, as: :select, collection: Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, prompt: 'Please select...'
+      f.input :bad_quality_comment
     end
     actions
   end

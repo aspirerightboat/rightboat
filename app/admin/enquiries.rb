@@ -115,7 +115,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:message)
     column(:status)
     column(:lead_price) { |record| number_to_currency(record.lead_price, unit: '£') }
-    column(:eur_rate)
     column(:remote_ip)
     column(:browser)
   end

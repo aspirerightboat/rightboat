@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
       'ADMIN' => 99
   }
 
+  CUSTOMER_DETAIL_REQUESTERS = %w(nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com jamie.coombes@sunseekertorquay.com)
+
   serialize :broker_ids, Array
 
   scope :active, -> { where active: true }
@@ -107,7 +109,18 @@ class User < ActiveRecord::Base
     Digest::MD5.hexdigest("#{email}RightBoatSalt")
   end
 
+  def customer_detail_requested?
+    CUSTOMER_DETAIL_REQUESTERS.include?(email)
+  end
+
+  public
+
+  def send_email_confirmation
+    UserMailer.email_confirmation(id).deliver_now
+  end
+
   private
+
   def slug_candidates
     [
         username,
@@ -135,14 +148,6 @@ class User < ActiveRecord::Base
     end
     true
   end
-
-  public
-
-  def send_email_confirmation
-    UserMailer.email_confirmation(id).deliver_now
-  end
-
-  private
 
   def reconfirm_email_if_changed
     if email_changed? && !id_changed?

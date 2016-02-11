@@ -33,7 +33,7 @@ class EnquiriesController < ApplicationController
     if enquiry.save
       # session.delete(:captcha)
       LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
-      if %w(nick@popsells.com brokerage@sunseekerlondon.com).include? enquiry.boat.user.email
+      if %w(nick@popsells.com).include? enquiry.boat.user.email
         LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
       else
         LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later

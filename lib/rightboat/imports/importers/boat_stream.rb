@@ -241,7 +241,7 @@ module Rightboat
                       when 'DryWeightMeasure' then @boat.dry_weight = to_kilograms(chars, get_attr('unitCode'))
                       when 'NumberOfCabinsNumeric' then @boat.cabins_count = chars # eg. 7
                       # when 'VehicleStockString' # Ashore Larkmans | PB1201 | DS | Sales Area | ...
-                      when 'BallastWeightMeasure' then @boat.ballast_weight = to_kilograms(chars, get_attr('unitCode'), false)
+                      when 'BallastWeightMeasure' then @boat.ballast_kgs = to_kilograms(chars, get_attr('unitCode'), false)
                       when 'HoldingTankCapacityMeasure' then @boat.holding_tanks_capacity = to_liters(chars, get_attr('unitCode'))
                       when 'BridgeClearanceMeasure' then @boat.bridge_clearance = to_meters(chars, get_attr('unitCode'))
                       when 'CabinHeadroomMeasure' then @boat.cabin_headroom = to_meters(chars, get_attr('unitCode'))

@@ -7,6 +7,7 @@ class RegisterBrokerController < ApplicationController
     user = User.new(params.permit(:title, :first_name, :last_name, :email, :phone,
                                   :company_name, :password, :password_confirmation))
     user.role = 'COMPANY'
+    user.address = Address.new
 
     user.validate
     user.errors.add(:base, 'You must agree with terms and conditions') if params[:agree].blank?

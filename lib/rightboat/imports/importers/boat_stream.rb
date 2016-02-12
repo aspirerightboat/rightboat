@@ -64,9 +64,7 @@ module Rightboat
           def process
             return if !@boat
 
-            # @cur_proc.()
-
-            if @tree[0] == 'ProcessVehicleRemarketing'
+            if true # @tree[0] == 'ProcessVehicleRemarketing'
               case @tree[1]
               when 'ApplicationArea'
                 case @tree[2]

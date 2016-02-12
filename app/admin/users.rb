@@ -70,7 +70,7 @@ ActiveAdmin.register User do
       f.input :mobile
       f.input :fax
 
-      f.has_many :address, allow_destroy: false, new_record: false do |ff|
+      f.has_many :address, allow_destroy: false, new_record: f.object.address.blank? do |ff|
         ff.input :line1
         ff.input :line2
         ff.input :town_city

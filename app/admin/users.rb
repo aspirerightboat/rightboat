@@ -4,7 +4,7 @@ ActiveAdmin.register User do
                 :avatar, :avatar_cache,
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
                 broker_info_attributes: [:id, :contact_name, :position, :description, :discount,
-                                         :lead_length_rate, :lead_min_price, :lead_max_price,
+                                         :lead_length_rate, :lead_min_price, :lead_max_price, :payment_method,
                                          :website, :additional_email, :vat_number, :logo, :lead_email_distribution, :_destroy]
 
   config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'

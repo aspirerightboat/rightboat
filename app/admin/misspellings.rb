@@ -14,24 +14,21 @@ ActiveAdmin.register Misspelling do
 
   permit_params :alias_string, :source_type, :source_id
 
-  filter :alias_string, label: 'Name'
-  filter :source_type
+  filter :alias_string, label: 'From'
+  filter :source_type, label: 'Field'
 
   index do
-    column :name do |record|
-      record.alias_string
-
-    end
-    column :source_type
-    column :source
+    column 'From', :alias_string
+    column 'Field', :source_type
+    column 'To', :source
     actions
   end
 
   form do |f|
     f.inputs do
-      f.input :alias_string, label: 'Name'
-      f.input :source_id
-      f.input :source_type
+      f.input :alias_string, label: 'From'
+      f.input :source_id, label: 'To'
+      f.input :source_type, label: 'Field'
     end
     f.actions
   end

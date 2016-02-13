@@ -92,7 +92,7 @@ ActiveAdmin.register Boat do
   end
 
   sidebar 'Tools', only: [:show, :edit] do
-    img_cnt = boat.boat_images.not_deleted.count
+    img_cnt = boat.boat_images.count
     s = ''
     s << "<p>Images count: <b>#{img_cnt}</b></p>"
     if boat.boat_images.any?

@@ -69,7 +69,7 @@ module Rightboat
             @x.advert(ref: boat.id, office_id: boat.office_id, status: boat.offer_status.camelize) {
               @x.advert_media {
                 primary = 'True'
-                boat.boat_images.each do |image|
+                boat.boat_images.not_deleted.each do |image|
                   next unless image.file.file
                   content_type = MIME::Types.type_for(image.file.file.filename).first.content_type
                   @x.media image.file.url, content_type: content_type, caption: nil, primary: primary # TODO: make content_type & caption fields in model

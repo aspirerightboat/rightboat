@@ -49,7 +49,7 @@
   %fieldset
     %h5 5. Boat images:
     .form-group.clearfix
-      .col-md-4.col-xs-12= label_tag('Please upload at least 1 image:') unless f.object.boat_images.any?
+      .col-md-4.col-xs-12= label_tag('Please upload at least 1 image:') unless f.object.boat_images.not_deleted.any?
       .col-md-8.col-xs-12
         .preview-wrap
           = f.fields_for :boat_images do |boat_image|

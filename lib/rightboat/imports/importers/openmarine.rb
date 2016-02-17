@@ -34,6 +34,7 @@ module Rightboat
               'loa' => :length_m,
               'lwl' => :lwl_m,
               'air_draft' => :air_draft_m,
+              'ballast' => :ballast_kgs,
               'displacement' => :displacement_kgs,
               'where' => :where_built,
               'year' => :year_built,

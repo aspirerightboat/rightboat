@@ -11,7 +11,7 @@
         .col.col-9
           .text-pad.clear
             .pull-right.text-right
-              .boat-price= number_to_currency(boat.price, unit: boat.currency.symbol, precision: 0)
+              .boat-price= boat.poa? ? 'POA' : number_to_currency(boat.price, unit: (boat.currency || Currency.default).symbol, precision: 0)
               .boat-spec.tax-status= boat.tax_paid? ? 'Tax paid' : ''
               .boat-links
                 = link_to 'Contact Broker', boat_url(id: boat.slug, anchor: 'enquiry_popup'), class: 'btn'

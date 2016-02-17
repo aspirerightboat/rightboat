@@ -2,6 +2,15 @@
 #= require twitter/bootstrap/popover
 
 $ ->
+  sourceMaps =
+    'Manufacturer': 'manufacturers',
+    'Model': 'models',
+    'Country': 'countries',
+    'Specification': 'specifications',
+    'EngineManufacturer': 'engine_manufacturers',
+    'EngineModel': 'engine_models',
+    'VatRate': 'vat_rates'
+
   if ($buttons = $('.merge-record')).length
     path = window.location.pathname.replace(/\/$/, '')
     collection = null
@@ -52,3 +61,8 @@ $ ->
           return false
       else
         togglePopup($this)
+
+  $('#misspelling_source_type').change ->
+    val = $(this).val()
+    source = '/admin/' + sourceMaps[val] + '/search'
+    $('#misspelling_source_name').attr('data-autocomplete', source).railsAutocomplete()

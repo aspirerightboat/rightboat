@@ -12,7 +12,7 @@
   - if @featured_boats.any?
     #featured-boats.nabvar-tools
       %h3.toolbar-title Featured Boats
-    .container
+    #featured-wrap.container
       .row(data-layout-mode="gallery")
         = render @featured_boats, back: true
 

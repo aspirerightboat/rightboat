@@ -398,6 +398,8 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.2)
       loofah (~> 2.0)
+    rails4-autocomplete (1.1.1)
+      rails (>= 3.0)
     railties (4.2.1)
       actionpack (= 4.2.1)
       activesupport (= 4.2.1)
@@ -573,6 +575,7 @@ DEPENDENCIES
   puma
   quiet_assets
   rails (= 4.2.1)
+  rails4-autocomplete
   redis-rails
   remotipart
   rmagick
@@ -597,4 +600,4 @@ DEPENDENCIES
   xxhash
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

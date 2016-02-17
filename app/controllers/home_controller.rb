@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     end
 
     @featured_boats = Rails.cache.fetch 'rb.featured_boats', expires_in: 1.hour do
-      Boat.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.not_deleted.limit(6)
+      Boat.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.not_deleted.shuffle
     end
     recently_viewed_boat_ids = Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id)
     @recent_boats = Boat.where(id: recently_viewed_boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)

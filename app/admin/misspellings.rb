@@ -27,8 +27,9 @@ ActiveAdmin.register Misspelling do
   form do |f|
     f.inputs do
       f.input :alias_string, label: 'From'
-      f.input :source_id, label: 'To'
-      f.input :source_type, label: 'Field'
+      f.input :source_type, as: :select, label: 'Field', collection: %w(Manufacturer Model Country Specification EngineManufacturer EngineModel VatRate), include_blank: false
+      f.input :source_id, as: :hidden
+      f.input :source_name, as: :autocomplete, url: search_admin_manufacturers_path, label: 'To', input_html: { id_element: '#misspelling_source_id' }
     end
     f.actions
   end

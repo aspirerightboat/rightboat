@@ -41,6 +41,11 @@ module SpellFixable
       end
       redirect_to :back
     end
+
+    base.send :collection_action, :search, method: :get, format: :json do
+      collection = resource_class.where('name LIKE ?', "%#{params[:term]}%").select(:id, :name).limit(10)
+      render json: collection.map { |x| { id: x.id, value: x.name} }, root: false
+    end
   end
 
 end

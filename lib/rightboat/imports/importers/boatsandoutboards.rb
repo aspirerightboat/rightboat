@@ -112,9 +112,12 @@ module Rightboat
           boat.location = doc.search('.ad_header .location').first.text.strip rescue nil
           boat.description = doc.search('.ad_descr').first.children.to_s rescue ''
 
-          boat.images = doc.search('.ad_icn_photos a').map do |img_link|
-            advert_url(img_link['data-img'])
-          end.reject(&:blank?)
+          images = []
+          doc.search('.ad_icn_photos a').map do |img|
+            url = advert_url(img['data-img'])
+            images << {url: url} if url
+          end
+          boat.images = images
 
           fields.each do |key, val|
             if (attr = DATA_MAPPINGS[key])

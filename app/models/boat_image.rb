@@ -5,62 +5,53 @@ class BoatImage < ActiveRecord::Base
 
   mount_uploader :file, BoatImageUploader
 
-  default_scope -> { order :position }
+  def update_image_from_source
+    return if ENV['SKIP_DOWNLOAD_IMAGES']
 
-  def http_last_modified_string
-    if (last_modified = read_attribute(:http_last_modified))
-      last_modified.httpdate
-    else
-      50.years.ago.httpdate
-    end
-  end
-
-  def cache_file_from_source_url
     retries = 0
-    url = URI.encode(URI.decode(source_url.to_s)).gsub('[', '%5B').gsub(']', '%5D')
-    uri = URI.parse(url) rescue nil
-    if !uri || ENV['SKIP_DOWNLOAD_IMAGES']
-      return
-    end
+    url = URI.encode(URI.decode(source_url)).gsub('[', '%5B').gsub(']', '%5D')
+    uri = (URI.parse(url) rescue nil)
+    return unless uri
 
-    puts "[#{id}] Downloading #{url}" if !Rails.env.production?
     begin
-      open(url, 'If-Modified-Since' => http_last_modified_string) do |f|
-        _t_file = Tempfile.new('import', encoding: 'binary')
-        _t_file.write(f.read)
-        _t_file.flush
+      headers = {}
+      headers['If-Modified-Since'] = http_last_modified.httpdate if http_last_modified
+      headers['If-None-Match'] = http_etag if http_etag
+      open(uri, headers) do |f|
+        temp_file = Tempfile.new('rb-import-img-')
+        temp_file.binmode
+        temp_file.write(f.read)
+        temp_file.flush
 
         self.file = ActionDispatch::Http::UploadedFile.new(
-          tempfile: _t_file,
-          filename: File.basename(uri.path)
+            tempfile: temp_file,
+            filename: File.basename(uri.path)
         )
-
-        if f.meta['last-modified']
-          self.http_last_modified = Time.parse(f.meta['last-modified'].to_s)
-        end
-        puts "[#{id}] - OK" if !Rails.env.production?
+        self.content_type = FileMagic.new(FileMagic::MAGIC_MIME).file(temp_file.path).split(';').first
+        self.http_last_modified = Time.parse(f.meta['last-modified']) if f.meta['last-modified']
+        self.http_etag = f.meta['etag'] if f.meta['etag']
+        self.downloaded_at = Time.current
+        # puts "[#{id}] - OK" if !Rails.env.production?
       end
-    rescue Exception => e
-      if e.is_a?(Errno::ECONNREFUSED) || e.is_a?(Net::ReadTimeout)
-        if retries > 5
-          puts "[#{id}] Max retries reached. Failed" if !Rails.env.production?
+    rescue Errno::ECONNREFUSED, Net::ReadTimeout => e
+      if retries > 3
+        logger.error "#{e.class.name}: #{e.message}. Max retries reached for #{url}"
+      else
+        retries += 1
+        # puts "[#{id}] Retry #{retries}" if !Rails.env.production?
+        sleep 3.seconds
+        retry
+      end
+    rescue OpenURI::HTTPError => e
+      case e.message[0,3]
+        when '404'
+          # puts "[#{id}] 404 - Not found, destroy" if !Rails.env.production?
+          remove_file!
+          destroy(:force) if persisted?
+        when '304'
+          # puts "[#{id}] 304 - Not modified, continue" if !Rails.env.production?
         else
-          retries += 1
-          puts "[#{id}] Retry #{retries}" if !Rails.env.production?
-          sleep 5
-          retry
-        end
-      elsif e.is_a?(OpenURI::HTTPError)
-        case e.message[0,3]
-          when '404'
-            puts "[#{id}] 404 - Not found, destroy" if !Rails.env.production?
-            remove_file!
-            destroy if persisted?
-          when '304'
-            puts "[#{id}] 304 - Not modified, continue" if !Rails.env.production?
-          else
-            logger.error "[#{id}] #{url} #{e.message}"
-        end
+          logger.error "[#{id}] #{url} #{e.message}"
       end
     end
   end
@@ -68,4 +59,8 @@ class BoatImage < ActiveRecord::Base
   def file_exists?
     file.file.present?
   end
+
+  # def mime_type_by_ext
+  #   MIME::Types.type_for(file.file.filename).first.content_type
+  # end
 end

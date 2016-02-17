@@ -142,7 +142,7 @@ module Rightboat
               url.host ||= "www.boatshop24.co.uk"
               url.scheme ||= 'http'
               img_src = url.to_s.gsub(/\&width\=\d+$/, '')
-              boat.images << img_src
+              boat.images << {url: img_src}
             end
           rescue OpenURI::HTTPError => e
             puts "#{pics_url(id)} #{e.message}"

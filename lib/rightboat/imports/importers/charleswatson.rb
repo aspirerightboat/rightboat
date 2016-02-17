@@ -79,11 +79,12 @@ module Rightboat
           end
           boat.description = description
 
-          boat.images = []
-          boat.images << advert_url(doc.search('article[@id="mainContent"] p > img').first.attr('src'))
-          boat.images += doc.search('a.group1 img').map do |img|
+          images = []
+          images << advert_url(doc.search('article[@id="mainContent"] p > img').first.attr('src'))
+          images.concat doc.search('a.group1 img').map do |img|
             advert_url(img['src'])
           end.reject(&:blank?)
+          boat.images = images.map { |img_url| {url: img_url} }
 
           fields.each do |key, val|
             if (attr = DATA_MAPPINGS[key])

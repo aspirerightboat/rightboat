@@ -112,7 +112,6 @@ namespace :db do
       v1_boat.boat_images.each do |v1_img|
         img = boat.boat_images.new
         img.http_last_modified = v1_img.http_last_modified
-        img.source_ref = v1_img.image_reference
         img.source_url = v1_img.source_url
         img.position = v1_img.display_order
         img.save(validate: false)

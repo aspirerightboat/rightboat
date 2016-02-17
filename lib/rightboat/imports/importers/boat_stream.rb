@@ -25,9 +25,11 @@ module Rightboat
         end
 
         class BoatStreamParser < Nokogiri::XML::SAX::Document
-          def initialize(source, party_ids)
+          include ActionView::Helpers::TextHelper # for simple_format
+
+          def initialize(importer, party_ids)
             @party_ids = party_ids.split(', ')
-            @source = source
+            @importer = importer
             @tree = []
             @country_id_by_iso = Country.pluck(:iso, :id).to_h
           end
@@ -39,9 +41,6 @@ module Rightboat
             @tree.push(el)
             if el == 'VehicleRemarketing'
               @boat = SourceBoat.new
-              @boat.images = []
-              @boat.office = {address_attributes: {}}
-              @engines_count = 0
             end
           end
 
@@ -56,7 +55,7 @@ module Rightboat
             @attr_hash = nil
             if el == 'VehicleRemarketing' && @boat
               @boat.engine_count = @engines_count if @engines_count > 0
-              @source.enqueue_job(@boat)
+              @importer.enqueue_job(@boat)
               @boat = nil
             end
           end
@@ -118,7 +117,13 @@ module Rightboat
                     when 'DealerParty'
                       case @tree[5]
                       when 'PartyID'
-                        @boat = nil if @party_ids.exclude?(chars)
+                        if @party_ids.include?(chars)
+                          @boat.office = {address_attributes: {}}
+                          @boat.images = []
+                          @engines_count = 0
+                        else
+                          @boat = nil
+                        end
                       when 'SpecifiedOrganization'
                         case @tree[6]
                         when 'CompanyName' then @boat.office[:name] = chars # eg. Essex Clarke & Carter
@@ -155,11 +160,14 @@ module Rightboat
                         end
                       end
                     when 'ImageAttachmentExtended'
-                      case @el
-                      when 'URI' then @boat.images << chars
-                      # when ImageLastModifiedDateTime # eg. 2014-08-07T03:04:47-08:00
-                      # when UsagePreference # int number 0..n
-                      # when ImageAttachmentTitle # some title, not empty
+                      case @tree[5]
+                      when 'URI' then @boat.images << {url: chars}
+                      when 'ImageLastModifiedDateTime' then @boat.images.last[:mod_time] = DateTime.strptime(chars, '%Y-%m-%dT%H:%M:%S%z') # eg. 2014-08-07T03:04:47-08:00
+                      # when 'UsagePreference'
+                      #   case @tree[6]
+                      #   when 'PriorityRankingNumeric' # 0..n
+                      #   end
+                      when 'ImageAttachmentTitle' then @boat.images.last[:caption] = chars # eg. Bayliner 245 - STBD View
                       end
                     when 'LastModificationDate' # eg. 2015-11-25
                     when 'ItemReceivedDate' # eg. 2014-08-07
@@ -179,17 +187,17 @@ module Rightboat
                       when 'ModelYear' then @boat.year_built = chars # eg. 1990
                       when 'SaleClassCode' then @boat.new_boat = chars # New | Used
                       when 'Model' then @boat.model = chars # 2GM20 | Sun Odyssey 439 | ...
-                      # when 'BoatLengthGroup' # contains
-                      case @tree[5]
-                      when 'BoatLengthCode' then @length_code = chars
-                      when 'BoatLengthMeasure'
-                        case @length_code
-                        when 'Nominal Length' then @boat.length_m = to_meters(chars, get_attr('unitCode'), false) # sometimes Length Overall is empty so put this value there
-                        when 'Length At Water Line' then @boat.lwl_m = to_meters(chars, get_attr('unitCode'), false)
-                        when 'Length Overall' then @boat.length_m = to_meters(chars, get_attr('unitCode'), false)
-                        when 'Length Of Deck' then @boat.length_on_deck = to_meters(chars, get_attr('unitCode'))
+                      when 'BoatLengthGroup'
+                        case @tree[6]
+                        when 'BoatLengthCode' then @length_code = chars
+                        when 'BoatLengthMeasure'
+                          case @length_code
+                          when 'Nominal Length' then @boat.length_m = to_meters(chars, get_attr('unitCode'), false) # sometimes Length Overall is empty so put this value there
+                          when 'Length At Water Line' then @boat.lwl_m = to_meters(chars, get_attr('unitCode'), false)
+                          when 'Length Overall' then @boat.length_m = to_meters(chars, get_attr('unitCode'), false)
+                          when 'Length Of Deck' then @boat.length_on_deck = to_meters(chars, get_attr('unitCode'))
+                          end
                         end
-                      end
                       when 'BeamMeasure' then @boat.beam_m = to_meters(chars, get_attr('unitCode'), false)
                       when 'DraftMeasureGroup'
                         case @tree[6]
@@ -209,7 +217,7 @@ module Rightboat
                       when 'CruisingSpeedMeasure' then @boat.cruising_speed = to_knots(chars, get_attr('unitCode'))
                       when 'TotalEnginePowerQuantity' then @boat.engine_horse_power = chars # eg. 900.0
                       when 'GeneralBoatDescription'
-                        @boat.description = @boat.short_description = chars
+                        @boat.description = @boat.short_description = process_description(chars)
                         # when 'BuilderName' # contains extended maker name like in MakeString or nil
                       when 'DesignerName' then @boat.designer = chars # eg. J&J Design
                       when 'BoatName' then @boat.name = chars
@@ -286,7 +294,8 @@ module Rightboat
                         return if @last_title == 'Important Information'
                         return if @last_title == 'Prueba'
                         return if @last_title == 'Cláusula De Responsabilidad'
-                        @boat.description << "<h3>#{@last_title}</h3>#{chars}"
+                        return if @last_title == 'customContactInformation'
+                        @boat.description << "<h3>#{@last_title}</h3>#{process_description(chars)}"
                       end
                     # when 'LastModificationTime' # eg. 05:55:11
                     when 'Marketing'
@@ -329,7 +338,7 @@ module Rightboat
             res = case unit
                   when 'meter' then value_str
                   when 'feet' then value_str.to_f.ft_to_m.round(2).to_s
-                  else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
+                  else (@importer.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
             res && include_unit ? "#{res} meters" : res
           end
@@ -338,7 +347,7 @@ module Rightboat
             res = case unit
                   when 'liter' then value_str
                   when 'gallon' then value_str.to_f.gallons_to_liters.round(2).to_s
-                  else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
+                  else (@importer.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
             "#{res} liters" if res
           end
@@ -348,7 +357,7 @@ module Rightboat
                   when 'knots' then value_str
                   when 'miles per hour' then value_str.to_f.kph_to_knots.round(2).to_s
                   when 'kilometers per hour' then value_str.to_f.mph_to_knots.round(2).to_s
-                  else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
+                  else (@importer.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
             res && include_unit ? "#{res} knots" : res
           end
@@ -357,7 +366,7 @@ module Rightboat
             res = case unit
                   when 'kilogram' then value_str
                   when 'pound' then value_str.to_f.pounds_to_kilograms.round(2).to_s
-                  else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
+                  else (@importer.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
             res && include_unit ? "#{res} kilograms" : res
           end
@@ -365,9 +374,14 @@ module Rightboat
           def to_degrees(value_str, unit)
             res = case unit
                   when 'degree' then value_str
-                  else (@source.log_warning "Unknown unit: #{unit}"; return value_str)
+                  else (@importer.log_warning "Unknown unit: #{unit}"; return value_str)
                   end
             "#{res} degrees"
+          end
+
+          def process_description(str)
+            str = simple_format(str) if !str['<']
+            str
           end
         end
 

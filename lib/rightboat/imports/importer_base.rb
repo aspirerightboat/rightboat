@@ -33,6 +33,8 @@ module Rightboat
         if @import_trail.error_msg
           ImportMailer.importing_errors(@import_trail.id).deliver_now
         end
+
+        log "Finished in #{@import_trail.duration.strftime('%H:%M:%S')}"
       end
 
       def starting
@@ -95,10 +97,8 @@ module Rightboat
         end
 
         boats_count = @user.boats.not_deleted.count
-        log "updating boats count cache #{boats_count}"
         @user.update boats_count: boats_count
-
-        log 'Finished'
+        log "Broker's boats count updated: #{boats_count}"
       end
 
       def safe_threads_count

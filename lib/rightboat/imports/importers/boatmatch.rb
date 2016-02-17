@@ -30,7 +30,7 @@ module Rightboat
           'currency' => :currency,
           'url_pic' => Proc.new do |boat, v|
             boat.images ||= []
-            boat.images << v
+            boat.images << {url: v}
           end
         }
 
@@ -47,8 +47,9 @@ module Rightboat
 
           job[:item].element_children.each do |c|
             key = c.name
-            val = cleanup_string(c.text)
+            val = c.text
             next if val.blank?
+            val.squeeze_whitespaces!.strip!
 
             if (attr = DATA_MAPPINGS[key])
               if attr.is_a?(Proc)
@@ -59,13 +60,12 @@ module Rightboat
             else
               if key =~ /unit$/
                 attr = key.gsub(/unit$/, '')
-                unit = cleanup_string(c.text)
                 if %w(length beam draft lwl).include?(attr)
                   attr_m = attr + '_m'
-                  cv = convert_unit(boat.send(attr_m), unit)
+                  cv = convert_unit(boat.send(attr_m), val)
                   boat.send("#{attr_m}=", cv)
                 else
-                  cv = convert_unit(boat.get_missing_attr(attr), unit)
+                  cv = convert_unit(boat.get_missing_attr(attr), val)
                   boat.set_missing_attr(attr, cv)
                 end
               else

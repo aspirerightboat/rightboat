@@ -40,7 +40,11 @@ module Rightboat::Imports
       boat.drive_type = boat_nodes['Drives'].text
       boat.rig = boat_nodes['Rig'].text
       boat.keel = boat_nodes['Keel'].text
-      boat.images = boat_nodes['Images'].element_children.map { |n| n.first_element_child.text.sub(/\?.*/, '') }
+      boat.images = boat_nodes['Images'].element_children.map do |n|
+        url = n.first_element_child.text.sub(/\?.*/, '')
+        #image_type = # n.element_children[1].text #=> Default Image | Layout Image | General Image
+        {url: url}
+      end
       boat.office = {
           name: boat_nodes['OfficeName'].text,
           daytime_phone: boat_nodes['Phone'].text,

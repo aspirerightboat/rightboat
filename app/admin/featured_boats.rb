@@ -43,7 +43,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
       res.join('<br>').html_safe
     end
     actions do |boat|
-      item 'Deactivate', admin_boat_path(boat, boat: { featured: false }), method: :put, class: 'member_link'
+      item 'Unfavourite', admin_boat_path(boat, boat: { featured: false }), method: :put, class: 'member_link'
     end
   end
 

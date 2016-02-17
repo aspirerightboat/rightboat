@@ -14,7 +14,9 @@ module Rightboat
         def download_latest_file
           log 'connect to sftp'
           sftp = 'sshpass -e sftp -oBatchMode=no -b - rightboats@elba.boats.com'
-          remote_file = `echo 'ls -t upload/*.xml' | #{sftp} | grep -v "sftp>" | head -n1`.strip
+          ls_listing = `echo 'ls -l upload/*.xml' | #{sftp} | grep -v "sftp>"`.strip # they restricted ls params so we cannot just sort by time "ls -t"
+          # -rw-r--r--    0 3011     500      76092888 Feb 14 04:03 upload/BS_dbe29940-ea8e-4399-9804-0b4417e9620b188500188505.xml
+          remote_file = ls_listing.scan(/(\w\w\w (?: |\d)\d \d\d:\d\d) (\S+)$/).map { |t, f| [Time.parse(t), f] }.max_by(&:first).last
 
           log "Download file #{remote_file}"
           `echo "get -P #{remote_file} #{BOATSTREAM_XML_PATH}" | #{sftp}`

@@ -13,11 +13,6 @@ module Rightboat
 
       def initialize(import)
         @import = import
-        @import_trail = ImportTrail.create(import: @import)
-        init_logger
-        @import_trail.update(log_path: @log_path)
-        @prev_import_ran_at = @import.last_ran_at
-        @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
       end
 
       def run
@@ -38,6 +33,12 @@ module Rightboat
       end
 
       def starting
+        @import_trail = ImportTrail.create(import: @import)
+        init_logger
+        @import_trail.update(log_path: @log_path)
+        @prev_import_ran_at = @import.last_ran_at
+        @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
+
         @import.param.each { |key, value| instance_variable_set("@#{key}", value) }
 
         init_mechanize_agent

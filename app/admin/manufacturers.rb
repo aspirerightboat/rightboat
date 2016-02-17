@@ -39,5 +39,4 @@ ActiveAdmin.register Manufacturer do
     end
     f.actions
   end
-
 end

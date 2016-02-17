@@ -62,7 +62,7 @@ ActiveAdmin.register BoatImage do
 
   controller do
     def scoped_collection
-      end_of_association_chain.order(:position)
+      end_of_association_chain.order(:position, :id)
     end
   end
 

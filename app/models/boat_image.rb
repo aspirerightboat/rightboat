@@ -1,7 +1,7 @@
 require 'open-uri'
 
 class BoatImage < ActiveRecord::Base
-  belongs_to :boat, inverse_of: :boat_images
+  belongs_to :boat
 
   mount_uploader :file, BoatImageUploader
 

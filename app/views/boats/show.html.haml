@@ -39,7 +39,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
     %h1= @page_title
 
   #slider.hide
-    - @boat.boat_images.each do |boat_img|
+    - @boat.boat_images.not_deleted.each do |boat_img|
       %figure
         = link_to boat_img.file_url, 'data-size' => "#{boat_img.width}x#{boat_img.height}" do
           = image_tag boat_img.file_url, alt: @page_title

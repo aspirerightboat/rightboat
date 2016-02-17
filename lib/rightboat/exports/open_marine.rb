@@ -70,7 +70,7 @@ module Rightboat
               @x.advert_media {
                 primary = 'true'
                 boat.boat_images.each do |image|
-                  next unless image.file_exists?
+                  next if image.deleted? || !image.file_exists?
                   @x.media image.file.url, type: image.content_type, caption: image.caption, primary: primary, 'rb:file_mtime' => image.downloaded_at.iso8601
                   primary = 'false'
                 end

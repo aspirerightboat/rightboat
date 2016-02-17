@@ -351,7 +351,9 @@ module Rightboat
             next if node.name.start_with?('Deal_') || node.name == 'An_Broker'
 
             if node.name == 'URL_Photo'
-              boat.images = node.element_children.map(&:text)
+              boat.images = node.element_children.map do |n|
+                {url: n.text, mod_time: DateTime.strptime(n['last_update'], '%Y-%m-%d %H:%M:%S')}
+              end
             else
               key = node.name.sub('An_', '').downcase
               val = node.text
@@ -375,6 +377,11 @@ module Rightboat
           end
 
           boat
+        end
+
+        # do in console: doc = Rightboat::Imports::Importers::Eyb.doc_for_testing;1
+        def self.doc_for_testing
+          Nokogiri::XML(open("#{Rails.root}/import_data/eyb.xml"))
         end
       end
     end

@@ -1,6 +1,7 @@
 ActiveAdmin.register Import do
   menu priority: 3
 
+  filter :id, as: :numeric
   filter :user, collection: -> { User.companies }
   filter :active
   filter :import_type, as: :select, collection: -> { Rightboat::Imports::ImporterBase.import_types }

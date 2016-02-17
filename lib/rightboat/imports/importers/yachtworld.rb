@@ -243,7 +243,10 @@ module Rightboat
           end
           boat.manufacturer_model = h3_manufacturer_model if !boat.manufacturer && !boat.model
 
-          boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map { |n| n[:src].sub(/\?.*/, '') }
+          boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map do |n|
+            url = n[:src].sub(/\?.*/, '')
+            {url: url}
+          end
           boat
         end
 
@@ -276,7 +279,7 @@ module Rightboat
         end
 
         def fix_whitespace(str)
-          str.gsub(WHITESPACES_REGEX, ' ').strip
+          str.squeeze_whitespaces!.strip!
         end
 
         def assign_boat_attr(boat, attr, data)

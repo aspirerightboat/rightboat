@@ -3,6 +3,7 @@ ActiveAdmin.register ImportTrail do
 
   filter :import_import_type, as: :select, collection: Rightboat::Imports::ImporterBase.import_types
   filter :import_user_id, as: :select, collection: User.companies.order(:company_name)
+  filter :import_id, as: :numeric
   filter :error_msg
   filter :created_at
 

@@ -1,6 +1,7 @@
 module Rightboat
   module Imports
     module Importers
+      # schema is described here: http://www.openmarine.org/schema.aspx credentials admin/admin
 
       # example feeds:
       # http://www.idealboat.com/theyachtmarket_feed.php
@@ -143,19 +144,26 @@ module Rightboat
           media_nodes = advert_media.element_children
           media_nodes.select { |node| !node['type'].start_with?('video') } # ignore "video/youtube" so far; there could be also "application/octet-stream" pointing to jpg
 
-          media_urls = media_nodes.each_with_object([]) do |node, arr| # some sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
-            url = node.text
-            primary = node['primary']
-            primary && primary =~ /true|1|yes/i ? arr.unshift(url) : arr.push(url)
-          end
-
-          boat.images = media_urls.map do |url|
-            url.strip!
+          # note: some import sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
+          # note: openmarine specs allows several primary (emphasized) resources but here only the first primary is taken into account
+          images = []
+          media_nodes.each do |node|
+            url = clean_text(node)
+            next if !url
             url = URI.encode(url)
             url.gsub!(/[\[\]]/) { |m| m == '[' ? '%5B' : '%5D' }
-            url = URI.parse(@url).merge(url).to_s if !url.start_with?('http:')
-            url
+            url = URI.parse(@url).merge(url).to_s if url !~ /^https?:/
+
+            item = {url: url}
+            caption = node['caption'].try(:strip)
+            item[:caption] = caption if caption.present?
+            mod_time = node['rb:file_mtime']
+            item[:mod_time] = DateTime.parse(mod_time) if mod_time.present?
+
+            primary = node['primary'].to_s =~ /true|1|yes/i
+            primary ? images.unshift(item) : images << item
           end
+          boat.images = images
         end
 
         def handle_advert_features(boat, advert_features)
@@ -224,11 +232,7 @@ module Rightboat
         end
 
         def clean_text(node)
-          str = node.try(:text)
-          if str
-            str.strip!
-            str.presence
-          end
+          node.try(:text).try(:strip).presence
         end
 
         def read_poa(str)

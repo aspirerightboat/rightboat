@@ -68,12 +68,11 @@ module Rightboat
             specs = boat.boat_specifications.specs_hash
             @x.advert(ref: boat.id, office_id: boat.office_id, status: boat.offer_status.camelize) {
               @x.advert_media {
-                primary = 'True'
-                boat.boat_images.not_deleted.each do |image|
-                  next unless image.file.file
-                  content_type = MIME::Types.type_for(image.file.file.filename).first.content_type
-                  @x.media image.file.url, content_type: content_type, caption: nil, primary: primary # TODO: make content_type & caption fields in model
-                  primary = 'False'
+                primary = 'true'
+                boat.boat_images.each do |image|
+                  next if image.deleted? || !image.file_exists?
+                  @x.media image.file.url, type: image.content_type, caption: image.caption, primary: primary, 'rb:file_mtime' => image.downloaded_at.iso8601
+                  primary = 'false'
                 end
               }
               @x.advert_features {
@@ -81,7 +80,7 @@ module Rightboat
                 @x.boat_category boat.category.try(:name)
                 @x.new_or_used (boat.new_boat? ? 'new' : 'used').camelize
                 @x.vessel_lying boat.location, country: boat.country.try(:iso)
-                @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency.try(:name), vat_included: boat.vat_rate.try(:tax_paid?).try(:camelize)
+                @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency.try(:name), vat_included: boat.vat_rate.try(:tax_paid?)
                 @x.marketing_descs {
                   @x.marketing_desc(language: 'en') { @x.cdata! boat.description.to_s }
                 }
@@ -145,8 +144,8 @@ module Rightboat
                   spec_item specs.delete(:bow_thruster), 'bow_thruster', with_description: true
                   spec_item boat.fuel_type.try(:name), 'fuel'
                   spec_item specs.delete(:engine_hours), 'hours'
-                  spec_item specs.delete(:cruising_speed), 'cruising_speed'
-                  spec_unit_item specs.delete(:max_speed_knots), 'max_speed'
+                  spec_unit_item specs.delete(:cruising_speed), 'cruising_speed'
+                  spec_item specs.delete(:max_speed_knots), 'max_speed', unit: 'knots'
                   spec_item specs.delete(:engine_horse_power), 'horse_power' # TODO: check importers - should be HP of a single engine
                   spec_item boat.engine_manufacturer.try(:name), 'engine_manufacturer'
                   spec_item specs.delete(:engine_count), 'engine_quantity'
@@ -188,7 +187,7 @@ module Rightboat
                   spec_item specs.delete(:mob_system), 'mob_system', type: specs.delete(:mob_system_type), with_description: true
                 }
                 @x.rig_sails {
-                  spec_item specs.delete(:genoa), 'genoa', material: specs.delete(:genoa_material), furling: specs.delete(:genoa_furling).try(:camelize), with_description: true
+                  spec_item specs.delete(:genoa), 'genoa', material: specs.delete(:genoa_material), furling: specs.delete(:genoa_furling), with_description: true
                   spec_item specs.delete(:spinnaker), 'spinnaker', material: specs.delete(:spinnaker_material), with_description: true
                   spec_item specs.delete(:tri_sail), 'tri_sail', material: specs.delete(:tri_sail_material), with_description: true
                   spec_item specs.delete(:storm_jib), 'storm_jib', material: specs.delete(:storm_jib_material), with_description: true

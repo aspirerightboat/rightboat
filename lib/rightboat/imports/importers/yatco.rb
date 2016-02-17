@@ -52,7 +52,7 @@ module Rightboat
             next if val.blank?
 
             if key == 'gallery'
-              boat.images = node.children.map { |g| g.search('url').first.text }.reject(&:blank?)
+              boat.images = node.children.map { |g| g.search('url').first.text }.reject(&:blank?).map { |url| {url: url} }
             else
               if (attr = DATA_MAPPINGS[key])
                 if attr.is_a?(Proc)
@@ -70,7 +70,7 @@ module Rightboat
                 elsif key == 'location_state' && boat.location.blank?
                   boat.location = val
                 elsif key == 'sales_person'
-                  boat.office[:name] = val
+                  boat.office[:name] = boat.office[:contact_name] = val
                 elsif key == 'sales_person_fax'
                   boat.office[:fax] = val
                 elsif key == 'sales_person_email'

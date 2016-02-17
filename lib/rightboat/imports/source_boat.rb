@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'rightboat/imports/utils' # fix "Circular dependency" error while running multithreaded import
+require 'xxhash'
 
 module Rightboat
   module Imports
@@ -89,7 +90,8 @@ module Rightboat
 
       (NORMAL_ATTRIBUTES + SPEC_ATTRS + DYNAMIC_ATTRIBUTES + RELATION_ATTRIBUTES).each do |attr_name|
         define_method "#{attr_name}=" do |v|
-          instance_variable_set "@#{attr_name}".to_sym, cleanup_string(v)
+          v.ensure_utf8!.squeeze_whitespaces!.strip! if v.is_a?(String)
+          instance_variable_set :"@#{attr_name}", v
         end
       end
 
@@ -189,44 +191,11 @@ module Rightboat
           target.send "#{attr_name}=", value
         end
 
-        if office.present?
-          importer.jobs_mutex.synchronize do
-            @@user_offices ||= user.offices.includes(:address).to_a
-
-            office_attrs = office.symbolize_keys
-            office = @@user_offices.find { |o| o.name == office_attrs[:name] } || user.offices.new(name: office_attrs[:name])
-            office.name = user.company_name if office_attrs[:name].blank? && @@user_offices.none?
-            office.address ||= Address.new
-            office.assign_attributes(office_attrs)
-
-            @@user_offices << office if office.new_record?
-            office.save! if office.changed?
-            office.address.save! if office.address.changed?
-            target.office = office
-          end
-        elsif office_id
-          target.office_id = office_id
-        end
+        handle_office
 
         target.poa = price.blank? || price.to_i <= 0
 
-        self.images_count = 0
-        boat_images_by_url = (target.boat_images.index_by(&:source_url) if target.persisted?)
-
-        images.each do |url|
-          url.strip!
-          img = (boat_images_by_url[url] if target.persisted?) || BoatImage.new(source_url: url, boat: target)
-          img.cache_file_from_source_url
-          if target.new_record?
-            if img.file_exists?
-              target.boat_images << img
-              self.images_count += 1
-            end
-          else
-            success = img.save
-            self.images_count += 1 if success
-          end
-        end
+        handle_images
 
         self.new_record = target.new_record?
 
@@ -278,6 +247,71 @@ module Rightboat
 
       def get_missing_attr(attr)
         @missing_spec_attrs[attr.to_s]
+      end
+
+      def handle_office
+        if office.present?
+          importer.jobs_mutex.synchronize do
+            @@user_offices ||= user.offices.includes(:address).to_a
+
+            address_attrs = office.delete(:address_attributes)
+
+            if office[:source_id].blank?
+              office[:source_id] = XXhash.xxh32(office.each_with_object('') { |(k, v), s| s << "#{k}#{v}" }).to_s
+            end
+
+            target_office = @@user_offices.find { |o| o.source_id.present? && o.source_id == office[:source_id] }
+            target_office ||= @@user_offices.find { |o| o.source_id.blank? && office.all? { |k, v| o.send(k) == v } }
+            target_office ||= user.offices.new
+
+            target_office.assign_attributes(office)
+            target_office.name ||= user.company_name
+            address = target_office.address || Address.new
+            address.assign_attributes(address_attrs)
+            office_changed = target_office.changed?
+            address_changed = address.changed?
+
+            if office_changed || address_changed
+              new_record = target_office.new_record?
+              target_office.save! if office_changed
+              address.save! if !new_record && address_changed
+              @@user_offices << target_office if new_record
+            end
+
+            target.office = target_office
+          end
+        elsif office_id
+          target.office_id = office_id
+        end
+      end
+
+      def handle_images
+        self.images_count = 0
+        target_persisted = target.persisted?
+        boat_image_by_url = (target.boat_images.index_by(&:source_url) if target_persisted)
+
+        images.each do |item| # items possible keys: :url, :caption, :mod_time
+          url = item[:url]
+          url.strip!
+          img = (boat_image_by_url.delete(url) if target_persisted) || BoatImage.new(source_url: url, boat: target)
+
+          if (caption = item[:caption])
+            caption = caption[0..252] + '...' if caption.size > 255
+            img.caption = caption
+          end
+
+          mod_time = item[:mod_time]
+          if img.new_record? || !mod_time || mod_time > img.downloaded_at
+            img.update_image_from_source
+          end
+
+          success = !img.changed? || img.file_exists? && img.save
+          self.images_count += 1 if success
+        end
+
+        if target_persisted && boat_image_by_url.any?
+          boat_image_by_url.each { |_url, img| img.destroy }
+        end
       end
 
       private
@@ -372,11 +406,12 @@ module Rightboat
       def cleanup_description(str)
         return '' if str.blank?
         str = simple_format(str) if !str['<']
-        body = Nokogiri::HTML(str).at_css('body')
-        body.css('table').remove
 
-        body.traverse do |node|
-          if node.elem? && node != body
+        frag = Nokogiri::HTML.fragment(str)
+        frag.css('table').remove
+
+        frag.traverse do |node|
+          if node.elem? && node != frag
             tag_name = node.name
             if tag_name.in?(ALLOWED_TAGS)
               node.each { |attr, _| node.delete(attr) }
@@ -386,11 +421,18 @@ module Rightboat
             end
           end
         end
-        str = body.inner_html(save_with: 0) # save_with: 0 to remove newlines between tags
-        str.gsub!(Rightboat::Imports::Utils::WHITESPACES_REGEX, ' ')
-        str.strip!
+        str = frag.to_html
         do_import_substitutions!(str)
         str
+      rescue LoadError => e
+        if Rails.env.development?
+          # I have strange error here on "to_html" call when run with multiple threads but on prod works ok
+          # LoadError: dlopen(enc/trans/single_byte.so, 9): image not found - enc/trans/single_byte.so
+          importer.log "Dev Error: #{e.class.name}: #{e.message}. #{e.backtrace.join("\n")}\n==>#{source_id}. #{str}"
+          str
+        else
+          raise e
+        end
       end
 
       def cleanup_short_description(desc)
@@ -400,7 +442,7 @@ module Rightboat
         desc.gsub!(/\S+@\S(?:\.\S)+/, '') # remove email
         desc.gsub!(/[\d\(\) -]{9,20}/, '') # remove phone
         desc.gsub!(%r{(?:https?://|www\.)\S+}, '') # remove url
-         Nokogiri::HTML.fragment(desc).to_html # ensure html is valid
+        Nokogiri::HTML.fragment(desc).to_html # ensure html is valid
       end
 
     end

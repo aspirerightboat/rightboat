@@ -2,7 +2,7 @@ ActiveAdmin.register BoatImage do
   config.batch_actions = false
   config.sort_order = 'position_asc'
 
-  permit_params :source_ref, :source_url, :file, :position, :width, :height
+  permit_params :source_url, :file, :position
 
   menu parent: 'Boats', priority: 20
 
@@ -29,7 +29,7 @@ ActiveAdmin.register BoatImage do
 
   index do
     column :source do |i|
-      i.source_ref.presence || link_to('source_url', i.source_url)
+      link_to('source_url', i.source_url)
     end
     column :image do |i|
       link_to image_tag(i.file.url(:mini)), i.file.url
@@ -46,12 +46,9 @@ ActiveAdmin.register BoatImage do
 
   form do |f|
     f.inputs do
-      f.input :source_ref
       f.input :source_url
       f.input :file, as: :file
       f.input :position
-      f.input :width
-      f.input :height
     end
     actions
   end
@@ -64,9 +61,9 @@ ActiveAdmin.register BoatImage do
   end
 
   controller do
-    # def scoped_collection
-    #   end_of_association_chain.not_deleted
-    # end
+    def scoped_collection
+      end_of_association_chain.order(:position, :id)
+    end
   end
 
   sidebar 'Boat Tools', only: [:index] do

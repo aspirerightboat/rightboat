@@ -69,9 +69,12 @@ module Rightboat
           end
 
           boat.description = doc.search('div[@id="page-content2-lower"]').first.children.to_s rescue ''
-          boat.images = doc.search('a.lightview img').map do |img|
-            advert_url(img['src'])
-          end.reject(&:blank?)
+          images = []
+          doc.search('a.lightview img').map do |img|
+            url = advert_url(img['src'])
+            images << {url: url} if url
+          end
+          boat.images = images
 
           fields.each do |key, val|
             if (attr = DATA_MAPPINGS[key])

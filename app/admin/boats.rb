@@ -29,7 +29,7 @@ ActiveAdmin.register Boat do
       link_to(img, admin_boat_images_path(q: {boat_id_equals: boat.id}))
     end
     column 'Imgs' do |boat|
-      boat.boat_images.count
+      boat.boat_images.not_deleted.count
     end
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
@@ -92,9 +92,9 @@ ActiveAdmin.register Boat do
   end
 
   sidebar 'Tools', only: [:show, :edit] do
-    img_cnt = boat.boat_images.count
+    img_cnt = boat.boat_images.not_deleted.count
     s = ''
-    s << "<p>Images count: <b>#{img_cnt}</b></p>"
+    s << "<p>Live images count: <b>#{img_cnt}</b></p>"
     if boat.boat_images.any?
       s << '<p>'
       s << link_to('Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}))

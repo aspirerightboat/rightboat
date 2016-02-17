@@ -17,7 +17,11 @@ ActiveAdmin.register BoatImage do
     s << "#{i.position} | ".html_safe
     s << link_to('View', admin_boat_image_path(i)); s << ' | '
     s << link_to('Edit', edit_admin_boat_image_path(i)); s << ' | '
-    s << link_to('Del', admin_boat_image_path(i), method: :delete); s << ' | '
+    if i.deleted?
+      s << link_to('Undel', undelete_admin_boat_image_path(i), method: :post); s << ' | '
+    else
+      s << link_to('Del', admin_boat_image_path(i), method: :delete); s << ' | '
+    end
     s << link_to('◄', dec_pos_admin_boat_image_path(i), method: :post); s << ' | '
     s << link_to('►', inc_pos_admin_boat_image_path(i), method: :post)
     s
@@ -58,7 +62,7 @@ ActiveAdmin.register BoatImage do
 
   controller do
     def scoped_collection
-      end_of_association_chain.not_deleted.order(:position)
+      end_of_association_chain.order(:position)
     end
   end
 
@@ -82,6 +86,12 @@ ActiveAdmin.register BoatImage do
   member_action :dec_pos, method: :post do
     i = BoatImage.find(params[:id])
     i.update_attribute(:position, (i.position || 0) - 1)
+    redirect_to request.referer || admin_boat_images_path
+  end
+
+  member_action :undelete, method: :post do
+    i = BoatImage.find(params[:id])
+    i.revive
     redirect_to request.referer || admin_boat_images_path
   end
 

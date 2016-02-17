@@ -271,7 +271,6 @@ module Rightboat
         value, unit = extract_unit(spec_value)
         unit = 'litres' if unit == 'liters'
         spec_item value, spec_name, options.merge(unit: unit)
-        # spec_item value, spec_name, options.reverse_merge!(unit: unit)
       end
 
       def extract_unit(spec_value)

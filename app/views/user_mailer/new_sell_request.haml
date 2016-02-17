@@ -32,7 +32,7 @@
   %br
 
 %h4 Images
-- @boat.boat_images.each do |img|
+- @boat.boat_images.not_deleted.each do |img|
   = link_to img.file_url do
     = image_tag img.file.url(:mini)
 

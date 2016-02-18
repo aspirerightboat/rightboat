@@ -80,7 +80,7 @@ ActiveAdmin.register Import do
   form partial: 'form'
 
   member_action :run, method: :post do
-    resource.run!
+    resource.run!(true)
     redirect_to :back
   end
 

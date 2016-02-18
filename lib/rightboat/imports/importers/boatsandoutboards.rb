@@ -39,7 +39,7 @@ module Rightboat
           'www.boatsandoutboards.co.uk'
         end
 
-        def self.validate_param_option
+        def self.params_validators
           { source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/] }
         end
 

@@ -27,7 +27,7 @@ module Rightboat
           'year_built' => :year_built
         )
 
-        def self.validate_param_option
+        def self.params_validators
           { api_key: [:presence, /[a-z\d\-]+/], company_id: [:presence, /\A\d+\z/]}
         end
 

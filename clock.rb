@@ -29,7 +29,7 @@ module DBBackedClockwork
     LeadsApproveJob.new.perform
   end
 
-  every 1.day, 'send saved search notifications', at: '22:00' do
+  every 1.day, 'send saved search notifications', at: '22:10' do
     SavedSearchNoticesJob.new.perform
   end
 
@@ -47,9 +47,12 @@ module DBBackedClockwork
 
   every 1.day, 'download eyb xml', at: '22:00' do
     res = `/bin/bash eyb.sh`
-    if res =~ /Error/
-      ImportMailer.download_feed_error('EYB').deliver_now
-    end
+    ImportMailer.download_feed_error('Eyb').deliver_now if res !~ /Success\Z/
+  end
+
+  every 1.day, 'download eyb xml', at: '22:05' do
+    res = `bundle exec rake import:download_boatstream_feed`
+    ImportMailer.download_feed_error('BoatStream').deliver_now if res !~ /Success\Z/
   end
 
   every 1.day, 'export openmarine boats', at: '8:00' do

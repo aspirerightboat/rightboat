@@ -128,7 +128,7 @@ module Rightboat
           }
         end
 
-        def self.validate_param_option
+        def self.params_validators
           {homepage_url: :presence}
         end
 

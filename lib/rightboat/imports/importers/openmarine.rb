@@ -59,7 +59,7 @@ module Rightboat
           )
         end
 
-        def self.validate_param_option
+        def self.params_validators
           {url: :presence, broker_id: [:presence, /\A(first|\d+)\z/]}
         end
 

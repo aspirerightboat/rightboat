@@ -2,7 +2,7 @@ module Rightboat::Imports
   class Importers::Ancasta < ImporterBase
     include ActionView::Helpers::TextHelper # for simple_format
 
-    def self.validate_param_option
+    def self.params_validators
       {source_url: :presence}
     end
 

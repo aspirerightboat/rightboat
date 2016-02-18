@@ -324,19 +324,16 @@ module Rightboat
           )
         end
 
-        def self.validate_param_option
+        def self.params_validators
           {broker_id: [:presence, /\A\d+\z/]}
         end
 
-        def enqueue_jobs
-          feed_file = "#{Rails.root}/import_data/eyb.xml"
-          if @prev_import_ran_at && @prev_import_ran_at > File.mtime(feed_file) && !ENV['IGNORE_FEED_MTIME']
-            log_warning 'Feed file not updated since last run. Nothing to update'
-            @exit_worker = true
-            return
-          end
+        def imported_feed_path
+          "#{Rails.root}/import_data/eyb.xml"
+        end
 
-          doc = Nokogiri::XML(File.read(feed_file))
+        def enqueue_jobs
+          doc = Nokogiri::XML(File.read(imported_feed_path))
 
           doc.css("An_Broker[text()='#{@import.param['broker_id']}']").each do |broker|
             enqueue_job(ad: broker.parent)

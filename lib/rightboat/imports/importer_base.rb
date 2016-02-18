@@ -16,9 +16,11 @@ module Rightboat
       end
 
       def run
-        starting
-        threaded_run
-        finishing
+        catch :stop do
+          starting
+          threaded_run
+          finishing
+        end
       rescue StandardError => e # SystemExit, Interrupt
         log_ex e, 'Unexpected Error'
         raise e
@@ -52,7 +54,9 @@ module Rightboat
 
         Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
 
-        log "Started param=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
+        log "Started params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
+
+        throw :stop if already_imported?
       end
 
       def threaded_run
@@ -119,19 +123,14 @@ module Rightboat
         @import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/importers/*"].map { |path| File.basename(path, '.*') }
       end
 
-      # def self.import_classes
-      #   @@import_classes ||= import_types.map { |type| Sources.const_get(type.camelcase) }
-      # end
-
-      # set validate options for each param
-      #  e.g. require office_id and only accepts digits
-      #       { office_id: [:presence, /\d+/] }
-      def self.validate_param_option
+      # override to add params validators, eg. { office_id: [:presence, /\d+/] }
+      def self.params_validators
         {}
       end
 
-      def self.params
-        validate_param_option.keys
+      # override if there is local autoupdated feed file
+      def imported_feed_path
+        nil
       end
 
       def enqueue_job(job)
@@ -232,6 +231,19 @@ module Rightboat
         @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.id}-#{@import.import_type}-#{Time.current.strftime('%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)
         @logger.level = 0 # log all
+      end
+
+      def already_imported?
+        return false if ENV['IGNORE_FEED_MTIME']
+        return false if !@prev_import_ran_at
+        return false if !imported_feed_path
+
+        feed_mtime = File.mtime(imported_feed_path)
+
+        return false if @prev_import_ran_at < feed_mtime
+
+        log_warning 'Feed already imported', "feed_mtime=#{feed_mtime.utc.iso8601} last_import_time=#{@prev_import_ran_at.iso8601}"
+        true
       end
 
       def init_mechanize_agent

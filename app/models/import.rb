@@ -47,10 +47,10 @@ class Import < ActiveRecord::Base
     pid && pid > 0 && (Process.getpgid(pid) rescue nil).present?
   end
 
-  def run!
+  def run!(manual = false)
     return if running?
     update_attributes!(queued_at: Time.current, pid: -1)
-    `bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
+    `#{'IGNORE_FEED_MTIME=1 ' if manual}bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
   end
 
   def stop!
@@ -97,7 +97,7 @@ class Import < ActiveRecord::Base
   def validate_import_params
     return unless source_class
     symbolized_param = param.symbolize_keys
-    source_class.validate_param_option.each do |key, validators|
+    source_class.params_validators.each do |key, validators|
       validators = [validators] unless validators.is_a?(Array)
       validators.each do |validator|
         value = symbolized_param[key.to_sym]

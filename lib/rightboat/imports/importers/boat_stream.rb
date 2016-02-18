@@ -2,27 +2,21 @@ module Rightboat
   module Imports
     module Importers
       class BoatStream < ImporterBase
-        BOATSTREAM_XML_PATH = "#{Rails.root}/import_data/boat_stream.xml"
+
+        def imported_feed_path
+          "#{Rails.root}/import_data/boat_stream.xml"
+        end
 
         def enqueue_jobs
           @skip_thread_parsing_boat = true
-          download_latest_file if Rails.env.production? # sftp access is configured for import.rightboat.com server only
-          log "Parse file #{BOATSTREAM_XML_PATH}"
-          Nokogiri::XML::SAX::Parser.new(BoatStreamParser.new(self, @party_ids)).parse_file(BOATSTREAM_XML_PATH)
+
+          log "Parse file #{imported_feed_path}"
+          party_ids = @import.param['party_ids']
+          parser = BoatStreamParser.new(self, party_ids)
+          Nokogiri::XML::SAX::Parser.new(parser).parse_file(imported_feed_path)
         end
 
-        def download_latest_file
-          log 'connect to sftp'
-          sftp = 'sshpass -e sftp -oBatchMode=no -b - rightboats@elba.boats.com'
-          ls_listing = `echo 'ls -l upload/*.xml' | #{sftp} | grep -v "sftp>"`.strip # they restricted ls params so we cannot just sort by time "ls -t"
-          # -rw-r--r--    0 3011     500      76092888 Feb 14 04:03 upload/BS_dbe29940-ea8e-4399-9804-0b4417e9620b188500188505.xml
-          remote_file = ls_listing.scan(/(\w\w\w (?: |\d)\d \d\d:\d\d) (\S+)$/).map { |t, f| [Time.parse(t), f] }.max_by(&:first).last
-
-          log "Download file #{remote_file}"
-          `echo "get -P #{remote_file} #{BOATSTREAM_XML_PATH}" | #{sftp}`
-        end
-
-        def self.validate_param_option
+        def self.params_validators
           {party_ids: [:presence, /\A\d+(, \d+)*\z/]}
         end
 

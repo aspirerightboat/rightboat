@@ -35,7 +35,7 @@ module Rightboat
           end
         )
 
-        def self.validate_param_option
+        def self.params_validators
           { offices: [], source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/] }
         end
 

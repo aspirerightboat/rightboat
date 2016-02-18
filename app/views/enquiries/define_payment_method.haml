@@ -13,3 +13,9 @@
     Please phone <b>+44 (0) 333 322 2628</b> with your card or bank details.
   .nice-buttons.text-center
     %button.nice-button(type="button" onclick="window.location = window.location") Refresh
+  %br
+  .row.page-links
+    %li.col-sm-6.col-xs-12
+      = link_to 'Go to the Broker Area', getting_started_broker_area_path, class: 'nice-button pull-right'
+    %li.col-sm-6.col-xs-12
+      = link_to 'Translate this page', '#', onClick: 'javascript:$(".goog-te-gadget-simple").click();', class: 'nice-button'

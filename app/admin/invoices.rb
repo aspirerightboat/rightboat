@@ -38,10 +38,11 @@ ActiveAdmin.register Invoice do
     f.actions
   end
 
-  sidebar 'Tools', only: [:index] do
-    s = content_tag(:p, link_to('Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button'))
-    s << content_tag(:p, link_to('Gen Invoices for user=315', {action: :generate_test_invoices}, method: :post, class: 'button'))
-    s
+  sidebar 'Tools', only: [:index, :last_log, :xero_log] do
+    para { link_to 'Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button' }
+    para { link_to 'Gen Invoices for user=315', {action: :generate_test_invoices}, method: :post, class: 'button' }
+    para { link_to 'Last Generate Invocies Log', {action: :last_log} }
+    para { link_to 'Xero Log', {action: :xero_log} }
   end
 
   controller do
@@ -58,6 +59,37 @@ ActiveAdmin.register Invoice do
   collection_action :generate_test_invoices, method: :post do
     res = CreateInvoicesJob.new.perform(315)
     redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
+  end
+
+  collection_action :last_log do
+    html = Arbre::Context.new do
+      panel 'Last Generate Invoices Log' do
+        file_path = `ls -t log/invoices/* | head -n1`.strip.presence
+        if file_path && File.exists?(file_path)
+          File.open(file_path, 'r').each_line do |line|
+            div do
+              line.sub!(/\bbroker_id=(\d+)/) { "broker_id=#{link_to $1, admin_user_path($1)}" }
+              line.html_safe
+            end
+          end
+        end
+      end
+    end
+    render html: html.to_s, layout: 'active_admin'
+  end
+
+  collection_action :xero_log do
+    html = Arbre::Context.new do
+      panel 'Last Generate Invoices Log' do
+        file_path = 'log/xero.log'
+        if file_path && File.exists?(file_path)
+          File.open(file_path, 'r').each_line do |line|
+            div { line.html_safe }
+          end
+        end
+      end
+    end
+    render html: html.to_s, layout: 'active_admin'
   end
 
 end

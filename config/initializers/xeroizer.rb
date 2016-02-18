@@ -1,4 +1,4 @@
-xero_logger = Logger.new("#{Rails.root}/log/xero.log", 'weekly')
+xero_logger = Logger.new("#{Rails.root}/log/xero.log", 5, 1024*1024)
 
 $xero = Xeroizer::PrivateApplication.new(Figaro.env.xero_consumer_key,
                                          Figaro.env.xero_consumer_secret,

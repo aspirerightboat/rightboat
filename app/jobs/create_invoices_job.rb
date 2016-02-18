@@ -103,41 +103,59 @@ class CreateInvoicesJob
 
   def ensure_contacts(brokers)
     inv_logger.info('Fetch contacts for brokers')
-    fetched_contacts = []
-    synced_brokers = brokers.select { |b| b.broker_info.xero_contact_id.present? }
-    synced_brokers.each_slice(10) do |some_brokers| # slice in groups by 10 because Xero throws "Xeroizer::ObjectNotFound" if there are too many
-      search_str = some_brokers.map { |b| %(ContactID.ToString()=="#{b.broker_info.xero_contact_id}") }.join(' OR ')
-      fetched_contacts.concat $xero.Contact.all(where: search_str)
-    end
-    inv_logger.info("Fetched #{fetched_contacts.size} contacts")
-
-    if (invalid_contact_id_count = synced_brokers.size - fetched_contacts.size) > 0
-      inv_logger.info("#{invalid_contact_id_count} brokers have xero_contact_id saved but corresponding contacts not found on xero")
-    end
-
     contact_by_broker = {}
-    brokers.each do |broker|
-      contact_id = broker.broker_info.xero_contact_id
-      if contact_id && (contact = fetched_contacts.find { |c| c.contact_id == contact_id })
-        contact_by_broker[broker] = contact
+
+    maybe_linked_brokers = brokers.select { |b| b.broker_info.xero_contact_id.present? }
+    maybe_linked_brokers.each_slice(10) do |brokers_slice| # slice in groups by 10 because Xero throws "Xeroizer::ObjectNotFound" if there are too many
+      search_str = brokers_slice.map { |b| %(ContactID.ToString()=="#{b.broker_info.xero_contact_id}") }.join(' OR ')
+      contacts = $xero.Contact.all(where: search_str)
+      brokers_slice.each do |broker|
+        contact_id = broker.broker_info.xero_contact_id
+        contact = contacts.find { |c| c.contact_id == contact_id }
+        contact_by_broker[broker] = contact if contact
+        inv_logger.info("Cannot fetch Contact with contact_id=#{contact_id} for broker_id=#{broker.id} (#{broker.name})") if !contact
       end
     end
+    inv_logger.info("Fetched #{contact_by_broker.size} contacts for #{maybe_linked_brokers.size} brokers by contact_id")
 
     unlinked_brokers = brokers - contact_by_broker.keys
     if unlinked_brokers.any?
-      inv_logger.info("#{unlinked_brokers.size} brokers are not linked. Create corresponding contacts")
+      inv_logger.info("#{unlinked_brokers.size} brokers are not linked. Try to find contacts by brokers name/contact_num")
 
-      new_contacts = unlinked_brokers.map { |broker| build_contact_for_broker(broker) }
-
-      if !$xero.Contact.save_records(new_contacts)
-        new_contacts.each do |contact|
-          raise "Contact Not Saved: #{contact.errors}" if contact.errors.any?
+      unlinked_brokers.each_slice(10) do |brokers_slice|
+        search_str = brokers_slice.map { |b| %(ContactNumber=="#{b.id}" OR Name=="#{b.name}") }.join(' OR ')
+        contacts = $xero.Contact.all(where: search_str)
+        brokers_slice.each do |broker|
+          broker_id = broker.id.to_s
+          broker_name = broker.name
+          contact = contacts.find { |c| c.contact_number == broker_id || c.name == broker_name }
+          if contact
+            contact_by_broker[broker] = contact
+            broker.broker_info.update_column(:xero_contact_id, contact.id)
+            inv_logger.info("Found contact #{contact.id} for broker_id=#{broker_id} (#{broker_name})")
+          end
         end
       end
 
-      new_contacts.each do |contact|
-        broker = unlinked_brokers.find { |b| b.id.to_s == contact.contact_number.to_s }
-        broker.broker_info.update_attribute(:xero_contact_id, contact.contact_id)
+      unlinked_brokers = brokers - contact_by_broker.keys
+      inv_logger.info("#{unlinked_brokers.size} brokers are still not linked. Create contacts for them")
+
+      new_contacts = unlinked_brokers.map { |broker| build_contact_for_broker(broker) }
+      if $xero.Contact.save_records(new_contacts)
+        new_contacts.each do |c|
+          inv_logger.info("Contact created for broker_id=#{c.contact_number} (#{c.name})")
+        end
+      else
+        new_contacts.each do |c|
+          inv_logger.error("Contact not saved: broker_id=#{c.contact_number} (#{c.name}) errors=#{c.errors}") if c.errors.present?
+        end
+        raise 'Save Contacts Error'
+      end
+
+      unlinked_brokers.each do |broker|
+        broker_id = broker.id.to_s
+        contact = new_contacts.find { |c| c.contact_number == broker_id }
+        broker.broker_info.update_column(:xero_contact_id, contact.contact_id)
         contact_by_broker[broker] = contact
       end
     end
@@ -151,7 +169,7 @@ class CreateInvoicesJob
     broker_info = broker.broker_info
     contact = $xero.Contact.build
     contact.name = broker.name
-    contact.contact_number = broker.id
+    contact.contact_number = broker.id.to_s
     contact.first_name = broker.first_name
     contact.last_name = broker.last_name
     contact.email_address = broker.email

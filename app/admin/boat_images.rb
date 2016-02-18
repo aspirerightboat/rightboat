@@ -12,18 +12,24 @@ ActiveAdmin.register BoatImage do
   filter :height
 
   index as: :grid, columns: 6 do |i|
-    s = link_to(image_tag(i.file.url(:mini)), i.file.url, title: "Original: #{i.width}x#{i.height}")
+    @primary ||= :yes
+    img_style = ''
+    img_style << 'opacity: 0.5; border: 1px solid red;' if i.deleted?
+    img_style << 'border: 2px solid lime;' if @primary == :yes
+    @primary = :no
+    img = image_tag(i.file.url(:mini), style: img_style)
+    s = link_to(img, i.file.url, title: "Original: #{i.width}x#{i.height}")
     s << '<br>'.html_safe
     s << "#{i.position} | ".html_safe
-    s << link_to('View', admin_boat_image_path(i)); s << ' | '
-    s << link_to('Edit', edit_admin_boat_image_path(i)); s << ' | '
+    s << link_to('View', [:admin, i]); s << ' | '
+    s << link_to('Edit', [:edit, :admin, i]); s << ' | '
     if i.deleted?
-      s << link_to('Undel', undelete_admin_boat_image_path(i), method: :post); s << ' | '
+      s << link_to('Act', [:undelete, :admin, i], method: :post); s << ' | '
     else
-      s << link_to('Del', admin_boat_image_path(i), method: :delete); s << ' | '
+      s << link_to('Hide', [:admin, i], method: :delete); s << ' | '
     end
-    s << link_to('◄', dec_pos_admin_boat_image_path(i), method: :post); s << ' | '
-    s << link_to('►', inc_pos_admin_boat_image_path(i), method: :post)
+    s << link_to('◄', [:dec_pos, :admin, i], method: :post); s << ' | '
+    s << link_to('►', [:inc_pos, :admin, i], method: :post)
     s
   end
 
@@ -67,13 +73,10 @@ ActiveAdmin.register BoatImage do
   end
 
   sidebar 'Boat Tools', only: [:index] do
-    if (boat_id = (params[:q] && params[:q][:boat_id_equals])).present?
-      s = '<p>'
-      s << link_to('View boat', admin_boat_path(Boat.find(boat_id)))
-      s << '</p><p>'
-      s << link_to('Delete boat images', {action: :delete_boat_images, boat_id: boat_id}, method: :post, class: 'button', data: {disable_with: 'working...', confirm: 'Are you sure?'})
-      s << '</p>'
-      s.html_safe
+    if (boat_id = params.dig(:q, :boat_id_equals)).present?
+      para { link_to 'View boat', admin_boat_path(Boat.find(boat_id)) }
+      para { link_to 'Deactivate boat images', {action: :delete_boat_images, boat_id: boat_id}, method: :post,
+                     class: 'button', data: {disable_with: 'working...', confirm: 'Are you sure?'} }
     end
   end
 
@@ -89,6 +92,12 @@ ActiveAdmin.register BoatImage do
     redirect_to request.referer || admin_boat_images_path
   end
 
+  member_action :destroy, method: :delete do
+    i = BoatImage.find(params[:id])
+    i.destroy
+    redirect_to request.referer || admin_boat_images_path
+  end
+
   member_action :undelete, method: :post do
     i = BoatImage.find(params[:id])
     i.revive
@@ -98,7 +107,7 @@ ActiveAdmin.register BoatImage do
   collection_action :delete_boat_images, method: :post do
     boat = Boat.find(params[:boat_id])
     cnt = boat.boat_images.destroy_all.size
-    redirect_to request.referer || admin_boat_images_path, notice: "#{cnt} images destroyed"
+    redirect_to request.referer || admin_boat_images_path, notice: "#{cnt} images deactivated"
   end
 
 end

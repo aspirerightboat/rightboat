@@ -92,24 +92,25 @@ ActiveAdmin.register Boat do
   end
 
   sidebar 'Tools', only: [:show, :edit] do
-    img_cnt = boat.boat_images.not_deleted.count
-    s = ''
-    s << "<p>Live images count: <b>#{img_cnt}</b></p>"
-    if boat.boat_images.any?
-      s << '<p>'
-      s << link_to('Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}))
-      s << '</p><p>'
-      s << link_to('Delete images', {action: :delete_images}, method: :post, class: 'button',
-                   data: {confirm: 'Are you sure?', disable_with: 'Working...'})
-      s << link_to(boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat), method: :post, class: 'button',
-                   data: {confirm: 'Are you sure?', disable_with: 'Working...'})
-      s << '</p>'
+    img_active_count = boat.boat_images.not_deleted.count
+    img_hidden_count = boat.boat_images.deleted.count
+    para {
+      text_node "Active images count: <b>#{img_active_count}</b>".html_safe
+      text_node "<br>Hidden images count: <b>#{img_hidden_count}</b>".html_safe if img_hidden_count > 0
+    }
+
+    if img_active_count > 0 || img_hidden_count > 0
+      para { link_to 'Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}) }
+      para { link_to 'Delete boat images', {action: :delete_images}, method: :post, class: 'button',
+                     data: {confirm: 'Are you sure?', disable_with: 'Working...'} } if img_active_count > 0
     end
-    s.html_safe
+
+    para { link_to boat.deleted? ? 'Activate boat' : 'Deactivate boat', toggle_active_admin_boat_path(boat), method: :post, class: 'button',
+                   data: {confirm: 'Are you sure?', disable_with: 'Working...'} }
   end
 
   sidebar 'Tools', only: [:index] do
-    content_tag(:p, link_to('Reindex deleted boats', {action: :reindex_deleted_boats}, method: :post, class: 'button'))
+    para { link_to 'Reindex deleted boats', {action: :reindex_deleted_boats}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
   end
 
   collection_action :reindex_deleted_boats, method: :post do
@@ -144,7 +145,7 @@ ActiveAdmin.register Boat do
 
   member_action :delete_images, method: :post do
     boat = Boat.find_by(slug: params[:id])
-    cnt = boat.boat_images.destroy_all.size
+    cnt = boat.boat_images.each { |bi| bi.destroy(:force) }.size
 
     redirect_to (request.referer || {action: :index}), notice: "#{cnt} images was deleted for boat id=#{boat.id}"
   end
@@ -152,7 +153,7 @@ ActiveAdmin.register Boat do
   batch_action :delete_images do |ids|
     cnt = 0
     Boat.includes(:boat_images).find(ids).each do |b|
-      cnt += b.boat_images.destroy_all.size
+      cnt += b.boat_images.each { |bi| bi.destroy(:force) }.size
     end
     redirect_to collection_path, notice: "#{cnt} boat images was deleted"
   end

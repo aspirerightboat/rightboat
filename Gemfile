@@ -24,8 +24,9 @@ gem 'open_uri_redirections'
 gem 'select2-rails'
 gem 'kaminari'
 gem 'friendly_id'
-# This project needs imagemagick to generate captcha!
+# rmagick requires dependencies:
 # on Mac Os run: brew install imagemagick & brew install gs
+# on Mac Os run: xcode-select --install
 # on Ubuntu run: sudo apt-get install imagemagick
 gem 'carrierwave'
 gem 'rmagick' # needed by carrierwave

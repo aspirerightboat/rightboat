@@ -16,7 +16,7 @@ class CreateInvoicesJob
     Invoice.transaction do
       xero_invoices = []
       invoices = leads_by_broker.map do |broker, leads|
-        inv_logger.info("Prepare invoice for broker_id=#{broker.id} leads_count=#{leads.size}")
+        inv_logger.info("Prepare invoice for broker_id=#{broker.id} (#{broker.name}) leads_count=#{leads.size}")
         broker_info = broker.broker_info
         discount_rate = broker_info.discount
 
@@ -69,12 +69,16 @@ class CreateInvoicesJob
       end
 
       inv_logger.info('Save invoices to Xero')
-      if !$xero.Invoice.save_records(xero_invoices)
-        xero_invoices.each do |invoice|
-          raise "Invoice Not Saved: #{invoice.errors}" if invoice.errors.any?
+      res = $xero.Invoice.save_records(xero_invoices)
+      if !res
+        xero_invoices.each do |i|
+          broker = brokers.find { |b| b.broker_info.xero_contact_id == i.contact.contact_id }
+          inv_logger.error("Failed to save invoice for broker_id=#{broker.id} (#{broker.name}) errors=#{i.errors}") if i.errors.present?
         end
+        raise 'Save Invoices Error'
       end
 
+      inv_logger.info("Send invoicing report to #{RBConfig[:invoicing_report_email]}")
       LeadsMailer.invoicing_report(invoices.map(&:id)).deliver_later
     end
 
@@ -102,7 +106,7 @@ class CreateInvoicesJob
   end
 
   def ensure_contacts(brokers)
-    inv_logger.info('Fetch contacts for brokers')
+    inv_logger.info('Fetch xero contacts for brokers')
     contact_by_broker = {}
 
     maybe_linked_brokers = brokers.select { |b| b.broker_info.xero_contact_id.present? }
@@ -113,14 +117,14 @@ class CreateInvoicesJob
         contact_id = broker.broker_info.xero_contact_id
         contact = contacts.find { |c| c.contact_id == contact_id }
         contact_by_broker[broker] = contact if contact
-        inv_logger.info("Cannot fetch Contact with contact_id=#{contact_id} for broker_id=#{broker.id} (#{broker.name})") if !contact
+        inv_logger.warn("Cannot find Contact with contact_id=#{contact_id} for broker_id=#{broker.id} (#{broker.name})") if !contact
       end
     end
-    inv_logger.info("Fetched #{contact_by_broker.size} contacts for #{maybe_linked_brokers.size} brokers by contact_id")
+    inv_logger.info("Found #{maybe_linked_brokers.size} contacts for brokers by contact_id")
 
     unlinked_brokers = brokers - contact_by_broker.keys
     if unlinked_brokers.any?
-      inv_logger.info("#{unlinked_brokers.size} brokers are not linked. Try to find contacts by brokers name/contact_num")
+      inv_logger.info("#{unlinked_brokers.size} brokers are not linked. Try to find contacts by name/contact_number")
 
       unlinked_brokers.each_slice(10) do |brokers_slice|
         search_str = brokers_slice.map { |b| %(ContactNumber=="#{b.id}" OR Name=="#{b.name}") }.join(' OR ')
@@ -136,21 +140,19 @@ class CreateInvoicesJob
           end
         end
       end
+    end
 
-      unlinked_brokers = brokers - contact_by_broker.keys
+    unlinked_brokers = brokers - contact_by_broker.keys
+    if unlinked_brokers.any?
       inv_logger.info("#{unlinked_brokers.size} brokers are still not linked. Create contacts for them")
 
       new_contacts = unlinked_brokers.map { |broker| build_contact_for_broker(broker) }
-      if $xero.Contact.save_records(new_contacts)
-        new_contacts.each do |c|
-          inv_logger.info("Contact created for broker_id=#{c.contact_number} (#{c.name})")
-        end
-      else
-        new_contacts.each do |c|
-          inv_logger.error("Contact not saved: broker_id=#{c.contact_number} (#{c.name}) errors=#{c.errors}") if c.errors.present?
-        end
-        raise 'Save Contacts Error'
+      res = $xero.Contact.save_records(new_contacts)
+      new_contacts.each do |c|
+        inv_logger.info("Contact created for broker_id=#{c.contact_number} (#{c.name})") if c.errors.blank?
+        inv_logger.error("Contact not created for broker_id=#{c.contact_number} (#{c.name}) errors=#{c.errors}") if c.errors.present?
       end
+      raise 'Create Contacts Error' if !res
 
       unlinked_brokers.each do |broker|
         broker_id = broker.id.to_s

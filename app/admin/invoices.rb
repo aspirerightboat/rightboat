@@ -39,8 +39,8 @@ ActiveAdmin.register Invoice do
   end
 
   sidebar 'Tools', only: [:index, :last_log, :xero_log] do
-    para { link_to 'Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button' }
-    para { link_to 'Gen Invoices for user=315', {action: :generate_test_invoices}, method: :post, class: 'button' }
+    para { link_to 'Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
+    para { link_to 'Gen Invoices for user=315', {action: :generate_test_invoices}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
     para { link_to 'Last Generate Invocies Log', {action: :last_log} }
     para { link_to 'Xero Log', {action: :xero_log} }
   end

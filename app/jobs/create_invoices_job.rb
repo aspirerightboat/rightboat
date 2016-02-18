@@ -131,7 +131,7 @@ class CreateInvoicesJob
           contact = contacts.find { |c| c.contact_number == broker_id || c.name == broker_name }
           if contact
             contact_by_broker[broker] = contact
-            broker.update_column(:xero_contact_id, contact.id)
+            broker.broker_info.update_column(:xero_contact_id, contact.id)
             inv_logger.info("Found contact #{contact.id} for broker_id=#{broker_id} (#{broker_name})")
           end
         end

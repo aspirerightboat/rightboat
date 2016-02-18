@@ -1,0 +1,8 @@
+panel 'Last Generate Invoices Log' do
+  file_path = 'log/xero.log'
+  if file_path && File.exists?(file_path)
+    File.open(file_path, 'r').each_line do |line|
+      div { line.html_safe }
+    end
+  end
+end

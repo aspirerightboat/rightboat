@@ -1,0 +1,11 @@
+panel 'Last Generate Invoices Log' do
+  file_path = `ls -t log/invoices/* | head -n1`.strip.presence
+  if file_path && File.exists?(file_path)
+    File.open(file_path, 'r').each_line do |line|
+      div do
+        line.sub!(/\bbroker_id=(\d+)/) { "broker_id=#{link_to $1, admin_user_path($1)}" }
+        line.html_safe
+      end
+    end
+  end
+end

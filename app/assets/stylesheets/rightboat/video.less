@@ -1,0 +1,53 @@
+.video-wrapper {
+  background-color: white;
+  height: 0;
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+
+  iframe {
+    background-color: transparent;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+  }
+}
+
+.video-poster {
+  background-image: asset-url('rb-final.jpg');
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+  background-size: cover;
+  border: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  overflow: hidden;
+  
+  &:after {
+    color: @rb-color-primary;
+    content: '\e817';
+    font-family: fontello;
+    font-size: 80px;
+    height: 0;
+    left: 50%;
+    margin: -80px 0 0 -40px;
+    position: absolute;
+    top: 50%;
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
+    width: 0;
+  }
+ 
+  .playing & {
+    opacity: 0;
+    height: 0;
+  }
+}

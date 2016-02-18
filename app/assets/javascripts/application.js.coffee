@@ -81,6 +81,7 @@ scrollToTarget = (target) ->
 
 $ ->
   $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="popover"]').popover({html: true})
   $('[data-toggle=offcanvas]').click ->
     $('.row-offcanvas').toggleClass('active');
     if ($('.row-offcanvas').hasClass('active'))

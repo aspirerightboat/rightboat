@@ -1,25 +1,24 @@
+- content_for :head_scripts do
+  = javascript_include_tag 'https://www.youtube.com/iframe_api'
+
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :getting_started, sidebar: nil} do
   %h1 Getting Started
 
+  .video-wrapper
+    #player
+    .video-poster
+  %br
+
   %ol
-    %li
-      Visit #{link_to 'My account', details_broker_area_path} and complete your company details.
-      Here you can decide where the leads are emailed to and set multiple offices.
-    %li
-      Set up your #{link_to 'payment details', '#'} and pay the one off set-up fee of €99
-      (or #{link_to 'enter promo code', '#'})
-    %li Feeds: Tell us #{link_to 'how to receive your feeds', '#'}
-    %li Call your account manager [Name and phone number here] with any questions.
+    %li Visit #{link_to 'My Account', details_broker_area_path} and complete your Company and Office details.
+    %li Set up your #{link_to 'Payment Details', '#', data: { toggle: 'popover', title: 'Payment Details', placement: 'top', content: 'To register your payment details please call the Rightboat office on +44 (0) 333 322 2628. <br/>Many thanks.' } }.
+    %li Call your Account Manager on +44 (0) 333 322 2628 with any questions.
 
   %p
-    Great to welcome you onboard.
-    <br>Rightboat team.
+    Great to welcome you on board.
+    <br>The RIghtboat Team.
 
   %p
-    = link_to 'link to Video', 'https://youtu.be/l4e-R1g1K1c', target: '_blank'
+    = link_to 'Charges', charges_broker_area_path
     &nbsp; &nbsp;
-    = link_to 'Charges page', charges_broker_area_path
-    &nbsp; &nbsp;
-    = link_to 'Link to T/C`s', tc_broker_area_path
-    &nbsp; &nbsp;
-    = link_to 'faq', '#'
+    = link_to 'Link to the Terms and Conditions', tc_broker_area_path

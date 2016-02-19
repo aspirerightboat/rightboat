@@ -11,20 +11,33 @@ module Rightboat
           'main_category' => :category,
           'asking_price' => :price,
           'currency' => :currency,
+          'cruise_speed_knots' => :cruising_speed,
           'location_country' => :country,
           'location_city' => :location,
           'description_short_description' => :short_description,
           'loa_meters' => :length_m,
           'beam_meters' => :beam_m,
+          'lwl_meters' => :lwl_m,
           'min_draft_meters' => :draft_m,
           'model' => :model,
           'builder' => :manufacturer,
           'engine_manufacturer' => :engine_manufacturer,
+          'engine_model' => :engine_model,
           'engine_count' => :engine_count,
+          'engine_hours1' => :engine_hours,
+          'engine_year1' => :engine_year,
+          'engine_horse_power1' => :engine_horse_power,
           'fuel_type' => :fuel_type,
+          'fuel_capacity_ltr' => :fuel_tanks_capacity,
+          'holding_tank_ltr' => :holding_tanks_capacity,
+          'num_berths' => :berths_count,
+          'num_heads' => :heads_count,
           'tax_paid' => :vat_rate,
           'condition' => :new_boat,
-          'year_built' => :year_built
+          'propulsion_type' => :drive_type,
+          'year_built' => :year_built,
+          'water_capacity_ltr' => :water_tanks_capacity,
+          'weight_kilos' => :dry_weight
         )
 
         def self.params_validators
@@ -65,10 +78,10 @@ module Rightboat
                   boat.model = val
                 elsif key =~ /description/i && boat.description.blank?
                   boat.description = val
-                elsif key == 'location_region_name' && boat.location.blank?
-                  boat.location = val
-                elsif key == 'location_state' && boat.location.blank?
-                  boat.location = val
+                elsif key == 'location_region_name'
+                  boat.location = val if boat.location.blank?
+                elsif key == 'location_state'
+                  boat.location = val if boat.location.blank?
                 elsif key == 'sales_person'
                   boat.office[:name] = boat.office[:contact_name] = val
                 elsif key == 'sales_person_fax'
@@ -83,6 +96,8 @@ module Rightboat
                   boat.office[:address_attributes][:line1] = val
                 elsif key == 'sales_preson_city'
                   boat.office[:address_attributes][:town_city] = val
+                elsif key == 'sales_preson_state'
+                  boat.office[:address_attributes][:state] = val
                 elsif key == 'sales_preson_postal_code'
                   boat.office[:address_attributes][:zip] = val
                 elsif key == 'sales_person_id'

@@ -87,9 +87,9 @@ module Rightboat
               'Genoa furling type' => :genoa_furling,
               'Jib' => :jib,
               'Jib furling type' => :jib_furling,
-              'Main Sail' => :main_sail,
-              'Main Sail furling system' => :main_sail_furling,
-              'Main Sail Fully battened' => :main_sail_battened,
+              'Main Sail' => :mainsail,
+              'Main Sail furling system' => :mainsail_furling,
+              'Main Sail Fully battened' => :mainsail_battened,
               'Spinnaker' => :spinnaker,
               'Masts' => :masts,
               'Flag' => :country_built,
@@ -125,6 +125,13 @@ module Rightboat
               'Deadrise' => :deadrise,
               'Number of cabins' => :cabins_count,
               'Total Liferaft Capacity' => :life_raft_capacity,
+              'Bridge Clearance' => :bridge_clearance,
+              'Number of twin berths' => :twin_berths_count,
+              'Length of Deck' => :length_on_deck,
+              'Number of bathrooms' => :bathrooms,
+              'Max Load Capacity' => :max_load_capacity,
+              'Seating Capacity' => :seating_capacity,
+              'Freeboard' => :freeboard
           }
         end
 
@@ -267,8 +274,11 @@ module Rightboat
         end
 
         def read_length(str)
-          m = str.match(/^(\d+)'\D(?:(\d+)\D"\D)?$/)
-          (m[1].to_f.ft_to_m + m[2].to_f.inch_to_m).round(2)
+          if !(m = str.match(/^(\d+)'\D(?:(\d+)\D"\D)?$/)).nil? && m.length > 1
+            (m[1].to_f.ft_to_m + m[2].to_f.inch_to_m).round(2)
+          elsif !(m = str.match(/([0-9]*\.[0-9]+|[0-9]+)(\s+)?m/)).nil? && m.length > 0
+            m[1]
+          end
         end
 
         def read_spec_len(boat, data, attr)

@@ -194,7 +194,15 @@ module Rightboat
         source_boat.import = @import
         source_boat.importer = self
 
-        success = source_boat.save
+        # retry saving for deadlock error
+        retries = 0
+        begin
+          success = source_boat.save
+        rescue ActiveRecord::StatementInvalid => e
+          retries += 1
+          retry unless retries > 3
+        end
+
         if success
           log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} images_count=#{source_boat.images_count || 0}"
           increment_stats << [source_boat.new_record ? 'new_count' : 'updated_count', 1]

@@ -28,6 +28,13 @@ module Rightboat
           'model' => :model,
           'price' => :price,
           'currency' => :currency,
+          'displacement' => :displacement_kgs,
+          'hullmaterial' => :hull_material,
+          'wherebuilt' => :where_built,
+          'tankcapacityfuel' => :fuel_tanks_capacity,
+          'tankcapacitywater' => :water_tanks_capacity,
+          'tankcapacityholding' => :holding_tanks_capacity,
+          'designer' => :designer,
           'url_pic' => Proc.new do |boat, v|
             boat.images ||= []
             boat.images << {url: v}
@@ -65,8 +72,12 @@ module Rightboat
                   cv = convert_unit(boat.send(attr_m), val)
                   boat.send("#{attr_m}=", cv)
                 else
-                  cv = convert_unit(boat.get_missing_attr(attr), val)
-                  boat.set_missing_attr(attr, cv)
+                  if (renamed_attr = DATA_MAPPINGS[attr])
+                    cv = convert_unit(boat.send(renamed_attr), val)
+                    boat.send("#{renamed_attr}=", cv)
+                  else
+                    boat.set_missing_attr(key, val)
+                  end
                 end
               else
                 boat.set_missing_attr(key, val)

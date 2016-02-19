@@ -185,7 +185,7 @@ module Rightboat
                   spec_item specs.delete(:spinnaker), 'spinnaker', material: specs.delete(:spinnaker_material), with_description: true
                   spec_item specs.delete(:tri_sail), 'tri_sail', material: specs.delete(:tri_sail_material), with_description: true
                   spec_item specs.delete(:storm_jib), 'storm_jib', material: specs.delete(:storm_jib_material), with_description: true
-                  spec_item specs.delete(:main_sail), 'main_sail', material: specs.delete(:main_sail_material), with_description: true
+                  spec_item specs.delete(:mainsail), 'mainsail', material: specs.delete(:mainsail_material), with_description: true
                   spec_item specs.delete(:winches_count), 'winches'
                 }
                 @x.electronics {

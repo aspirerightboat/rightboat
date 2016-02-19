@@ -37,7 +37,9 @@ module Rightboat
               'winter_cover' => :winter_cover,
               'winter' => :winter,
               'windspeed_year' => :windspeed_year,
-              'windspeed' => :windspeed,
+              'windspeed' => :windspeed_count,
+              'windspeed_makemodel' => :windspeed_makemodel, # RAYMARINE ST 60
+              'windspeed_characs' => :windspeed,
               'windscreen_cover' => :windscreen_cover,
               'windscreenwipers' => :windscreen_wipers,
               'windlass_year' => :windlass_year,
@@ -72,8 +74,9 @@ module Rightboat
               'stay' => :stay, # 1
               'sprayhood' => :spray_hood, # 0
               'spinnaker_sock' => :spinnaker_sock, # 0
-              'spinnaker_rigging' => :spinnaker_rigging, # 0
+              'spinnaker_rigging' => :spinnaker_rigging_count, # 0
               'spinnaker_pole' => :spinnaker_pole, # 0
+              'spinnaker_rigging_characs' => :spinnaker_rigging,
               'spi' => :spinnaker, # 0
               'solent' => :solent, # 0
               'solarpanels' => :solar_panels, # 0
@@ -84,7 +87,10 @@ module Rightboat
               'rodholders' => :rod_holders, # 0
               'rig_name' => :rig, # Cutter
               'rig_code' => :rig_code, # C
-              'repeater' => :repeater, # 0
+              'repeater' => :repeater_count, # 0
+              'repeater_makemodel' => :repeater_makemodel, # RAYMARINE E120
+              'repeater_year' => :repeater_year, # 0
+              'repeater_characs' => :repeater,
               'removablecockpittable' => :removable_cockpit_table, # 0
               'radiotapeplayer_year' => :radiotape_player_year, # 0
               'radiotapeplayer' => :radiotape_player, # 1
@@ -100,6 +106,7 @@ module Rightboat
               'power_110v' => :power_110v, # 0
               'power' => :power, # 1
               'plotter_year' => :plotter_year, # 0
+              'plotter_characs' => :plotter,
               'pilothouse_cover' => :pilothouse_cover, # 0
               'photos' => '', # 10
               'panelcontrol_cover' => :panelcontrol_cover, # 0
@@ -136,9 +143,12 @@ module Rightboat
               'mainsail_furler' => :mainsail_furler, # 0
               'mainsail_cover' => :mainsail_cover, # 0
               'mainsail_cars' => :mainsail_cars, # 1
-              'mainsail' => :mainsail, # 1
+              'mainsail' => :mainsail_count, # 1
+              'mainsail_characs' => :mainsail, # HARKEN
               'log_year' => :log_year, # 0
-              'log' => :log, # 1
+              'log' => :log_count, # 1
+              'log_characs' => :log,
+              'log_makemodel' => :log, # SPEED SOND RAYMARINE
               'leathercoveredsteeringwheel' => :leather_covered_steering_wheel, # 1
               'lazyjacks' => :lazyjacks, # 1
               'lazybag' => :lazybag, # 1
@@ -167,7 +177,10 @@ module Rightboat
               'generator_power' => :generator_power, # 0
               'gangway_year' => :gangway_year, # 0
               'gangway' => :gangway, # 1
-              'fullbattened' => :fullbattened, # 0
+              'battened' => :battened_count, # 1
+              'battened_characs' => :battened, # Performance Mylar - Taffetas (2 ris automatiques)
+              'fullbattened' => :fullbattened_count, # 0
+              'fullbattened_characs' => :fullbattened,
               'freshwatermaker_year' => :freshwatermaker_year, # 0
               'freshwatermaker_number' => :freshwatermaker_number, # 0
               'freshwatermaker' => :freshwatermaker, # 1
@@ -186,7 +199,8 @@ module Rightboat
               'electricheads' => :electricheads, # 1
               'electricbilgepump' => :electric_bilge_pump, # 0
               'dvd_year' => :dvd_year, # 0
-              'dvd' => :dvd_player, # 1
+              'dvd' => :dvd_count, # 1
+              'dvd_characs' => :dvd_player,
               'dishwasher' => :dishwasher, # 1
               'dinghy_year_engine' => '', # 0
               'diesel_code' => :diesel_code, # D
@@ -200,7 +214,9 @@ module Rightboat
               'crockery' => :crockery, # 0
               'cooker' => :cooker, # 1
               'computer_year' => :computer_year, # 0
-              'computer' => :computer, # 1
+              'computer' => :computer_count, # 1
+              'computer_makemodel' => :computer_makemodel,
+              'computer_characs' => :computer,
               'compressor' => :compressor, # 0
               'compass_year' => :compass_year, # 0
               'cockpit_cover' => :cockpit_cover, # 0
@@ -213,11 +229,13 @@ module Rightboat
               'chemicalheads' => :chemical_heads, # 0
               'charttable' => :chart_table, # 1
               'cd_year' => :cd_year, # 0
-              'cd' => :cd_player, # 1
+              'cd' => :cd_count, # 1
+              'cd_characs' => :cd_player,
               'cabrioletdodger' => :cabriolet_dodger, # 0
               'burnerstove' => :burner_stove, # 1
               'bridgeclearance' => :bridge_clearance, # 0
-              'bowsprit' => :bow_sprit, # 0
+              'bowsprit' => :bow_sprit_count, # 0
+              'bowsprit_characs' => :bow_sprit,
               'boiler' => :boiler, # 1
               'boat_flag_country_name' => :country_built, # SPAIN
               'boat_flag_country_code' => '', # 77
@@ -226,9 +244,9 @@ module Rightboat
               'biggamefishingchair' => :fishing_chair, # 0
               'beachinglegs' => :beaching_legs, # 0
               'battery_charger_number' => :battery_charger_number, # 0
-              'battened' => :battened, # 1
               'barbecue' => :barbecue, # 0
-              'backstay' => :backstay, # 1
+              'backstay' => :backstay_count, # 1
+              'backstay_characs' => :backstay,
               'autopilot_year' => :autopilot_year, # 0
               'autopilot_characs' => :autopilot, # ST 6000 PLUS
               'autopilot_makemodel' => :autopilot, # RAYMARINE ST 7000
@@ -241,6 +259,7 @@ module Rightboat
               'alternator' => :alternator, # 0
               'airconditioning_year' => :air_conditioning_year, # 0
               'airconditioning' => :air_conditioning, # 1
+              'airconditioning_make' => :air_conditioning_make,
               'rodholdersnumber' => :rod_holders, # 4
               'motor_boat_type' => '', # C
               'motor_boat_name' => :motor_boat_name, # Cabin
@@ -276,7 +295,6 @@ module Rightboat
               'gps_makemodel' => :gps, # map 276C Garmin
               'windlass_power' => :windlass_power, # 1000 W SUBIDA / BAJADA - MANDO
               'alternator_year' => :alternator_year, # 0
-              'windspeed_makemodel' => :windspeed, # RAYMARINE ST 60
               'ropecutter' => :rope_cutter, # 1
               'tv_characs' => :tv, # 3 x
               'dinghy_year' => :dinghy_year, # 0
@@ -293,13 +311,11 @@ module Rightboat
               'solarpanels_year' => :solar_panels_year, # 0
               'dinghy_engine' => :dinghy_engine, # 0
               'tv_makemodel' => :tv, # DANS CARRE
-              'log_makemodel' => :log, # SPEED SOND RAYMARINE
               'inverter_make' => :inverter, # 1500 W
               'antenna_makemodel' => :antenna, # TV
               'upholstery_replacement_year' => :upholstery_replacement_year, # 0
               'launching_trailor_year' => :launching_trailor_year, # 0
               'windlass_make' => :windlass, # Double commande
-              'repeater_year' => :repeater_year, # 0
               'number_people' => :number_people, # 6
               'life_raft_age' => :life_raft_age, # 2012
               'dinghy_type' => :dinghy_type, # suzuki
@@ -312,15 +328,13 @@ module Rightboat
               'gps_characs' => :gps, # HDS 7
               'electronicchart_characs' => :electronicchart, # lowrance HDS 7
               'depth_sounder_characs' => :depth_sounder, # HDS 7 TOUCH
-              'repeater_makemodel' => :repeater, # RAYMARINE E120
               'trailor_year' => :trailor_year, # 0
               'trailor_model' => :trailor, # PAM B401 M
               'antiosmosistreatment_year' => :anti_osmosis_treatment_year, # 0
               'electric_winch_characs' => :electric_winch, # Harken X 4
               'main_sheet_traveller_characs' => :mainsheet_traveller, # HARKEN
-              'mainsail_characs' => :mainsail, # HARKEN
-              'battened_characs' => :battened, # Performance Mylar - Taffetas (2 ris automatiques)
               'deal_pending' => -> (boat, val) { boat.offer_status = 'under_offer' if val && val == '1'}, # 0
+              'freezer_capa' => :freezer,
           )
         end
 

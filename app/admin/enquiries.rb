@@ -3,7 +3,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
                 :message, :remote_ip, :browse, :deleted_at, :created_at, :updated_at, :status, :email_sent
 
 
-  menu label: 'Leads', priority: 9
+  menu label: 'Leads', priority: 25
 
   config.sort_order = 'created_at_desc_and_first_name_asc_and_surname_asc'
 

@@ -2,7 +2,7 @@ ActiveAdmin.register Currency do
   include SpellFixable
   include Sortable
 
-  menu priority: 4
+  menu priority: 15
 
   permit_params :name, :symbol
 

@@ -1,0 +1,8 @@
+panel "Last Export #{resource.id} Log" do
+  log_path = resource.log_path
+  if File.exists?(log_path)
+    File.open(log_path, 'r').each_line do |line|
+      div { line }
+    end
+  end
+end

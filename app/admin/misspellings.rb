@@ -10,7 +10,7 @@ ActiveAdmin.register Misspelling do
   end
 
   config.sort_order = 'alias_string_asc'
-  menu priority: 10
+  menu priority: 35
 
   permit_params :alias_string, :source_type, :source_id
 

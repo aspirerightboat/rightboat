@@ -1,22 +1,13 @@
 require 'builder'
 
+# schema is described here: http://www.openmarine.org/schema.aspx credentials admin/admin
+
 module Rightboat
   module Exports
-    # schema is described here: http://www.openmarine.org/schema.aspx credentials admin/admin
+    class OpenmarineExporter < ExporterBase
 
-    class OpenMarine
-      def self.export_user_boats(user)
-        dir = FileUtils.mkdir_p("#{Rails.root}/public/exports").first
-        file = File.open("#{dir}/#{user.slug}-#{user.broker_info.unique_hash}.xml", 'w+')
-        new(user, target: file).export
-      end
-
-      def initialize(user, options = {})
-        @user = user
-        @x = Builder::XmlMarkup.new({target: STDOUT, indent: 1}.merge(options))
-      end
-
-      def export
+      def do_export
+        @x = Builder::XmlMarkup.new(target: @file, indent: 1)
         @x.instruct! :xml, version: '1.0'
         @x.open_marine(version: '1.7', 'xmlns:rb' => 'rightboat.com',
                        language: 'en', origin: 'rightboat.com',
@@ -32,6 +23,7 @@ module Rightboat
       end
 
       def add_offices
+        log 'export offices'
         offices = @user.offices.includes(address: :country)
 
         @x.offices {
@@ -61,10 +53,12 @@ module Rightboat
       end
 
       def add_boats
+        log 'export boats'
         boats = @user.boats.not_deleted.includes(:manufacturer, :model, :currency, :country, :vat_rate, :boat_images,
                                                  :fuel_type, :engine_manufacturer, :drive_type, :boat_type, :category)
         @x.adverts {
           boats.each do |boat|
+            log "export boat_id=#{boat.id}"
             specs = boat.boat_specifications.specs_hash
             @x.advert(ref: boat.id, office_id: boat.office_id, status: boat.offer_status.camelize) {
               @x.advert_media {
@@ -191,7 +185,7 @@ module Rightboat
                   spec_item specs.delete(:spinnaker), 'spinnaker', material: specs.delete(:spinnaker_material), with_description: true
                   spec_item specs.delete(:tri_sail), 'tri_sail', material: specs.delete(:tri_sail_material), with_description: true
                   spec_item specs.delete(:storm_jib), 'storm_jib', material: specs.delete(:storm_jib_material), with_description: true
-                  spec_item specs.delete(:mainsail), 'mainsail', material: specs.delete(:mainsail_material), with_description: true
+                  spec_item specs.delete(:mainsail), 'main_sail', material: specs.delete(:mainsail_material), with_description: true
                   spec_item specs.delete(:winches_count), 'winches'
                 }
                 @x.electronics {
@@ -244,6 +238,8 @@ module Rightboat
             }
           end
         }
+
+        log "exported #{boats.size} boats"
       end
 
       def spec_item(spec_value, spec_name, options = {})

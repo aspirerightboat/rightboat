@@ -52,7 +52,7 @@ module Rightboat
         :generator, :generator_kw, :generator_power, :generator_year,
         :gennaker, :gennaker_characs, :genoa, :genoa_cover, :genoa_furling, :genoa_material,
         :gps, :gps_year, :gross_tonnage, :halyards_cockpit,
-        :head_room, :head_year, :heads_count, :heads_count, :heat_year,
+        :head_room, :head_year, :heads_count, :heat_year,
         :heating, :heating_type, :helipad, :holding_tank_gal, :holding_tanks, :holding_tanks_capacity, :hot_cockpit_shower,
         :hull_color, :hull_configuration, :hull_construction, :hull_designer, :hull_fuel_tank_material, :hull_material, :hull_number, :hull_painting, :hull_painting_year, :hull_shape, :hull_type, :hull_water_tank_material,
         :hydraulic_gangway, :hydraulic_winch, :icebox,

@@ -3,6 +3,7 @@ class Export < ActiveRecord::Base
 
   EXPORT_TYPES = %w(openmarine)
 
+  validates_presence_of :user_id
   validates_inclusion_of :export_type, in: -> (_export) { export_types }, if: :export_type_changed?
 
   scope :active, -> { where active: true }
@@ -52,7 +53,7 @@ class Export < ActiveRecord::Base
   private
 
   def create_prefix
-    self.prefix = Digest::SHA1::hexdigest("#{id}ribbs!").first(10)
+    self.prefix = Digest::SHA1::hexdigest("#{user_id}ribbs!").first(10)
   end
 
 end

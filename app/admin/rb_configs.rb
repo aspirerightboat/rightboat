@@ -1,5 +1,5 @@
 ActiveAdmin.register RBConfig do
-  menu label: 'Settings', priority: 20
+  menu label: 'Settings', priority: 50
 
   permit_params :key, :value, :kind, :description
 

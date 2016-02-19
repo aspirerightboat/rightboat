@@ -5,8 +5,6 @@ require 'rightboat/imports/source_boat' # fix "Circular dependency" error while 
 module Rightboat
   module Imports
     class ImporterBase
-      MAX_RETRIES = 5
-
       include Utils
 
       attr_reader :jobs_mutex
@@ -28,7 +26,7 @@ module Rightboat
         @import_trail.touch(:finished_at)
 
         if @import_trail.error_msg
-          ImportMailer.importing_errors(@import_trail.id).deliver_now
+          ExpertMailer.importing_errors(@import_trail.id).deliver_now
         end
 
         log "Finished in #{@import_trail.duration.strftime('%H:%M:%S')}"
@@ -154,7 +152,7 @@ module Rightboat
       end
 
       def log_ex(e, short_msg)
-        backtrace_lines_count = Rails.env.development? ? 50 : 10
+        backtrace_lines_count = Rails.env.development? ? 50 : 20
         log_error short_msg, "#{e.class.name} Error: #{e.message}\n#{e.backtrace.first(backtrace_lines_count).join("\n")}"
       end
 
@@ -167,7 +165,7 @@ module Rightboat
           @agent.get(url, params, referer, headers)
         rescue Mechanize::ResponseCodeError => e
           retry_cnt += 1
-          retry if retry_cnt < MAX_RETRIES
+          retry if retry_cnt < 5
           raise e
         end
       end

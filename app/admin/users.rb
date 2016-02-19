@@ -8,7 +8,7 @@ ActiveAdmin.register User do
                                          :website, :additional_email, :vat_number, :logo, :lead_email_distribution, :_destroy]
 
   config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'
-  menu priority: 8
+  menu priority: 20
 
   before_save do |user|
     user.updated_by_admin = true

@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
   has_many :invoices, dependent: :nullify
   has_many :lead_trails, dependent: :nullify
   has_many :saved_searches, dependent: :delete_all
+  has_many :exports, dependent: :delete_all
 
   mount_uploader :avatar, AvatarUploader
 

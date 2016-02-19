@@ -50,7 +50,7 @@ class Import < ActiveRecord::Base
   def run!(manual = false)
     return if running?
     update_attributes!(queued_at: Time.current, pid: -1)
-    `#{'IGNORE_FEED_MTIME=1 ' if manual}bundle exec rake import:run[#{id}] > /dev/null 2>&1 &`
+    system "#{'IGNORE_FEED_MTIME=1 ' if manual}bundle exec rake import:run[#{id}] > /dev/null 2>&1 &"
   end
 
   def stop!

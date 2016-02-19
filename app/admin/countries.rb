@@ -2,7 +2,7 @@ ActiveAdmin.register Country do
   include SpellFixable
 
   config.sort_order = 'name_asc'
-  menu priority: 4
+  menu priority: 10
 
   permit_params :name, :iso, :currency_id
 

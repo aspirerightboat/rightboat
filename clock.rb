@@ -25,38 +25,38 @@ module DBBackedClockwork
     end
   end
 
-  every 1.minute, 'approve old pending leads' do
+  every 1.minute, 'approve old pending leads', thread: true do
     LeadsApproveJob.new.perform
   end
 
-  every 1.day, 'send saved search notifications', at: '22:10' do
+  every 1.day, 'send saved search notifications', at: '22:10', thread: true do
     SavedSearchNoticesJob.new.perform
   end
 
   every 1.day, 'update currency', at: '1:00' do
-    `bundle exec rake import:currency`
+    system 'bundle exec rake import:currency &'
   end
 
   every 1.day, 'sitemap_refresh', at: '1:10' do
-    `bundle exec rake rb_sitemap:refresh`
+    system 'bundle exec rake rb_sitemap:refresh &'
   end
 
   every 1.day, 'restart_solr', at: '6:20' do # sometimes we have stale search results
-    `sudo monit restart solr_rightboat`
+    system 'sudo monit restart solr_rightboat &'
   end
 
-  every 1.day, 'download eyb xml', at: '22:00' do
+  every 1.day, 'download eyb xml', at: '22:00', thread: true do
     res = `/bin/bash eyb.sh`
-    ImportMailer.download_feed_error('Eyb').deliver_now if res !~ /Success\Z/
+    ExpertMailer.download_feed_error('Eyb').deliver_now if res !~ /Success\Z/
   end
 
-  every 1.day, 'download eyb xml', at: '22:05' do
-    res = `bundle exec rake import:download_boatstream_feed`
-    ImportMailer.download_feed_error('BoatStream').deliver_now if res !~ /Success\Z/
+  every 1.day, 'download boatstream xml', at: '22:05' do
+    system 'bundle exec rake import:download_boatstream_feed &'
+
   end
 
   every 1.day, 'export openmarine boats', at: '8:00' do
-    `bundle exec rake export:openmarine`
+    system 'bundle exec rake export:run_all &'
   end
 
   # get the manager object

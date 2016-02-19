@@ -76,7 +76,8 @@ module Rightboat
         :pdf_url, :profile_url, :state_rooms, :max_draft_meters, :water_capacity_gal, :weight_pounds, :weight_short_ton,
         :weight_tonne, :gross_tonnage, :hull_designer, :listing_date, :max_speed_mph, :sub_category, :videos, :heads_count,
         :hull_configuration, :cruise_speed_mph, :engine_hours2, :num_sleeps, :hull_fuel_tank_material, :hull_water_tank_material,
-        :lod_meters, :vessel_top, :fuel_consumption_gal, :fuel_consumption_ltr
+        :lod_meters, :vessel_top, :fuel_consumption_gal, :fuel_consumption_ltr, :bridge_clearance, :twin_berths_count,
+        :deck_length, :max_load_capacity, :seating_capacity, :freeboard
       ]
 
       RELATION_ATTRIBUTES = [

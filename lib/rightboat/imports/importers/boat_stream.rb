@@ -249,7 +249,7 @@ module Rightboat
                       when 'CabinHeadroomMeasure' then @boat.cabin_headroom = to_meters(chars, get_attr('unitCode'))
                       when 'DeadriseMeasure' then @boat.deadrise = to_degrees(chars, get_attr('unitCode'))
                       when 'MaximumNumberOfPassengersNumeric' then @boat.passengers_count = chars
-                      when 'FreeBoardMeasure' then @boat.free_board = to_meters(chars, get_attr('unitCode'))
+                      when 'FreeBoardMeasure' then @boat.freeboard = to_meters(chars, get_attr('unitCode'))
                       end
                     when 'VehicleRemarketingEngineLineItem'
                       case @tree[5]

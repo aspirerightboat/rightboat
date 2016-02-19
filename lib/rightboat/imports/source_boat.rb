@@ -70,7 +70,13 @@ module Rightboat
         :antifouling, :antenna_year, :antenna, :alternator, :alternator_year, :air_conditioning_year,
         :fuel_water_tanks, :head_year, :fuel_water_tanks_number, :fresh_water_tanks_number, :heat_year,
         :fridge_capacity, :rope_cutter, :dinghy, :dinghy_year, :dinghy_type, :dinghy_engine, :dinghy_engine_power, :regata, :number_people,
-        :working, :free_board, :reg_details, :where_built
+        :working, :free_board, :reg_details, :where_built, :agreement_type, :captain_on_board, :captain_quarters, :cockpit,
+        :bridge_clearance_meters, :builder_length_meters, :classifications, :flag, :engine_horse_power2,
+        :engine_year2, :fly_bridge, :fuel_capacity_gal, :helipad, :holding_tank_gal, :model_year, :not_for_sale_in_us,
+        :pdf_url, :profile_url, :state_rooms, :max_draft_meters, :water_capacity_gal, :weight_pounds, :weight_short_ton,
+        :weight_tonne, :gross_tonnage, :hull_designer, :listing_date, :max_speed_mph, :sub_category, :videos, :heads_count,
+        :hull_configuration, :cruise_speed_mph, :engine_hours2, :num_sleeps, :hull_fuel_tank_material, :hull_water_tank_material,
+        :lod_meters, :vessel_top, :fuel_consumption_gal, :fuel_consumption_ltr
       ]
 
       RELATION_ATTRIBUTES = [

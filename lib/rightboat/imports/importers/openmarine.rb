@@ -87,6 +87,8 @@ module Rightboat
               'storm_jib' => :storm_jib,
               'main_sail' => :mainsail,
               'compas' => :compass,
+              'liferaft' => :life_raft,
+              'external_url' => :external_url,
           )
         end
 

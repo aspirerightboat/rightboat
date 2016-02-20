@@ -34,7 +34,11 @@ class Enquiry < ActiveRecord::Base
   alias_method :to_s, :name
 
   def create_lead_trail(force = false)
-    LeadTrail.create!(lead: self, user: $current_user, new_status: status) if force || status_changed?
+    if force || status_changed?
+      LeadTrail.create!(lead: self, user: $current_user, new_status: status)
+    elsif deleted? && deleted_at_changed?
+      LeadTrail.create!(lead: self, user: $current_user, new_status: 'deleted')
+    end
   end
 
   def update_lead_price

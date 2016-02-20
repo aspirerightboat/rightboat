@@ -9,6 +9,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   filter :first_name_or_surname_or_email_cont, as: :string, label: 'Customer'
   filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
+  filter :id
   filter :created_at, label: 'Date of Lead'
   filter :status, as: :select, collection: -> { Enquiry::STATUSES }
 

@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :information, allow_destroy: true
   accepts_nested_attributes_for :offices, allow_destroy: true
-  accepts_nested_attributes_for :broker_info
+  accepts_nested_attributes_for :broker_info, reject_if: :all_blank, allow_destroy: true
 
   # validates_inclusion_of :title, within: TITLES, allow_blank: true
 

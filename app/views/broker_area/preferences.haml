@@ -6,13 +6,13 @@
     .row
       .col-sm-6.col-xs-12
         .form-group
-          = label_tag :old_password
+          = label_tag :old_password, 'Old Password'
           = password_field_tag :old_password, nil, class: 'form-control'
         .form-group
           = label_tag :password
           = password_field_tag :password, nil, class: 'form-control'
         .form-group
-          = label_tag :password_confirmation, 'Repeat password'
+          = label_tag :password_confirmation, 'Repeat Password'
           = password_field_tag :password_confirmation, nil, class: 'form-control'
     .row
       .col-sm-6.col-xs-12.form-actions

@@ -328,6 +328,6 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
     // execute above function
     initPhotoSwipeFromDOM('#slider');
 
-    $('.pswp__button--grid-on').click(hidePswpTumbnail);
-    $('.pswp__button--grid-off').click(showPswpTumbnail);
+    $('.pswp__button--grid-on').bind('click touchstart', hidePswpTumbnail);
+    $('.pswp__button--grid-off').bind('click touchstart', showPswpTumbnail);
   });

@@ -286,10 +286,11 @@ module Rightboat
         when /\A(?:metres?|meters?|m)\z/ then value.to_f.round(2)
         when 'kg', 'kgs', 'k' then value.to_f.round(2)
         when 'lbs' then (value.to_f * 0.453592).round(2)
-        when /\A(?:tonnes?|t)\z/ then (value.to_f * 1000).round(2)
+        when /\A(?:tonnes?|t|Tons)\z/ then (value.to_f * 1000).round(2)
         when /\A(?:gallons?|g)\z/ then (value.to_f * 3.78541).round(2)
         when /\A(?:liters?|litres?|l)\z/ then (value.to_f).round(2)
         when 'metres/feet' # invalid unit from http://www.nya.co.uk/boatsxml.php
+        when 'gallons/litres' # invalid unit from http://eby.ribbs.org/exports/c6c433b91c3666fe236a138e6d8d102680d3f1c7.xml
         else
             log_warning 'Unknown unit', "#{unit}: #{value}"
             nil

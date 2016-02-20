@@ -42,6 +42,7 @@ module Rightboat
               'fuel' => :fuel_type,
               'hours' => :engine_hours,
               'horse_power' => :engine_horse_power,
+              'horsepower' => :engine_horse_power,
               'engine_manufacturer' => :engine_manufacturer,
               'engine_quantity' => :engine_count,
               'tankage' => :engine_tankage,
@@ -85,6 +86,7 @@ module Rightboat
               'tri_sail' => :tri_sail,
               'storm_jib' => :storm_jib,
               'main_sail' => :mainsail,
+              'compas' => :compass,
           )
         end
 

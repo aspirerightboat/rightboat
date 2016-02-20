@@ -85,16 +85,16 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
 
   var showPswpTumbnail = function() {
     $('.pswp').addClass('thumbnail-mode');
-    $('.pswp__button--grid-off').show();
-    $('.pswp__button--grid-on, .pswp__button--zoom, .pswp__button--fs, .pswp__counter').hide();
+    $('.pswp__button--grid-on').show();
+    $('.pswp__button--grid-off, .pswp__button--zoom, .pswp__counter').hide();
   };
 
   var hidePswpTumbnail = function(index) {
     if (index === 0 || (index && !isNaN(parseInt(index)))) {
       gallery.goTo(index); }
     $('.pswp').removeClass('thumbnail-mode');
-    $('.pswp__button--grid-off').hide();
-    $('.pswp__button--grid-on, .pswp__button--zoom, .pswp__button--fs, .pswp__counter').show();
+    $('.pswp__button--grid-on').hide();
+    $('.pswp__button--grid-off, .pswp__button--zoom, .pswp__counter').show();
   };
 
   $(document).ready(function() {
@@ -328,6 +328,6 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
     // execute above function
     initPhotoSwipeFromDOM('#slider');
 
-    $('.pswp__button--grid-off').click(hidePswpTumbnail);
-    $('.pswp__button--grid-on').click(showPswpTumbnail);
+    $('.pswp__button--grid-on').click(hidePswpTumbnail);
+    $('.pswp__button--grid-off').click(showPswpTumbnail);
   });

@@ -62,20 +62,20 @@ module Rightboat
 
         threads = safe_threads_count.times.map do
           Thread.new do
-            begin
-              loop do
-                job = (@jobs_queue.pop(true) rescue nil)
+            ActiveRecord::Base.connection_pool.with_connection do # see: http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections
+              begin
+                loop do
+                  job = (@jobs_queue.pop(true) rescue nil)
 
-                parse_and_save_boat(job) if job
+                  parse_and_save_boat(job) if job
 
-                break if @exit_worker || (@all_jobs_enqueued && !job)
-                sleep(2.seconds) if !job
+                  break if @exit_worker || (@all_jobs_enqueued && !job)
+                  sleep(2.seconds) if !job
+                end
+              rescue StandardError => e
+                log_ex e, 'Thread Error'
+                raise e # exception will be swallowed by thread and not passed to main thread
               end
-            rescue StandardError => e
-              log_ex e, 'Thread Error'
-              raise e # exception will be swallowed by thread and not passed to main thread
-            ensure
-              ActiveRecord::Base.connection.close
             end
           end
         end

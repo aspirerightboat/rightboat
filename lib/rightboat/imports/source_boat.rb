@@ -43,8 +43,7 @@ module Rightboat
         :electric_bilge_pump, :electric_winch, :electrical_circuit, :electricheads, :electricheads_number, :electronicchart, :electronicchart_year,
         :engine, :engine_code, :engine_count, :engine_horse_power, :engine_horse_power2, :engine_hours, :engine_hours2,
         :engine_location, :engine_range_nautical_miles, :engine_tankage, :engine_type, :engine_type_name, :engine_year, :engine_year2, :engine_year_built,
-        :epirb, :external_url,
-        :fenders, :fire_extinguisher, :fire_extinguisher_type, :fishing_chair, :fishing_depth_sounder, :fishing_depth_sounder_year,
+        :epirb, :fenders, :fire_extinguisher, :fire_extinguisher_type, :fishing_chair, :fishing_depth_sounder, :fishing_depth_sounder_year,
         :flag, :flaps, :fly_bridge, :flybridge, :flybridge_cover,
         :flyingstay, :foresunbathing, :freeboard, :freezer,
         :fresh_water_tanks, :fresh_water_tanks_number, :freshwatermaker, :freshwatermaker_number, :freshwatermaker_year,
@@ -199,13 +198,20 @@ module Rightboat
               log_error 'Unknown Currency', "#{value}" if !val
               value = val
             else
+              # if attr_name == :manufacturer || attr_name == :model
+              #   value = value.titleize
+              # end
+
               if attr_name == :model
-                query_option = { manufacturer_id: target.manufacturer_id }
+                query_option = {manufacturer_id: target.manufacturer_id}
               elsif attr_name == :engine_model
-                query_option = { engine_manufacturer_id: target.engine_manufacturer_id }
+                query_option = {engine_manufacturer_id: target.engine_manufacturer_id}
               else
                 query_option = {}
               end
+              # value = klass.find_by(name: value)
+              # value ||= Misspelling
+
               value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!
             end
           end

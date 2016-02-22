@@ -88,7 +88,7 @@ module Rightboat
               'main_sail' => :mainsail,
               'compas' => :compass,
               'liferaft' => :life_raft,
-              'external_url' => :external_url,
+              'external_url' => :ignore!,
           )
         end
 
@@ -238,7 +238,7 @@ module Rightboat
           boat_features.css('item, rb:item').each do |item|
             item_name = item['name']
             attr = data_mapping[item_name]
-            next if attr == ''
+            next if attr == :ignore!
 
             value = item.text.strip
             if item['rb:description'].present?

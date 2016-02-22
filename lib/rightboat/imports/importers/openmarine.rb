@@ -42,6 +42,7 @@ module Rightboat
               'fuel' => :fuel_type,
               'hours' => :engine_hours,
               'horse_power' => :engine_horse_power,
+              'horsepower' => :engine_horse_power,
               'engine_manufacturer' => :engine_manufacturer,
               'engine_quantity' => :engine_count,
               'tankage' => :engine_tankage,
@@ -56,6 +57,38 @@ module Rightboat
               'Bimini' => :bimini,
               'shorepower' => :shore_power,
               'max_speed' => :max_speed_knots,
+              'fire_extinguish' => :fire_extinguisher,
+              'mob_sys' => :mob_system,
+              'type' => :boat_type,
+              'Rondhouten_verstaging' => :hardwood_rigging,
+              'Schaar' => :scissors,
+              'Lieren' => :winches_count,
+              'Strijkinstallatie' => :seating_system,
+              'Zeilen_materiaal' => :sailing_equipment,
+              'Steunzeil' => :support_sail,
+              'Grootzeil' => :mainsail,
+              'Grootzeil_reefsysteem' => :mainsail_reefsystem,
+              'Bezaan' => :differential,
+              'Bezaan_reefsysteem' => :differential_reefsystem,
+              'Genua' => :genoa,
+              'Genua_reefsysteem' => :genoa_reefsystem,
+              'Fok' => :degree,
+              'Fok_reefsysteem' => :degree_reefsystem,
+              'Kluiver' => :jib,
+              'Stormfok' => :stormfox,
+              'Trysail' => :tri_sail,
+              'Spinnaker' => :spinnaker,
+              'Halvewinder_bollejan' => :half_winder_bollejan,
+              'Gennaker' => :gennaker,
+              'Overig' => :remaining,
+              'genoa' => :genoa,
+              'spinnaker' => :spinnaker,
+              'tri_sail' => :tri_sail,
+              'storm_jib' => :storm_jib,
+              'main_sail' => :mainsail,
+              'compas' => :compass,
+              'liferaft' => :life_raft,
+              'external_url' => :external_url,
           )
         end
 
@@ -143,7 +176,7 @@ module Rightboat
 
         def handle_advert_media(boat, advert_media)
           media_nodes = advert_media.element_children
-          media_nodes.select { |node| !node['type'].start_with?('video') } # ignore "video/youtube" so far; there could be also "application/octet-stream" pointing to jpg
+          media_nodes = media_nodes.select { |node| !node['type'].start_with?('video') } # ignore "video/youtube" so far; there could be also "application/octet-stream" pointing to jpg
 
           # note: some import sources has primary media not as first child, eg.: http://www.nya.co.uk/boatsxml.php
           # note: openmarine specs allows several primary (emphasized) resources but here only the first primary is taken into account

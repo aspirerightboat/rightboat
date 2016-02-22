@@ -4,19 +4,25 @@
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :getting_started, sidebar: nil} do
   %h1 Getting Started
 
-  .video-wrapper
-    #player
-    .video-poster
+  .video-container
+    .video-wrapper
+      .video-outline
+        #player
+        .video-poster
+    .video-description
+      %h3
+        %b Welcome to Rightboat!
+        Our introductory video will give you a quick overview of how Rightboat can work for you...
   %br
 
   %ol
     %li Visit #{link_to 'My Account', details_broker_area_path} and complete your Company and Office details.
-    %li Set up your #{link_to 'Payment Details', '#', data: { toggle: 'popover', title: 'Payment Details', placement: 'top', content: 'To register your payment details please call the Rightboat office on +44 (0) 333 322 2628. <br/>Many thanks.' } }.
+    %li Set up your #{link_to 'Payment Details', 'javascript: void(0);', data: { toggle: 'popover', title: 'Payment Details', placement: 'top', trigger: 'focus', content: 'To register your payment details please call the Rightboat office on +44 (0) 333 322 2628. <br/>Many thanks.' } }.
     %li Call your Account Manager on +44 (0) 333 322 2628 with any questions.
 
   %p
     Great to welcome you on board.
-    <br>The RIghtboat Team.
+    <br>The Rightboat Team.
 
   %p
     = link_to 'Charges', charges_broker_area_path

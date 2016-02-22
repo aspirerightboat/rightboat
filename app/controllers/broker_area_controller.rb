@@ -11,6 +11,7 @@ class BrokerAreaController < ApplicationController
 
   def details
     current_user.build_address if !current_user.address
+    current_user.build_broker_info if !current_user.broker_info
     @offices = current_user.offices.includes(address: :country).to_a
   end
 

@@ -1,4 +1,25 @@
-.video-wrapper {
+.video-container {
+  position: relative;
+
+  .video-wrapper {
+    position: relative;
+    .transition(all 1s ease);
+    width: 250px;
+    z-index: 10;
+
+    &.playing {
+      width: 100%;
+    }
+  }
+
+  .video-description {
+    left: 300px;
+    position: absolute;
+    top: 0;
+  }
+}
+
+.video-outline {
   background-color: white;
   height: 0;
   position: relative;
@@ -39,7 +60,7 @@
     font-size: 80px;
     height: 0;
     left: 50%;
-    margin: -80px 0 0 -40px;
+    margin: -60px 0 0 -40px;
     position: absolute;
     top: 50%;
     text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);

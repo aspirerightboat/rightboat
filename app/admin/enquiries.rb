@@ -11,6 +11,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
   filter :id
   filter :created_at, label: 'Date of Lead'
+  filter :updated_at, label: 'Last Status Change'
   filter :status, as: :select, collection: -> { Enquiry::STATUSES }
 
   controller do
@@ -21,6 +22,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   index download_links: [:csv] do
     column :id
+    column 'Last Status Change', sortable: :updated_at do |record|
+      ago = distance_of_time_in_words(record.updated_at, Time.current)
+      date = l record.updated_at, format: :short
+      "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
+    end
     column 'Date of Lead', sortable: :created_at do |record|
       ago = distance_of_time_in_words(record.created_at, Time.current)
       date = l record.created_at, format: :short
@@ -87,6 +93,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   csv do
     column(:id)
+    column('Last Status Change') { |record| record.updated_at }
     column('Date of Lead') { |record| record.created_at }
     column('User') { |record| record.user.try(&:name) }
     column('Member?') { |record| record.user ? 'Yes' : 'No' }

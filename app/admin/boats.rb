@@ -58,6 +58,33 @@ ActiveAdmin.register Boat do
     link_to image_tag(boat.primary_image.file.url(:thumb)), admin_boat_path(boat)
   end
 
+  class MakersModelsView < ActiveAdmin::Views::IndexAsTable
+    def self.index_name
+      'makers_models'
+    end
+
+    def build(page_presenter, collection)
+      table_options = {
+          id: 'makers_models_table',
+          sortable: false,
+          class: 'index_table index',
+          paginator: false,
+          row_class: page_presenter[:row_class]
+      }
+
+      maker_models = Boat.not_deleted.search(params[:q]).result
+                         .joins(:manufacturer, :model).group('manufacturers.name').order('COUNT(*) DESC')
+                         .select("manufacturers.name AS maker_name, GROUP_CONCAT(DISTINCT models.name SEPARATOR ' | ') AS model_names")
+
+      table_for maker_models, table_options do
+        column :maker_name
+        column :model_names
+      end
+    end
+  end
+
+  index as: MakersModelsView
+
   form do |f|
     f.inputs do
       f.input :manufacturer, include_blank: false

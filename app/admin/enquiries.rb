@@ -22,11 +22,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   index download_links: [:csv] do
     column :id
-    column 'Last Status Change', sortable: :updated_at do |record|
-      ago = distance_of_time_in_words(record.updated_at, Time.current)
-      date = l record.updated_at, format: :short
-      "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
-    end
     column 'Date of Lead', sortable: :created_at do |record|
       ago = distance_of_time_in_words(record.created_at, Time.current)
       date = l record.created_at, format: :short
@@ -67,6 +62,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       "#{lead.boat.price} #{lead.boat.safe_currency.symbol}" if !lead.boat.poa? && lead.boat.price > 0
     end
     column :status
+    column 'Last Status Change', sortable: :updated_at do |record|
+      ago = distance_of_time_in_words(record.updated_at, Time.current)
+      date = l record.updated_at, format: :short
+      "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
+    end
     column :lead_price do |lead|
       "<b>#{lead.lead_price}</b> £".html_safe
     end
@@ -93,7 +93,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   csv do
     column(:id)
-    column('Last Status Change') { |record| record.updated_at }
     column('Date of Lead') { |record| record.created_at }
     column('User') { |record| record.user.try(&:name) }
     column('Member?') { |record| record.user ? 'Yes' : 'No' }
@@ -122,6 +121,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:email)
     column(:message)
     column(:status)
+    column('Last Status Change') { |record| record.updated_at }
     column(:lead_price)
     column(:remote_ip)
     column(:browser)

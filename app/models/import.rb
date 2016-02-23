@@ -55,7 +55,8 @@ class Import < ActiveRecord::Base
 
   def stop!
     Process.kill('SIGINT', pid)
-  rescue Errno::ESRCH => e # no such pid running
+  rescue Errno::EPERM, Errno::ESRCH => e # no such pid running
+    update!(pid: 0) # assume we have invalid pid
     logger.info e.message
   end
 

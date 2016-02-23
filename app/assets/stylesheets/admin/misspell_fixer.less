@@ -1,0 +1,49 @@
+.misspell-fixer {
+  position: relative;
+  cursor: pointer;
+}
+.misspell-fixer-popup {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  z-index: 10;
+  background-color: white;
+  cursor: default;
+  width: 150px;
+
+  .value-input {
+    width: 100%;
+  }
+  .titleize-btn, .esc-btn {
+    color: #38678b;
+    cursor: pointer;
+  }
+  .esc-btn {
+    position: absolute;
+    right: 8px;
+    top: 38px;
+  }
+  .error {
+    color: red;
+  }
+}
+
+@-webkit-keyframes rotating {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+@keyframes rotating {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #44484b;
+  background-color: white;
+  margin-left: 0.5ex;
+  -webkit-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+}

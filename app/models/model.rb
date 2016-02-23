@@ -7,6 +7,9 @@ class Model < ActiveRecord::Base
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
   belongs_to :manufacturer, inverse_of: :models
+  has_many :buyer_guides
+  has_many :finances
+  has_many :insurances
 
   # solr_update_association :boats, fields: [:active, :name, :manufacturer_id]
 
@@ -30,6 +33,19 @@ class Model < ActiveRecord::Base
 
   def name_with_manufacturer
     [self.manufacturer, self.name].reject(&:blank?).join(' ')
+  end
+
+  def merge_and_destroy!(other_model)
+    raise ArgumentError.new if manufacturer_id != other_model.manufacturer_id
+
+    misspellings.update_all(source_id: other_model.id)
+    boats.update_all(model_id: other_model.id)
+    buyer_guides.update_all(model_id: other_model.id)
+    finances.update_all(model_id: other_model.id)
+    insurances.update_all(model_id: other_model.id)
+
+    reload
+    destroy!
   end
 
 

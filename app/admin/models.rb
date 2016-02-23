@@ -1,5 +1,6 @@
 ActiveAdmin.register Model do
   include SpellFixable
+  include MisspellFixer
 
   config.sort_order = 'name_asc'
   menu parent: 'Boats', label: 'Models', priority: 2
@@ -53,5 +54,14 @@ ActiveAdmin.register Model do
         Model.includes(:manufacturer)
       end
     end
+
+    def find_resource
+      if params[:action].in?(%w(fetch_name fix_name))
+        Model.where(id: params[:id]).first!
+      else
+        super
+      end
+    end
   end
+
 end

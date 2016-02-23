@@ -74,12 +74,31 @@ ActiveAdmin.register Boat do
 
       maker_models = Boat.not_deleted.search(params[:q]).result
                          .joins(:manufacturer, :model).group('manufacturers.name').order('COUNT(*) DESC')
-                         .select("manufacturers.name AS maker_name, GROUP_CONCAT(DISTINCT models.name SEPARATOR ' | ') AS model_names")
-
-      table_for maker_models, table_options do
-        column :maker_name
-        column :model_names
-      end
+                         .select("manufacturers.name AS maker_name, GROUP_CONCAT(DISTINCT models.name SEPARATOR ' | ') AS model_names, GROUP_CONCAT(DISTINCT models.id SEPARATOR ',') AS model_ids")
+      div(class: 'misspell-fixing-area') {
+        table_for maker_models, table_options do
+          column :maker_name
+          column :model_names do |c|
+            model_names = c.model_names.split(' | ')
+            model_ids = c.model_ids.split(',')
+            first = true
+            model_names.zip(model_ids).sort_by(&:first).each do |model_name, model_id|
+              text_node ' | ' unless first
+              first = false
+              span(class: 'misspell-fixer', 'data-collection' => 'models', 'data-id' => model_id) { model_name }
+            end
+          end
+        end
+        div(class: 'misspell-fixer-popup', style: 'display:none') {
+          input(type:'text', class: 'value-input')
+          div {
+            button(type: 'button', class: 'save-btn') { 'Save' }
+            span(class: 'titleize-btn') { 'Titleize' }
+            span(class: 'esc-btn') { 'X' }
+          }
+          div(class: 'error')
+        }
+      }
     end
   end
 

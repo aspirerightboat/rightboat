@@ -11,7 +11,7 @@ onPlayerStateChange = (event) ->
   if state == YT.PlayerState.BUFFERING or state == YT.PlayerState.PLAYING
     if $('.playing #player').length == 0
       playVideo()
-  else if state == YT.PlayerState.ENDED
+  else if state == YT.PlayerState.ENDED or state = YT.PlayerState.PAUSED
     $('.video-wrapper').removeClass 'playing'
 
 playVideo = ->

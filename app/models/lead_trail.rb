@@ -8,4 +8,13 @@ class LeadTrail < ActiveRecord::Base
   scope :invoiced, -> { where(new_status: 'invoiced') }
   scope :count_from, ->(status, from) { send(status).where('created_at > ?', from).count }
   scope :count_between, ->(status, from, to) { send(status).where('created_at BETWEEN ? AND ?', from, to).count }
+
+  def comments
+    ret = ''
+    if new_status == 'rejected'
+      ret += "#{lead.bad_quality_reason.humanize}: " if lead.bad_quality_reason
+      ret += lead.bad_quality_comment if lead.bad_quality_comment
+    end
+    ret
+  end
 end

@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
       'ADMIN' => 99
   }
 
-  CUSTOMER_DETAIL_REQUESTERS = %w(nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com jamie.coombes@sunseekertorquay.com)
+  CUSTOMER_DETAIL_REQUESTERS = %w(nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com jamie.coombes@sunseekertorquay.com sales@southamptonwaters.co.uk)
 
   serialize :broker_ids, Array
 

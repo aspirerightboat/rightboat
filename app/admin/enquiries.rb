@@ -1,5 +1,5 @@
 ActiveAdmin.register Enquiry, as: 'Lead' do
-  permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone,
+  permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone, :bad_quality_reason, :bad_quality_comment,
                 :message, :remote_ip, :browse, :deleted_at, :created_at, :updated_at, :status, :email_sent
 
 
@@ -11,6 +11,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
   filter :id
   filter :created_at, label: 'Date of Lead'
+  filter :updated_at, label: 'Last Status Change'
   filter :status, as: :select, collection: -> { Enquiry::STATUSES }
 
   controller do
@@ -61,6 +62,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       "#{lead.boat.price} #{lead.boat.safe_currency.symbol}" if !lead.boat.poa? && lead.boat.price > 0
     end
     column :status
+    column 'Last Status Change', sortable: :updated_at do |record|
+      ago = distance_of_time_in_words(record.updated_at, Time.current)
+      date = l record.updated_at, format: :short
+      "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
+    end
     column :lead_price do |lead|
       "<b>#{lead.lead_price}</b> £".html_safe
     end
@@ -115,6 +121,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column(:email)
     column(:message)
     column(:status)
+    column('Last Status Change') { |record| record.updated_at }
     column(:lead_price)
     column(:remote_ip)
     column(:browser)

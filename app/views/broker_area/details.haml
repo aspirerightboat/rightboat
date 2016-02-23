@@ -20,13 +20,13 @@
           = f.email_field :email, class: 'form-control'
         = f.fields_for :broker_info do |ff|
           .form-group
-            = ff.label :additional_email
+            = ff.label :additional_email, 'Additional Email'
             = ff.email_field :additional_email, class: 'form-control'
           .form-group
             = ff.label :website
             = ff.text_field :website, class: 'form-control'
           .form-group
-            = ff.label :contact_name
+            = ff.label :contact_name, 'Contact Name'
             = ff.text_field :contact_name, class: 'form-control'
           .form-group
             = ff.label :position

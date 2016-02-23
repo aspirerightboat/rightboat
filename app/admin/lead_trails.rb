@@ -18,6 +18,7 @@ ActiveAdmin.register LeadTrail do
     column(:user) { |lt| link_to(lt.user.name, admin_user_path(lt.user)) if lt.user }
     column(:lead) { |lt| link_to lt.lead.id, admin_lead_path(lt.lead) }
     column :new_status
+    column :comments
     column :created_at
 
     actions

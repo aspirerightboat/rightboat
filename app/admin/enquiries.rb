@@ -1,5 +1,5 @@
 ActiveAdmin.register Enquiry, as: 'Lead' do
-  permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone,
+  permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone, :bad_quality_reason, :bad_quality_comment,
                 :message, :remote_ip, :browse, :deleted_at, :created_at, :updated_at, :status, :email_sent
 
 

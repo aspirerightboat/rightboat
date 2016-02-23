@@ -12,8 +12,8 @@ class LeadTrail < ActiveRecord::Base
   def comments
     ret = ''
     if new_status == 'rejected'
-      ret += lead.bad_quality_reason ? "#{lead.bad_quality_reason.humanize}: " : ''
-      ret += lead.bad_quality_comment
+      ret += "#{lead.bad_quality_reason.humanize}: " if lead.bad_quality_reason
+      ret += lead.bad_quality_comment if lead.bad_quality_comment
     end
     ret
   end

@@ -1,0 +1,14 @@
+%p
+  Dear #{@broker.name},
+%p
+  We are pleased to inform you that you have an #{link_to 'enquiry from Rightboat', lead_url(@enquiry)}.
+  Your customer is waiting for your contact.
+
+%p
+  However your account setup is incomplete.
+  Please phone <b>+44 (0) 333 322 2628</b> or mail to #{mail_to 'info@rightboat.com'} with your card or bank details.
+  As soon as your payment details are setup, you will be able to view the lead.
+
+%p
+  <br>Kind regards
+  <br>The #{link_to 'Rightboat', root_url} Team

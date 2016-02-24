@@ -4,6 +4,10 @@ class LeadsMailerPreview < ActionMailer::Preview
     LeadsMailer.lead_created_notify_buyer(Enquiry.last.id)
   end
 
+  def lead_created_tease_broker
+    LeadsMailer.lead_created_tease_broker(Enquiry.last.id)
+  end
+
   def lead_created_notify_broker
     LeadsMailer.lead_created_notify_broker(Enquiry.last.id)
   end

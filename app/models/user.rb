@@ -114,10 +114,12 @@ class User < ActiveRecord::Base
     CUSTOMER_DETAIL_REQUESTERS.include?(email)
   end
 
-  public
-
   def send_email_confirmation
     UserMailer.email_confirmation(id).deliver_now
+  end
+
+  def payment_method_present?
+    broker_info.payment_method != 'none'
   end
 
   private

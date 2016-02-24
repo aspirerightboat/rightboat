@@ -14,6 +14,11 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
+  def lead_created_tease_broker(enquiry_id)
+    mail_params = lead_broker_params(enquiry_id)
+    mail(mail_params)
+  end
+
   def lead_created_notify_broker(enquiry_id)
     mail_params = lead_broker_params(enquiry_id)
     attach_boat_pdf
@@ -67,15 +72,17 @@ class LeadsMailer < ApplicationMailer
     @boat = @enquiry.boat
     @office = @boat.office
 
-    user_email = STAGING_EMAIL || @boat.user.email
-    office_email = STAGING_EMAIL || @office.try(:email) || @boat.user.email
+    @broker = @boat.user
+    broker_email = STAGING_EMAIL || @broker.email
+    office_email = STAGING_EMAIL || @office.try(:email) || @broker.email
     to_emails = []
-    dist =  @boat.user.broker_info.lead_email_distribution
-    to_emails << user_email if dist['user']
+    dist =  @broker.broker_info.lead_email_distribution
+    to_emails << broker_email if dist['user']
     to_emails << office_email if dist['office']
     to_emails << 'info@eyb.fr' if dist['eyb']
     to_emails.uniq!
 
-    {to: to_emails, subject: "New enquiry from Rightboat, #{@enquiry.name}, Lead ##{@enquiry.id}"}
+    buyer_name_part = ", #{@enquiry.name}" if @broker.payment_method_present?
+    {to: to_emails, subject: "New enquiry from Rightboat#{buyer_name_part}, Lead ##{@enquiry.id}"}
   end
 end

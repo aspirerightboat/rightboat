@@ -32,12 +32,7 @@ class EnquiriesController < ApplicationController
 
     if enquiry.save
       # session.delete(:captcha)
-      LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
-      if %w(nick@popsells.com).include? enquiry.boat.user.email
-        LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
-      else
-        LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
-      end
+      handle_lead_created_mails(enquiry)
       enquiry.create_lead_trail(true)
 
       redirect_to_enquiries = current_user.present?
@@ -110,7 +105,7 @@ class EnquiriesController < ApplicationController
   end
 
   def require_broker_payment_method
-    if current_user.company? && current_user.broker_info.payment_method == 'none'
+    if current_user.company? && !current_user.payment_method_present?
       render action: :define_payment_method
     end
   end
@@ -128,6 +123,19 @@ class EnquiriesController < ApplicationController
       @enquiry.broker_accessed_at = Time.current
       @enquiry.accessed_by_broker = current_user
       @enquiry.save!
+    end
+  end
+
+  def handle_lead_created_mails(enquiry)
+    LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
+
+    broker = enquiry.boat.user
+    if %w(nick@popsells.com).include? broker.email
+      LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
+    elsif broker.payment_method_present?
+      LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
+    else
+      LeadsMailer.lead_created_tease_broker(enquiry.id).deliver_later
     end
   end
 end

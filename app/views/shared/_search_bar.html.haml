@@ -5,8 +5,9 @@
       %button(type='submit')
         %i.icon.icon-search
     %ul.nav.navbar-nav.page-links
-      - if controller_name == 'search'
+      - if controller_name.in?(%w(search manufacturers))
         %li= link_to 'Refine this Search', '#', class: 'toggle-adv-search nav-link'
+      - if controller_name == 'search'
         %li.save-search
           = link_to 'Save this Search', member_saved_searches_path(params.except(:controller, :action)),
                      method: :post, remote: true, class: 'nav-link',

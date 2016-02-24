@@ -5,6 +5,10 @@
 - content_for :meta_tags do
   %meta(name="robots" content="index, follow")
 
+- content_for :header do
+  = render 'shared/advanced_search'
+  = render 'shared/navbar'
+
 = render layout: 'shared/boats_for_sale' do
   = render 'manufacturer_letters'
   %h1= @page_title

@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   # TODO: after_filter :register_statistics, only: :index
 
-  skip_before_action :require_confirmed_email, only: [:confirm_email]
+  before_action :require_confirmed_email, only: [:index]
 
   def index
     if user_signed_in? && params[:popup_login]

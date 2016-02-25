@@ -1,0 +1,23 @@
+= render layout: 'broker_area/common/broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
+  %h1 Account History
+
+  %table.rb-table
+    %tr
+      %th Invoice Ref
+      %th Invoice Date
+      %th Lead ID
+      %th Boat
+      %th.text-right Length(m)
+      %th.text-right Price
+      %th.text-right Lead cost GBP (ex VAT)
+    - @leads.each do |lead|
+      %tr
+        %td #{lead.invoice.id}
+        %td(title="#{distance_of_time_in_words_to_now(lead.invoice.created_at)} ago") #{lead.invoice.created_at.to_date.to_s(:db)}
+        %td #{link_to lead.id, lead_path(lead)}
+        - boat = lead.boat
+        %td #{link_to boat.display_name, boat}
+        %td.text-right #{"#{boat.length_m}m" if boat.length_m}
+        %td.text-right #{boat.price} #{(boat.currency || Currency.default).symbol if boat.price}
+        %td.text-right #{lead.lead_price.format_pence}
+  = paginate @leads

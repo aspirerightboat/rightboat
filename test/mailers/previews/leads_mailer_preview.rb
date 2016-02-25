@@ -21,7 +21,7 @@ class LeadsMailerPreview < ActionMailer::Preview
   end
 
   def invoicing_report
-    LeadsMailer.invoicing_report([Invoice.last.id])
+    LeadsMailer.invoicing_report(Invoice.order('id DESC').limit(3).pluck(:id))
   end
 
   def invoice_notify_broker

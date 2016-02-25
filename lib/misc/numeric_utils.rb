@@ -34,4 +34,8 @@ class Numeric
   def pounds_to_kilograms
     self * 0.45359237
   end
+
+  def format_pence
+    sprintf('%.2f', self)
+  end
 end

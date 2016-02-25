@@ -9,8 +9,8 @@ ActiveAdmin.register Boat do
   filter :id
   filter :user, as: :select, collection: User.companies.order(:company_name)
   filter :country, as: :select, collection: Country.order(:name)
-  filter :manufacturer_name_cont
-  filter :model_name_cont
+  filter :manufacturer_name_cont, label: 'Manufacturer Name Contains'
+  filter :model_name_cont, label: 'Model Name Contains'
   filter :featured
   filter :recently_reduced
   filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES

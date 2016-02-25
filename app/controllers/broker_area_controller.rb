@@ -67,6 +67,11 @@ class BrokerAreaController < ApplicationController
   def tc
   end
 
+  def account_history
+    @leads = current_user.broker_leads.where.not(invoice_id: nil).includes(:invoice, boat: [:manufacturer, :model, :currency])
+                 .order('id DESC').page(params[:page]).per(30)
+  end
+
   private
 
   def user_params

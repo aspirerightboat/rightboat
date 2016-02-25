@@ -2,10 +2,10 @@
   There were created #{@invoices.size} invoices
 %table.rb-table(style="max-width: 600px")
   %tr
-    %th ID
+    %th(width="80") Invoice ID
     %th Leads
     %th Broker
-    %th Total
+    %th.text-right Total ex. VAT
   - @invoices.each do |invoice|
     %tr
       %td= invoice.id
@@ -13,4 +13,11 @@
         - invoice.enquiries.each do |lead|
           = link_to lead.id.to_s, admin_lead_url(lead)
       %td= link_to invoice.user.name, admin_user_url(invoice.user)
-      %td £#{invoice.total}
+      %td.text-right £#{invoice.total_ex_vat.format_pence}
+  %tr
+    %td(colspan="4" style="border-bottom: 1px solid lightgray; height: 1em")
+  %tr
+    %th.text-right(colspan="4") Grand Total ex. VAT
+  %tr
+    %td.text-right(colspan="4") £#{@grand_total.format_pence}
+

@@ -136,6 +136,7 @@ Rails.application.routes.draw do
     get :boats_manager
     get :my_leads
     get :tc
+    get :account_history
   end
   namespace :broker_area, path: 'broker-area' do
     resources :my_boats, path: 'my-boats', only: [:index, :new]

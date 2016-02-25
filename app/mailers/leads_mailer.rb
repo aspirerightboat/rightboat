@@ -38,6 +38,7 @@ class LeadsMailer < ApplicationMailer
 
   def invoicing_report(invoice_ids)
     @invoices = Invoice.where(id: invoice_ids).includes(:enquiries, :user).to_a
+    @grand_total = @invoices.map(&:total_ex_vat).sum
 
     to_email = RBConfig[:invoicing_report_email]
     mail(to: to_email, subject: "Invoicing Report #{Time.current.to_date.to_s(:short)}")

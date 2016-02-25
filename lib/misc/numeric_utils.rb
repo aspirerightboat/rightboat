@@ -1,6 +1,7 @@
 class Numeric
-  def percents
-    (self * 100).round
+
+  def clamp(min, max)
+    self < min ? min : (self > max ? max : self)
   end
 
   def ft_to_m
@@ -13,10 +14,6 @@ class Numeric
 
   def inch_to_m
     self * 0.0254
-  end
-
-  def clamp(min, max)
-    self < min ? min : (self > max ? max : self)
   end
 
   def gallons_to_liters
@@ -35,7 +32,4 @@ class Numeric
     self * 0.45359237
   end
 
-  def format_pence
-    sprintf('%.2f', self)
-  end
 end

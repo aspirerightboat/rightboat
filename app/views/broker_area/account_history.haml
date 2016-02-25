@@ -19,5 +19,5 @@
         %td #{link_to boat.display_name, boat}
         %td.text-right #{"#{boat.length_m}m" if boat.length_m}
         %td.text-right #{boat.price} #{(boat.currency || Currency.default).symbol if boat.price}
-        %td.text-right #{lead.lead_price.format_pence}
+        %td.text-right #{format_pence lead.lead_price}
   = paginate @leads

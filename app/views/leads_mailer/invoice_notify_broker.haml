@@ -17,13 +17,13 @@
       %th Sub Total
       %th £#{@invoice.subtotal}
     %tr
-      %td Broker Discount #{@invoice.discount_rate.percents}%
+      %td Broker Discount #{percents @invoice.discount_rate}
       %td £#{@invoice.discount}
     %tr
       %th Total ex VAT
       %th £#{@invoice.total_ex_vat}
     %tr
-      %td VAT #{@invoice.vat_rate.percents}%
+      %td VAT #{percents @invoice.vat_rate}
       %td £#{@invoice.vat}
     %tr
       %th Total

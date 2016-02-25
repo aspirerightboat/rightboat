@@ -1,0 +1,22 @@
+%table.index_table.misspell-fixable-area
+  %tr
+    %th Manufacturer
+    %th Models
+  - @makers_models.each do |maker_id, maker_name, boats_count, model_infos|
+    %tr(class="#{cycle 'odd', 'even'}")
+      %td
+        %span.misspell-fixable{data: {collection: 'manufacturers', id: maker_id}}>
+          #{maker_name}<sup>#{boats_count}</sup>
+      %td
+        %ul.pipe-list
+          - model_infos.each do |model_id, model_name|
+            %li.misspell-fixable{data: {collection: 'models', id: model_id}}>
+              = model_name
+
+.misspell-fixable-popup.hidden
+  %input.value-input(type="text")
+  .buttons
+    %button.save-btn Save
+    %button.titleize-btn Titleize
+  .error
+  .esc

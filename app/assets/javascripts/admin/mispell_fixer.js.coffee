@@ -1,48 +1,47 @@
 $ ->
-  $('.misspell-fixing-area').each ->
-    $fixing_area = $(@)
-    $fixer_popup = $('.misspell-fixer-popup')
-    $fixer_input = $('.value-input', $fixer_popup)
-    $save_btn = $('.save-btn', $fixer_popup)
-    $error = $('.error', $fixer_popup)
-    $fixing_area.click (e) ->
-      $fixer_popup.hide() if $(e.target).closest($fixer_popup).length == 0
+  $('.misspell-fixable-area').each ->
+    $area = $(@)
+    $popup = $('.misspell-fixable-popup')
+    $input = $('.value-input', $popup)
+    $save_btn = $('.save-btn', $popup)
+    $error = $('.error', $popup)
+    $area.click (e) ->
+      $popup.hide() if $(e.target).closest($popup).length == 0
       false
-    $('.esc-btn', $fixer_popup).click (e) -> $fixer_popup.hide(); false
-    $('.titleize-btn', $fixer_popup).click ->
-      val = $fixer_input.val().toLowerCase().replace(/(?:^|\s|-)\S/g, (c) -> c.toUpperCase())
-      $fixer_input.val(val)
+    $('.esc-btn', $popup).click (e) -> $popup.hide(); false
+    $('.titleize-btn', $popup).click ->
+      val = $input.val().toLowerCase().replace(/(?:^|\s|-)\S/g, (c) -> c.toUpperCase())
+      $input.val(val)
       false
 
     $save_btn.click ->
-      $fixer = $fixer_popup.closest('.misspell-fixer')
+      $fixer = $popup.closest('.misspell-fixable')
       url = '/admin/' + $fixer.data('collection') + '/' + $fixer.data('id') + '/fix_name'
       $save_btn.addClass('loading')
-      name = $fixer_input.val()
+      name = $input.val()
       $save_btn.prop('disabled', true)
       $.post(url, {name: name}, null, 'json')
         .done (data) ->
           if data.replaced_with_other
-            $fixer_popup.detach().appendTo($fixer.parent())
+            $popup.detach().appendTo($fixer.parent())
             $fixer.remove()
           else
-            $fixer_popup[0].previousSibling.nodeValue = name
-            $fixer_popup.hide()
+            $popup[0].previousSibling.nodeValue = name
+            $popup.hide()
         .fail (xhr, text_status) -> $error.text(text_status)
         .always ->
           $save_btn.removeClass('loading')
           $save_btn.prop('disabled', false)
       false
 
-    $('.misspell-fixer').click ->
-      $fixer = $(@)
-      return if $fixer.hasClass('loading') || $fixer_popup.is(':visible')
-      $fixer.addClass('loading')
-      $fixer_popup.hide()
-      url = '/admin/' + $fixer.data('collection') + '/' + $fixer.data('id') + '/fetch_name'
+    $('.misspell-fixable').click ->
+      $fixable = $(@)
+      return if $fixable.hasClass('loading') || $popup.is(':visible')
+      $fixable.addClass('loading')
+      url = '/admin/' + $fixable.data('collection') + '/' + $fixable.data('id') + '/fetch_name'
       $.get(url, null, null, 'text')
         .done (data) ->
-          $fixer_popup.detach().appendTo($fixer).show()
-          $fixer_input.val(data)
+          $popup.detach().appendTo($fixable).show()
+          $input.val(data)
           $error.text('')
-        .always -> $fixer.removeClass('loading')
+        .always -> $fixable.removeClass('loading')

@@ -1,6 +1,6 @@
 class Enquiry < ActiveRecord::Base
 
-  STATUSES = %w(pending quality_check approved rejected invoiced deleted)
+  STATUSES = %w(pending quality_check approved rejected invoiced)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
   # attr_accessor  #:captcha_correct
@@ -34,11 +34,7 @@ class Enquiry < ActiveRecord::Base
   alias_method :to_s, :name
 
   def create_lead_trail(force = false)
-    if force || status_changed?
-      LeadTrail.create!(lead: self, user: $current_user, new_status: status)
-    elsif deleted? && deleted_at_changed?
-      LeadTrail.create!(lead: self, user: $current_user, new_status: 'deleted')
-    end
+    LeadTrail.create!(lead: self, user: $current_user, new_status: status) if force || status_changed?
   end
 
   def update_lead_price

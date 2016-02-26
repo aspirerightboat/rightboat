@@ -55,7 +55,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
           - if @boat.user == current_user
             = link_to 'PDF Link', boat_pdf_path(@boat), class: 'btn-flat btn-black'
           - else
-            - if @boat.offer_status == 'available'
+            - if @boat.offer_available?
               = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
 
       .row.boat-description

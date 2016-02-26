@@ -1,6 +1,6 @@
 - enquiry ||= nil
 
-.boat-thumb-container.col-xs-12(style="#{'display: none;' if enquiry && enquiry.deleted?}" )
+.boat-thumb-container.col-xs-12(style="#{'display: none;' if enquiry && enquiry.hidden}" )
   .boat-thumb.thumbnail.boat-view{'data-boat-ref' => boat.slug,
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}

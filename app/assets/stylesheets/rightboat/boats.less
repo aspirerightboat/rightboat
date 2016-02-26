@@ -186,10 +186,7 @@ a.fav-link.active:not(.remove-fav):before {
   }
 }
 
-.boat-img-thumb a {
-  &:extend(.embed-responsive);
-  padding-bottom: 66.6667%;
-  background: #f0f0f0;
+.boat-img-thumb {
   position: relative;
 
   &.under-offer, &.sold {
@@ -201,18 +198,25 @@ a.fav-link.active:not(.remove-fav):before {
       top: 0;
       width: 66px;
       height: 66px;
+      z-index: 1;
     }
   }
   &.under-offer::before { background: image-url('strip-under-offer.png') no-repeat; }
   &.sold::before { background: image-url('strip-sold.png') no-repeat; }
 
-  .overlay { display: none; }
-  &:hover {
-    img { transform: scale(1.2); }
-  }
-  img {
-    width: 100%;
-    .transition(all .25s ease-out);
+  a {
+    &:extend(.embed-responsive);
+    padding-bottom: 66.6667%;
+    background: #f0f0f0;
+
+    .overlay { display: none; }
+    &:hover {
+      img { transform: scale(1.2); }
+    }
+    img {
+      width: 100%;
+      .transition(all .25s ease-out);
+    }
   }
 }
 

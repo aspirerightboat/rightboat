@@ -164,7 +164,7 @@ module Rightboat
 
           boat.office_id = job[:office_id]
           boat.source_id = advert_node['ref']
-          boat.offer_status = advert_node['status'].underscore if advert_node['status'] =~ /Available|UnderOffer|Sold/i
+          boat.offer_status = advert_node['status'].underscore.gsub(/\s+/, '_') if advert_node['status'] =~ /Available|Under(\s+)?Offer|Sold/i
 
           inner_nodes = advert_node.element_children.index_by(&:name)
           handle_advert_media(boat, inner_nodes['advert_media'])

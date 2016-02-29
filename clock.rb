@@ -50,9 +50,8 @@ module DBBackedClockwork
     ExpertMailer.download_feed_error('Eyb').deliver_now if res !~ /Success\Z/
   end
 
-  every 1.day, 'download boatstream xml', at: '22:05' do
+  every 1.hour, 'download boatstream xml' do
     system 'bundle exec rake import:download_boatstream_feed &'
-
   end
 
   every 1.day, 'export openmarine boats', at: '8:00' do

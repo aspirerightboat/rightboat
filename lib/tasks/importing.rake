@@ -14,14 +14,18 @@ namespace :import do
 
   desc 'Download BoatStream feed from sftp and save in import_data/boat_stream.xml'
   task :download_boatstream_feed do
-    sftp = 'sshpass -e sftp -oBatchMode=no -b - rightboats@elba.boats.com'
-    listing = `echo 'ls -l upload/*.xml' | #{sftp} | grep -v "sftp>"`.strip # they restricted ls params so we cannot just sort by time "ls -t"
-    # -rw-r--r--    0 3011     500      76092888 Feb 14 04:03 upload/BS_dbe29940-ea8e-4399-9804-0b4417e9620b188500188505.xml
-    remote_file = listing.scan(/(\w\w\w (?: |\d)\d \d\d:\d\d) (\S+)$/).map { |t, f| [Time.parse(t), f] }.max_by(&:first).last
     local_file = 'import_data/boat_stream.xml'
 
-    `echo "get -P #{remote_file} #{local_file}" | #{sftp}`
+    if File.mtime(local_file) < 1.day.ago
+      sftp = 'sshpass -e sftp -oBatchMode=no -b - rightboats@elba.boats.com'
+      listing = `echo 'ls -l upload/*.xml' | #{sftp} | grep -v "sftp>"`.strip # they restricted ls params so we cannot just sort by time "ls -t"
+      # -rw-r--r--    0 3011     500      76092888 Feb 14 04:03 upload/BS_dbe29940-ea8e-4399-9804-0b4417e9620b188500188505.xml
+      remote_file = listing.scan(/(\w\w\w (?: |\d)\d \d\d:\d\d) (\S+)$/).map { |t, f| [Time.parse(t), f] }.max_by(&:first).last
 
-    ExpertMailer.download_feed_error('BoatStream').deliver_now if (File.mtime(local_file) + 20.hours).past?
+      `echo "get -P #{remote_file} #{local_file}" | #{sftp}`
+
+      ExpertMailer.download_feed_error('BoatStream').deliver_now if File.mtime(local_file) < 1.day.ago
+    end
   end
+
 end

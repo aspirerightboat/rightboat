@@ -50,14 +50,14 @@ class LeadsMailer < ApplicationMailer
     @broker_info = @broker.broker_info
     @leads = @invoice.enquiries.includes(:boat).order('id DESC')
 
-    to_email = STAGING_EMAIL # do not send emails to brokers temporarily # STAGING_EMAIL || @broker.email
+    to_email = STAGING_EMAIL # do not send emails to brokers temporarily # STAGING_EMAIL || broker_emails(@broker)
     mail(to: to_email, subject: "Invoice Notification #{Time.current.to_date.to_s(:short)} - Rightboat")
   end
 
   def lead_reviewed_notify_broker(enquiry_id)
     @lead = Enquiry.find(enquiry_id)
 
-    to_email = STAGING_EMAIL || @lead.boat.user.email
+    to_email = STAGING_EMAIL || broker_emails(@lead.boat.user)
     mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
   end
 
@@ -68,20 +68,31 @@ class LeadsMailer < ApplicationMailer
     attachments[file_name] = WickedPdf.new.pdf_from_string(render 'boats/pdf', layout: 'pdf')
   end
 
+  def broker_emails(broker)
+    ret = [broker.email]
+    if addtional_email = broker.broker_info.try(:additional_email)
+      ret << addtional_email
+    end
+    ret
+  end
+
   def lead_broker_params(enquiry_id)
     @enquiry = Enquiry.find(enquiry_id)
     @boat = @enquiry.boat
     @office = @boat.office
 
     @broker = @boat.user
-    broker_email = STAGING_EMAIL || @broker.email
-    office_email = STAGING_EMAIL || @office.try(:email) || @broker.email
-    to_emails = []
-    dist =  @broker.broker_info.lead_email_distribution
-    to_emails << broker_email if dist['user']
-    to_emails << office_email if dist['office']
-    to_emails << 'info@eyb.fr' if dist['eyb']
-    to_emails.uniq!
+    if STAGING_EMAIL
+      to_emails = STAGING_EMAIL
+    else
+      to_emails = []
+      office_email = @office.try(:email) || @broker.email
+      dist =  @broker.broker_info.lead_email_distribution
+      to_emails = broker_emails(@broker) if dist['user']
+      to_emails << office_email if dist['office']
+      to_emails << 'info@eyb.fr' if dist['eyb']
+      to_emails.uniq!
+    end
 
     buyer_name_part = ", #{@enquiry.name}" if @broker.payment_method_present?
     {to: to_emails, subject: "New enquiry from Rightboat#{buyer_name_part}, Lead ##{@enquiry.id}"}

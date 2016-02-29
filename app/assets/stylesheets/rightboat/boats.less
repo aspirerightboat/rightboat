@@ -191,18 +191,20 @@ a.fav-link.active:not(.remove-fav):before {
 
   &.under-offer, &.sold {
     &::before {
+      background-repeat: no-repeat;
+      background-size: 120px 120px;
       content: '';
       display: block;
       position: absolute;
       right: 0;
       top: 0;
-      width: 66px;
-      height: 66px;
+      width: 120px;
+      height: 120px;
       z-index: 1;
     }
   }
-  &.under-offer::before { background: image-url('strip-under-offer.png') no-repeat; }
-  &.sold::before { background: image-url('strip-sold.png') no-repeat; }
+  &.under-offer::before { background-image: image-url('strip-under-offer.png'); }
+  &.sold::before { background-image: image-url('strip-sold.png'); }
 
   a {
     &:extend(.embed-responsive);

@@ -81,6 +81,32 @@ ActiveAdmin.register Boat do
     actions
   end
 
+  csv do
+    column :id
+    column :images do |boat|
+      if boat.primary_image
+        boat.primary_image.file.url(:mini)
+      end
+    end
+    column 'Imgs' do |boat|
+      boat.boat_images.not_deleted.count
+    end
+    column :name
+    column :manufacturer
+    column :model
+    column :status do |boat|
+      boat.live? ? 'Active' : 'Inactive'
+    end
+    column :user
+    column :office
+    column :location do |boat|
+      res = []
+      res << boat.country.name if boat.country
+      res << html_escape(boat.location) if boat.location.present?
+      res.join(', ') + "(#{'Not ' if !boat.geocoded?}Geocoded)"
+    end
+  end
+
   controller do
     def scoped_collection
       # never add :primary_image - it breaks query for sorting

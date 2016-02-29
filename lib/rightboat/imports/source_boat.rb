@@ -173,7 +173,7 @@ module Rightboat
           when :description
             target.description = cleanup_description(value)
           when :short_description
-            target.short_description = cleanup_short_description(short_description || target.description)
+            target.short_description = cleanup_short_description(short_description || description || target.description)
           when :new_boat
             target.new_boat = value.present? && value.is_a?(String) ? (value =~ /\A(?:New|N)\z/).present? : value
           else

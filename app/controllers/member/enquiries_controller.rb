@@ -5,13 +5,13 @@ module Member
     end
 
     def unhide
-      current_user.enquiries.update_all(deleted_at: nil)
+      current_user.enquiries.update_all(hidden: false)
       render json: {}
     end
 
     def destroy
       @enquiry = Enquiry.find(params[:id])
-      @enquiry.destroy
+      @enquiry.update(hidden: true)
       render json: {}
     end
   end

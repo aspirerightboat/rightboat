@@ -55,7 +55,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
           - if @boat.user == current_user
             = link_to 'PDF Link', boat_pdf_path(@boat), class: 'btn-flat btn-black'
           - else
-            - if @boat.offer_status == 'available'
+            - if @boat.offer_available?
               = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
 
       .row.boat-description
@@ -76,6 +76,11 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
           %h1 About this #{@boat.manufacturer_model}
           .truncated-description
             != @boat.short_description
+          - if @boat.user != current_user && @boat.offer_available?
+            .call-action
+              Is this your right boat? Want to find out more?
+              %br
+              #{link_to 'Sign in/become a member', '#', class: 'user-login'} for free, click #{link_to 'Request Details', '#', class: 'request-details'} and we will send you the full boat specification and connect you with the seller.
 
 = render 'shared/enquiry_popup'
 

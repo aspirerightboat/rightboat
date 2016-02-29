@@ -38,7 +38,7 @@ ActiveAdmin.register Boat do
       # boat.deleted? ? 'Inactive' : 'Active'
       boat.live? ? 'Active' : 'Inactive'
     end
-    column :user, :user, sortable: 'users.first_name'
+    column :user, :user, sortable: 'users.company_name'
     column :office, :office, sortable: 'offices.name'
     column :location do |boat|
       res = []
@@ -83,7 +83,8 @@ ActiveAdmin.register Boat do
 
   controller do
     def scoped_collection
-      Boat.includes(:manufacturer, :user, :country, :office, :primary_image, :model)
+      # never add :primary_image - it breaks query for sorting
+      Boat.includes(:manufacturer, :user, :country, :office, :model)
     end
 
     def find_resource

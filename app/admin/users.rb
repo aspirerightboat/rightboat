@@ -79,7 +79,7 @@ ActiveAdmin.register User do
         ff.input :zip
       end
 
-      f.has_many :broker_info, allow_destroy: false, new_record: false do |ff|
+      f.has_many :broker_info, allow_destroy: false, new_record: f.object.broker_info.blank? do |ff|
         ff.input :contact_name
         ff.input :position
         ff.input :description

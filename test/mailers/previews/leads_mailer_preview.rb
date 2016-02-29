@@ -31,4 +31,8 @@ class LeadsMailerPreview < ActionMailer::Preview
   def lead_reviewed_notify_broker
     LeadsMailer.lead_reviewed_notify_broker(Enquiry.last.id)
   end
+
+  def suspicious_lead
+    LeadsMailer.suspicious_lead(Enquiry.last.id, 'Multiple leads received – review required')
+  end
 end

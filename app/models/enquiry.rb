@@ -1,6 +1,6 @@
 class Enquiry < ActiveRecord::Base
 
-  STATUSES = %w(pending quality_check approved rejected invoiced)
+  STATUSES = %w(pending quality_check approved rejected invoiced suspicious)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
   # attr_accessor  #:captcha_correct
@@ -20,6 +20,7 @@ class Enquiry < ActiveRecord::Base
 
   before_save :update_lead_price
   after_save :send_quality_check_email
+  after_save :became_not_suspicious
   after_update :create_lead_trail, :admin_reviewed_email
 
   scope :pending, -> { where(status: 'pending') }
@@ -41,6 +42,37 @@ class Enquiry < ActiveRecord::Base
     self.lead_price = calc_lead_price
     if persisted? && lead_price_changed?
       update_column :lead_price, lead_price
+    end
+  end
+
+  def mark_if_suspicious(user, remote_ip)
+    if (remote_country = Rightboat::DbIpApi.country(remote_ip))
+      suspicious_countries = Country.where(suspicious: true).pluck(:iso)
+      if remote_country.in?(suspicious_countries)
+        mark_suspicious("Lead from blocked country #{remote_country} – review required")
+      end
+    end
+
+    last_lead = Enquiry.where(user ? {user: user} : {remote_ip: remote_ip}).last
+    if last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
+      mark_suspicious('Multiple leads received – review required')
+    end
+  end
+
+  def suspicious?
+    status == 'suspicious'
+  end
+
+  def handle_lead_created_mails
+    LeadsMailer.lead_created_notify_buyer(id).deliver_later
+
+    broker = boat.user
+    if %w(nick@popsells.com).include? broker.email
+      LeadsMailer.lead_created_notify_pop_yachts(id).deliver_later
+    elsif broker.payment_method_present?
+      LeadsMailer.lead_created_notify_broker(id).deliver_later
+    else
+      LeadsMailer.lead_created_tease_broker(id).deliver_later
     end
   end
 
@@ -89,4 +121,16 @@ class Enquiry < ActiveRecord::Base
           end
     res.clamp(broker_info.lead_min_price, broker_info.lead_max_price).round(2)
   end
+
+  def mark_suspicious(mail_title)
+    self.status = 'suspicious'
+    LeadsMailer.suspicious_lead(id, mail_title).deliver_later
+  end
+
+  def became_not_suspicious
+    if status_was == 'suspicious' && status == 'pending'
+      handle_lead_created_mails
+    end
+  end
+
 end

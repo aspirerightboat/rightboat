@@ -29,16 +29,19 @@ class EnquiriesController < ApplicationController
     enquiry = Enquiry.new(enquiry_params)
     enquiry.boat = Boat.find_by(slug: params[:id])
     enquiry.boat_currency_rate = (enquiry.boat.currency || Currency.default).rate
+    enquiry.mark_if_suspicious(current_user, request.remote_ip)
 
     if enquiry.save
       # session.delete(:captcha)
-      handle_lead_created_mails(enquiry)
       enquiry.create_lead_trail(true)
-
       redirect_to_enquiries = current_user.present?
-      google_conversion = render_to_string(partial: 'shared/google_lead_conversion',
-                                           locals: {lead_price: enquiry.lead_price, redirect_to_enquiries: redirect_to_enquiries})
-      json = {google_conversion: google_conversion}
+
+      enquiry.handle_lead_created_mails unless enquiry.suspicious?
+
+      json = {}
+      json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
+                                                  locals: {lead_price: enquiry.lead_price,
+                                                           redirect_to_enquiries: redirect_to_enquiries})
       json[:show_result_popup] = true if !current_user
       render json: json
     else
@@ -126,16 +129,4 @@ class EnquiriesController < ApplicationController
     end
   end
 
-  def handle_lead_created_mails(enquiry)
-    LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_later
-
-    broker = enquiry.boat.user
-    if %w(nick@popsells.com).include? broker.email
-      LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
-    elsif broker.payment_method_present?
-      LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
-    else
-      LeadsMailer.lead_created_tease_broker(enquiry.id).deliver_later
-    end
-  end
 end

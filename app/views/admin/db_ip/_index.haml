@@ -1,0 +1,21 @@
+.panel
+  %h3 IP Address
+  .panel_contents
+    = form_tag url_for(action: :index), method: :get do
+      %div
+        %input(type="text" name="ip" value="#{params[:ip]}" style="width: 200px" placeholder="0.0.0.0")
+        %button(type="submit") Go
+
+- if @ip_info
+  .panel
+    %h3 Information
+    .panel_contents
+      %table(cellspacing="0" cellpadding="0" border="0")
+        - @ip_info.each do |key, value|
+          %tr.row
+            %th= key
+            %th
+              - if key == 'country'
+                #{value} (#{Country.find_by(iso: value).try(:name)})
+              - else
+                #{value}

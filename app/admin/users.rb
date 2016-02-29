@@ -137,7 +137,16 @@ ActiveAdmin.register User do
       column do
         panel 'User Details' do
           attributes_table_for resource do
-            User.columns.each { |column| row column.name.to_sym }
+            User.columns.each { |column|
+              if column.name.end_with?('_sign_in_ip')
+                row column.name.to_sym do
+                  ip = user.send(column.name)
+                  "#{ip} #{link_to 'IP info', [:admin, :db_ip, ip: ip]}".html_safe
+                end
+              else
+                row column.name.to_sym
+              end
+            }
           end
         end
       end

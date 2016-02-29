@@ -61,6 +61,12 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
   end
 
+  def suspicious_lead(lead_id, title)
+    @lead = Enquiry.find(lead_id)
+    @boat = @lead.boat
+    mail(to: 'info@rightboat.com', subject: "#{title} - Rightboat")
+  end
+
   private
 
   def attach_boat_pdf

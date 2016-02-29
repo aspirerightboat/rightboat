@@ -4,10 +4,11 @@ ActiveAdmin.register Country do
   config.sort_order = 'name_asc'
   menu priority: 10
 
-  permit_params :name, :iso, :currency_id
+  permit_params :name, :iso, :currency_id, :country_code, :suspicious
 
   filter :name
   filter :iso, label: 'ISO 3166'
+  filter :suspicious
 
   index do
     column :id
@@ -36,6 +37,7 @@ ActiveAdmin.register Country do
       f.input :iso, label: 'ISO'
       f.input :currency, colleciton: Currency.all
       f.input :country_code
+      f.input :suspicious
     end
 
     f.actions

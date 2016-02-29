@@ -30,6 +30,7 @@ class RBConfig < ActiveRecord::Base
         {key: 'lead_flat_fee', value: '99', kind: :float, description: 'If no boat price nor length present then lead price will be flat fee in £'},
         {key: 'default_min_lead_price', value: '5', kind: :float, description: 'Default minimum lead price in £. Can be overridden by broker_info settings'},
         {key: 'default_max_lead_price', value: '300', kind: :float, description: 'Default maximum lead price in £. Can be overridden by broker_info settings'},
+        {key: 'lead_gap_minutes', value: '3', kind: :float, description: 'Time between lead requests in minutes when second lead will be considered as suspicious'},
     ]
   end
 

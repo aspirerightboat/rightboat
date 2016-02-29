@@ -1,6 +1,5 @@
 ActiveAdmin.register Model do
   include SpellFixable
-  include MisspellFixer
 
   config.sort_order = 'name_asc'
   menu parent: 'Boats', label: 'Models', priority: 2

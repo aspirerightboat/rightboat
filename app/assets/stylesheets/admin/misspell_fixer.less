@@ -1,6 +1,13 @@
 .misspell-fixable {
   position: relative;
   cursor: pointer;
+
+  ins {
+    text-decoration: none;
+  }
+  small {
+    color: lightgray;
+  }
 }
 .misspell-fixable-popup {
   position: absolute;
@@ -8,20 +15,30 @@
   left: 0;
   z-index: 10;
   background-color: white;
+  box-shadow: 0 0 20px 0 rgba(51,46,0,0.2);
   cursor: default;
   width: 150px;
+  padding: 8px;
+
 
   .value-input {
     width: 100%;
   }
-  .titleize-btn, .esc-btn {
+  .buttons {
+    margin-top: 8px;
+  }
+  .titleize-btn, .esc {
     color: #38678b;
     cursor: pointer;
+    display: inline;
   }
-  .esc-btn {
+  .esc {
     position: absolute;
     right: 8px;
     top: 38px;
+    &::before {
+      content: '×'
+    }
   }
   .error {
     color: red;
@@ -41,9 +58,9 @@
     &::before {
       content: ' | ';
 
-      &:first-child {
-        content: '';
-      }
+    }
+    &:first-child::before {
+      content: '';
     }
   }
 }
@@ -66,4 +83,15 @@
   margin-left: 0.5ex;
   -webkit-animation: rotating 2s linear infinite;
   animation: rotating 2s linear infinite;
+}
+
+#misspell_fixable_result {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 8px;
+  font-weight: bold;
+
+  &.error { background-color: lightcoral; }
+  &.success { background-color: lightgreen; }
 }

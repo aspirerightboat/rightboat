@@ -1,6 +1,5 @@
 ActiveAdmin.register Manufacturer do
   include SpellFixable
-  include MisspellFixer
 
   config.sort_order = 'name_asc'
   menu parent: 'Boats', label: 'Manufacturers', priority: 1

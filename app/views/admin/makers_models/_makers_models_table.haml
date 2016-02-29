@@ -2,21 +2,23 @@
   %tr
     %th Manufacturer
     %th Models
-  - @makers_models.each do |maker_id, maker_name, boats_count, model_infos|
+  - @makers_counts.each do |maker, models_count|
     %tr(class="#{cycle 'odd', 'even'}")
       %td
-        %span.misspell-fixable{data: {collection: 'manufacturers', id: maker_id}}>
-          #{maker_name}<sup>#{boats_count}</sup>
+        %span.misspell-fixable(data-url="/admin/makers_models/fix_name?class=Manufacturer&id=#{maker.id}")
+          <ins>#{maker.name}</ins><br><small>(#{models_count}&nbsp;models)</small>
       %td
         %ul.pipe-list
-          - model_infos.each do |model_id, model_name|
-            %li.misspell-fixable{data: {collection: 'models', id: model_id}}>
-              = model_name
+          - maker.models.each do |model|
+            %li.misspell-fixable(data-url="/admin/makers_models/fix_name?class=Model&id=#{model.id}")
+              %ins #{model.name}
 
-.misspell-fixable-popup.hidden
+.misspell-fixable-popup(style="display:none")
   %input.value-input(type="text")
   .buttons
     %button.save-btn Save
-    %button.titleize-btn Titleize
-  .error
+    .titleize-btn Titleize
   .esc
+#misspell_fixable_result(style="display:none")
+
+= paginate @paginator_array

@@ -30,9 +30,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
-    column :status do |boat|
-      boat.live? ? 'Active' : 'Inactive'
-    end
+    column :status
     column :user, :user, sortable: 'users.first_name'
     column :office, :office, sortable: 'offices.name'
     column :location do |boat|

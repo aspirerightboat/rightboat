@@ -11,6 +11,7 @@ ActiveAdmin.register Boat do
   filter :country, as: :select, collection: Country.order(:name)
   filter :manufacturer_name_cont, label: 'Manufacturer Name Contains'
   filter :model_name_cont, label: 'Model Name Contains'
+  filter :status, as: :select, collection: Boat.statuses
   filter :featured
   filter :recently_reduced
   filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES
@@ -34,10 +35,7 @@ ActiveAdmin.register Boat do
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
-    column :status do |boat|
-      # boat.deleted? ? 'Inactive' : 'Active'
-      boat.live? ? 'Active' : 'Inactive'
-    end
+    column :status
     column :user, :user, sortable: 'users.company_name'
     column :office, :office, sortable: 'offices.name'
     column :location do |boat|
@@ -94,9 +92,7 @@ ActiveAdmin.register Boat do
     column :name
     column :manufacturer
     column :model
-    column :status do |boat|
-      boat.live? ? 'Active' : 'Inactive'
-    end
+    column :status
     column :user
     column :office
     column :location do |boat|

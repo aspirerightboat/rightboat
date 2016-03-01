@@ -4,6 +4,7 @@ class Boat < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
+  enum status: [:active, :inactive]
   SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
   OFFER_STATUSES = %w(available under_offer sold)
   VOLUME_UNITS = %w(gallons litres)
@@ -51,11 +52,12 @@ class Boat < ActiveRecord::Base
       boat.tax_paid?
     end
     boolean :live do |boat|
-      boat.live?
+      boat.active?
     end
     time :created_at
   end
 
+  before_validation :change_status
   before_destroy :remove_activities, :decrease_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
@@ -146,10 +148,6 @@ class Boat < ActiveRecord::Base
     length_m.m_to_ft.round(2) if length_m
   end
 
-  def live?
-    !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
-  end
-
   def geocoded?
     return false if geo_location.blank? || country_id.nil?
     _l, _, _c = geo_location.rpartition(',')
@@ -212,7 +210,7 @@ class Boat < ActiveRecord::Base
     return if deleted?
 
     [:featured, :recently_reduced].each do |attr_name|
-      if send(attr_name) and !live?
+      if send(attr_name) and inactive?
         errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
       end
     end
@@ -272,5 +270,11 @@ class Boat < ActiveRecord::Base
 
   def decrease_counter_cache
     user.decrement!(:boats_count)
+  end
+
+  def change_status
+    unless !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
+      self.status = 'inactive'
+    end
   end
 end

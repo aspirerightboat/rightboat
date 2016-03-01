@@ -54,9 +54,6 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
         .pull-right
           - if @boat.user == current_user
             = link_to 'PDF Link', boat_pdf_path(@boat), class: 'btn-flat btn-black'
-          - else
-            - if @boat.offer_available?
-              = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
 
       .row.boat-description
         .col-sm-5.col-md-7.col-xs-12.pull-right
@@ -78,9 +75,13 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
             != @boat.short_description
           - if @boat.user != current_user && @boat.offer_available?
             .call-action
-              Is this your right boat? Want to find out more?
-              %br
-              #{link_to 'Sign in/become a member', '#', class: 'user-login'} for free, click #{link_to 'Request Details', '#', class: 'request-details'} and we will send you the full boat specification and connect you with the seller.
+              %h5
+                %b Is this your Right Boat? Want to find out more?
+              .row
+                .col-xs-12.col-sm-8
+                  #{link_to 'Sign in/Become a Member', '#', class: 'user-login'} for free, click #{link_to 'Request Details', '#', class: 'request-details'} and we will send you the full boat specification and connect you with the seller.
+                .col-xs-12.col-sm-4
+                  = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
 
 = render 'shared/enquiry_popup'
 

@@ -120,7 +120,7 @@ $ ->
   else if ['#berths-popup', '#finance-popup', 'insurance-popup'].indexOf(target) > -1 and $('.login-top').length > 0
     $('#login_popup').modal('show')
 
-  $('a[href*=#]').click (e) ->
+  $('a[href="#(.*)"]').click (e) ->
     target = $(this).attr('href').replace(/^\//, '')
     if $(target).length && !$(target).hasClass('fav-link')
       e.preventDefault()

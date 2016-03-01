@@ -7,12 +7,11 @@ module Rightboat::Imports
     end
 
     def enqueue_jobs
-      log 'Loading XML file'
       # http://ancanet.com/webfiles/DailyBoatExport/BoatExport.xml
-      doc = get(@source_url)
+      doc = download_feed(@import.param[:source_url].strip)
 
       log 'Scraping boats'
-      doc.xml.root.element_children.each do |boat_node|
+      doc.root.element_children.each do |boat_node|
         enqueue_job(boat_node: boat_node)
       end
     end

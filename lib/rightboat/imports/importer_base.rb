@@ -296,6 +296,29 @@ module Rightboat
             nil
         end
       end
+
+      def download_feed(url, type = :xml)
+        log "Download #{type} file"
+        retries = 3
+
+        begin
+          stream = open(url)
+          case type
+            when :xml then Nokogiri::XML(stream)
+            when :html then Nokogiri::HTML(stream)
+          end
+        rescue OpenURI::HTTPError => e
+          log_error 'Download Feed Error', e.message
+          retries -= 1
+
+          if e.message[0,3] == '404' || retries <= 0
+            throw :stop
+          else
+            retry
+          end
+        end
+      end
+
     end
   end
 end

@@ -48,7 +48,7 @@ module Rightboat
         )
 
         def self.params_validators
-          { api_key: [:presence, /[a-z\d\-]+/], company_id: [:presence, /\A\d+\z/]}
+          {api_key: [:presence, /[a-z\d\-]+/], company_id: [:presence, /\A\d+\z/]}
         end
 
         def enqueue_jobs
@@ -81,35 +81,22 @@ module Rightboat
                   boat.send("#{attr}=", val)
                 end
               else
-                if key == 'model_year' && boat.model.blank?
-                  boat.model = val
-                elsif key =~ /description/i && boat.description.blank?
-                  boat.description = val
-                elsif key == 'location_region_name'
-                  boat.location = val if boat.location.blank?
-                elsif key == 'location_state'
-                  boat.location = val if boat.location.blank?
-                elsif key == 'sales_person'
-                  boat.office[:name] = boat.office[:contact_name] = val
-                elsif key == 'sales_person_fax'
-                  boat.office[:fax] = val
-                elsif key == 'sales_person_email'
-                  boat.office[:email] = val
-                elsif key == 'sales_person_phone'
-                  boat.office[:daytime_phone] = val
-                elsif key == 'sales_person_cell_phone'
-                  boat.office[:mobile] = val
-                elsif key == 'sales_preson_address1'
-                  boat.office[:address_attributes][:line1] = val
-                elsif key == 'sales_preson_city'
-                  boat.office[:address_attributes][:town_city] = val
-                elsif key == 'sales_preson_state'
-                  boat.office[:address_attributes][:state] = val
-                elsif key == 'sales_preson_postal_code'
-                  boat.office[:address_attributes][:zip] = val
-                elsif key == 'sales_person_id'
-                elsif val.length < 256 # Ignore other long values
-                  boat.set_missing_attr(key, val)
+                case
+                when key == 'model_year' && boat.model.blank? then boat.model = val
+                when key =~ /description/i && boat.description.blank? then boat.description = val
+                when key == 'location_region_name' && boat.location.blank? then boat.location = val
+                when key == 'location_state' && boat.location.blank? then boat.location = val
+                when key == 'sales_person' then boat.office[:name] = boat.office[:contact_name] = val
+                when key == 'sales_person_fax' then boat.office[:fax] = val
+                when key == 'sales_person_email' then boat.office[:email] = val
+                when key == 'sales_person_phone' then boat.office[:daytime_phone] = val
+                when key == 'sales_person_cell_phone' then boat.office[:mobile] = val
+                when key =~ /^sales_p(?:er|re)son_address1$/ then boat.office[:address_attributes][:line1] = val # "preson" misspelled in xml
+                when key =~ /^sales_p(?:er|re)son_city$/ then boat.office[:address_attributes][:town_city] = val # "preson" misspelled in xml
+                when key =~ /^sales_p(?:er|re)son_state$/ then boat.office[:address_attributes][:state] = val # "preson" misspelled in xml
+                when key =~ /^sales_p(?:er|re)son_postal_code$/ then boat.office[:address_attributes][:zip] = val # "preson" misspelled in xml
+                # when key == 'sales_person_id'
+                when val.length < 256 then boat.set_missing_attr(key, val) # Ignore other long values
                 end
               end
             end

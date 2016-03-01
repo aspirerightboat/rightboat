@@ -2,7 +2,6 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone, :bad_quality_reason, :bad_quality_comment,
                 :message, :remote_ip, :browse, :deleted_at, :created_at, :updated_at, :status, :email_sent
 
-
   menu label: 'Leads', priority: 25
 
   config.sort_order = 'created_at_desc_and_first_name_asc_and_surname_asc'
@@ -22,54 +21,21 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   index download_links: [:csv] do
     column :id
-    column 'Date of Lead', sortable: :created_at do |record|
-      ago = distance_of_time_in_words(record.created_at, Time.current)
-      date = l record.created_at, format: :short
-      "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
-    end
+    column('Date of Lead', sortable: :created_at) { |lead| time_ago_with_hint(lead.created_at) }
     column :customer, sortable: :first_name do |lead|
-      res = ''.html_safe
-      res << link_to(lead.user.name, admin_user_path(lead.user)) if lead.user
-      res << '<br>'.html_safe
-      res << {
-          'Title' => lead.title,
-          'Name' => lead.name,
-          'Country code' => lead.country_code,
-          'Phone' => lead.phone,
-          'Email' => lead.email
-      }.map { |k, v|
-        "<b>#{html_escape k}</b>: #{html_escape v}" if v.present?
-      }.compact.join('<br>').html_safe
-      res
+      div { lead.user ? link_to(lead.user.name, admin_user_path(lead.user)) : lead.name }
+      div { lead.email } if !lead.user
+      div { lead_phone(lead) } if lead.phone.present?
+      div { ip_link(lead.remote_ip) }
     end
-    column 'Member?', sortable: :user_id do |lead|
-      lead.user ? status_tag('Yes', :yes) : status_tag('No', :no)
-    end
-    column :broker, sortable: 'boats.user_id' do |lead|
-      link_to lead.boat.user.name, admin_user_path(lead.boat.user)
-    end
-    column :boat, sortable: :boat_id do |lead|
-      link_to lead.boat.manufacturer_model, lead.boat
-    end
-    column 'Boat length', sortable: 'boats.length_m' do |lead|
-      length_m = lead.boat.length_m
-      if length_m
-        length_ft = lead.boat.length_ft
-        "<abbr title='#{length_ft}ft'>#{length_m}m</abbr>".html_safe
-      end
-    end
-    column 'Boat price' do |lead|
-      "#{lead.boat.price} #{lead.boat.safe_currency.symbol}" if !lead.boat.poa? && lead.boat.price > 0
-    end
+    column('Member?', sortable: :user_id) { |lead| yes_no_status(lead.user.present?) }
+    column(:broker, sortable: 'boats.user_id') { |lead| user_admin_link(lead.boat.user) }
+    column(:boat, sortable: :boat_id) { |lead| boat_link(lead.boat) }
+    column('Boat length', sortable: 'boats.length_m') { |lead| boat_length_with_hint(lead.boat) }
+    column('Boat price') { |lead| boat_admin_price(lead.boat) }
     column :status
-    column 'Last Status Change', sortable: :updated_at do |record|
-      ago = distance_of_time_in_words(record.updated_at, Time.current)
-      date = l record.updated_at, format: :short
-      "<abbr title='#{date}'>#{ago} ago</abbr>".html_safe
-    end
-    column :lead_price do |lead|
-      "<b>#{lead.lead_price}</b> £".html_safe
-    end
+    column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
+    column('Lead Price £') { |lead| b { lead.lead_price } }
     actions
   end
 

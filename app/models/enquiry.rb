@@ -30,7 +30,7 @@ class Enquiry < ActiveRecord::Base
   scope :not_invoiced, -> { where(invoice_id: nil) }
 
   def name
-    [first_name, surname].reject(&:blank?).join(' ')
+    "#{title} #{first_name} #{surname}".strip.titleize
   end
   alias_method :to_s, :name
 

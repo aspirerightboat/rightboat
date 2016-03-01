@@ -14,4 +14,12 @@ module LeadsHelper
   def approved_percentage(total, approved)
     total > 0 ? "#{((approved.to_f / total) * 10000).round.to_f / 100} %" : '-'
   end
+
+  def lead_phone(lead)
+    if lead.country_code.present?
+      "+#{lead.country_code} #{lead.phone}"
+    else
+      lead.phone
+    end
+  end
 end

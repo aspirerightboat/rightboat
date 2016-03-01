@@ -27,9 +27,8 @@ ActiveAdmin.register User do
   index do
     selectable_column
     id_column
-    column :email
     column :name
-    column :username
+    column :email
     column :role do |user|
       user.role_name
     end
@@ -38,7 +37,7 @@ ActiveAdmin.register User do
     end
     column :current_sign_in_at
     column :sign_in_count
-    column :created_at
+    column('created_at') { |user| time_ago_with_hint(user.created_at) }
     actions
   end
 
@@ -139,12 +138,9 @@ ActiveAdmin.register User do
           attributes_table_for resource do
             User.columns.each { |column|
               if column.name.end_with?('_sign_in_ip')
-                row column.name.to_sym do
-                  ip = user.send(column.name)
-                  "#{ip} #{link_to 'IP info', [:admin, :db_ip, ip: ip]}".html_safe
-                end
+                row(column.name) { ip_link user.send(column.name) }
               else
-                row column.name.to_sym
+                row column.name
               end
             }
           end

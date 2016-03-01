@@ -79,16 +79,14 @@ gem 'ruby-filemagic' # determine mime-type by file content. requires "brew insta
 gem 'rails4-autocomplete'
 
 group :development, :test do
-  # gem 'byebug'
-  # gem 'web-console', '~> 2.0'
   gem 'spring'
   gem 'puma'
   gem 'capistrano-rvm'
   gem 'capistrano-passenger'
   gem 'capistrano-rails'
-  gem 'capistrano-db-tasks', require: false #
+  gem 'capistrano-db-tasks', require: false # bundle exec cap production db:pull
+  gem 'capistrano-secrets-yml' # cap production setup
   gem 'pry-rails'
-#  gem 'mailcatcher'
   gem 'letter_opener'
   gem 'quiet_assets'
   gem 'bullet'

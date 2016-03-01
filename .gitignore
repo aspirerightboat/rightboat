@@ -16,6 +16,7 @@ solr
 config/database.yml
 config/application.yml
 config/smtp.yml
+config/secrets.yml
 db/schema.rb
 db/rightboat_*.sql
 db/rightboat_*.bz2

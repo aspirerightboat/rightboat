@@ -21,7 +21,6 @@ set :keep_releases, 3
 set :rvm_type, :user
 set :rvm_ruby_version, '2.3.0'
 
-
 # see: https://github.com/sgruhier/capistrano-db-tasks
 # bundle exec cap production db:pull  <- saves production db to local db
 require 'capistrano-db-tasks'

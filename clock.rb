@@ -8,20 +8,22 @@ module DBBackedClockwork
   include Clockwork
 
   configure do |config|
-    config[:sleep_timeout] = 1
+    config[:logger] = Logger.new('log/clockwork.log', 5, 2.megabytes)
+    config[:sleep_timeout] = 1.second
     config[:tz] = 'UTC' # http://tzinfo.rubyforge.org
     config[:thread] = false # multithreading ignores job when count of threads reached to max, disable threading for safe
     config[:max_threads] = 15
   end
 
-  every 1.minute, 'update jobs' do
-    db_events.each do |event|
-      event.update_from_db
+  every 1.minute, 'update import events' do
+    import_events = events.select { |e| e.respond_to?(:import_id) }
+    imports = Import.where(id: import_events.map(&:import_id)).to_a
+    import_events.each do |event|
+      event.refresh_from_import(imports.find { |i| i.id == event.import_id })
     end
 
-    # add database events
-    Import.active.each do |e|
-      events << DBBackedEvent.new(e) unless db_events.map(&:id).include?(e.id)
+    Import.active.each do |import|
+      events << ImportEvent.new(import) if import_events.none? { |event| event.import_id == import.id }
     end
   end
 
@@ -68,59 +70,39 @@ module DBBackedClockwork
     manager.instance_variable_get(:@events)
   end
 
-  # get the db backed events from the events array
-  # NOTE: this creates a new array and is not associated to the "official" events instance variable
-  def self.db_events
-    events.reject{|e| !e.respond_to?(:id) }
-  end
+  class ImportEvent < Clockwork::Event
+    attr_accessor :import_id, :updated_at
 
-  class DBBackedEvent < Clockwork::Event
-    # add @id tagged to DB to update a job
-    attr_accessor :id, :updated_at
-
-    def initialize(event)
-      handler = Proc.new { |job, time|
-        if job =~ /import\-.*\[\d+\]/
-          id = job[/\[(\d+)\]$/, 1].to_i
-          begin
-            import = Import.find(id)
-            unless import.running?
-              Rails.logger.info("[IMPORT] --- Start importing #{job} at #{time}")
-              import.run!
-            end
-          rescue StandardError => e
-            Rails.logger.info("[IMPORT] --- Error #{e.message}")
-          end
+    def initialize(import)
+      handler = Proc.new { |job, _time|
+        if job =~ /import-(\d+)/
+          Import.find($1).try_run_import_rake!(false)
         end
       }
 
-      self.id = event.id
-      self.updated_at = event.updated_at
+      self.import_id = import.id
+      self.updated_at = import.updated_at
 
-      at = event.at.blank? ? nil : event.at
-      super(DBBackedClockwork.manager, event.frequency, "import-#{event.import_type}[#{event.id}]", handler, at: at, tz: event.tz)
+      super(DBBackedClockwork.manager, import.frequency, "import-#{import.id}",
+            handler, at: import.at.presence, tz: import.tz)
     end
 
     # find the job in the database and update or remove it if necessary
-    def update_from_db
-      begin
-        job = Import.find(id)
-        if !job.active
-          job.nonblock_stop!
-          self.remove
-        elsif job.updated_at != updated_at
-          self.remove
-          DBBackedClockwork.events << DBBackedEvent.new(job)
-        end
-      rescue ActiveRecord::RecordNotFound
-        # remove the event
-        self.remove
+    def refresh_from_import(import)
+      (remove; return) if !import
+
+      if !import.active
+        import.stop_or_kill! if import.process_running?
+        remove
+      elsif import.updated_at != updated_at
+        remove
+        DBBackedClockwork.events << ImportEvent.new(import)
       end
     end
 
     # remove this event from the events array
     def remove
-      DBBackedClockwork.events.reject!{|e| e.id == id rescue false}
+      DBBackedClockwork.events.reject! { |e| e.respond_to?(:import_id) && e.import_id == import_id }
     end
   end
 end

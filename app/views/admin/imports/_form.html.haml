@@ -20,7 +20,7 @@
       <br/><b>1:30</b>, <b>**:30</b>, <b>9:**</b>, <b>12:00</b>, <b>18:00</b>, <b>Monday 16:20</b>
   = f.actions
 
-- j_params = Rightboat::Imports::ImporterBase.import_types.inject({}) { |h, type| h[type] = Import.source_class(type).params_validators; h }
+- j_params = Rightboat::Imports::ImporterBase.import_types.inject({}) { |h, type| h[type] = Import.importer_class_by_type(type).params_validators; h }
 -##import_params_data{data: {imports_params: j(j_params.to_json), current_params: j(resource.param.to_json)}}
 -#:javascript
 -#  $(function() {

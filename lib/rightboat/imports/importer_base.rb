@@ -13,9 +13,9 @@ module Rightboat
         @import = import
       end
 
-      def run
+      def run(manual)
         catch :stop do
-          starting
+          starting(manual)
           threaded_run
           finishing
         end
@@ -32,7 +32,8 @@ module Rightboat
         log "Finished in #{@import_trail.duration.strftime('%H:%M:%S')}"
       end
 
-      def starting
+      def starting(manual)
+        @manual = manual
         @import_trail = ImportTrail.create(import: @import)
         init_logger
         @import_trail.update(log_path: @log_path)
@@ -52,7 +53,7 @@ module Rightboat
 
         Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
 
-        log "Started params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
+        log "#{@manual ? 'Manual' : 'Auto'} start params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
 
         throw :stop if already_imported?
       end
@@ -240,6 +241,7 @@ module Rightboat
       end
 
       def already_imported?
+        return false if @manual
         return false if ENV['IGNORE_FEED_MTIME']
         return false if !@prev_import_ran_at
         return false if !imported_feed_path

@@ -34,10 +34,7 @@ module Rightboat
 
     config.cache_store = :redis_store
 
-    # Log file rotation. see: https://www.youtube.com/watch?v=Hgc6LGZMMXY
-    config.logger = Logger.new(config.paths['log'].first,
-                               5, # 5 files total
-                               50*1024*1024) # 50 megabytes each
+    config.logger = Logger.new(config.paths['log'].first, 5, 50.megabytes)
 
     config.to_prepare do
       Devise::Mailer.layout 'mailer'

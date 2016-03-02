@@ -24,7 +24,7 @@ ActiveAdmin.register Import do
     private
 
     def check_running_job
-      if resource.running?
+      if resource.loading_or_running?
         flash[:warning] = "You can not manage this import since it's in running status. Please stop it first."
         redirect_to :back
       end
@@ -68,11 +68,11 @@ ActiveAdmin.register Import do
       import.last_import_trail.duration.strftime('%H:%M:%S') if import.last_import_trail.try(:finished_at)
     end
 
-    actions do |job|
-      if job.process_running?
-        item 'Stop', stop_admin_import_path(job), method: :post, class: 'job-action job-action-danger'
-      elsif job.active? && job.valid?
-        item 'Run', run_admin_import_path(job), method: :post, class: 'job-action'
+    actions do |import|
+      if import.process_running?
+        item 'Stop', stop_admin_import_path(import), method: :post, class: 'job-action job-action-danger'
+      elsif import.active? && import.valid?
+        item 'Run', run_admin_import_path(import), method: :post, class: 'job-action'
       end
     end
   end
@@ -80,7 +80,7 @@ ActiveAdmin.register Import do
   form partial: 'form'
 
   member_action :run, method: :post do
-    resource.run!(true)
+    resource.try_run_import_rake!(true)
     redirect_to :back
   end
 

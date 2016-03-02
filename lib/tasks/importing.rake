@@ -1,10 +1,7 @@
 namespace :import do
   desc 'Run importing job specified by id'
-  task :run, [:id] => :environment do |_, args|
-    import = Import.find(args.id)
-    if import.active? && !import.process_running?
-      import.source_class.new(import).run
-    end
+  task :run, [:id, :manual] => :environment do |_, args|
+    Import.find(args.id).try_run_import!(args.manual == 'manual')
   end
 
   desc 'Run importing eyb members and create import'

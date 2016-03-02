@@ -12,7 +12,6 @@ class Import < ActiveRecord::Base
   validates_presence_of :user_id, :import_type
   validates_numericality_of :threads, greater_than: 0, less_than: 10, allow_blank: true
   validates_inclusion_of :import_type, in: -> (_) { Rightboat::Imports::ImporterBase.import_types }, allow_blank: true
-  validates_uniqueness_of :import_type, scope: :user_id, if: 'import_type != "eyb"'
 
   # scheduling options
   validates_presence_of :frequency_quantity, :frequency_unit, :tz, if: :active?
@@ -26,16 +25,15 @@ class Import < ActiveRecord::Base
   scope :active, -> { where active: true }
   scope :inactive, -> { where active: false }
 
-  def self.source_class(type)
-    return if type.blank?
+  def self.importer_class_by_type(type)
     Rightboat::Imports::Importers.const_get(type.camelcase)
   end
 
-  def source_class
-    self.class.source_class(import_type)
+  def importer_class
+    self.class.importer_class_by_type(import_type)
   end
 
-  def running?
+  def loading_or_running?
     loading? || process_running?
   end
 
@@ -47,31 +45,40 @@ class Import < ActiveRecord::Base
     pid && pid > 0 && (Process.getpgid(pid) rescue nil).present?
   end
 
-  def run!(manual = false)
-    return if running?
-    update_attributes!(queued_at: Time.current, pid: -1)
-    system "#{'IGNORE_FEED_MTIME=1 ' if manual}bundle exec rake import:run[#{id}] > /dev/null 2>&1 &"
+  def try_run_import_rake!(manual)
+    if !loading_or_running?
+      update_attributes!(queued_at: Time.current, pid: -1)
+      system "bundle exec rake import:run[#{id},#{manual ? 'manual' : 'auto'}] > /dev/null 2>&1 &"
+    end
   end
 
-  def stop!
-    Process.kill('SIGINT', pid)
+  def try_run_import!(manual)
+    if active? && !process_running?
+      importer_class.new(self).run(manual)
+    end
+  end
+
+  def stop!(force = false)
+    Process.kill(force ? 'SIGKILL' : 'SIGINT', pid)
   rescue Errno::EPERM, Errno::ESRCH => e # no such pid running
-    update!(pid: 0) # assume we have invalid pid
-    logger.info e.message
+    logger.error "#{e.class.name}: #{e.message}"
+  ensure
+    update_column(:pid, 0) if force
   end
 
-  NONBLOCK_STOP_TIMEOUT = 30.seconds
-  def nonblock_stop!
-    time = Time.current
-    while process_running? && Time.current - time < NONBLOCK_STOP_TIMEOUT
-      Process.kill('SIGINT', pid)
+  def kill!
+    stop!(true)
+  end
+
+  def stop_or_kill!
+    timeout = Time.current + 30.seconds
+
+    while process_running? && Time.current < timeout
+      stop!
       sleep(0.2.seconds)
     end
-    if Time.current - time >= NONBLOCK_STOP_TIMEOUT
-      Process.kill('SIGKILL', pid)
-    end
-  rescue Errno::ESRCH => e
-    logger.info e.message
+
+    kill! if process_running?
   end
 
   def frequency
@@ -96,9 +103,8 @@ class Import < ActiveRecord::Base
   end
 
   def validate_import_params
-    return unless source_class
     symbolized_param = param.symbolize_keys
-    source_class.params_validators.each do |key, validators|
+    importer_class.params_validators.each do |key, validators|
       validators = [validators] unless validators.is_a?(Array)
       validators.each do |validator|
         value = symbolized_param[key.to_sym]

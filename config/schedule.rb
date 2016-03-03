@@ -4,9 +4,9 @@
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
 
-set :output, '/var/log/cron.log'
+set :output, File.join(Whenever.path, 'log', 'cron.log')
 
-require File.expand_path('../../config/environment.rb', __FILE__)
+require File.expand_path("#{File.dirname(__FILE__)}/environment")
 
 Import.active.each do |import|
   every import.frequency, at: import.at do

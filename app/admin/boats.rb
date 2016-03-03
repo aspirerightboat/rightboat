@@ -94,11 +94,13 @@ ActiveAdmin.register Boat do
     column :model
     column :status
     column :user
-    column :office
+    column :office do |boat|
+      boat.office.try(:name)
+    end
     column :location do |boat|
       res = []
       res << boat.country.name if boat.country
-      res << html_escape(boat.location) if boat.location.present?
+      res << boat.location if boat.location.present?
       res.join(', ') + "(#{'Not ' if !boat.geocoded?}Geocoded)"
     end
   end

@@ -251,6 +251,8 @@ end
 
 module ActiveAdmin
   class ResourceController < BaseController
+    include ActiveAdmin::ResourceController::Streaming
+
     module DataAccess
       def apply_sorting(chain)
         params[:order] ||= active_admin_config.sort_order

@@ -24,10 +24,6 @@ class Office < ActiveRecord::Base
     end
   end
 
-  def to_s
-    name
-  end
-
   private
 
   def ensure_address

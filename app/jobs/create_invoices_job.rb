@@ -23,29 +23,26 @@ class CreateInvoicesJob
         i = Invoice.new
         xi = $xero.Invoice.build(type: 'ACCREC', status: 'DRAFT')
         xi.line_amount_types = 'Exclusive'
-        xi.date = Time.current.to_date.to_s(:db)
-        xi.due_date = 1.month.from_now.to_date.to_s(:db)
+        xi.date = Time.current.to_date
+        xi.due_date = 1.month.from_now.to_date
+        branding_theme = $xero.BrandingTheme.first
+        xi.branding_theme_id = branding_theme.branding_theme_id if branding_theme
 
         vat_rate = broker.address.try(:country).try(:iso) == 'GB' ? 0.2 : 0
         leads_price = 0
         total_discount = 0
+        leads_str = 'Leads'
         leads.each do |lead|
-          boat = lead.boat
-          boat_price_str = "#{boat.price} #{(boat.currency || Currency.default).symbol}"
+          leads_str << " #{lead.id}"
           lead_price = lead.lead_price
           lead_price_discounted = (lead_price * (1 - discount_rate)).round(2)
           total_discount += lead_price - lead_price_discounted
-
-          line_item_attrs = {
-              description: "Lead #{lead.id}\n#{boat.manufacturer_model} #{boat.length_m} m #{boat_price_str}",
-              quantity: 1, unit_amount: lead_price, account_code: 200,
-              discount_rate: discount_rate * 100,
-              line_amount: lead_price_discounted,
-          }
-          # line_item_attrs.merge!(tax_type: 'SRINPUT') if vat_rate > 0
-          xi.add_line_item(line_item_attrs)
           leads_price += lead_price_discounted
         end
+        xi.add_line_item(description: leads_str,
+                         quantity: 1, unit_amount: lead_price, account_code: 200,
+                         discount_rate: discount_rate * 100,
+                         line_amount: lead_price_discounted)
 
         i.subtotal = leads_price
         i.discount_rate = discount_rate
@@ -98,7 +95,7 @@ class CreateInvoicesJob
   def fetch_leads(only_broker_id)
     rel = Enquiry.approved.not_deleted.where(invoice_id: nil)
               .where('enquiries.created_at < ?', Time.current.beginning_of_day)
-              .includes(boat: [:manufacturer, :model, :currency, {user: :broker_info}])
+              .includes(boat: {user: :broker_info})
     if only_broker_id
       rel = rel.references(:boat).where(boats: {user_id: only_broker_id})
     end

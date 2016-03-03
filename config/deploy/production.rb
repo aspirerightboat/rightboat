@@ -19,6 +19,7 @@ set :solr_data_path, '/var/solr/data'
 set :solr_pid, '/var/solr/solr-8983.pid'
 set :solr_cmd, '/etc/init.d/solr %{cmd}'
 
+set :whenever_update_flags, -> { "--update-crontab #{fetch :whenever_identifier} --set #{fetch :whenever_variables} --user #{fetch :user}" }
 
 # bundle exec cap production deploy #=> deploy all
 # bundle exec cap --roles=app1,app2 production deploy #=> deploy only specific roles

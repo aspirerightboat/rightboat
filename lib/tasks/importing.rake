@@ -5,7 +5,7 @@ namespace :import do
   end
 
   desc 'Run importing eyb members and create import'
-  task :eyb_members => :environment do
+  task eyb_members: :environment do
     Rightboat::Imports::EybMembers.new.run
   end
 
@@ -25,4 +25,9 @@ namespace :import do
     end
   end
 
+  desc 'Download Eyb feed and save in import_data/eyb.xml'
+  task :download_eyb_feed do
+    res = `/bin/bash eyb.sh`
+    ExpertMailer.download_feed_error('Eyb').deliver_now if res !~ /Success\Z/
+  end
 end

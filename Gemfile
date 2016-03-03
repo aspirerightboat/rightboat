@@ -78,6 +78,8 @@ gem 'ruby-filemagic' # determine mime-type by file content. requires "brew insta
 
 gem 'rails4-autocomplete'
 
+gem 'whenever', require: false
+
 group :development, :test do
   gem 'spring'
   gem 'puma'

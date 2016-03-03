@@ -52,7 +52,7 @@ class Import < ActiveRecord::Base
     end
   end
 
-  def try_run_import!(manual)
+  def try_run_import!(manual = false)
     if active? && !process_running?
       importer_class.new(self).run(manual)
     end

@@ -30,19 +30,21 @@ class CreateInvoicesJob
 
         vat_rate = broker.address.try(:country).try(:iso) == 'GB' ? 0.2 : 0
         leads_price = 0
+        leads_price_discounted = 0
         total_discount = 0
         leads_str = 'Leads'
         leads.each do |lead|
-          leads_str << " #{lead.id}"
+          leads_str << " #{lead.id},"
           lead_price = lead.lead_price
+          leads_price += lead_price
           lead_price_discounted = (lead_price * (1 - discount_rate)).round(2)
           total_discount += lead_price - lead_price_discounted
-          leads_price += lead_price_discounted
+          leads_price_discounted += lead_price_discounted
         end
-        xi.add_line_item(description: leads_str,
-                         quantity: 1, unit_amount: lead_price, account_code: 200,
+        xi.add_line_item(description: leads_str.chomp(','),
+                         quantity: 1, unit_amount: leads_price, account_code: 200,
                          discount_rate: discount_rate * 100,
-                         line_amount: lead_price_discounted)
+                         line_amount: leads_price_discounted)
 
         i.subtotal = leads_price
         i.discount_rate = discount_rate

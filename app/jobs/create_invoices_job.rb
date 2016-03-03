@@ -24,8 +24,8 @@ class CreateInvoicesJob
         xi = $xero.Invoice.build(type: 'ACCREC', status: 'DRAFT')
         xi.line_amount_types = 'Exclusive'
         xi.date = Time.current.to_date
-        xi.due_date = 1.month.from_now.to_date
-        branding_theme = $xero.BrandingTheme.first
+        xi.due_date = xi.date
+        branding_theme = $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
         xi.branding_theme_id = branding_theme.branding_theme_id if branding_theme
 
         vat_rate = broker.address.try(:country).try(:iso) == 'GB' ? 0.2 : 0

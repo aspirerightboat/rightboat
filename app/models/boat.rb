@@ -275,6 +275,8 @@ class Boat < ActiveRecord::Base
   def change_status
     unless !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
       self.status = 'inactive'
+    else
+      self.status = 'active'
     end
   end
 end

@@ -29,7 +29,7 @@ module Rightboat
           ExpertMailer.importing_errors(@import_trail.id).deliver_now
         end
 
-        log "Finished in #{@import_trail.duration.strftime('%H:%M:%S')}"
+        log "Finished in #{@import_trail.duration_time}"
       end
 
       def starting(manual)

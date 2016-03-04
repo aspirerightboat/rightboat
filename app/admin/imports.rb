@@ -63,7 +63,7 @@ ActiveAdmin.register Import do
       end
     end
     column :last_duration do |import|
-      import.last_import_trail.duration.strftime('%H:%M:%S') if import.last_import_trail.try(:finished_at)
+      import.last_import_trail.duration_time if import.last_import_trail.try(:finished_at)
     end
 
     actions do |import|

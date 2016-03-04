@@ -31,9 +31,7 @@ ActiveAdmin.register ImportTrail do
     column :not_saved_count
     column :created_at
     column :finished_at
-    column :duration do |trail|
-      trail.duration.strftime('%H:%M:%S')
-    end
+    column(:duration) { |trail| trail.duration_time }
     column :error do |trail|
       status_tag(trail.error_msg, :red) if trail.error_msg
       status_tag(trail.warning_msg, :orange) if trail.warning_msg

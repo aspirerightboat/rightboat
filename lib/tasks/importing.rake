@@ -30,4 +30,27 @@ namespace :import do
     res = `/bin/bash eyb.sh`
     ExpertMailer.download_feed_error('Eyb').deliver_now if res !~ /Success\Z/
   end
+
+  desc 'Rearrange time of when imports starts based on their duration'
+  task :rearrange_import_time do
+    time = Time.parse('00:10 UTC')
+
+    Import.active.order(:id).includes(:last_finished_trail).each do |import|
+      import.update!(frequency_unit: 'day', at: time.strftime('%H:%M'), tz: 'UTC')
+      last_trail = import.last_finished_trail
+      estimated_duration = if last_trail
+                             dur = last_trail.finished_at - last_trail.created_at + 1.second
+                             (dur / 1.minute).ceil.minutes
+                           else
+                             1.minute
+                           end
+      time += estimated_duration
+    end
+
+    if Rails.env.production?
+      `bundle exec whenever --update-crontab`
+    else
+      puts `bundle exec whenever`
+    end
+  end
 end

@@ -6,11 +6,12 @@ class Import < ActiveRecord::Base
   belongs_to :user, inverse_of: :imports
   has_many :import_trails
   belongs_to :last_import_trail, class_name: 'ImportTrail'
+  has_one :last_finished_trail, -> { where.not(finished_at: nil).order('id DESC') }, class_name: 'ImportTrail'
 
   serialize :param, Hash
 
   validates :user_id, presence: true
-  validates :threads, presence: true, numericality: {only_integer: true, greater_than: 1, less_than: 10}
+  validates :threads, presence: true, numericality: {only_integer: true, greater_than: 0, less_than: 11}
   validates :import_type, presence: true, inclusion: {in: Rightboat::Imports::ImporterBase.import_types}
   validates :frequency_unit, presence: true, inclusion: {in: FREQUENCY_UNITS}
   validates :at, presence: true, format: {with: /\A\d\d:\d\d\z/}
@@ -80,7 +81,7 @@ class Import < ActiveRecord::Base
   end
 
   def at_utc
-    Time.parse(at).in_time_zone(tz).utc.strftime('%H:%M')
+    Time.parse("#{at} #{tz}").utc.strftime('%H:%M')
   end
 
   private

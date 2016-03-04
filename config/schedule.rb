@@ -14,34 +14,11 @@ Import.active.each do |import|
   end
 end
 
-every 1.minute do
-  runner 'LeadsApproveJob.new.perform'
-end
-
-every 1.day, at: '22:10' do
-  runner 'SavedSearchNoticesJob.new.perform'
-end
-
-every 1.day, at: '1:00' do
-  rake 'rake import:currency'
-end
-
-every 1.day, at: '1:10' do
-  rake 'rake rb_sitemap:refresh'
-end
-
-every 12.hours, at: '6:20' do # sometimes we have stale search results
-  command 'sudo monit restart solr_rightboat'
-end
-
-every 1.day, at: '22:00' do
-  rake 'import:download_eyb_feed'
-end
-
-every 1.hour do
-  rake 'import:download_boatstream_feed'
-end
-
-every 1.day, at: '8:00' do
-  rake 'rake export:run_all'
-end
+every(1.minute) { runner 'LeadsApproveJob.new.perform' }
+every(1.day, at: '22:10') { runner 'SavedSearchNoticesJob.new.perform' }
+every(1.day, at: '1:00') { rake 'rake import:currency' }
+every(1.day, at: '1:10') { rake 'rake rb_sitemap:refresh' }
+every(12.hours, at: '6:20') { command 'sudo monit restart solr_rightboat' } # sometimes we have stale search results
+every(1.day, at: '22:00') { rake 'import:download_eyb_feed' }
+every(1.hour) { rake 'import:download_boatstream_feed' }
+every(1.day, at: '8:00') { rake 'rake export:run_all' }

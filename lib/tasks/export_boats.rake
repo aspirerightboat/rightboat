@@ -6,7 +6,7 @@ namespace :export do
   end
 
   desc 'Run all export jobs'
-  task :run_all => :environment do
+  task run_all: :environment do
     Export.run_all!
   end
 

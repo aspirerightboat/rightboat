@@ -3,7 +3,7 @@ require 'open_uri_redirections'
 
 namespace :import do
   desc 'Import currency exchange rates from CurrenciesDirect.com'
-  task :currency => :environment do
+  task currency: :environment do
     url = 'http://www.currenciesdirect.com/common/rates.aspx?code=A04190&pass=A04190&base=GBP'
     doc = Nokogiri::XML(open(url, allow_redirections: :safe))
 

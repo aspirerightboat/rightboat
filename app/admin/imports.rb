@@ -111,7 +111,7 @@ ActiveAdmin.register Import do
   end
 
   collection_action :update_crontab, method: :post do
-    res = Rails.env.production? ? `bundle exec whenever --update-crontab` : `bundle exec whenever`
+    res = Rails.env.production? ? `bundle exec whenever --update-crontab rightboat.com` : `bundle exec whenever`
     success = Rails.env.production? ? res['crontab file updated'] : res['Above is your schedule file']
     success ? flash.notice = 'Crontab file updated' : flash.alert = 'Something went wrong'
     redirect_to :back

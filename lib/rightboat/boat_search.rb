@@ -1,6 +1,6 @@
 module Rightboat
   class BoatSearch
-    ORDER_TYPES = %w(score created_at price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
+    ORDER_TYPES = %w(score_desc created_at_desc price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
     YEARS_RANGE = (Date.today.year - 30)..Date.today.year
     PRICES_RANGE = 0..100_000_000
     LENGTHS_RANGE = 0..300
@@ -146,8 +146,9 @@ module Rightboat
       @page = [params[:page].to_i, 1].max
       if params[:order].present? && ORDER_TYPES.include?(params[:order])
         @order = params[:order]
-        @order_dir = params[:order].end_with?('_asc') ? :asc : :desc
-        @order_col = params[:order].gsub(/_(?:asc|desc)\z/, '')
+        m = @order.match(/\A(.*)_(asc|desc)\z/)
+        @order_col = m[1]
+        @order_dir = m[2].to_sym
       end
       @exclude_ref_no = params[:exclude_ref_no]
     end

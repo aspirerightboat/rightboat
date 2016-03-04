@@ -26,8 +26,8 @@ en:
     many: "searches"
     other: "searches"
   search_orders:
-    score: "Best Match"
-    created_at: "Newly listed"
+    score_desc: "Best Match"
+    created_at_desc: "Newly listed"
     price_desc: "Price: high - low"
     price_asc: "Price: low - high"
     year_asc: "Age: old - new"

@@ -26,7 +26,7 @@ class SearchController < ApplicationController
     end
 
     params.delete(:page) unless request.xhr?
-    set_current_search_order(params[:q].present? ? 'score' : 'price_desc') if params[:order].blank?
+    set_current_search_order(params[:q].present? ? 'score_desc' : 'price_desc') if params[:order].blank?
     params[:order] ||= current_search_order
 
     boat_search = Rightboat::BoatSearch.new.do_search(params, with_facets: true)

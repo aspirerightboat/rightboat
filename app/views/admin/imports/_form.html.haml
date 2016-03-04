@@ -4,20 +4,15 @@
     = f.input :import_type, collection: Rightboat::Imports::ImporterBase.import_types, include_blank: false
     = f.input :threads
     = f.input :active
-    = f.input :use_proxy, as: :boolean
   = f.inputs 'Parameters', id: 'import_params' do
     = f.semantic_errors :param
 
   = f.inputs 'Scheduling', id: 'import_scheduling' do
     %span Every
-    = f.input :frequency_quantity, label: false
     = f.input :frequency_unit, as: :select, collection: Import::FREQUENCY_UNITS, include_blank: false, label: false
     %span(style="margin-left: 20px;") At:
-    = f.input :at, label: false
-    = f.time_zone_select :tz, nil, default: 'UTC'
-    %li
-      The <i>At</i> option is optional and format should be one of:
-      <br/><b>1:30</b>, <b>**:30</b>, <b>9:**</b>, <b>12:00</b>, <b>18:00</b>, <b>Monday 16:20</b>
+    %input(type="time" name="import[at]" value="#{f.object.at}")
+    = f.time_zone_select :tz, nil
   = f.actions
 
 - j_params = Rightboat::Imports::ImporterBase.import_types.inject({}) { |h, type| h[type] = Import.importer_class_by_type(type).params_validators; h }

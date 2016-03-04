@@ -23,7 +23,6 @@ module Rightboat
       }
 
       def initialize
-        @use_proxy = false
         @_agent = Mechanize.new
         @_agent.user_agent_alias = 'Windows IE 7'
         @_agent.ssl_version = 'SSLv3'

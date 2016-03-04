@@ -11,10 +11,7 @@ ActiveAdmin.register Import do
     before_filter :check_running_job, only: [:edit, :update, :destroy]
 
     def import_params
-      permitted_param_names = [
-        :import_type, :active, :use_proxy, :user_id, :threads,
-        :frequency_unit, :frequency_quantity, :at, :tz
-      ]
+      permitted_param_names = [:import_type, :active, :user_id, :threads, :frequency_unit, :at, :tz]
 
       params.require(:import).permit(permitted_param_names).tap do |w|
         w[:param] = params[:import][:param]
@@ -38,25 +35,26 @@ ActiveAdmin.register Import do
   index download_links: [:csv] do
     column :id
     column :user, sortable: :user_id
-    column 'Scheduling Status' do |job|
+    column 'Scheduling Status' do |import|
       case
-      when job.loading?
+      when import.loading?
         status_tag('Loading', :yes)
-      when job.process_running?
+      when import.process_running?
         status_tag('Running', :ok)
-      when job.active?
-        tz = (job.tz == 'UTC' || job.tz.blank?) ? job.tz : Time.now.in_time_zone(job.tz).strftime('%:::z')
-        status_tag(:no, :no, label: "Each #{job.frequency_quantity} #{job.frequency_unit} at #{job.at} #{tz}")
+      when import.active?
+        tz = Time.now.in_time_zone(import.tz).strftime('%:::z')
+        each = ("Each #{import.frequency_unit} at " if import.frequency_unit != 'day')
+        status_tag(:no, :no, label: "#{each}#{import.at} #{tz}")
       else
         status_tag('Inactive', :error)
       end
     end
     column :import_type
     column :last_ran_at, sortable: :last_ran_at do |import|
-      import.last_ran_at.blank? ? "never" : l(import.last_ran_at, format: :long)
+      time_ago_with_hint(import.last_ran_at) if import.last_ran_at
     end
     column :last_log do |import|
-      link_to('view log', admin_import_trail_path(import.last_import_trail)) if import.last_import_trail
+      link_to('log', admin_import_trail_path(import.last_import_trail)) if import.last_import_trail
     end
     column :last_error, sortable: 'import_trails.error_msg' do |import|
       if (trail = import.last_import_trail)
@@ -103,6 +101,12 @@ ActiveAdmin.register Import do
     end
     column :created_at
     column :updated_at
+  end
+
+  collection_action :update_crontab, method: :post do
+    res = `whenever --update-crontab`
+    flash.notice = res
+    redirect_to :back
   end
 
 end

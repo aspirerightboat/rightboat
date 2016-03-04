@@ -1,7 +1,7 @@
 class Import < ActiveRecord::Base
   include BoatOwner
 
-  FREQUENCY_UNITS = %w(hour day week month)
+  FREQUENCY_UNITS = %w(day monday)
 
   belongs_to :user, inverse_of: :imports
   has_many :import_trails
@@ -9,15 +9,13 @@ class Import < ActiveRecord::Base
 
   serialize :param, Hash
 
-  validates_presence_of :user_id, :import_type
-  validates_numericality_of :threads, greater_than: 0, less_than: 10, allow_blank: true
-  validates_inclusion_of :import_type, in: -> (_) { Rightboat::Imports::ImporterBase.import_types }, allow_blank: true
+  validates :user_id, presence: true
+  validates :threads, presence: true, numericality: {only_integer: true, greater_than: 1, less_than: 10}
+  validates :import_type, presence: true, inclusion: {in: Rightboat::Imports::ImporterBase.import_types}
+  validates :frequency_unit, presence: true, inclusion: {in: FREQUENCY_UNITS}
+  validates :at, presence: true, format: {with: /\A\d\d:\d\d\z/}
+  validates :tz, presence: true
 
-  # scheduling options
-  validates_presence_of :frequency_quantity, :frequency_unit, :tz, if: :active?
-  validates_inclusion_of :frequency_unit, within: FREQUENCY_UNITS, if: :active?
-  validates_numericality_of :frequency_quantity, greater_than: 0, if: :active?
-  validate :validate_clockwork_params
   validate :validate_import_params
 
   before_destroy :stop!
@@ -81,26 +79,11 @@ class Import < ActiveRecord::Base
     kill! if process_running?
   end
 
-  def frequency
-    if FREQUENCY_UNITS.include?(frequency_unit) && frequency_quantity > 0
-      frequency_quantity.send(frequency_unit)
-    end
+  def at_utc
+    Time.parse(at).in_time_zone(tz).utc.strftime('%H:%M')
   end
 
   private
-
-  def validate_clockwork_params
-    # at value should be understandable by clockwork
-    # valid examples:
-    #   01:30, 1:30, **:30, 9:**, 12:00, 18:00, Monday 16:20
-    if active? && at.present?
-      begin
-        Clockwork::At.parse(at)
-      rescue Clockwork::At::FailedToParse
-        self.errors.add :at, 'is invalid'
-      end
-    end
-  end
 
   def validate_import_params
     symbolized_param = param.symbolize_keys

@@ -57,7 +57,7 @@ class Import < ActiveRecord::Base
   end
 
   def stop!(force = false)
-    Process.kill(force ? 'SIGKILL' : 'SIGINT', pid)
+    Process.kill(force ? 'SIGKILL' : 'SIGINT', pid) if pid && pid > 0
   rescue Errno::EPERM, Errno::ESRCH => e # no such pid running
     logger.error "#{e.class.name}: #{e.message}"
   ensure

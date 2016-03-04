@@ -16,9 +16,10 @@ end
 
 every(1.minute) { runner 'LeadsApproveJob.new.perform' }
 every(1.day, at: '22:10') { runner 'SavedSearchNoticesJob.new.perform' }
-every(1.day, at: '1:00') { rake 'rake import:currency' }
-every(1.day, at: '1:10') { rake 'rake rb_sitemap:refresh' }
+every(1.day, at: '1:00') { rake 'import:currency' }
+every(1.day, at: '1:10') { rake 'rb_sitemap:refresh' }
 every(12.hours, at: '6:20') { command 'sudo monit restart solr_rightboat' } # sometimes we have stale search results
 every(1.day, at: '22:00') { rake 'import:download_eyb_feed' }
 every(1.hour) { rake 'import:download_boatstream_feed' }
-every(1.day, at: '8:00') { rake 'rake export:run_all' }
+every(1.day, at: '8:00') { rake 'export:run_all' }
+every(1.day, at: '23:00') { rake 'import:rearrange_imports' }

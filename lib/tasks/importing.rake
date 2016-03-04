@@ -32,7 +32,7 @@ namespace :import do
   end
 
   desc 'Rearrange time of when imports starts based on their duration'
-  task rearrange_import_time: :environment do
+  task rearrange_imports: :environment do
     time = Time.parse('00:10 UTC')
 
     Import.active.order(:id).includes(:last_finished_trail).each do |import|

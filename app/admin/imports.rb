@@ -103,18 +103,4 @@ ActiveAdmin.register Import do
     column :updated_at
   end
 
-  sidebar 'Tools', only: [:index] do
-    para {
-      span { link_to 'Update Crontab', {action: :update_crontab}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
-      abbr(title: 'Update if you changed scheduling of any import') { '?' }
-    }
-  end
-
-  collection_action :update_crontab, method: :post do
-    res = Rails.env.production? ? `bundle exec whenever --update-crontab rightboat.com` : `bundle exec whenever`
-    success = Rails.env.production? ? res['crontab file updated'] : res['Above is your schedule file']
-    success ? flash.notice = 'Crontab file updated' : flash.alert = 'Something went wrong'
-    redirect_to :back
-  end
-
 end

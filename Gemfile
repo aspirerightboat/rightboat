@@ -52,7 +52,6 @@ gem 'geocoder'
 # background processing & scheduling
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
-gem 'clockwork'
 
 # pdf generating
 gem 'wicked_pdf' # you need install wkhtmltopdf binary manually to have the latest version. see: http://wkhtmltopdf.org/downloads.html

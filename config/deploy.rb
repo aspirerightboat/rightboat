@@ -51,7 +51,6 @@ namespace :deploy do
   after :check,   'solr:setup'
   after :check,   'workers:delayed_job:setup'
   after :restart, 'monit:reload'
-  # after :restart, 'workers:clockwork:restart'
   after :restart, 'workers:delayed_job:restart'
   after :restart, 'solr:restart'
 end

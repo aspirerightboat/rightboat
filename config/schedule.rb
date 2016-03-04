@@ -9,7 +9,7 @@ set :output, File.join(Whenever.path, 'log', 'cron.log')
 require File.expand_path("#{File.dirname(__FILE__)}/environment")
 
 Import.active.each do |import|
-  every import.frequency_unit, at: import.at_utc do
+  every import.frequency_unit.to_sym, at: import.at_utc do
     runner "Import.find(#{import.id}).try_run_import!"
   end
 end

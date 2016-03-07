@@ -24,7 +24,7 @@
         %th delete
         %th alert
       - @saved_searches.each_with_index do |ss, i|
-        %tr
+        %tr(data-ss-id="#{ss.id}")
           %td= i + 1
           %td= ss.q
           %td= ss.manufacturer_model
@@ -36,6 +36,10 @@
           %td= "#{ss.price_min} ~ #{ss.price_max} #{ss.currency}"
           %td= "#{ss.length_min} ~ #{ss.length_max} #{ss.length_unit}"
           %td= link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'
-          %td= link_to 'Delete', member_saved_search_path(ss), class: 'label label-danger', method: :delete
-          %td= link_to (ss.alert ? 'Alert On' : 'No Alert'), toggle_member_saved_search_path(ss),
-                      class: "label label-#{ss.alert ? 'success' : 'default'}", method: :post
+          %td
+            = link_to 'Delete', member_saved_search_path(ss), class: 'label label-danger', method: :delete,
+                      remote: true, format: :js, data: {disable_with: 'Delete...'}
+          %td
+            = link_to (ss.alert ? 'Alert On' : 'No Alert'), toggle_member_saved_search_path(ss),
+                      class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}", method: :post,
+                      remote: true, format: :js, data: {disable_with: 'Alert...'}

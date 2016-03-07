@@ -19,15 +19,12 @@ class Member::SavedSearchesController < Member::BaseController
   end
 
   def destroy
-    saved_search = SavedSearch.find(params[:id])
-    saved_search.destroy
-
-    redirect_to member_saved_searches_path
+    @saved_search = SavedSearch.find(params[:id])
+    @saved_search.destroy
   end
 
   def toggle
-    SavedSearch.where(id: params[:id]).update_all('alert = NOT alert')
-
-    redirect_to member_saved_searches_path
+    @saved_search = SavedSearch.find(params[:id])
+    @saved_search.update(alert: !@saved_search.alert)
   end
 end

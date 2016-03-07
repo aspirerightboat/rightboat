@@ -1,0 +1,4 @@
+var link = $('tr[data-ss-id="#{@saved_search.id}"] .toggle-alert');
+setTimeout(function() { link.text('#{@saved_search.alert ? 'Alert On' : 'No Alert'}') }, 10);
+link.removeClass('#{@saved_search.alert ? 'label-default' : 'label-success'}');
+link.addClass('#{@saved_search.alert ? 'label-success' : 'label-default'}');

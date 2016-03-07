@@ -38,6 +38,8 @@ class EnquiriesController < ApplicationController
 
       enquiry.handle_lead_created_mails unless enquiry.suspicious?
 
+      session[:suggest_lead_alerts] = enquiry.id
+
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
                                                   locals: {lead_price: enquiry.lead_price,
@@ -82,6 +84,12 @@ class EnquiriesController < ApplicationController
   end
 
   def define_payment_method
+  end
+
+  def follow_maker_model
+    lead = Enquiry.find(params[:lead_id])
+    current_user.saved_searches.create!(manufacturer_model: lead.boat.manufacturer_model)
+    head :ok
   end
 
   private

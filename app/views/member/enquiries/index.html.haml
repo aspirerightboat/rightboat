@@ -25,3 +25,6 @@
     *Top Tip: Set your alerts in #{link_to 'My Alerts', member_user_alert_path} and we'll let you know if anything changes with these boat listings.
 
 = render 'shared/enquiry_popup'
+
+- if session[:suggest_lead_alerts]
+  = render 'lead_alerts_popup'

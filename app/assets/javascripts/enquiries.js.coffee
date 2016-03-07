@@ -45,3 +45,7 @@ $ ->
   $('.unhide-enquires').on 'ajax:success', (e, data, status, xhr) ->
     $('.boat-thumb-container').fadeIn()
 
+  $('#follow_lead_maker_model_popup').each ->
+    $popup = $(@).displayPopup()
+    $popup.on 'ajax:success', (e, data, status, xhr) ->
+      $popup.modal('hide')

@@ -37,7 +37,7 @@ $ ->
       $('.alert', $form).remove()
       if onComplete
         onComplete($form, e, data, status, xhr)
-      else if loc = xhr.responseJSON.location
+      else if xhr.responseJSON && (loc = xhr.responseJSON.location)
         window.location = loc
       else if message = $form.data('message')
         $('<div class="alert alert-info">' + message + '</div>').prependTo($form).hide().show(200)

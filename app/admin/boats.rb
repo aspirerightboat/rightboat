@@ -1,7 +1,7 @@
 ActiveAdmin.register Boat do
   permit_params :manufacturer_id, :model_id, :price, :currency_id, :year_built, :poa,
                 :featured, :recently_reduced, :offer_status, :new_boat, :description, :short_description,
-                :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id
+                :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id, :slug
 
   menu priority: 2
 
@@ -75,6 +75,7 @@ ActiveAdmin.register Boat do
       f.input :offer_status, as: :select, collection: Boat::OFFER_STATUSES
       f.input :featured, as: :boolean
       f.input :recently_reduced, as: :boolean
+      f.input :slug
     end
     actions
   end

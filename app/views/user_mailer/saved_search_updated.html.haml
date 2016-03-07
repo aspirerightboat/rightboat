@@ -10,12 +10,17 @@
     - new_boats.each_with_index do |boat, i|
       %tr
         %td= render 'boats/mail_thumb', boat: boat, visible: i < 3
-  - if new_boats.count > 3
-    .clear
-      = link_to 'View More >', search_url(saved_search.to_search_params), id: 'view-more'
-  %br
+  .clear(style="margin: 0.5em 0 1.5em")
+    %p
+      Please find above links for new boats that match your saved search on Rightboat.
+    - if new_boats.count > 3
+      %p
+        To see a complete list of all the boats that match your search click here...
+        #{link_to 'View All', search_url(saved_search.to_search_params), class: 'btn'}
 
-%p You can manage your alerts and email settings from the #{link_to 'My Alerts', member_user_alert_url} page within #{link_to 'My Rightboat', member_root_url}.
+%p
+  You can manage your alerts and email settings from the #{link_to 'My Alerts', member_user_alert_url}
+  page within #{link_to 'My Rightboat', member_root_url}.
 
 %p We will keep you up to date with new listings, price changes and great discounts and offers from Rightboat.
 

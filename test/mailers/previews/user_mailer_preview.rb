@@ -1,7 +1,10 @@
 class UserMailerPreview < ActionMailer::Preview
 
   def saved_search_updated
-    UserMailer.saved_search_updated(User.last.id, SavedSearch.limit(2).pluck(:id))
+    searches = SavedSearch.limit(2).pluck(:id).map.with_index do |ss_id, i|
+      [ss_id, Boat.not_deleted.limit((i+1)*2).offset(i*5).pluck(:id)]
+    end
+    UserMailer.saved_search_updated(User.last.id, searches)
   end
 
   def email_confirmation

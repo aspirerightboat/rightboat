@@ -8,7 +8,7 @@ class UserMailer < ApplicationMailer
     @searches = searches.map { |saved_search_id, boat_ids|
       saved_search = SavedSearch.find_by(id: saved_search_id)
       next if !saved_search
-      [saved_search, Boat.where(id: boat_ids).includes(:manufacturer, :model).to_a]
+      [saved_search, Boat.where(id: boat_ids).includes(:manufacturer, :model, :primary_image, :currency, :vat_rate, :country).to_a]
     }.compact
 
     to_email = STAGING_EMAIL || @user.email

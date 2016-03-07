@@ -18,7 +18,6 @@ class SavedSearch < ActiveRecord::Base
     res << " Price=#{currency_sym}#{price_min.presence || 0}-#{price_max.presence || not_defined}" if price_min.present? || price_max.present?
     res << " Length=#{length_min.presence || not_defined}-#{length_max.presence || not_defined}#{length_unit}" if length_min.present? || length_max.present?
     res << " RefNo=\"#{ref_no}\"" if ref_no.present?
-    res << " Order=\"#{order}\"" if order.present?
     res.strip!
     res
   end

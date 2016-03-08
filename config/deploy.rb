@@ -47,10 +47,10 @@ set :disallow_pushing, true
 
 
 namespace :deploy do
-  after :check,   'monit:setup'
-  after :check,   'solr:setup'
-  after :check,   'workers:delayed_job:setup'
-  after :restart, 'monit:reload'
+  # after :check,   'monit:setup'
+  # after :check,   'solr:setup'
+  # after :check,   'workers:delayed_job:setup'
+  # after :restart, 'monit:reload'
   after :restart, 'workers:delayed_job:restart'
   after :restart, 'solr:restart'
 end

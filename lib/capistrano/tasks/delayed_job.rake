@@ -6,7 +6,7 @@ namespace :workers do
     desc 'Setup monitrc for delayed_job process'
     task :setup do
       on roles(:db) do
-        conf = template('dj.monitrc.haml')
+        conf = template('dj.monitrc.haml', delayed_job_cmd: fetch(:delayed_job_cmd))
         upload! StringIO.new(conf), "#{shared_path}/monit/dj.monitrc"
       end
     end

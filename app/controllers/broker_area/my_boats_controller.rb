@@ -2,16 +2,16 @@ module BrokerArea
   class MyBoatsController < CommonController
 
     def index
-      @boats = current_user.boats.not_deleted.boat_view_includes.includes(:country).page(params[:page]).per(15)
+      @boats = current_broker.boats.not_deleted.boat_view_includes.includes(:country).page(params[:page]).per(15)
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
-      @offices = current_user.offices.order(:name)
+      @offices = current_broker.offices.order(:name)
     end
 
     def new
       manufacturer = Manufacturer.find_or_create_by(name: 'Unknown')
       model = Model.find_or_create_by(name: 'Unknown', manufacturer: manufacturer)
 
-      @boat = Boat.create(user: current_user, manufacturer: manufacturer, model: model, price: 123, currency: Currency.default)
+      @boat = Boat.create(user: current_broker, manufacturer: manufacturer, model: model, price: 123, currency: Currency.default)
       @specs_hash = @boat.boat_specifications.specs_hash
     end
 
@@ -31,7 +31,7 @@ module BrokerArea
     # end
 
     # def create
-    #   @boat = current_user.boats.new(boat_params)
+    #   @boat = current_broker.boats.new(boat_params)
     #
     #   if @boat.save
     #     flash[:notice] = 'Boat created successfully.'

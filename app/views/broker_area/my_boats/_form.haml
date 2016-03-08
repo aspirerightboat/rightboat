@@ -9,7 +9,7 @@
     .col-xs-12.col-sm-4
       .form-group
         = f.label :office, 'Listing office'
-        = f.select :office, options_from_collection_for_select(current_user.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
+        = f.select :office, options_from_collection_for_select(current_broker.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
       .form-group
         = label_tag :new_or_used
         = select_tag :new_or_used, options_for_select(%w(new used), f.object.new_boat? ? 'new' : 'used')

@@ -26,4 +26,10 @@ class SavedSearch < ActiveRecord::Base
     # attributes.slice(%w(year_min year_max price_min price_max length_min length_max length_unit manufacturer_model currency ref_no q boat_type country tax_status new_used category order)).symbolize_keys
     attributes.except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at').symbolize_keys
   end
+
+  def self.create_and_run(user, params)
+    ss = user.saved_searches.new(params)
+    ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)
+    ss.save!
+  end
 end

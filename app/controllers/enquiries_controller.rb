@@ -88,7 +88,9 @@ class EnquiriesController < ApplicationController
 
   def follow_maker_model
     lead = Enquiry.find(params[:lead_id])
-    current_user.saved_searches.create!(manufacturer_model: lead.boat.manufacturer_model)
+
+    SavedSearch.create_and_run(current_user, manufacturer_model: lead.boat.manufacturer_model)
+
     head :ok
   end
 

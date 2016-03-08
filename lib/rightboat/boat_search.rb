@@ -99,6 +99,10 @@ module Rightboat
       @search.results
     end
 
+    def hits
+      @search.hits
+    end
+
     private
 
     def fetch_facets_data(search)

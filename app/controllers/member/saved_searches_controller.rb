@@ -8,12 +8,7 @@ class Member::SavedSearchesController < Member::BaseController
                                  :length_unit, :manufacturer_model, :currency, :ref_no, :q, :boat_type, :order,
                                  tax_status: [:paid, :unpaid], new_used: [:new, :used], country: [], category: [])
 
-    ss = current_user.saved_searches.new(valid_params)
-
-    @first_boat = Rightboat::BoatSearch.new.do_search(params, per_page: 1).results.first
-    ss.first_found_boat_id = @first_boat.try(:id)
-
-    ss.save!
+    SavedSearch.create_and_run(current_user, valid_params)
 
     render json: {}
   end

@@ -1,4 +1,6 @@
 - lead_id = session.delete(:suggest_lead_alerts)
+- lead = Enquiry.find(lead_id)
+- boat = lead.boat
 #follow_lead_maker_model_popup.modal.fade
   .modal-dialog
     .modal-content
@@ -6,16 +8,17 @@
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
       .modal-body
-        %h2 Alert for new listings of this Maker/Model?
+        %h2 Your request has been sent to the broker
         = form_tag follow_lead_maker_model_path, class: 'simple-ajax-form', remote: true do
           %div= hidden_field_tag :lead_id, lead_id
           .row
             .col-xs-12
               %p
-                Thank you, your request for details has been sent to the broker.
-                Would you like to receive an email alert if a new boat of this manufacturer/model is listed?
+                Create your instant boat alert now and we'll email
+                every time a <b>#{boat.manufacturer_model}</b>
+                is listed on Rightboat.
               %p
-                You can change your #{link_to 'alerts', member_user_alert_path}
+                Manage your #{link_to 'alerts', member_user_alert_path}
                 or #{link_to 'saved searches', member_saved_searches_path} in My Rightboat
           .row
             .col-xs-12.text-right

@@ -301,8 +301,6 @@ a.pdf-link {
   }
 
   #slider {
-    margin-bottom: 50px;
-
     .slick-list {
       overflow: visible;
     }
@@ -342,20 +340,40 @@ a.pdf-link {
       h1 {font-size: 24px; font-weight: 300;}
       h2 {font-size: 22px; font-weight: 300;}
       h3 {font-size: 22px; font-weight: normal;}
-      dt, dd {font-size: 17px; }
+      dt, dd {font-size: 16px; padding: 4px 20px; }
       dl.dl-horizontal {
-        font-size: 14px;
         margin-bottom: 0;
         dt {
           text-align: left;
           width: 140px;
-          margin-bottom: 25px;
-          float: left;
         }
         dd {
           margin-left: 140px;
         }
       }
+
+      .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: rgb(232, 245, 255);
+      }
+    }
+
+    .boat-header {
+      background-color: @rb-color-primary;
+      color: white;
+      margin-bottom: 30px;
+      padding: 6px;
+
+      .inline {
+        margin-left: 15px;
+      }
+    }
+
+    .boat-footer {
+      padding-bottom: 30px;
+    }
+
+    .truncated-description {
+      color: @rb-color-primary;
     }
   }
 }

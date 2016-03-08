@@ -31,7 +31,7 @@
     %p
       #{@alert_reason == 'favourite' ? 'Your favourite boat' : 'The boat you have enquired about'}
       #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
-      New price is #{@boat.safe_currency.symbol}#{@boat.price}.
+      New price is #{number_to_currency(@boat.price, unit: @boat.safe_currency.symbol, precision: 2)}.
 
 %br
 %p

@@ -159,8 +159,6 @@ module Rightboat
       def save
         cleanup_model
 
-        return false if !valid?
-
         user_id = user.respond_to?(:id) ? user.id : user
         self.target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
         target.import = import
@@ -182,6 +180,7 @@ module Rightboat
         end
         # target.revive(true) if target.deleted?
 
+        return false unless target.valid?
         handle_specs
 
         if @missing_spec_attrs.present?

@@ -1,12 +1,13 @@
 class BrokerAreaController < ApplicationController
   before_action :require_confirmed_email, except: [:tc]
-  before_action :require_broker_user, except: [:tc]
+  before_action :require_broker_user, except: [:tc, :getting_started]
 
   def show
     redirect_to({action: :getting_started})
   end
 
   def getting_started
+    cookies[:broker_id] = params[:broker_id] if current_user.admin? && params[:broker_id].present?
   end
 
   def details

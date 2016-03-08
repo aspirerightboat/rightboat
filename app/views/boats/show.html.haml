@@ -47,44 +47,41 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
   = render 'shared/pswp'
 
   #main-content
-    .container
-      .clearfix
-        = favourite_link_to @boat
-        = render 'shared/social_share', boat: @boat
-        .pull-right
+    - if @boat.user == current_user || @boat.offer_available?
+      .boat-header
+        .container
           - if @boat.user == current_user
             = link_to 'PDF Link', boat_pdf_path(@boat), class: 'btn-flat btn-black'
           - else
             - if @boat.offer_available?
               = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
-
+              %h5.inline Click here for full boat specification and to contact seller
+    .container
       .row.boat-description
         .col-sm-5.col-md-7.col-xs-12.pull-right
-          %br
-          .row
+          %table.table-striped{width: '100%'}
             - boat_specs(@boat).each_slice(2).each do |spec_group|
-              - spec_group.each do |spec|
-                .col-md-6.col-xs-12
-                  %dl.dl-horizontal
-                    %dt= spec[0]
-                    %dd{'data-attr-name' => spec[2]}= spec[1]
-        -# unless @boat.owners_comment.blank?
-        -#  %h3 Owners Comment
-        -#  %p.owners-commnet= @boat.owners_comment
+              %tr
+                - spec_group.each do |spec|
+                  %td
+                    %dl.dl-horizontal
+                      %dt= spec[0]
+                      %dd{'data-attr-name' => spec[2]}= spec[1]
 
-        .col-sm-7.col-md-5.col-xs-12
+        .col-sm-7.col-md-5.col-xs-12.color-primary
           %h1 About this #{@boat.manufacturer_model}
           .truncated-description
             != @boat.short_description
-          - if @boat.user != current_user && @boat.offer_available?
-            .call-action
-              %h5
-                %b Is this your Right Boat? Want to find out more?
-              .row
-                .col-xs-12.col-sm-8
-                  #{link_to 'Sign in/Become a Member', '#', class: 'user-login'} for free, click #{link_to 'Request Details', '#', class: 'request-details'} and we will send you the full boat specification and connect you with the seller.
-                .col-xs-12.col-sm-4
-                  = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
+    - if @boat.user != current_user
+      .boat-footer
+        .container.clearfix
+          .pull-right
+            - if @boat.user != current_user
+              = favourite_link_to @boat
+              = render 'shared/social_share', boat: @boat
+              - if @boat.offer_available?
+                = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
+
 
 = render 'shared/enquiry_popup'
 

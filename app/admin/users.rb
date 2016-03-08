@@ -38,7 +38,11 @@ ActiveAdmin.register User do
     column :current_sign_in_at
     column :sign_in_count
     column('created_at') { |user| time_ago_with_hint(user.created_at) }
-    actions
+    actions do |user|
+      if user.company?
+        link_to 'Broker area', getting_started_broker_area_path(broker_id: user.id), target: '_blank'
+      end
+    end
   end
 
   filter :first_name_or_last_name_or_email_or_username_cont, as: :string, label: 'Name | Email | Username'

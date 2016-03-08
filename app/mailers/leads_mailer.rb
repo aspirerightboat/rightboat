@@ -62,9 +62,13 @@ class LeadsMailer < ApplicationMailer
   end
 
   def suspicious_lead(lead_id, title)
-    @lead = Enquiry.find(lead_id)
-    @boat = @lead.boat
-    mail(to: 'info@rightboat.com', subject: "#{title} - Rightboat")
+    @lead = Enquiry.find_by(id: lead_id)
+    if @lead
+      @boat = @lead.boat
+      mail(to: 'info@rightboat.com', subject: "#{title} - Rightboat")
+    else
+      message.perform_deliveries = false
+    end
   end
 
   private
@@ -76,8 +80,8 @@ class LeadsMailer < ApplicationMailer
 
   def broker_emails(broker)
     ret = [broker.email]
-    if addtional_email = broker.broker_info.try(:additional_email)
-      ret << addtional_email
+    if (additional_email = broker.broker_info.try(:additional_email))
+      ret << additional_email
     end
     ret
   end

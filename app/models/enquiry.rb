@@ -56,7 +56,7 @@ class Enquiry < ActiveRecord::Base
     end
 
     last_lead = Enquiry.where(user ? {user: user} : {remote_ip: remote_ip}).last
-    if last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
+    if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
       mark_suspicious('Multiple leads received – review required')
     end
   end

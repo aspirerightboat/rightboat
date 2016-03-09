@@ -18,19 +18,17 @@
       %strong= implicit_boats_count(session[:boats_count])
       %span.hidden-sm boats for sale
 
-  - elsif params[:back].present? && params[:back] == 'true'
+  - else
     .navbar-h
       %span.hidden-sm Find your
       %strong Rightboat
-    %h3
-      = link_to 'Back', :back, class: 'text-white'
 
-- if @back_url
-  %nav.navbar.navbar-default.nabvar-tools
-    .container
-      %ul.nav.navbar-nav
-        %li
-          = link_to '< Back to Results', @back_url
+- content_for :header do
+  - if @back_url
+    = render 'shared/advanced_search'
+  = render 'shared/navbar'
+
+= render 'shared/search_bar'
 
 .boat-view(data-boat-ref="#{@boat.slug}"
 data-length="#{@boat.length_m.to_f}"

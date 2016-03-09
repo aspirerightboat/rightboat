@@ -24,7 +24,7 @@ module Rightboat
         :backstay, :backstay_count, :ballast_kgs, :barbecue, :bath, :bathrooms,
         :battened, :battened_count, :battery, :battery_charger, :battery_charger_number, :beaching_legs, :beam_m,
         :berths_count, :double_berths_count, :single_berths_count, :triple_berths_count, :twin_berths_count,
-        :bilge_pump, :bimini, :boiler, :bow_sprit, :bow_sprit_count, :bow_thruster, :bridge, :bridge_clearance, :bridge_clearance_meters,
+        :bilge_pump, :bimimi, :bimini, :boiler, :bow_sprit, :bow_sprit_count, :bow_thruster, :bridge, :bridge_clearance, :bridge_clearance_meters,
         :builder, :builder_length_meters, :burner_stove, :cabin_headroom, :cabins_count, :cabriolet_dodger, :captain_on_board, :captain_quarters,
         :cd_count, :cd_player, :cd_year, :chart_table, :chemical_heads, :classifications,
         :cockpit, :cockpit_cover, :cockpit_cushions, :cockpit_lightning, :cockpit_shower, :cockpit_speakers, :cockpit_table,

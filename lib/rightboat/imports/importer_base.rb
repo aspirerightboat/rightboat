@@ -209,7 +209,12 @@ module Rightboat
           increment_stats << [source_boat.new_record ? 'new_count' : 'updated_count', 1]
           increment_stats << ['images_count', source_boat.images_count]
         else
-          log_warning 'Save Boat Error', "#{source_boat.target.errors.full_messages.join(', ') if source_boat.target} source_id=#{source_boat.source_id}"
+          if source_boat.errors.any?
+            msgs = source_boat.errors.full_messages
+          elsif source_boat.target
+            msgs = source_boat.target.errors.full_messages
+          end
+          log_warning 'Save Boat Error', "#{msgs.join(', ')} source_id=#{source_boat.source_id}"
           increment_stats << ['not_saved_count', 1]
         end
 

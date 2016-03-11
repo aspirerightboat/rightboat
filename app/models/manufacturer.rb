@@ -41,7 +41,7 @@ class Manufacturer < ActiveRecord::Base
       order_by :name, :asc
     end
 
-    search.hits.sort_by(&:score).reverse!.map { |h| h.stored(:name) }
+    search.hits.map { |h| h.stored(:name) }
   end
 
   private

@@ -42,7 +42,7 @@ $ ->
           i++
       return
 
-    _.map leadTrails, (x) ->
+    _.map leads, (x) ->
       createTime = new Date(x.created_at)
       year = createTime.getFullYear()
       x.year = year
@@ -61,13 +61,13 @@ $ ->
         series: _.map statuses, (status) ->
           name: status
           data: _.map months, (month) ->
-            y: _.size(_.where leadTrails, { year: year, month: month, new_status: status })
+            y: _.size(_.where leads, { year: year, month: month, status: status })
             drilldown:
               categories: weeks
               series: _.map statuses, (st) ->
                 name: st
                 data: _.map weeks, (week) ->
-                  _.size(_.where leadTrails, { year: year, month: month, week: week, new_status: st })
+                  _.size(_.where leads, { year: year, month: month, week: week, status: st })
       year += 1
 
     chart = new (Highcharts.Chart)
@@ -140,6 +140,6 @@ $ ->
         type: 'column'
         name: status
         data: _.map yearsArray, (year) ->
-          y: _.size(_.where leadTrails, { year: year, new_status: status })
+          y: _.size(_.where leads, { year: year, status: status })
           drilldown: annuallData[year.toString()]
         color: colors[status]

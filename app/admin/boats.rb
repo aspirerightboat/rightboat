@@ -95,7 +95,7 @@ ActiveAdmin.register Boat do
     column :model
     column :price
     column :currency do |boat|
-      boat.currency.name
+      boat.currency.try(:name)
     end
     column :status
     column :user

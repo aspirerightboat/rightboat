@@ -113,7 +113,11 @@ Rails.application.routes.draw do
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
   post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check
-  get 'test-email', to: 'testing#test_email'
+
+  resource :testing, controller: :testing, only: [], path: '' do
+    get :test_email
+    get :test_error
+  end
 
   resource :broker_area, controller: :broker_area, path: 'broker-area', only: [:show] do
     get :getting_started

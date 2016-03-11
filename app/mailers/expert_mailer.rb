@@ -1,5 +1,5 @@
 class ExpertMailer < ApplicationMailer
-  default to: %w(don.fuller@cotoco.com llukomskyy@n-ix.com xmpolaris@hotmail.com)
+  default to: ApplicationMailer::DEVELOPER_EMAILS
 
   def importing_errors(import_trail_id)
     @import_trail = ImportTrail.find(import_trail_id)

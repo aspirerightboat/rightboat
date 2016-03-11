@@ -58,4 +58,8 @@ class ApplicationController < ActionController::Base
   def clear_old_session
     cookies.delete(:_rightboat_session, domain: '.rightboat.com') if cookies[:_rightboat_session]
   end
+
+  def not_found
+    redirect_to '/404.html'
+  end
 end

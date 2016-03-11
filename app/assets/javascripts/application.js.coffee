@@ -62,12 +62,14 @@ window.requireLogin = (e, disable_history)->
     $target = $(e.target)
 
     unless disable_history
-      if $target.data('method') == 'post'
+      if $target.data('method') == 'post' && $target.attr('id')
         href = location.href + '#' + $target.attr('id')
       else
         href = $target.attr('href')
         href = $target.data('target') if href == '#'
-      if history.pushState && window.location.href != href
+      if /my-rightboat\/saved-searches/.test(href)
+        sessionStorage.setItem('saveSearch', 'true')
+      else if history.pushState && window.location.href != href
         history.pushState({}, '', href)
 
     $loginBtn.trigger('click')
@@ -107,6 +109,10 @@ $ ->
     $(@).closest('#advanced-search').find('h2').text('Advanced Search')
     $('.result-info').remove()
     false
+
+  if sessionStorage.getItem('saveSearch') == 'true'
+    $('.save-search a').trigger 'click'
+    sessionStorage.removeItem('saveSearch')
 
   target = window.location.hash
   if $(target).length

@@ -1,19 +1,9 @@
 class FuelType < ActiveRecord::Base
-  include AdvancedSolrIndex
   include FixSpelling
   include BoatOwner
 
-  # solr_update_association :boats
-
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
-
-  searchable do
-    string :name do |record|
-      record.name_ngrme
-    end
-    string :name_ngrme, as: :name_ngrme
-  end
 
   def name_stripped
     case name.to_s
@@ -25,7 +15,6 @@ class FuelType < ActiveRecord::Base
         'Other'
     end
   end
-  alias_method :name_ngrme, :name_stripped
 
   def to_s
     name

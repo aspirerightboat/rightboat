@@ -6,8 +6,8 @@ module Rightboat
     LENGTHS_RANGE = 0..300
 
     attr_reader :facets_data, :search
-    
-    attr_reader :q, :manufacturer_model, :category, :country, :boat_type, :manufacturer_id, :model_id,
+
+    attr_reader :q, :manufacturer_model, :manufacturer, :model, :category, :country, :boat_type, :manufacturer_id, :model_id,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max, :country_id, :boat_type_id,
                 :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
@@ -49,6 +49,8 @@ module Rightboat
           end
         end
 
+        with(:manufacturer, manufacturer) if manufacturer
+        with(:model, model) if model
         with(:manufacturer_id, manufacturer_id) if manufacturer_id
         with(:model_id, model_id) if model_id
         with(:country_id, country_id) if country_id
@@ -131,6 +133,8 @@ module Rightboat
     def read_params(params)
       @q = read_str(params[:q])
       @manufacturer_model = read_tags(params[:manufacturer_model])
+      @manufacturer = read_tags(params[:manufacturer])
+      @model = read_tags(params[:model])
       @manufacturer_id = params[:manufacturer_id] if params[:manufacturer_id].present?
       @model_id = params[:model_id] if params[:model_id].present?
       @country_id = params[:country_id] if params[:country_id].present?

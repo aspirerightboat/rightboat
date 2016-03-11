@@ -24,29 +24,29 @@ $ ->
         ret += ' class="priority-last"' if viewMode.id is 'USD'
         ret += '>' + viewMode.text + ' <small>' + viewMode.id + '</small></span>'
 
-  $('#manufacturer_model').select2
-    tags: true
-    minimumInputLength: 0
-    tokenSeparators: [ ',' ]
-    initSelection: (el, callback) ->
-      tags = $(el).val().split(',')
-      data = $.map(tags, (token) ->
-        { id: token, text: token }
-      )
-      callback data
-      return
-    ajax:
-      url: '/manufacturer-model'
-      dataType: 'JSON'
-      delay: 150
-      data: (term, page) ->
-        { q: term, page: page }
-      results: (data, page) ->
-        { results: $.map(data.search, (item) ->
-            { id: item, text: item }
-          )
-        }
-      cache: true
+  $('#search_manufacturer, #search_model').each ->
+    select_id = @id
+    url = '/search/' + select_id.replace('search_', '')
+    $(@).select2
+      tags: true
+      minimumInputLength: 0
+      tokenSeparators: [ ',' ]
+      initSelection: (el, callback) ->
+        tags = $(el).val().split(',')
+        data = $.map(tags, (token) -> {id: token, text: token})
+        callback data
+        return
+      ajax:
+        url: url
+        dataType: 'JSON'
+        delay: 150
+        data: (term, page) ->
+          h = {q: term, page: page}
+          h['manufacturer_names'] = $('#search_manufacturer').val() if select_id == 'search_model'
+          h
+        results: (data, page) ->
+          {results: $.map(data.search, (item) -> {id: item, text: item})}
+        cache: true
 
   $('select#layout_mode').select2
     minimumResultsForSearch: Infinity

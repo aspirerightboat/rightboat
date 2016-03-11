@@ -58,18 +58,9 @@ Rails.application.routes.draw do
   root to: 'home#index'
   get 'news/newsletter-2015-12', to: 'home#welcome', as: :newsletter
 
-  controller :search do
-    get 'manufacturer-model',
-        action: :manufacturer_model,
-        constraints: { format: :json }
-
-    get 'suggestion(/:source_type)',
-        action: 'suggestion',
-        constraints: {
-          format: :json,
-          source_type: /country|manufacturer|model/
-        }
-    get 'manufacturer_model'
+  resource :search, controller: :search, only: [], constraints: {format: :json} do
+    get :manufacturer
+    get :model
   end
 
   # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }

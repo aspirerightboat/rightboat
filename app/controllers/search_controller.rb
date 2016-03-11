@@ -2,17 +2,13 @@ class SearchController < ApplicationController
   before_filter :save_session_settings, only: :results
   after_filter :log_search_terms, only: :results
 
-  def manufacturer_model
-    search = Sunspot.search(Manufacturer, Model) do
-      fulltext params[:q] unless params[:q].blank?
-      order_by :name, :asc
-    end
+  def manufacturer
+    render json: Manufacturer.solr_suggest_names(params[:q])
+  end
 
-    ret = search.results.map do |object|
-      object.is_a?(Model) ? object.name_with_manufacturer : object.name
-    end
-
-    render json: ret.sort_by{|x| x.downcase}
+  def model
+    manufacturer_names = params[:manufacturer_names].to_s.split(',')
+    render json: Model.solr_suggest_names(params[:q], manufacturer_names)
   end
 
   def results

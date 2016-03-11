@@ -1,5 +1,4 @@
 class Manufacturer < ActiveRecord::Base
-  include AdvancedSolrIndex
   include FixSpelling
   include BoatOwner
 
@@ -11,19 +10,21 @@ class Manufacturer < ActiveRecord::Base
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
   has_many :buyer_guides, class_name: 'BuyerGuide', inverse_of: :manufacturer, dependent: :destroy
 
-  # solr_update_association :models, :boats, fields: [:active, :name]
   mount_uploader :logo, AvatarUploader
 
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
 
+  after_save :reindex_boats
+
   searchable do
-    string :name
-    string :name_ngrme, as: :name_ngrme
-    text :name, boost: 2
-    text :name_ngrme, as: :name_ngrme, boost: 2
+    text(:name_full_ngram, as: :name_full_ngram, boost: 2) { |m| m.name }
+    text(:name_ngram, as: :name_ngram, boost: 1) { |m| m.name }
+    integer :id
+    string :name, stored: true
+
+    join :live, target: Boat, type: :boolean, join: {from: :manufacturer_id, to: :id}
   end
-  alias_attribute :name_ngrme, :name
 
   def to_s
     name.gsub(/&amp;/i, '&')
@@ -33,7 +34,24 @@ class Manufacturer < ActiveRecord::Base
     !OUTBOARDS.include?(name)
   end
 
+  def self.solr_suggest_names(term)
+    search = solr_search do
+      fulltext term if term.present?
+      with :live, true
+      order_by :name, :asc
+    end
+
+    search.hits.sort_by(&:score).reverse!.map { |h| h.stored(:name) }
+  end
+
   private
+
+  def reindex_boats
+    if !id_changed? && name_changed?
+      Sunspot.index boats
+    end
+  end
+
   def slug_candidates
     [ name, "rb-#{name}" ]
   end

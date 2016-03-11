@@ -30,9 +30,15 @@
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-4
-            = label_tag :manufacturer_model, 'Manufacturer / Model'
-          .col-xs-8
-            = text_field_tag :manufacturer_model, params[:manufacturer_model], class: 'select-black select-full tags-input', placeholder: 'e.g. Princess'
+            = label_tag :manufacturer
+          .col-xs-4
+            = text_field_tag :manufacturer, params[:manufacturer], id: 'search_manufacturer',
+                             class: 'select-black select-full tags-input', placeholder: 'e.g. Beneteau'
+          .col-xs-1
+            = label_tag :model
+          .col-xs-3
+            = text_field_tag :model, params[:model], id: 'search_model',
+                             class: 'select-black select-full tags-input', placeholder: 'e.g. Oceanis 34'
         .range-slider-wrapper.row
           .col-xs-5.col-sm-4
             = label_tag :year

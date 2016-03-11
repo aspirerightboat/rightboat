@@ -96,7 +96,8 @@ $ ->
       $('.multiple-country-select').select2()
     $('input[type=text]', $form).val('')
     $('input[type=checkbox]', $form).prop('checked', false)
-    $('input[name=manufacturer_model], select', $form).select2('data', null)
+    $('input[name=manufacturer], select', $form).select2('data', null)
+    $('input[name=model], select', $form).select2('data', null)
     $('.year-slider, .length-slider, .price-slider', $form).each ->
       $(@).data('value0', '')
       $(@).data('value1', '')

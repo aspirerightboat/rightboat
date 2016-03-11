@@ -1,13 +1,9 @@
 class Currency < ActiveRecord::Base
-
-  include AdvancedSolrIndex
   include BoatOwner
 
   has_many :countries, inverse_of: :currency, dependent: :restrict_with_error
 
   validates_presence_of :rate, :name, :symbol
-
-  # solr_update_association :boats, fields: [:rate]
 
   default_scope -> { order(:position) }
 

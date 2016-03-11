@@ -1,6 +1,4 @@
 class Boat < ActiveRecord::Base
-  include AdvancedSolrIndex
-
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
 
@@ -16,16 +14,19 @@ class Boat < ActiveRecord::Base
     text :ref_no,               boost: 5
     text :name,                 boost: 4
     text :manufacturer_model,   boost: 3
-    text :description,          boost: 0.5
+    text :manufacturer,         boost: 3
+    text :model,                boost: 3
     text :country,              boost: 2
     text :fuel_type,            boost: 2
     text :boat_type,            boost: 2
     text :engine_manufacturer,  boost: 1
     text :engine_model,         boost: 1
     text :drive_type,           boost: 1
+    text :description,          boost: 0.5
     string :ref_no
     string :manufacturer_model
     string :manufacturer
+    string :model
     integer :user_id
     integer :manufacturer_id
     integer :model_id
@@ -273,10 +274,10 @@ class Boat < ActiveRecord::Base
   end
 
   def change_status
-    unless !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
-      self.status = 'inactive'
-    else
+    if !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
       self.status = 'active'
+    else
+      self.status = 'inactive'
     end
   end
 end

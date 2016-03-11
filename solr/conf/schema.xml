@@ -110,101 +110,32 @@
     <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
 
 
-    <!-- custom types by Chen -->
-    <fieldType class="solr.TextField" name="text_auto" positionIncrementGap="100">
-      <analyzer>
-        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-    </fieldType>
-
-    <fieldType name="text_suggest_ngram" class="solr.TextField">
+    <!-- Rightboat types -->
+    <!-- see: https://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters -->
+    <fieldType name="text_ngram" class="solr.TextField">
       <analyzer type="index">
-        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.EdgeNGramFilterFactory" maxGramSize="20" minGramSize="1"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
       </analyzer>
       <analyzer type="query">
-        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="0" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{20})(.*)?" replacement="$1" replace="all"/>
       </analyzer>
     </fieldType>
 
-    <fieldType name="text_suggest_edge" class="solr.TextField">
+    <fieldType name="text_full_ngram" class="solr.TextField">
       <analyzer type="index">
-        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replacement=" " replace="all"/>
         <filter class="solr.EdgeNGramFilterFactory" maxGramSize="30" minGramSize="1"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
       </analyzer>
       <analyzer type="query">
-        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replacement=" " replace="all"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{30})(.*)?" replacement="$1" replace="all"/>
       </analyzer>
     </fieldType>
-
-    <fieldType name="text_suggest" class="solr.TextField" positionIncrementGap="100">
-      <analyzer type="index">
-        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory"
-                generateWordParts="1"
-                generateNumberParts="1"
-                catenateWords="1"
-                catenateNumbers="1"
-                catenateAll="1"
-                splitOnCaseChange="1"
-                splitOnNumerics="1"
-                preserveOriginal="1"
-          />
-        <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
-      </analyzer>
-      <analyzer type="query">
-        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory"
-                generateWordParts="0"
-                generateNumberParts="0"
-                catenateWords="0"
-                catenateNumbers="0"
-                catenateAll="0"
-                splitOnCaseChange="0"
-                splitOnNumerics="0"
-          />
-        <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
-      </analyzer>
-    </fieldType>
-
-    <fieldType name="alphaNumericSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
-      <analyzer>
-        <tokenizer class="solr.KeywordTokenizerFactory"/>
-        <filter class="solr.LowerCaseFilterFactory" />
-        <filter class="solr.TrimFilterFactory" />
-        <filter class="solr.PatternReplaceFilterFactory"
-                pattern="^(a |the |les |la |le |l'|de la |du |des )" replacement="" replace="all"
-          />
-        <filter class="solr.PatternReplaceFilterFactory"
-                pattern="([^a-z0-9])" replacement="" replace="all"
-          />
-      </analyzer>
-    </fieldType>
-    <!-- end of custom types by Chen -->
+    <!-- Rightboat types end -->
 
   </types>
   <fields>
@@ -357,13 +288,10 @@
 
     <field name="textSpell" stored="false" type="textSpell" multiValued="true" indexed="true"/>
 
-    <!-- custom fields by Chen -->
-    <dynamicField name="*_ngrm" stored="false" type="text_suggest_ngram" multiValued="true" indexed="true"/>
-    <dynamicField name="*_ngrme" stored="false" type="text_suggest_edge" multiValued="true" indexed="true"/>
-    <dynamicField name="*_sg" stored="false" type="text_suggest" multiValued="true" indexed="true"/>
-
-    <field name="search_suggestion" type="text_auto" indexed="true" stored="false" multiValued="true" />
-    <!-- end of custom fields by Chen -->
+    <!-- Rightboat fields -->
+    <dynamicField name="*_ngram" type="text_ngram" multiValued="false" indexed="true"/>
+    <dynamicField name="*_full_ngram" type="text_full_ngram" multiValued="false" indexed="true"/>
+    <!-- Rightboat fields end -->
 
     <!-- required by Solr 4 -->
     <field name="_version_" type="string" indexed="true" stored="true" multiValued="false" />
@@ -386,8 +314,4 @@
        on into one field. For example: -->
   <copyField source="*_text"  dest="textSpell" />
   <copyField source="*_s"  dest="textSpell" />
-
-  <!-- custom copy made by Chen -->
-  <copyField source="*_text"  dest="search_suggestion" />
-  <copyField source="*_s"  dest="search_suggestion" />
 </schema>

@@ -139,11 +139,8 @@ module Rightboat
           ((1 - tokens.count)..0).each do |i|
             manufacturer = tokens[0..i].join(' ')
             model = tokens[(i + 1)..-1].join(' ')
-            search = Sunspot.search(Manufacturer) do |q|
-              q.with :name, manufacturer
-              q.paginate per_page: 1
-            end
-            break if search.raw_results.first
+
+            break if Manufacturer.where(name: manufacturer).exists?
           end
 
           self.manufacturer, self.model = manufacturer, model

@@ -1,5 +1,4 @@
 class Country < ActiveRecord::Base
-  include AdvancedSolrIndex
   include FixSpelling
   include BoatOwner
 
@@ -14,16 +13,8 @@ class Country < ActiveRecord::Base
     q.create_with(name: value)
   }
 
-  # solr_update_association :boats
-
   validates_presence_of :iso, :name
   validates_uniqueness_of :iso, :name, allow_blank: true
-
-  searchable do
-    string :name
-    string :name_ngrme, as: :name_ngrme
-  end
-  alias_attribute :name_ngrme, :name
 
   def to_s
     name

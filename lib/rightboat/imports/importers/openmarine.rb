@@ -30,6 +30,7 @@ module Rightboat
               'passenger_capacity' => :passengers_count,
               'range' => :engine_range_nautical_miles,
               'beam' => :beam_m,
+              'bimimi' => :bimimi,
               'draft' => :draft_m,
               'loa' => :length_m,
               'lwl' => :lwl_m,

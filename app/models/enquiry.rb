@@ -28,8 +28,8 @@ class Enquiry < ActiveRecord::Base
   scope :rejected, -> { where(status: 'rejected') }
   scope :invoiced, -> { where(status: 'invoiced') }
   scope :not_invoiced, -> { where(invoice_id: nil) }
-  scope :count_from, ->(status, from) { send(status).where('created_at > ?', from).count }
-  scope :count_between, ->(status, from, to) { send(status).where('created_at BETWEEN ? AND ?', from, to).count }
+  scope :created_from, ->(status, from) { send(status).where('created_at > ?', from) }
+  scope :created_between, ->(status, from, to) { send(status).where('created_at BETWEEN ? AND ?', from, to) }
 
   def name
     "#{title} #{first_name} #{surname}".strip.titleize

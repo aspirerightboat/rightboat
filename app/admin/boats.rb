@@ -93,6 +93,10 @@ ActiveAdmin.register Boat do
     column :name
     column :manufacturer
     column :model
+    column :price
+    column :currency do |boat|
+      boat.currency.name
+    end
     column :status
     column :user
     column :office do |boat|

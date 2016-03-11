@@ -5,7 +5,7 @@
       %button(type='submit')
         %i.icon.icon-search
     %ul.nav.navbar-nav.page-links
-      - if controller_name.in?(%w(search manufacturers))
+      - if controller_name.in?(%w(search manufacturers)) || @back_url
         %li= link_to 'Refine this Search', '#', class: 'toggle-adv-search nav-link'
       - if controller_name == 'search'
         %li.save-search
@@ -14,7 +14,11 @@
                      data: {'require-login' => true, 'login-title' => 'Please sign in or join as a member to save your search.'}
           .result-popup
             Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
-      %li= link_to 'Back', :back, class: 'return-prev nav-link'
+      - if @back_url
+        %li= link_to '< Back to Results', @back_url, class: 'nav-link'
+      - elsif params[:back] && params[:back] == 'true'
+        %li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency)), class: 'nav-link'
+        %li= link_to 'Back', :back, class: 'return-prev nav-link'
 
     - if @boats
       %ul.nav.navbar-nav.navbar-right.display-options

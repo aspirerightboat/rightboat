@@ -8,6 +8,7 @@ class Currency < ActiveRecord::Base
   default_scope -> { order(:position) }
 
   def self.convert(amount, source_currency, required_currency)
+    return 0 unless amount
     source_currency ||= Currency.default
     return amount if source_currency == required_currency
     amount * required_currency.rate / source_currency.rate

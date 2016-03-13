@@ -45,7 +45,7 @@ class Boat < ActiveRecord::Base
     end
     float :price do |boat|
       # TODO: make confirm about poa price filter
-      boat.poa? ? 0 : Currency.convert(boat.price, boat.currency, Currency.default)
+      boat.poa? ? 0 : Currency.convert(boat.price, boat.safe_currency, Currency.default)
     end
     float :length_m
     boolean :new_boat
@@ -103,22 +103,21 @@ class Boat < ActiveRecord::Base
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
 
   def similar_options(required_currency = nil)
-    required_price = required_currency ? Currency.convert(price, currency, required_currency) : price
-
     options = {
         exclude_ref_no: ref_no,
-        currency:   currency.try(:name),
-        price_min:  (required_price * 0.8).to_i,
-        price_max:  (required_price * 1.2).to_i,
         boat_type:  boat_type.try(:name_stripped),
-        category:   [category_id].compact
     }
 
+    if !poa?
+      required_price = required_currency ? Currency.convert(price, safe_currency, required_currency) : price
+      options[:currency] = currency.try(:name)
+      options[:price_min] = (required_price * 0.8).to_i
+      options[:price_max] = (required_price * 1.2).to_i
+    end
+
     if (length = length_m)
-      options = options.merge(
-          length_min: (length * 80).round.to_f / 100,
-          length_max: (length * 120).round.to_f / 100
-      )
+      options[:length_min] = (length * 0.8).round(2)
+      options[:length_max] = (length * 1.2).round(2)
     end
 
     options

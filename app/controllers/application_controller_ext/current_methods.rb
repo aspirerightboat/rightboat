@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_broker
-    if current_user.admin?
+    if current_user.try(:admin?)
       @current_broker ||= User.find_by(id: cookies[:broker_id])
     else
       @current_broker ||= current_user

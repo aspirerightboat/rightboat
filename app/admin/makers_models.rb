@@ -13,7 +13,7 @@ ActiveAdmin.register_page 'Makers Models' do
       per_page = (params[:per_page] || 30).to_i
       offset = (@page - 1) * per_page
 
-      @maker_infos = Manufacturer #.search(params[:q]).result
+      @maker_infos = Manufacturer.search(params[:q]).result
                          .joins(:boats).where(boats: {deleted_at: nil})
                          .where(({boats: {user_id: params[:broker_id]}} if params[:broker_id].present?))
                          .group('manufacturers.id, manufacturers.name')

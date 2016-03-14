@@ -1,9 +1,9 @@
 $ ->
   $('.register-broker-link').click ->
-    $link = $(this)
+    $link = $(@)
     if !$link.hasClass('.inline-loading')
       $link.addClass('.inline-loading')
-      $.getScript($(this).attr('href'))
+      $.getScript($(@).data('url'))
       .always -> $link.removeClass('.inline-loading')
     false
 

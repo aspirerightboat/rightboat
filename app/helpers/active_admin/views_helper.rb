@@ -9,12 +9,13 @@ module ActiveAdmin::ViewsHelper
     end
   end
 
-  def infinite_prev_next_links
+  def prev_next_links(show_next = true)
     page_params = params.except(:controller, :action)
-    content_tag :name, class: 'pagination' do
+    content_tag :nav, class: 'pagination' do
       s = String.new
-      s << content_tag(:span, content_tag(:a, 'Next ›', href: page_params.merge(page: @page + 1)), class: 'next')
-      s << content_tag(:span, content_tag(:a, '‹ Prev', href: page_params.merge(page: @page - 1)), class: 'prev') if @page > 1
+      s << content_tag(:span, content_tag(:a, '‹ Prev', href: "?#{page_params.merge(page: @page - 1).to_query}"), class: 'prev') if @page > 1
+      s << content_tag(:span, content_tag(:a, 'Next ›', href: "?#{page_params.merge(page: @page + 1).to_query}"), class: 'next') if show_next
+      s.html_safe
     end
   end
 end

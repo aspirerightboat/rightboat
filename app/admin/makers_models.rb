@@ -13,8 +13,9 @@ ActiveAdmin.register_page 'Makers Models' do
       per_page = (params[:per_page] || 30).to_i
       offset = (@page - 1) * per_page
 
-      @maker_infos = Manufacturer.search(params[:q]).result
+      @maker_infos = Manufacturer #.search(params[:q]).result
                          .joins(:boats).where(boats: {deleted_at: nil})
+                         .where(({boats: {user_id: params[:broker_id]}} if params[:broker_id].present?))
                          .group('manufacturers.id, manufacturers.name')
                          .order('COUNT(*) DESC').offset(offset).limit(per_page)
                          .pluck('manufacturers.id, manufacturers.name, COUNT(*)')
@@ -23,11 +24,14 @@ ActiveAdmin.register_page 'Makers Models' do
       maker_ids = @maker_infos.map(&:first)
       models = Model.where(manufacturer_id: maker_ids)
                    .joins(:boats).where(boats: {deleted_at: nil})
+                   .where(({boats: {user_id: params[:broker_id]}} if params[:broker_id].present?))
                    .group('models.id, models.name, models.manufacturer_id')
                    .order('models.manufacturer_id, COUNT(*) DESC')
                    .pluck('models.id, models.name, models.manufacturer_id, COUNT(*)')
 
       @model_infos_by_maker = models.group_by(&:third)
+
+      @brokers_select_options = User.companies.pluck('CONCAT(company_name, " (", boats_count, ")"), id')
     end
   end
 

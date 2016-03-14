@@ -9,25 +9,25 @@ ActiveAdmin.register_page 'Makers Models' do
 
   controller do
     def index
+      @page = (params[:page] || 1).to_i
       per_page = (params[:per_page] || 30).to_i
-      offset = ((params[:page] || 1).to_i - 1) * per_page
+      offset = (@page - 1) * per_page
 
-      makers_rel = Manufacturer.search(params[:q]).result
-      @paginator_array = Kaminari.paginate_array([], total_count: makers_rel.count).page(params[:page]).per(per_page)
-      @makers_counts = makers_rel
-                           .joins(:boats).group('manufacturers.id')
-                           .order('COUNT(*) DESC').offset(offset).limit(per_page)
-                           .pluck('manufacturers.id, COUNT(*)')
+      @maker_infos = Manufacturer.search(params[:q]).result
+                         .joins(:boats).where(boats: {deleted_at: nil})
+                         .group('manufacturers.id, manufacturers.name')
+                         .order('COUNT(*) DESC').offset(offset).limit(per_page)
+                         .pluck('manufacturers.id, manufacturers.name, COUNT(*)')
 
 
-      maker_ids = @makers_counts.map(&:first)
-      makers = Manufacturer.where(id: maker_ids).includes(:models).references(:models).order('manufacturers.id, models.name')
-                   .select('manufacturers.id, manufacturers.name, models.id, models.name')
+      maker_ids = @maker_infos.map(&:first)
+      models = Model.where(manufacturer_id: maker_ids)
+                   .joins(:boats).where(boats: {deleted_at: nil})
+                   .group('models.id, models.name, models.manufacturer_id')
+                   .order('models.manufacturer_id, COUNT(*) DESC')
+                   .pluck('models.id, models.name, models.manufacturer_id, COUNT(*)')
 
-      @makers_counts.map! do |maker_id, models_count|
-        maker = makers.find { |m| m.id == maker_id }
-        [maker, models_count]
-      end
+      @model_infos_by_maker = models.group_by(&:third)
     end
   end
 

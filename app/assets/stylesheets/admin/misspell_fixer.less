@@ -5,7 +5,7 @@
   ins {
     text-decoration: none;
   }
-  small {
+  small, sup {
     color: lightgray;
   }
 }
@@ -55,11 +55,11 @@
     margin: 0;
     padding: 0;
 
-    &::before {
+    &::after {
       content: ' | ';
 
     }
-    &:first-child::before {
+    &:last-child::after {
       content: '';
     }
   }

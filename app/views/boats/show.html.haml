@@ -56,17 +56,16 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
               %h5.inline Click here for full boat specification and to contact seller
     .container
       .row.boat-description
-        .col-sm-5.col-md-7.col-xs-12.pull-right
-          %table.table-striped{width: '100%'}
-            - boat_specs(@boat).each_slice(2).each do |spec_group|
-              %tr
-                - spec_group.each do |spec|
-                  %td
-                    %dl.dl-horizontal
-                      %dt= spec[0]
-                      %dd{'data-attr-name' => spec[2]}= spec[1]
+        .boat-specs.col-md-7.col-sm-6.col-xs-12.pull-right
+          - boat_specs(@boat).each_slice(2).each do |spec_group|
+            .row
+              - spec_group.each do |spec|
+                .col-md-6.col-sm-12
+                  %dl.dl-horizontal
+                    %dt= spec[0]
+                    %dd{'data-attr-name' => spec[2]}= spec[1]
 
-        .col-sm-7.col-md-5.col-xs-12.color-primary
+        .col-md-5.col-sm-6.col-xs-12.color-primary
           %h1 About this #{@boat.manufacturer_model}
           .truncated-description
             != @boat.short_description

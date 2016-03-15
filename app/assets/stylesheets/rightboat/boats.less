@@ -387,10 +387,8 @@ a.pdf-link {
   }
 }
 
-.page-links, .display-options {
-  li {
-    display: inline-block;
-  }
+.display-options li {
+  display: inline-block;
 }
 
 .call-action {
@@ -532,4 +530,20 @@ a.pdf-link {
 
 @media(max-width: @screen-md-min) {
   .pswp-thumbnail { width: 25%; }
+}
+
+@media (min-width: @screen-sm-min) {
+  .page-links li {
+    display: inline-block;
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .page-links {
+    margin: 5px -5px;
+
+    li {
+      text-align: center;
+    }
+  }
 }

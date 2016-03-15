@@ -111,8 +111,8 @@ $ ->
     false
 
   if sessionStorage.getItem('saveSearch') == 'true'
-    $('.save-search a').trigger 'click'
-    sessionStorage.removeItem('saveSearch')
+    $('.page-links .save-search a').trigger 'click'
+  sessionStorage.removeItem('saveSearch')
 
   target = window.location.hash
   if $(target).length

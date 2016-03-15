@@ -8,7 +8,7 @@ $ ->
     $(document.body).click (e) ->
       $popup.hide() if $(e.target).closest($popup).length == 0
 
-    $('.esc-btn', $popup).click (e) -> $popup.hide(); false
+    $('.esc', $popup).click (e) -> $popup.hide(); false
 
     $('.titleize-btn', $popup).click ->
       val = $input.val().toLowerCase().replace(/(?:^|\s|-)\S/g, (c) -> c.toUpperCase())
@@ -20,7 +20,8 @@ $ ->
       $save_btn.addClass('loading')
       name = $input.val()
       $save_btn.prop('disabled', true)
-      $.post($fixer.data('url'), {name: name}, null, 'json')
+      url = '/admin/makers_models/fix_name?class=' + $fixer.data('type') + '&id=' + $fixer.data('id')
+      $.post(url, {name: name}, null, 'json')
         .done (data) ->
           if data.replaced_with_other
             $popup.detach().appendTo($(document.body))
@@ -36,9 +37,13 @@ $ ->
       false
 
     $('.misspell-fixable ins').click ->
-      $popup.detach().appendTo(@parentNode)
+      $mf = $(@parentNode)
+      $popup.detach().appendTo($mf)
       setTimeout((-> $popup.show()), 0)
       $input.val(@textContent)
+      type = $mf.data('type').toLowerCase()
+      type_id = $mf.data('id')
+      $('.view-boats-btn').attr('href', '/admin/boats?q[status]=active&q[' + type + '_id_eq]=' + type_id)
 
     $result = $('#misspell_fixable_result')
     hide_handle = null

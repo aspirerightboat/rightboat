@@ -344,6 +344,7 @@ a.pdf-link {
       dl.dl-horizontal {
         margin-bottom: 0;
         dt {
+          float: left;
           text-align: left;
           width: 140px;
         }
@@ -352,8 +353,16 @@ a.pdf-link {
         }
       }
 
-      .table-striped > tbody > tr:nth-of-type(odd) {
-        background-color: rgb(232, 245, 255);
+      @media(min-width: @screen-md-min) {
+        .boat-specs .row:nth-of-type(odd) {
+          background-color: rgb(232, 245, 255);
+        }
+      }
+
+      @media(max-width: @screen-sm-max) {
+        .boat-specs .row > div:nth-of-type(odd) {
+          background-color: rgb(232, 245, 255);
+        }
       }
     }
 

@@ -5,17 +5,13 @@ set :application, 'rightboat_v2'
 set :repo_url, 'git@github.com:OxygenCapitalLimited/rightboat.git'
 
 set :deploy_to, '/var/www/rightboat_v2'
-set :scm, :git
-set :format, :pretty
-set :log_level, :debug
-set :pty, true
 set :linked_files, %w(config/database.yml config/secrets.yml config/application.yml config/smtp.yml public/sitemap.xml.gz public/robots.txt)
 set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/uploads public/boat_images public/exports solr/data import_data)
 
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :scm, :git
+set :branch, ENV['BRANCH'] || 'master'
 
-# Default value for keep_releases is 5
+set :log_level, :info
 set :keep_releases, 3
 
 set :rvm_type, :user

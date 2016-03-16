@@ -5,8 +5,6 @@ set :ssh_options, {keys: ['~/.ssh/StagingKey.pem']}
 set :user, 'ubuntu'
 set :application, 'rightboat.com'
 set :deploy_to, '/home/ubuntu/rightboat.com'
-set :log_level, :info
-set :branch, ENV['BRANCH'] || 'master'
 
 set :delayed_job_cmd, '/etc/init.d/delayed_job %{cmd}'
 set :solr_data_path, "#{shared_path}/solr/data"

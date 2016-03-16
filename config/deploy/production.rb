@@ -7,8 +7,6 @@ set :ssh_options, {keys: ['~/.ssh/ProdKey.pem']}
 set :user, 'rightboat'
 set :application, 'rightboat.com'
 set :deploy_to, '/opt/applications/rightboat.com'
-set :log_level, :info
-set :branch, ENV['BRANCH'] || 'master'
 
 set :passenger_roles, %w(app app1 app2)
 

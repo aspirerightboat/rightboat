@@ -59,6 +59,8 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
+    airbrussh (1.0.0)
+      sshkit (>= 1.6.1, != 1.7.0)
     arbre (1.0.3)
       activesupport (>= 3.0.0)
     arel (6.0.3)
@@ -542,6 +544,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   activeadmin!
+  airbrussh
   bson_ext
   bullet
   cancan

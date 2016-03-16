@@ -87,6 +87,7 @@ group :development, :test do
   gem 'capistrano-rails'
   gem 'capistrano-db-tasks', require: false # bundle exec cap production db:pull
   gem 'capistrano-secrets-yml' # cap production setup
+  gem 'airbrussh', require: false
   gem 'pry-rails'
   gem 'letter_opener'
   gem 'quiet_assets'

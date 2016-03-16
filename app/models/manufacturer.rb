@@ -49,6 +49,7 @@ class Manufacturer < ActiveRecord::Base
   def merge_and_destroy!(other_manufacturer)
     models.each { |model| model.move_to_manufacturer(other_manufacturer) }
 
+    misspellings.update_all(source_id: other_manufacturer.id)
     buyer_guides.update_all(manufacturer_id: other_manufacturer.id)
     finances.update_all(manufacturer_id: other_manufacturer.id)
     insurances.update_all(manufacturer_id: other_manufacturer.id)

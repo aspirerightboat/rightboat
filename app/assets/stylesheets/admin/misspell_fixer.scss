@@ -94,3 +94,8 @@
   &.error { background-color: lightcoral; }
   &.success { background-color: lightgreen; }
 }
+.misspell-fixable-area {
+  small a {
+    color: lightgray;
+  }
+}

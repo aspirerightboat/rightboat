@@ -41,7 +41,18 @@ ActiveAdmin.register_page 'Makers Models' do
     new_name = params[:name]
 
     if resource.name.downcase == new_name.downcase
-      resource.update!(name: new_name)
+      res = resource.update(name: new_name)
+
+      if !res
+        if (same_name_resource = resource.where(name: new_name).where.not(id: resource.id).first)
+          resource.merge_and_destroy!(same_name_resource)
+          render json: 'Merged with other', replaced_with_other: true
+          return
+        else
+          resource.update!(name: new_name)
+        end
+      end
+
       render json: {success: 'Updated'}
       return
     end

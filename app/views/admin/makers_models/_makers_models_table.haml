@@ -6,13 +6,17 @@
     %tr(class="#{cycle 'odd', 'even'}")
       %td
         %span.misspell-fixable(data-type="Manufacturer" data-id="#{maker_id}")
-          <ins>#{maker_name}</ins><br><small>(#{boats_count}&nbsp;active&nbsp;boats)</small>
+          %ins #{maker_name}
+          <br><small>(#{boats_count}&nbsp;active&nbsp;boats)</small>
+          <br><small><a href="/admin/misspellings?q[source_type_eq]=Manufacturer&q[source_id_eq]=#{maker_id}">Misspellings</a></small>
       %td
         %ul.pipe-list
           - @model_infos_by_maker[maker_id].each do |model_id, model_name, _maker_id, boats_cnt|
             %li.misspell-fixable(data-type="Model" data-id="#{model_id}")
               %ins #{model_name}
               %sup #{boats_cnt}
+        %ul.pipe-list
+          %li <small><a href="/admin/misspellings?q[source_type_eq]=Model&maker_id=#{maker_id}">Models misspellings</a></small>
 
 .panel.misspell-fixable-popup(style="display:none")
   %h3 Fix name

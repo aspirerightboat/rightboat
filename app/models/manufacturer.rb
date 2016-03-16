@@ -9,6 +9,8 @@ class Manufacturer < ActiveRecord::Base
 
   has_many :models, inverse_of: :manufacturer, dependent: :restrict_with_error
   has_many :buyer_guides, class_name: 'BuyerGuide', inverse_of: :manufacturer, dependent: :destroy
+  has_many :finances
+  has_many :insurances
 
   mount_uploader :logo, AvatarUploader
 
@@ -42,6 +44,17 @@ class Manufacturer < ActiveRecord::Base
     end
 
     search.hits.map { |h| h.stored(:name) }
+  end
+
+  def merge_and_destroy!(other_manufacturer)
+    models.each { |model| model.move_to_manufacturer(other_manufacturer) }
+
+    buyer_guides.update_all(manufacturer_id: other_manufacturer.id)
+    finances.update_all(manufacturer_id: other_manufacturer.id)
+    insurances.update_all(manufacturer_id: other_manufacturer.id)
+
+    reload
+    destroy!
   end
 
   private

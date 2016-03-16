@@ -89,6 +89,7 @@
   top: 0;
   padding: 8px;
   font-weight: bold;
+  z-index: 100;
 
   &.error { background-color: lightcoral; }
   &.success { background-color: lightgreen; }

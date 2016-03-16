@@ -25,7 +25,10 @@ $ ->
         .done (data) ->
           if data.replaced_with_other
             $popup.detach().appendTo($(document.body))
-            $fixer.remove()
+            if $fixer.data('type') == 'Model'
+              $fixer.remove()
+            else
+              $fixer.closest('tr').remove()
           else
             $('ins', $fixer).text(name)
           $popup.hide()

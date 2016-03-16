@@ -33,17 +33,30 @@ class Model < ActiveRecord::Base
     "#{manufacturer} #{name}".strip
   end
 
-  def merge_and_destroy!(other_model)
-    raise ArgumentError.new if manufacturer_id != other_model.manufacturer_id
-
+  def merge_and_destroy!(other_model, other_manufacturer = nil)
+    boats.each do |b|
+      upd_hash = {model: other_model}
+      upd_hash[:manufacturer] = other_manufacturer if other_manufacturer
+      b.update!(upd_hash)
+    end
     misspellings.update_all(source_id: other_model.id)
-    boats.update_all(model_id: other_model.id)
     buyer_guides.update_all(model_id: other_model.id)
     finances.update_all(model_id: other_model.id)
     insurances.update_all(model_id: other_model.id)
 
     reload
     destroy!
+  end
+
+  def move_to_manufacturer(other_manufacturer)
+    if (other_model = other_manufacturer.models.where(name: name).first)
+      merge_and_destroy!(other_model, other_manufacturer)
+    else
+      transaction do
+        update!(manufacturer: other_manufacturer)
+        boats.each { |b| b.update!(manufacturer: other_manufacturer) }
+      end
+    end
   end
 
   def self.solr_suggest_names(term, manufacturer_names = nil)
@@ -62,7 +75,7 @@ class Model < ActiveRecord::Base
   private
 
   def reindex_boats
-    if !id_changed? && name_changed?
+    if !id_changed? && (name_changed? || manufacturer_id_changed?)
       Sunspot.index boats
     end
   end

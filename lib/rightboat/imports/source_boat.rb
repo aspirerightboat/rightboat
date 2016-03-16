@@ -353,7 +353,7 @@ module Rightboat
 
       def cleanup_model
         self.model = 'Unknown' if model.blank?
-        model.gsub!(/#{Regexp.escape(manufacturer)}\s+/i, '') if manufacturer && model.is_a?(String)
+        model.gsub!(/#{Regexp.escape(manufacturer)}\s+/i, '') if manufacturer && model.is_a?(String) && manufacturer.is_a?(String)
       end
 
       def adjust_location(target)

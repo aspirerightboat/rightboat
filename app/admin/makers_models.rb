@@ -46,7 +46,7 @@ ActiveAdmin.register_page 'Makers Models' do
       return
     end
 
-    resource.misspellings.find_or_create_by!(alias_string: resource.name)
+    resource.misspellings.find_or_create_by!(alias_string: resource.name) if resource.name != 'Unknown'
 
     other_res = if resource.is_a?(Model)
                   Model.find_by(name: new_name, manufacturer_id: resource.manufacturer_id)

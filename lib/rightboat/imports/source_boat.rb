@@ -139,7 +139,7 @@ module Rightboat
 
           tokens = mnm.scan(/\S+/)
 
-          (tokens.size - 1).downto(1).each do |i|
+          tokens.size.downto(1).each do |i|
             maker = tokens[0...i].join(' ')
 
             if (maker_found = Manufacturer.query_with_aliases(maker).first)
@@ -162,7 +162,7 @@ module Rightboat
       end
 
       def save
-        cleanup_model
+        cleanup_make_model
 
         return false unless valid?
 
@@ -351,9 +351,21 @@ module Rightboat
 
       private
 
-      def cleanup_model
+      def cleanup_make_model
+        if model && model.is_a?(String) && manufacturer && manufacturer.is_a?(String)
+          model.gsub!(/#{Regexp.escape(manufacturer)}/i, '')
+          model.strip!
+          manufacturer.gsub!(/#{Regexp.escape(model)}/i, '')
+          manufacturer.strip!
+        end
+
+        if manufacturer && manufacturer.is_a?(String)
+          if manufacturer =~ /\d/ && !Manufacturer.where(name: manufacturer).exists? || model.blank?
+            self.manufacturer_model = manufacturer
+          end
+        end
+
         self.model = 'Unknown' if model.blank?
-        model.gsub!(/#{Regexp.escape(manufacturer)}\s+/i, '') if manufacturer && model.is_a?(String) && manufacturer.is_a?(String)
       end
 
       def adjust_location(target)

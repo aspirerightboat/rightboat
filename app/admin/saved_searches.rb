@@ -5,7 +5,7 @@ ActiveAdmin.register SavedSearch do
   permit_params :user_id, :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
                 :length_unit, :manufacturer, :model, :currency, :ref_no
 
-  filter :user, collection: -> { User.all }
+  filter :user, collection: -> { User.general.order(:first_name, :last_name) }
 
   controller do
     def scoped_collection
@@ -14,8 +14,10 @@ ActiveAdmin.register SavedSearch do
   end
 
   index do
-    column(:user) { |ss| link_to ss.user.name, admin_user_path(ss.user) }
+    column :id
+    column(:user, sortable: 'users.first_name') { |ss| link_to ss.user.name, admin_user_path(ss.user) }
     column(:search) { |ss| ss.search_title }
+    column :alert
     column :created_at
 
     actions

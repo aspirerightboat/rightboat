@@ -15,7 +15,7 @@
           .result-popup
             Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
       - if @boat
-        %li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency)), class: 'nav-link'
+        %li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'nav-link'
       - if @back_url
         %li= link_to '< Back to Results', @back_url, class: 'nav-link'
       - elsif params[:back] && params[:back] == 'true'

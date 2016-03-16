@@ -102,10 +102,11 @@ class Boat < ActiveRecord::Base
 
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
 
-  def similar_options(required_currency = nil)
+  def similar_options(required_currency = nil, length_unit = nil)
     options = {
         exclude_ref_no: ref_no,
         boat_type:  boat_type.try(:name_stripped),
+        length_unit: length_unit ||= 'm'
     }
 
     if !poa?
@@ -116,6 +117,7 @@ class Boat < ActiveRecord::Base
     end
 
     if (length = length_m)
+      length = length.m_to_ft.round if options[:length_unit] == 'ft'
       options[:length_min] = (length * 0.8).round(2)
       options[:length_max] = (length * 1.2).round(2)
     end

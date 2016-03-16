@@ -79,7 +79,9 @@ a.navbar-brand {
   padding: 2px 6px !important;
   text-decoration: none;
   margin-top: 8px;
-  margin-left: 5px;
+  @media(min-width: @screen-sm-min) {
+    margin-left: 5px;
+  }
 
   &:hover, &:focus {
     background-color: #2d83a8 !important;
@@ -94,7 +96,13 @@ a.navbar-brand {
 
   background-color: @rb-color-primary;
 
-  form, .nav.navbar-nav:first-child {margin-left: 98px;}
+  @media(min-width: @screen-sm-min) {
+    form, .nav.navbar-nav:first-child {margin-left: 98px;}
+  }
+
+  @media(max-width: @screen-xs-max) {
+    form, .nav.navbar-nav:first-child {margin-top: 10px;}
+  }
 
   .select2-container .select2-choice,
   .select2-dropdown-open .select2-choice {

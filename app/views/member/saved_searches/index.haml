@@ -12,7 +12,8 @@
       %tr
         %th #
         %th keyword
-        %th manufacturer / model
+        %th manufacturer
+        %th model
         %th boat type
         %th country
         %th new / used
@@ -26,7 +27,8 @@
         %tr(data-ss-id="#{ss.id}")
           %td= i + 1
           %td= ss.q
-          %td= ss.manufacturer_model
+          %td= ss.manufacturer
+          %td= ss.model
           %td= ss.boat_type
           %td= Country.where(id: ss.country).pluck(:name).join(', ')
           %td= ss.new_used.keys.join(' / ')

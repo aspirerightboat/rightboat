@@ -118,32 +118,40 @@ module Rightboat
         end
       end
 
+      # some sources has only merged string instead of separate manufacturer/model
+      # in this case, search solr and find first
+      # if not exists in solr, use split method
+      # e.g. yachtworld: Marine Projects Sigma 38, Alloy Yachts Pilothouse
       def manufacturer_model=(mnm)
-        # some sources has only merged string instead of separate manufacturer/model
-        # in this case, search db and find first
-        # if not exists in db, use split method
-        #  e.g. yachtworld: Marine Projects Sigma 38, Alloy Yachts Pilothouse
+        return if mnm.blank?
 
-        search = Boat.solr_search do
-          with :manufacturer_model, mnm
-          order_by :live, :desc
-          paginate per_page: 1
-        end
-        if (boat = search.results.first)
-          self.manufacturer = boat.manufacturer
-          self.model = boat.model
-        else
-          tokens = mnm.split(/\s+/).reject(&:blank?)
-          manufacturer = tokens[0..-2].join(' ')
-          model = tokens[-1]
-          ((1 - tokens.count)..0).each do |i|
-            manufacturer = tokens[0..i].join(' ')
-            model = tokens[(i + 1)..-1].join(' ')
-
-            break if Manufacturer.where(name: manufacturer).exists?
+        catch :found do
+          search = Boat.solr_search do
+            with :manufacturer_model, mnm
+            order_by :live, :desc
+            paginate per_page: 1
+          end
+          if (boat = search.results.first)
+            self.manufacturer = boat.manufacturer
+            self.model = boat.model
+            throw :found
           end
 
-          self.manufacturer, self.model = manufacturer, model
+          tokens = mnm.scan(/\S+/)
+
+          (tokens.size - 1).downto(1).each do |i|
+            maker = tokens[0...i].join(' ')
+
+            if (maker_found = Manufacturer.query_with_aliases(maker).first)
+              self.manufacturer = maker_found
+              self.model = tokens[i..-1].join(' ')
+              throw :found
+            end
+          end
+
+          self.manufacturer = tokens.first
+          self.model = tokens[1..-1].join(' ')
+          importer.log_warning 'Cannot guess manufacturer for sure', %(make_model_str="#{mnm}" guessed_maker="#{manufacturer}" guessed_model="#{model}") if importer
         end
       end
 

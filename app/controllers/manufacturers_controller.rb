@@ -12,7 +12,7 @@ class ManufacturersController < ApplicationController
     @manufacturer = Manufacturer.find_by(slug: params[:id])
     redirect_to root_path and return if !@manufacturer
 
-    params[:manufacturer_model] = @manufacturer.name # so in advanced search panel manufacturer will be filled
+    params[:manufacturer] = @manufacturer.name # so in advanced search panel manufacturer will be filled
 
     search_params = {
       manufacturer_id: @manufacturer.id,

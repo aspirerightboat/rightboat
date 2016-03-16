@@ -69,6 +69,7 @@ $ ->
         id = arr[0]
         name = arr[1]
         count = arr[2]
+        count = '1000+' if parseInt(count) > 1000
         opt = $('<option>').text(name+' ('+count+')').attr('value', id)
         opt.prop('selected', true) if $.inArray(''+id, selected_ids) >= 0
         $sel.append(opt)

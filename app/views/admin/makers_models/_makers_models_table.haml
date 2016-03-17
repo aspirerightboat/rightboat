@@ -23,7 +23,11 @@
   .esc ×
   .panel_content
     %input.value-input(type="text")
-    .buttons
+    .controls-row
+      %label
+        %input.create-misspell-input(type="checkbox" checked)
+        Create misspelling if needed
+    .controls-row
       %button.save-btn Save
       .titleize-btn Titleize
       %a.view-boats-btn(href="#" target="_blank") Boats

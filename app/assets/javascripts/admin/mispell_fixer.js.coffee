@@ -4,6 +4,7 @@ $ ->
     $popup = $('.misspell-fixable-popup')
     $input = $('.value-input', $popup)
     $save_btn = $('.save-btn', $popup)
+    $misp_check = $('.create-misspell-input', $popup)
 
     $(document.body).click (e) ->
       $popup.hide() if $(e.target).closest($popup).length == 0
@@ -21,7 +22,8 @@ $ ->
       name = $input.val()
       $save_btn.prop('disabled', true)
       url = '/admin/makers_models/fix_name?class=' + $fixer.data('type') + '&id=' + $fixer.data('id')
-      $.post(url, {name: name}, null, 'json')
+      create_misp = $misp_check.val()
+      $.post(url, {name: name, create_misspellings: create_misp}, null, 'json')
         .done (data) ->
           if data.replaced_with_other
             $popup.detach().appendTo($(document.body))
@@ -44,6 +46,7 @@ $ ->
       $popup.detach().appendTo($mf)
       setTimeout((-> $popup.show()), 0)
       $input.val(@textContent)
+      $misp_check.prop('checked', true)
       type = $mf.data('type').toLowerCase()
       type_id = $mf.data('id')
       $('.view-boats-btn').attr('href', '/admin/boats?q[status]=active&q[' + type + '_id_eq]=' + type_id)

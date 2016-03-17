@@ -24,12 +24,11 @@
   .value-input {
     width: 100%;
   }
-  .buttons {
+  .controls-row {
     margin-top: 8px;
-
-    .titleize-btn {
-      @include light-button;
-    }
+  }
+  .titleize-btn {
+    @include light-button;
   }
   .esc {
     position: absolute;

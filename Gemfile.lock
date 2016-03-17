@@ -349,7 +349,7 @@ GEM
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     ntlm-http (0.1.1)
-    oauth (0.4.7)
+    oauth (0.5.1)
     open_uri_redirections (0.2.1)
     optionable (0.2.0)
     options (2.3.2)
@@ -529,7 +529,7 @@ GEM
     wicked_pdf (0.11.0)
       rails
     wkhtmltopdf-binary (0.9.9.3)
-    xeroizer (2.16.1)
+    xeroizer (2.16.4)
       activesupport
       builder (>= 2.1.2)
       i18n

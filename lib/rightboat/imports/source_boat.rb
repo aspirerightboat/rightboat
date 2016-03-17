@@ -125,33 +125,11 @@ module Rightboat
       def manufacturer_model=(mnm)
         return if mnm.blank?
 
-        catch :found do
-          search = Boat.solr_search do
-            with :manufacturer_model, mnm
-            order_by :live, :desc
-            paginate per_page: 1
-          end
-          if (boat = search.results.first)
-            self.manufacturer = boat.manufacturer
-            self.model = boat.model
-            throw :found
-          end
+        self.manufacturer, self.model, success = Rightboat::MakeModelSplitter.split(mnm)
 
-          tokens = mnm.scan(/\S+/)
-
-          tokens.size.downto(1).each do |i|
-            maker = tokens[0...i].join(' ')
-
-            if (maker_found = Manufacturer.query_with_aliases(maker).first)
-              self.manufacturer = maker_found
-              self.model = tokens[i..-1].join(' ')
-              throw :found
-            end
-          end
-
-          self.manufacturer = tokens.first
-          self.model = tokens[1..-1].join(' ')
-          importer.log_warning 'Cannot guess manufacturer for sure', %(make_model_str="#{mnm}" guessed_maker="#{manufacturer}" guessed_model="#{model}") if importer
+        if !success
+          importer.log_warning 'Cannot guess manufacturer for sure',
+                               %(make_model_str="#{mnm}" guessed_maker="#{manufacturer}" guessed_model="#{model}")
         end
       end
 

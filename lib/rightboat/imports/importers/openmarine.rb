@@ -182,7 +182,7 @@ module Rightboat
           media_nodes.each do |node|
             url = clean_text(node)
             next if !url
-            url = URI.encode(url)
+            url = URI.encode(url.gsub('%20', ' '))
             url.gsub!(/[\[\]]/) { |m| m == '[' ? '%5B' : '%5D' }
             url = URI.parse(@url).merge(url).to_s if url !~ /^https?:/
 

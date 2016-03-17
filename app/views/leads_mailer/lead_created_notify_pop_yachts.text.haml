@@ -1,4 +1,4 @@
-Dear
+Dear #{@broker.try(:contact_name) || @broker.name}
 We are pleased to inform you that you have an enquiry from Rightboat.
 
 Make: #{@boat.manufacturer}

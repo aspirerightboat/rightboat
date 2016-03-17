@@ -6,18 +6,23 @@
 
 - @searches.each do |saved_search, new_boats|
   %p Search for #{saved_search.search_title}:
-  %table
-    - new_boats.each_with_index do |boat, i|
-      %tr
-        %td= render 'boats/mail_thumb', boat: boat, visible: i < 3
-  .clear(style="margin: 0.5em 0 1.5em")
-    %p
-      Please find above links for new boats that match your saved search on Rightboat.
-    - if new_boats.count > 3
-      %p
-        To see a complete list of all the boats that match your search click here...
-        #{link_to 'View All', search_url(saved_search.to_search_params), class: 'btn'}
-
+  %table.boats-list
+    %tr
+      %td
+        %table
+          - new_boats.each_with_index do |boat, i|
+            %tr
+              %td= render 'boats/mail_thumb', boat: boat, visible: i < 5
+        .clear(style="margin: 0.5em 0 1.5em")
+          - if new_boats.count > 5
+            %p
+              Please find above links to the '<b>First</b> 5 Boats' of your Saved Search on Rightboat. If you wish to view the remaining new boats of your Saved Search, please click <a href="#" onclick="event.preventDefault(); var parent = this.closest('.boats-list'); var boats = parent.getElementsByClassName('boat'); for (var i = 0; i < boats.length; i++) { boats[i].style.display = ''; }; return false">here</a>
+            %p
+              To see a complete list of all the boats that match your search click here...
+              #{link_to 'View All', search_url(saved_search.to_search_params), class: 'btn'}
+          - else
+            %p
+              Please find above links for new boats that match your Saved Search on Rightboat.
 %p
   You can manage your alerts and email settings from the #{link_to 'My Alerts', member_user_alert_url}
   page within #{link_to 'My Rightboat', member_root_url}.

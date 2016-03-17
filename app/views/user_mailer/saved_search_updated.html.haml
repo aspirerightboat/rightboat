@@ -16,7 +16,8 @@
         .clear(style="margin: 0.5em 0 1.5em")
           - if new_boats.count > 5
             %p
-              Please find above links to the '<b>First</b> 5 Boats' of your Saved Search on Rightboat. If you wish to view the remaining new boats of your Saved Search, please click <a href="#" onclick="event.preventDefault(); var parent = this.closest('.boats-list'); var boats = parent.getElementsByClassName('boat'); for (var i = 0; i < boats.length; i++) { boats[i].style.display = ''; }; return false">here</a>
+              Please find above links to the '<b>First</b> 5 Boats' of your Saved Search on Rightboat. If you wish to view the remaining new boats of your Saved Search, please click #{link_to 'here', search_url(saved_search.to_search_params), onclick: "event.preventDefault(); var parent = this.closest('.boats-list'); var boats = parent.getElementsByClassName('boat'); for (var i = 0; i < boats.length; i++) { boats[i].style.display = ''; }; return false;"}...
+
             %p
               To see a complete list of all the boats that match your search click here...
               #{link_to 'View All', search_url(saved_search.to_search_params), class: 'btn'}

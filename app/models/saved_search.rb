@@ -28,7 +28,7 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def self.create_and_run(user, params)
-    if user.saved_searches.where(params).blank?
+    if !user.saved_searches.where(params).exists?
       ss = user.saved_searches.new(params)
       ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)
       ss.save!

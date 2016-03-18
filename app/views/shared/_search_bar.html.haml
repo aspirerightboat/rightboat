@@ -10,8 +10,8 @@
       - if controller_name == 'search'
         %li.save-search
           = link_to 'Save this Search', member_saved_searches_path(params.except(:controller, :action)),
-                     method: :post, remote: true, class: 'nav-link',
-                     data: {'require-login' => true, 'login-title' => 'Please sign in or join as a member to save your search.'}
+                     method: :post, remote: true, class: 'nav-link require-login',
+                     data: {'login-title' => 'Please sign in or join as a member to save your search.'}
           .result-popup
             Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
       - if @boat

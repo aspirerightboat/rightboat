@@ -16,9 +16,9 @@
           %ul.col-xs-6.col-sm-3
             /%li= link_to 'Marine Services', marine_services_home_path
             %li= link_to 'Sell my boat', current_user ? member_boats_path : sell_my_boats_home_path
-            %li= link_to 'Berths', '#', data: {'require-login' => true, toggle: 'modal', target: '#berths-popup', 'login-title' => 'Please sign in or join as a member to make a berth request.'}
-            %li= link_to 'Finance', '#', data: {'require-login' => true, toggle: 'modal', target: '#finance-popup', 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
-            %li= link_to 'Insurance', '#', data: {'require-login' => true, toggle: 'modal', target: '#insurance-popup', 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
+            %li= link_to 'Berths', '#', class: 'require-login', data: {toggle: 'modal', target: '#berths-popup', 'login-title' => 'Please sign in or join as a member to make a berth request.'}
+            %li= link_to 'Finance', '#', class: 'require-login', data: {toggle: 'modal', target: '#finance-popup', 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
+            %li= link_to 'Insurance', '#', class: 'require-login', data: {toggle: 'modal', target: '#insurance-popup', 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
           %ul.col-xs-6.col-sm-3.social-links
             %li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link', rel: 'nofollow'
             %li= link_to '@rightboat', 'https://twitter.com/rightboat', class: 'tw-link', rel: 'nofollow'

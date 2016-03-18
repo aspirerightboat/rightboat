@@ -11,7 +11,7 @@ adjustLoginLink = ->
 $ ->
   window.loginTitle = null
 
-  $('[data-require-login]').click (e) ->
+  $('.require-login').click (e) ->
     window.loginTitle = $(this).data('login-title')
     requireLogin(e, false)
 

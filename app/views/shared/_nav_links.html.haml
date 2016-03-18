@@ -6,6 +6,6 @@
       %li= link_to 'Log Out', destroy_user_session_path, method: :delete
 - else
   %li= link_to 'Sign in or Create an Account', '#', class: 'user-login login-top'
-%li= link_to 'My Rightboat', member_root_path, data: { 'require-login' => true, 'login-title' => 'To use My Rightboat, you must first Join as a Member.' }
+%li= link_to 'My Rightboat', member_root_path, class: 'require-login', data: {'login-title' => 'To use My Rightboat, you must first Join as a Member.'}
 - if user_signed_in? && current_user.company?
   %li= link_to 'Broker Area', broker_area_path

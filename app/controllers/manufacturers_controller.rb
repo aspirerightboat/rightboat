@@ -21,15 +21,19 @@ class ManufacturersController < ApplicationController
 
     search_params[:order] = params[:order] if params[:order].present?
     @boats = Rightboat::BoatSearch.new.do_search(search_params).results
+
+    @model_infos = @manufacturer.models.joins(:boats).where(boats: {status: 'active'})
+                       .group('models.slug, models.name').order(:name)
+                       .pluck('models.slug, models.name, COUNT(*)')
   end
 
   def by_letter
     @letter = params[:id]
     redirect_to(action: :index) if @letter.blank? || @letter !~ /\A[a-z]\z/
 
-    @manufacturers = Manufacturer.joins(:boats).group('manufacturers.name, manufacturers.slug')
+    @manufacturers = Manufacturer.joins(:boats).where(boats: {status: 'active'})
                          .where('manufacturers.name LIKE ?', "#{@letter}%")
-                         .where('boats.deleted_at IS NULL')
+                         .group('manufacturers.name, manufacturers.slug')
                          .order(:name).page(params[:page]).per(100)
                          .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
   end

@@ -53,3 +53,34 @@ abbr {
     a { text-decoration: underline; }
   }
 }
+
+.filters-box {
+  background-color: #fcf8f9;
+  font-size: 0.9em;
+  padding: 20px 10px;
+  margin-bottom: 30px;
+
+  h3 {
+    color: #989898;
+    font-size: 1.3em;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+  }
+  small {
+    color: lightgray;
+  }
+}
+
+.column-count(@count) {
+  column-count: @count;
+  -moz-column-count: @count;
+  -webkit-column-count: @count;
+}
+
+.flex-six-columns {
+  .column-count(2);
+  @media (min-width: @screen-sm-min) { .column-count(3); }
+  @media (min-width: @screen-md-min) { .column-count(4); }
+  @media (min-width: @screen-lg-min) { .column-count(6); }
+
+}

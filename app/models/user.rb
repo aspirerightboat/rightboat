@@ -122,6 +122,10 @@ class User < ActiveRecord::Base
     broker_info.payment_method != 'none'
   end
 
+  def broker_name
+    broker_info.try(:contact_name) || name
+  end
+
   private
 
   def slug_candidates

@@ -23,6 +23,31 @@ ActiveAdmin.register SavedSearch do
     actions
   end
 
+  csv do
+    column :id
+    column :user
+    column :q
+    column :year_min
+    column :year_max
+    column :price_min
+    column :price_max
+    column :currency
+    column :length_min
+    column :length_max
+    column :length_unit
+    column :ref_no
+    column(:category) { |x| BoatCategory.where(id: x.category ).pluck(:name).join(', ') }
+    column :boat_type
+    column(:country) { |x| Country.where(id: x.country ).pluck(:name).join(', ') }
+    column :manufacturer
+    column :model
+    column :tax_status
+    column :new_used
+    column :alert
+    column :created_at
+    column :updated_at
+  end
+
   sidebar 'Tools', only: [:index] do
     link_to('Send SavedSearch notifications', {action: :run_saved_search_job}, method: :post, class: 'button')
   end

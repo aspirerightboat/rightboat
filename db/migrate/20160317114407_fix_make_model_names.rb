@@ -62,26 +62,6 @@ class FixMakeModelNames < ActiveRecord::Migration
   def fix_maker_name(maker, new_maker_name)
     if (other_maker = Manufacturer.where(name: new_maker_name).first)
       maker.merge_and_destroy!(other_maker)
-      # maker.models(true).each do |model|
-      #   model.move_to_manufacturer(other_maker)
-      #   # if (other_model = other_maker.models.where(name: model.name).first)
-      #   #   model.merge_and_destroy!(other_model, other_maker)
-      #   # else
-      #   #   res = model.update(manufacturer: other_maker)
-      #   #   if !res
-      #   #     puts [maker.name, other_maker.name, model.name].inspect
-      #   #     raise StandardError.new("qwqwe")
-      #   #   end
-      #   #   model.boats.each { |b| b.update!(manufacturer: other_maker) }
-      #   # end
-      # end
-      #
-      # maker.misspellings.update_all(source_id: other_maker.id)
-      # maker.buyer_guides.update_all(manufacturer_id: other_maker.id)
-      # maker.finances.update_all(manufacturer_id: other_maker.id)
-      # maker.insurances.update_all(manufacturer_id: other_maker.id)
-      # maker.reload
-      # maker.destroy!
     else
       maker.update!(name: new_maker_name)
     end

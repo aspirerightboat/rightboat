@@ -11,7 +11,7 @@
     color: lightgray;
   }
 }
-.misspell-fixable-popup {
+.fixing-popup {
   position: absolute;
   top: 20px;
   left: 0;
@@ -19,7 +19,6 @@
   background-color: white;
   box-shadow: 0 0 20px 0 rgba(51, 46, 0, 0.2) !important;
   cursor: default;
-  width: 250px;
 
   .value-input {
     width: 100%;
@@ -27,8 +26,10 @@
   .controls-row {
     margin-top: 8px;
   }
-  .titleize-btn {
+  .secondary-btn {
     @include light-button;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .esc {
     position: absolute;
@@ -39,6 +40,30 @@
   }
   .error {
     color: red;
+  }
+}
+
+.misspell-fixable-popup {
+  width: 250px;
+}
+
+#split_popup {
+  width: 386px;
+
+  #word_right_btn {
+    padding: 4px 3px 3px 5px;
+  }
+  label {
+    display: inline-block;
+    width: 36%;
+    color: #5E6469;
+    font-weight: bold;
+  }
+  #maker1_input, #maker2_input {
+    width: 170px;
+  }
+  #split_btn {
+    margin-left: 36%;
   }
 }
 

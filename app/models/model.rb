@@ -72,6 +72,21 @@ class Model < ActiveRecord::Base
     search.hits.map { |h| h.stored(:name) }
   end
 
+  def prepend_name!(prepend_part)
+    if !name.start_with?(prepend_part)
+      new_name = name == 'Unknown' ? prepend_part : "#{prepend_part} #{name}"
+      rename!(new_name)
+    end
+  end
+
+  def rename!(new_name)
+    if (other_model = manufacturer.models.where(name: new_name).first)
+      merge_and_destroy!(other_model)
+    else
+      update!(name: new_name)
+    end
+  end
+
   private
 
   def reindex_boats

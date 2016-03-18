@@ -76,4 +76,26 @@ ActiveAdmin.register_page 'Makers Models' do
     end
   end
 
+  page_action :split_name, method: :post, format: :json do
+    maker = Manufacturer.find(params[:id])
+    new_maker_name = params[:part1]
+    prepend_model_names = params[:part2]
+
+    if new_maker_name.present? && new_maker_name != maker.name
+      maker.models.each { |m| m.prepend_name!(prepend_model_names) }
+
+      model_names = maker.models(true).pluck(:id, :name).to_h
+
+      if (other_manufacturer = Manufacturer.where(name: new_maker_name).first)
+        maker.merge_and_destroy!(other_manufacturer)
+        render json: {success: 'Merged with other', replaced_with_other: true, model_names: model_names}
+      else
+        maker.update!(name: new_maker_name)
+        render json: {success: 'Updated', model_names: model_names}
+      end
+    else
+      head :bad_request
+    end
+  end
+
 end

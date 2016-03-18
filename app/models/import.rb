@@ -81,7 +81,20 @@ class Import < ActiveRecord::Base
   end
 
   def at_utc
-    Time.parse("#{at} #{tz}").utc.strftime('%H:%M')
+    Time.parse("#{at} #{tz}").utc
+  end
+
+  def approx_duration
+    if last_import_trail&.finished_at
+      dur = last_import_trail.finished_at - last_import_trail.created_at + 1.second
+      (dur / 1.minute).ceil.minutes
+    else
+      1.minute
+    end
+  end
+
+  def approx_end_time
+    at_utc + approx_duration
   end
 
   private

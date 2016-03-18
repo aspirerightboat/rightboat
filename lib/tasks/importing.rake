@@ -37,14 +37,7 @@ namespace :import do
 
     Import.active.order(:id).includes(:last_finished_trail).each do |import|
       import.update!(frequency_unit: 'day', at: time.strftime('%H:%M'), tz: 'UTC')
-      last_trail = import.last_finished_trail
-      estimated_duration = if last_trail
-                             dur = last_trail.finished_at - last_trail.created_at + 1.second
-                             (dur / 1.minute).ceil.minutes
-                           else
-                             1.minute
-                           end
-      time += estimated_duration
+      time += import.approx_duration
     end
 
     if Rails.env.production?

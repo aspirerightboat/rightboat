@@ -16,9 +16,9 @@
     .col-xs-12
       .filters-box
         %h3 Models
-        %ul.four-columns
+        %ul.flex-six-columns
           - @model_infos.each do |model_slug, model_name, boats_count|
-            %li #{link_to model_name, model_path(model_slug)} (#{boats_count})
+            %li #{link_to model_name, model_path(model_slug)} <small>(#{boats_count})</small>
 
   .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|

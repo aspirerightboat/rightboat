@@ -31,3 +31,5 @@ public/user/
 public/sitemap.xml.gz
 public/exports
 import_data
+
+dump.rdb

@@ -1,6 +1,6 @@
 - boat_url = boat_url(@boat.slug)
 
-%p Dear #{@broker.try(:contact_name) || @broker.name}
+%p Dear #{@broker.broker_name}
 %p We are pleased to inform you that you have an enquiry from #{link_to 'Rightboat', root_url}.
 
 %p The client details are as follows:

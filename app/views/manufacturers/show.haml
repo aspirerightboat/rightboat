@@ -13,11 +13,11 @@
   = render 'manufacturer_letters'
   %h1= @page_title
 
-  .row(style="background-color: lightgray")
+  .row(style="background-color: lightgray; margin-bottom: 30px;")
     %h3 Models
     %ul.four-columns
-      - @models.each do |model|
-        %li= link_to model.name, model_path(model)
+      - @model_infos.each do |model_slug, model_name, boats_count|
+        %li #{link_to model_name, model_path(model_slug)} (#{boats_count})
 
   .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|

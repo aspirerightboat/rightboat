@@ -22,7 +22,8 @@ class ManufacturersController < ApplicationController
     search_params[:order] = params[:order] if params[:order].present?
     @boats = Rightboat::BoatSearch.new.do_search(search_params).results
 
-    @models = @manufacturer.models.order(:name)
+    @model_infos = @manufacturer.models.joins(:boats).group('models.slug, models.name').order(:name)
+                       .pluck('models.slug, models.name, COUNT(*)')
   end
 
   def by_letter

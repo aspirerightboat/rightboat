@@ -2,7 +2,7 @@
   Dear #{@user.name},
 
 %p
-  New listings have been posted to Rightboat that match your following saved #{t('search_plural', count: @searches.size)}:
+  New listings have been posted to Rightboat that match your following Saved #{t('search_plural', count: @searches.size)}:
 
 - @searches.each do |saved_search, new_boats|
   %p Search for #{saved_search.search_title}:
@@ -12,9 +12,9 @@
         %table
           - new_boats.each_with_index do |boat, i|
             %tr
-              %td= render 'boats/mail_thumb', boat: boat, visible: i < 5
+              %td= render 'boats/mail_thumb', boat: boat, visible: i < 3
         .clear(style="margin: 0.5em 0 1.5em")
-          - if new_boats.count > 5
+          - if new_boats.count > 3
             %p
               Please find above links to the '<b>First</b> 5 Boats' of your Saved Search on Rightboat. If you wish to view the remaining new boats of your Saved Search, please click #{link_to 'here', search_url(saved_search.to_search_params), onclick: "event.preventDefault(); var parent = this.closest('.boats-list'); var boats = parent.getElementsByClassName('boat'); for (var i = 0; i < boats.length; i++) { boats[i].style.display = ''; }; return false;"}...
 

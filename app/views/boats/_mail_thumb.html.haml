@@ -14,8 +14,8 @@
               .boat-price= boat.poa? ? 'POA' : number_to_currency(boat.price, unit: (boat.currency || Currency.default).symbol, precision: 0)
               .boat-spec.tax-status= boat.tax_paid? ? 'Tax paid' : ''
               .boat-links
-                = link_to 'Contact Broker', boat_url(id: boat.slug, anchor: 'enquiry_popup'), class: 'btn'
-                = link_to 'View Detail', boat_url(id: boat.slug), class: 'btn'
+                = link_to 'Request Details', boat_url(id: boat.slug, anchor: 'enquiry_popup'), class: 'btn'
+                = link_to 'Boat Summary', boat_url(id: boat.slug), class: 'btn'
             .boat-specs
               .manufacturer-model
                 %span.text-uppercase

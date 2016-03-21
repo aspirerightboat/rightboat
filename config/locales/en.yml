@@ -22,9 +22,9 @@
 en:
   poa: "P.O.A."
   search_plural:
-    one: "search"
-    many: "searches"
-    other: "searches"
+    one: "Search"
+    many: "Searches"
+    other: "Searches"
   search_orders:
     score_desc: "Best Match"
     created_at_desc: "Newly listed"

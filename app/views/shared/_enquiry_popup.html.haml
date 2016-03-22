@@ -51,7 +51,7 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Comments', class: 'form-control'
+                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
           .row
             -#.col-xs-12.col-sm-6
             -#  .form-group
@@ -60,8 +60,8 @@
             -#        %img.captcha-img
             -#      = hidden_field_tag :captcha_key
             -#      = text_field_tag :captcha, '', placeholder: 'Prove you are human', class: 'form-control', 'data-validetta' => 'required,number'
-            .col-sm-6.col-xs-12
-              %button.btn-flat.btn-block(type="submit")
+            .col-sm-6.col-sm-offset-6.col-xs-12
+              %button.btn-flat.btn-black(type="submit")
                 %span.ha-toggle Send
                 - unless current_user
                   %span.ha-toggle.hidden Login & Send

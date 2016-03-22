@@ -51,15 +51,6 @@
             = label_tag :year
           .col-xs-7.col-sm-8
             = slider_tag(:year)
-        .range-slider-wrapper.row.length-input-group
-          .col-xs-5.col-sm-4
-            .rb-control-group
-              .rb-control
-                = label_tag :length
-              .rb-control-group-addon
-                = select_tag :length_unit, length_unit_options, class: 'select-white select-sm select-general'
-          .col-xs-7.col-sm-8
-            = slider_tag(:length, unit: current_length_unit) # max in meter
         .range-slider-wrapper.row
           .col-xs-5.col-sm-4
             .rb-control-group
@@ -69,6 +60,15 @@
                 = currency_tag :currency, current_currency, class: 'select-white select-sm select-currency'
           .col-xs-7.col-sm-8
             = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
+        .range-slider-wrapper.row.length-input-group
+          .col-xs-5.col-sm-4
+            .rb-control-group
+              .rb-control
+                = label_tag :length
+              .rb-control-group-addon
+                = select_tag :length_unit, length_unit_options, class: 'select-white select-sm select-general'
+          .col-xs-7.col-sm-8
+            = slider_tag(:length, unit: current_length_unit) # max in meter
         .form-group.row
           .col-xs-4
             = label_tag :tax_status, nil, class: 'without-top-pad'

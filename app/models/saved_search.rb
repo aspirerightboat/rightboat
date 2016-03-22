@@ -29,8 +29,28 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def self.create_and_run(user, params)
-    params = params.each { |k, v| params[k] = nil if k =~ /(min|max)/ && params[k].blank? }
-    if !user.saved_searches.where(params).exists?
+    fixed_params = {
+        year_min: params[:year_min].presence,
+        year_max: params[:year_max].presence,
+        price_min: params[:price_min].presence,
+        price_max: params[:price_max].presence,
+        length_min: params[:length_min].presence,
+        length_max: params[:length_max].presence,
+        length_unit: params[:length_unit].to_s,
+        currency: params[:currency].to_s,
+        ref_no: params[:ref_no].to_s,
+        q: params[:q].to_s,
+        boat_type: params[:boat_type].to_s,
+        order: params[:order].to_s,
+        manufacturer: params[:manufacturer].to_s,
+        model: params[:model].to_s
+    }
+
+    if !user.saved_searches.where(fixed_params)
+            .where('tax_status = ?', params[:tax_status].to_yaml)
+            .where('new_used = ?', params[:new_used].to_yaml)
+            .where('country = ?', params[:country].to_yaml) #.where('category = ?', params[:category].to_yaml)
+            .exists?
       ss = user.saved_searches.new(params)
       ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)
       ss.save!

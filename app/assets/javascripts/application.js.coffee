@@ -159,3 +159,8 @@ $ ->
 $ ->
   $('.hide-parent').click ->
     $(@).closest($(@).data('hide-parent')).hide(200)
+
+  $('.simple-ajax-link').each ->
+    $(@)
+    .on 'ajax:beforeSend', (e) -> $(@).addClass('inline-loading')
+    .on 'ajax:complete', (e) -> $(@).removeClass('inline-loading')

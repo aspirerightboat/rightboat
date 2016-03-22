@@ -1,7 +1,10 @@
 = render layout: 'shared/boats_for_sale' do
-  = render 'manufacturer_letters'
-  %h1 Manufacturers by letter #{@letter}
-  %ul.four-columns
-    - @manufacturers.each do |m|
-      %li #{link_to m.name, manufacturer_path(m.slug)} (#{m.boats_count})
-  = paginate @manufacturers
+  .row
+    .col-xs-12
+      %h1 Manufacturers by letter
+      = render 'manufacturer_letters'
+
+      %ul.flex-four-columns.big-vert-margins
+        - @manufacturers.each do |m|
+          %li #{link_to m.name, manufacturer_path(m.slug)} <small>(#{m.boats_count})</small>
+      = paginate @manufacturers

@@ -1,9 +1,17 @@
 class ManufacturersController < ApplicationController
   def index
-    @manufacturers = Manufacturer.joins(:boats).group('manufacturers.name, manufacturers.slug')
-                         .where('boats.deleted_at IS NULL')
-                         .order(:name).page(params[:page]).per(100)
+    unless params[:page]
+      @top_manufacturer_infos = Manufacturer.joins(:boats).where(boats: {status: 'active'})
+                                    .group('manufacturers.name, manufacturers.slug')
+                                    .order('COUNT(*) DESC').limit(60)
+                                    .pluck('manufacturers.name, manufacturers.slug, COUNT(*)').sort_by!(&:first)
+    end
+
+    @manufacturers = Manufacturer.joins(:boats).where(boats: {status: 'active'})
+                         .group('manufacturers.name, manufacturers.slug')
+                         .order('manufacturers.name').page(params[:page]).per(100)
                          .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
+
     @page = params[:page].try(:to_i)
     @page = 1 if !@page || @page <= 0
   end
@@ -34,7 +42,7 @@ class ManufacturersController < ApplicationController
     @manufacturers = Manufacturer.joins(:boats).where(boats: {status: 'active'})
                          .where('manufacturers.name LIKE ?', "#{@letter}%")
                          .group('manufacturers.name, manufacturers.slug')
-                         .order(:name).page(params[:page]).per(100)
+                         .order('manufacturers.name').page(params[:page]).per(100)
                          .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
   end
 end

@@ -10,10 +10,10 @@
   = render 'shared/navbar'
 
 = render layout: 'shared/boats_for_sale' do
-  = render 'manufacturer_letters'
-  %h1= @page_title
   .row
     .col-xs-12
+      %h1= @page_title
+
       .filters-box
         %h3 Models
         %ul.flex-six-columns
@@ -24,4 +24,5 @@
     - @boats.each do |b|
       = render layout: 'boats/boat', locals: {boat: b} do
         -#
-    = paginate @boats
+    .col-xs-12
+      = paginate @boats

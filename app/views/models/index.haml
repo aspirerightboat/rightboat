@@ -3,7 +3,7 @@
 = render layout: 'shared/boats_for_sale' do
   = render 'model_letters'
   %h1 All Models
-  %ul.four-columns
+  %ul.flex-four-columns
     - @models.each do |m|
       %li #{link_to m.name, model_path(m)} (#{m.boats_count})
   = paginate @models

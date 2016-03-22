@@ -38,6 +38,10 @@ $ ->
       if onComplete
         onComplete($form, e, data, status, xhr)
       else if xhr.responseJSON && (loc = xhr.responseJSON.location)
+        setTimeout (->
+          $submit.addClass('inline-loading')
+          $submit.prop('disabled', true)
+        ), 10
         window.location = loc
       else if message = $form.data('message')
         $('<div class="alert alert-info">' + message + '</div>').prependTo($form).hide().show(200)

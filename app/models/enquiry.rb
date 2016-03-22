@@ -3,7 +3,7 @@ class Enquiry < ActiveRecord::Base
   STATUSES = %w(pending quality_check approved rejected invoiced suspicious)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
-  # attr_accessor  #:captcha_correct
+  attr_accessor :suspicious_title
 
   belongs_to :user
   belongs_to :boat
@@ -20,6 +20,7 @@ class Enquiry < ActiveRecord::Base
 
   before_save :update_lead_price
   after_save :send_quality_check_email
+  after_save :mail_if_suspicious
   after_save :became_not_suspicious
   after_update :create_lead_trail, :admin_reviewed_email
 
@@ -126,7 +127,13 @@ class Enquiry < ActiveRecord::Base
 
   def mark_suspicious(mail_title)
     self.status = 'suspicious'
-    LeadsMailer.suspicious_lead(id, mail_title).deliver_later
+    self.suspicious_title = mail_title
+  end
+
+  def mail_if_suspicious
+    if status_changed? && status == 'suspicious'
+      LeadsMailer.suspicious_lead(id, suspicious_title).deliver_now
+    end
   end
 
   def became_not_suspicious

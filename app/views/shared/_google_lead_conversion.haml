@@ -13,6 +13,10 @@
 
 - if redirect_to_enquiries
   :javascript
+    setTimeout(function() {
+      $('.enquiry-form button[type="submit"]').addClass('inline-loading').prop('disabled', true)
+    }, 10);
+
     setTimeout(function() { // wait some time for google conversion call
       window.location = '#{member_enquiries_path}'
     }, 100);

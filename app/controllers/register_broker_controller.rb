@@ -1,5 +1,7 @@
 class RegisterBrokerController < ApplicationController
   def show
+    redirect_to root_path, status: 301 and return if !request.xhr?
+
     @user = User.new
   end
 

@@ -22,7 +22,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
 
   index download_links: [:csv] do
     column :id
-    column('Date of Lead', sortable: :created_at) { |lead| time_ago_with_hint(lead.created_at) }
+    column('Date of Lead', sortable: :created_at) { |lead| lead.created_at.strftime('%d %b %H:%M') }
     column :customer, sortable: :first_name do |lead|
       div { lead.user ? link_to(lead.user.name, admin_user_path(lead.user)) : lead.name }
       div { lead.email } if !lead.user

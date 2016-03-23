@@ -5,6 +5,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   menu label: 'Leads', priority: 25
 
   config.sort_order = 'created_at_desc_and_first_name_asc_and_surname_asc'
+  actions :all, except: [:destroy]
 
   filter :first_name_or_surname_or_email_cont, as: :string, label: 'Customer'
   filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
@@ -36,7 +37,9 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column :status
     column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
     column('Lead Price £') { |lead| b { lead.lead_price } }
-    actions
+    actions do |enquiry|
+      item 'Delete', delete_admin_lead_path(enquiry), class: 'delete-lead'
+    end
   end
 
   form do |f|
@@ -104,5 +107,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   collection_action :approve_old_leads, method: :post do
     res = LeadsApproveJob.new.perform
     redirect_to({action: :index}, notice: "#{res} leads was approved")
+  end
+
+  member_action :delete, method: :post do
+    @lead = Enquiry.find(params[:id])
+    @lead.update status: 'deleted', bad_quality_comment: params[:reason]
+    redirect_to :back, notice: 'Lead deleted successfully'
   end
 end

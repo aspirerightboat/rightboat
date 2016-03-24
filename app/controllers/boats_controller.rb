@@ -23,15 +23,17 @@ class BoatsController < ApplicationController
 
     UserMailer.boat_detail(current_user.id, @boat.id).deliver_now
 
-    render pdf: 'pdf',
-           layout: 'pdf',
-           margin: { bottom: 16 },
-           footer: {
-               html: {
-                   template:  'shared/_pdf_footer.html.haml',
-                   layout:    'pdf'
-               }
-           }
+    send_data render_to_string(
+      pdf: 'pdf',
+      template: 'boats/pdf.html.haml',
+      layout: 'layouts/pdf.html.haml',
+      margin: { bottom: 16 },
+      footer: {
+         html: {
+             template:  'shared/_pdf_footer.html.haml',
+             layout:    'layouts/pdf.html.haml'
+         }
+      }), filename: "Rightboat-#{[@boat.manufacturer, @boat.model].reject(&:blank?).join('-')}-#{@boat.ref_no}.pdf", type: 'application/pdf'
 
   end
 

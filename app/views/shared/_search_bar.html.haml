@@ -18,9 +18,6 @@
         %li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'nav-link'
       - if @back_url
         %li= link_to '< Back to Results', @back_url, class: 'nav-link'
-      - elsif params[:back] && params[:back] == 'true'
-        %li= link_to 'Back', :back, class: 'return-prev nav-link'
-
     - if @boats
       %ul.nav.navbar-nav.navbar-right.display-options
         %li

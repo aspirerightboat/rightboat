@@ -14,14 +14,14 @@
       %h3.toolbar-title Featured Boats
     #featured-wrap.container
       .row(data-layout-mode="gallery")
-        = render @featured_boats, back: true
+        = render @featured_boats
 
   - if @recent_boats.any?
     #recent-boats
       %h3.toolbar-title My Recent Views
       .container
         .row
-          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat, locals: { back: true }
+          = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat
 
   - if @newest_boats.any?
     #newest-boats.nabvar-tools
@@ -29,7 +29,7 @@
         %h3.text-center Newest boats
         .slick-nav
           - @newest_boats.each do |boat|
-            = link_to "#{makemodel_boat_path(boat)}?back=true" do
+            = link_to makemodel_boat_path(boat) do
               .caption.text-center
                 %h4
                   %strong= boat.manufacturer

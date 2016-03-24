@@ -1,4 +1,20 @@
 $ ->
+
+  $(document).on 'ready page:load', ->
+    $('.delete-lead').click (e)->
+      e.stopPropagation()
+      e.preventDefault()
+      formInputs = { reason: 'textarea' }
+      ActiveAdmin.modal_dialog 'Pleas input reason', formInputs, (inputs) =>
+        $(@).trigger 'confirm:complete', inputs
+
+    $('.delete-lead').on 'confirm:complete', (e, inputs) ->
+      $form = $('#dialog_confirm')
+      if inputs.reason.trim() != ''
+        $form.prepend('<input type="hidden" name="authenticity_token" value="' + $('[name="csrf-token"]').attr('content') + '">')
+        $form.attr('action', $('.delete-lead').attr('href')).attr('method', 'post')
+        $form.submit()
+
   return unless $('#lead-graph').length > 0
 
   $(document).ready ->

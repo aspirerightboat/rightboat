@@ -9,18 +9,10 @@ class ModelsController < ApplicationController
   end
 
   def show
-    @model = Model.find_by(slug: params[:id])
-    redirect_to root_path and return if !@model
+    @model = Model.find_by(slug: params[:model])
+    redirect_to(boats_path) and return if !@model
 
-    search_params = {
-      model_id: @model.id,
-      page: params[:page] || 1
-    }
-
-    search_params[:order] = params[:order] if params[:order].present?
-    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
-
-    @manufacturer = @model.manufacturer
+    redirect_to makemodel_path(@model)
   end
 
   def by_letter

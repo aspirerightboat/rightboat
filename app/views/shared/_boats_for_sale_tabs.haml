@@ -2,11 +2,11 @@
   .col-xs-12
     %ul.pipe-list
       - if controller_name == 'manufacturers' && action_name == 'show'
-        %li <small>Back to #{link_to 'Manufacturers', manufacturers_path}</small>
+        %li <small>Back to #{link_to 'Manufacturers', boats_path}</small>
       - elsif controller_name == 'models' && action_name == 'show'
 
       - else
-        %li{style: ('font-weight:bold')}= link_to_unless_current 'Manufacturer', manufacturers_path
+        %li{style: ('font-weight:bold')}= link_to_unless_current 'Manufacturer', boats_path
         %li{style: ('font-weight:bold' if controller_name == 'models')}= link_to_unless_current 'Model', models_path
         %li{style: ('font-weight:bold' if controller_name == 'boat_types')}= link_to_unless_current 'Category', boat_types_path
         %li{style: ('font-weight:bold' if controller_name == 'countries')}= link_to_unless_current 'Location', countries_path

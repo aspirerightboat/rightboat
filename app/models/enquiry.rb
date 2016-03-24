@@ -132,7 +132,7 @@ class Enquiry < ActiveRecord::Base
 
   def mail_if_suspicious
     if status_changed? && status == 'suspicious'
-      LeadsMailer.suspicious_lead(id, suspicious_title).deliver_now
+      LeadsMailer.suspicious_lead(id, suspicious_title).deliver_later
     end
   end
 

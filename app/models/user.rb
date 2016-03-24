@@ -129,11 +129,7 @@ class User < ActiveRecord::Base
   private
 
   def slug_candidates
-    [
-        username,
-        [first_name, last_name],
-        [email]
-    ]
+    [(company_name if company?), [first_name, last_name], email]
   end
 
   def self.find_for_database_authentication(warden_conditions)

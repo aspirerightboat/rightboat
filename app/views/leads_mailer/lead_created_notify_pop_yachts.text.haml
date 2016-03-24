@@ -3,7 +3,7 @@ We are pleased to inform you that you have an enquiry from Rightboat.
 
 Make: #{@boat.manufacturer}
 Model: #{@boat.model}
-Details page: #{boat_url(@boat.slug)}
+Details page: #{sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)}
 Pop yachts boat ID: #{@boat.source_id}
 Customer Name: #{@enquiry.name}
 Customer Email: #{@enquiry.email}

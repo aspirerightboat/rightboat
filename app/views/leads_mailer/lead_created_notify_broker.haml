@@ -1,4 +1,4 @@
-- boat_url = boat_url(@boat.slug)
+- boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
 
 %p Dear #{@broker.broker_name}
 %p We are pleased to inform you that you have an enquiry from #{link_to 'Rightboat', root_url}.

@@ -23,8 +23,8 @@
         %li Boat Ref No: <b>#{@boat.ref_no}</b>
         %li Source ID: <b>#{@boat.source_id || @boat.source_url}</b>
         %li
-          #{link_to 'Boat details', boat_path(@boat)}
-          (#{link_to 'PDF', boat_pdf_path(@boat)})
+          #{link_to 'Boat details', makemodel_boat_path(@boat)}
+          (#{link_to 'PDF', makemodel_boat_pdf_path(@boat)})
 
       %h2 Enquiry Details
       %ul
@@ -43,7 +43,7 @@
         - if @enquiry.status == 'quality_check'
           %li Current status: #{lead_status_label @enquiry.status}
     .col-sm-6.col-xs-12
-      = link_to boat_path(@boat), style: 'display: block; margin-top: 22px;' do
+      = link_to makemodel_boat_path(@boat), style: 'display: block; margin-top: 22px;' do
         - if @boat.primary_image
           = image_tag @boat.primary_image.file.url(:thumb)
         - else

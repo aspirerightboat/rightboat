@@ -100,10 +100,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :boats, path: 'boats-for-sale', only: [:index, :show] do
-    get :pdf
-  end
-  resources :manufacturers, path: 'manufacturer', only: [:index, :show]
+  get 'boats-for-sale', to: 'boats#index', as: :boats
+  get 'boats-for-sale/:manufacturer', to: 'boats#manufacturer', as: :sale_manufacturer
+  get 'boats-for-sale/:manufacturer/:model', to: 'boats#model', as: :sale_model
+  get 'boats-for-sale/:manufacturer/:model/:boat', to: 'boats#show', as: :sale_boat
+  get 'boats-for-sale/:manufacturer/:model/:boat/pdf', to: 'boats#pdf', as: :sale_boat_pdf
+  get 'manufacturer', to: redirect('/boats-for-sale')
+  get 'manufacturer/:manufacturer', to: redirect('/boats-for-sale/%{manufacturer}')
+  # resources :manufacturers, path: 'manufacturer', only: [:index, :show]
   get 'manufacturers-by-letter/:id', to: 'manufacturers#by_letter', as: :manufacturers_by_letter
   resources :boat_types, path: 'boat-type', only: [:index, :show]
   resources :countries, path: 'location', only: [:index, :show]

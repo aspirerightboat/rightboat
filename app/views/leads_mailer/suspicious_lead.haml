@@ -1,5 +1,5 @@
 - if @lead
-  - boat_url = boat_url(@boat.slug)
+  - boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
 
   %p Suspicious lead:
   %ul

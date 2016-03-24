@@ -1,6 +1,6 @@
 - @page_title = boat_title(@boat)
 - @page_description = "#{@boat.manufacturer_model} for sale - #{truncate(strip_tags(@boat.short_description), length: 200, omission: '...')}"
-- @canonical_url = boat_url(@boat.slug)
+- @canonical_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
 - if @boat.primary_image
   - @image_url = @boat.primary_image.file_url
 
@@ -49,7 +49,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
       .boat-header
         .container
           - if @boat.user == current_user
-            = link_to 'PDF Link', boat_pdf_path(@boat), class: 'btn-flat btn-black'
+            = link_to 'PDF Link', makemodel_boat_pdf_path(@boat), class: 'btn-flat btn-black'
           - else
             - if @boat.offer_available?
               = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'

@@ -2,6 +2,9 @@ class BoatType < ActiveRecord::Base
   include FixSpelling
   include BoatOwner
 
+  extend FriendlyId
+  friendly_id :name, use: [:slugged]
+
   GENERAL_TYPES = %w(Power Sail Other)
 
   validates_presence_of :name

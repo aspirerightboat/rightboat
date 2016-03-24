@@ -1,11 +1,4 @@
 class CountriesController < ApplicationController
-  def index
-    @countries = Country.joins(:boats).group('countries.name, countries.slug')
-                     .where('boats.deleted_at IS NULL')
-                     .order('COUNT(*) DESC').page(params[:page]).per(100)
-                     .select('countries.name, countries.slug, COUNT(*) AS boats_count')
-  end
-
   def show
     @country = Country.find_by(slug: params[:id])
     redirect_to root_path and return if !@country

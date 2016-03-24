@@ -1,8 +1,0 @@
-- @page_title = 'Boats for sale by location on Rightboat.com'
-
-= render layout: 'shared/boats_for_sale' do
-  %h1 Boat Locations
-  %ul.flex-four-columns
-    - @countries.each do |c|
-      %li #{link_to c.name, country_path(c)} (#{c.boats_count})
-  = paginate @countries

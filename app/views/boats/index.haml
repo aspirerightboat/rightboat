@@ -1,21 +1,25 @@
-- @page_title = 'Boats for sale by manufacturer on Rightboat.com'
+- @page_title = 'Boats for sale on Rightboat.com'
 
 = render layout: 'shared/boats_for_sale' do
-  - if @top_manufacturer_infos
-    .row
-      .col-xs-12
-        .filters-box
-          %h3 Top Manufacturers
-          %ul.flex-six-columns
-            - cache "top-manufacturers-#{@page}", expires_in: 1.hour do
-              - @top_manufacturer_infos.each do |maker_name, maker_slug, boats_count|
-                %li #{link_to maker_name, make_path(maker_slug)} <small>(#{boats_count})</small>
   .row
     .col-xs-12
-      %h1 All Manufacturers
-      By letter: #{render 'shared/manufacturer_letters'}
+      - cache 'boats-index-filters', expires_in: 1.hour do
+        - boats_index_filters_data
+        .filters-box
+          %h3 Manufacturers by letter
+          .letters-row #{render 'shared/manufacturer_letters'}
 
-      %ul.flex-four-columns.big-vert-margins
-        - @manufacturers.each do |m|
-          %li #{link_to m.name, make_path(m)} <small>(#{m.boats_count})</small>
-      = paginate @manufacturers
+          %h3 Top Manufacturers
+          %ul.flex-six-columns
+            - @top_manufacturer_infos.each do |maker_name, maker_slug, boats_count|
+              %li #{link_to maker_name, make_path(maker_slug)} <small>(#{boats_count})</small>
+
+          %h3 Categories
+          %ul.flex-six-columns
+            - @boat_types.each do |bt|
+              %li #{link_to bt.name, boat_type_path(bt)} <small>(#{bt.boats_count})</small>
+
+          %h3 Locations
+          %ul.flex-six-columns
+            - @countries.each do |c|
+              %li #{link_to c.name, country_path(c)} <small>(#{c.boats_count})</small>

@@ -105,14 +105,16 @@ Rails.application.routes.draw do
   get 'boats-for-sale/:manufacturer/:model', to: 'boats#model', as: :sale_model
   get 'boats-for-sale/:manufacturer/:model/:boat', to: 'boats#show', as: :sale_boat
   get 'boats-for-sale/:manufacturer/:model/:boat/pdf', to: 'boats#pdf', as: :sale_boat_pdf
+  get 'manufacturers-by-letter/:letter', to: 'boats#manufacturers_by_letter', as: :manufacturers_by_letter
+
   get 'manufacturer', to: redirect('/boats-for-sale')
   get 'manufacturer/:manufacturer', to: redirect('/boats-for-sale/%{manufacturer}')
-  # resources :manufacturers, path: 'manufacturer', only: [:index, :show]
-  get 'manufacturers-by-letter/:id', to: 'manufacturers#by_letter', as: :manufacturers_by_letter
-  resources :boat_types, path: 'boat-type', only: [:index, :show]
-  resources :countries, path: 'location', only: [:index, :show]
-  resources :models, only: [:index, :show]
-  get 'models-by-letter/:id', to: 'models#by_letter', as: :models_by_letter
+  get 'models-by-letter/:id', to: redirect('/boats-for-sale')
+  resources :boat_types, path: 'boat-type', only: [:show]
+  get 'boat-type', to: redirect('/boats-for-sale')
+  resources :countries, path: 'boats-for-sale-in', only: [:show]
+  get 'location', to: redirect('/boats-for-sale')
+  get 'location/:id', to: redirect('/boats-for-sale-in/%{id}')
 
   get 'leads/:id', to: 'enquiries#show', as: :lead
   post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve

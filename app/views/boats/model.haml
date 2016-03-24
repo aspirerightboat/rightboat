@@ -1,6 +1,6 @@
 - @page_title = "#{@model.name} boats for sale"
 - @page_description = @page_title
-- @canonical_url = model_url(@model.slug)
+- @canonical_url = sale_model_url(manufacturer: @model.manufacturer, model: @model)
 
 - content_for :meta_tags do
   %meta(name="robots" content="index, follow")
@@ -8,7 +8,6 @@
 = render layout: 'shared/boats_for_sale' do
   .row
     .col-xs-12
-      <small>Back to #{link_to @manufacturer.name, make_path(@manufacturer)}</small>
       %h1 #{@manufacturer.name} #{@model.name} boats
   .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|

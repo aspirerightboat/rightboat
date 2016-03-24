@@ -2,20 +2,6 @@ class BoatsController < ApplicationController
   before_filter :set_back_link, only: [:show]
 
   def index
-    unless params[:page]
-      @top_manufacturer_infos = Manufacturer.joins(:boats).where(boats: {status: 'active'})
-                                    .group('manufacturers.name, manufacturers.slug')
-                                    .order('COUNT(*) DESC').limit(60)
-                                    .pluck('manufacturers.name, manufacturers.slug, COUNT(*)').sort_by!(&:first)
-    end
-
-    @manufacturers = Manufacturer.joins(:boats).where(boats: {status: 'active'})
-                         .group('manufacturers.name, manufacturers.slug')
-                         .order('manufacturers.name').page(params[:page]).per(100)
-                         .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
-
-    @page = params[:page].try(:to_i)
-    @page = 1 if !@page || @page <= 0
   end
 
   def manufacturer
@@ -35,6 +21,17 @@ class BoatsController < ApplicationController
     @model_infos = @manufacturer.models.joins(:boats, :manufacturer).where(boats: {status: 'active'})
                        .group('models.slug, models.name, manufacturers.slug').order(:name)
                        .pluck('models.slug, models.name, manufacturers.slug, COUNT(*)')
+  end
+
+  def manufacturers_by_letter
+    @letter = params[:letter]
+    redirect_to(action: :index) if @letter.blank? || @letter !~ /\A[a-z]\z/
+
+    @manufacturers = Manufacturer.joins(:boats).where(boats: {status: 'active'})
+                         .where('manufacturers.name LIKE ?', "#{@letter}%")
+                         .group('manufacturers.name, manufacturers.slug')
+                         .order('manufacturers.name')
+                         .select('manufacturers.name, manufacturers.slug, COUNT(*) AS boats_count')
   end
 
   def model
@@ -79,12 +76,12 @@ class BoatsController < ApplicationController
   end
 
   def pdf
-    @boat = Boat.includes([user: :broker_info], :office).find_by(slug: params[:boat_id])
+    @boat = Boat.active.find_by(slug: params[:boat])
 
-    lead_requested = current_user.try(:admin?) ||
+    can_view_lead = current_user.try(:admin?) ||
         Enquiry.where(boat_id: @boat.id).where('remote_ip = ? OR user_id = ?', request.remote_ip, current_user.try(:id) || 0).exists?
 
-    if !lead_requested
+    if !can_view_lead
       redirect_to("#{makemodel_boat_path(@boat)}#enquiry_popup", alert: I18n.t('messages.not_authorized')) and return
     end
 

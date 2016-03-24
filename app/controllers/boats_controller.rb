@@ -85,6 +85,8 @@ class BoatsController < ApplicationController
       redirect_to("#{makemodel_boat_path(@boat)}#enquiry_popup", alert: I18n.t('messages.not_authorized')) and return
     end
 
+    UserMailer.boat_detail(current_user.id, @boat.id).deliver_now
+
     render pdf: 'pdf',
            layout: 'pdf',
            margin: { bottom: 16 },

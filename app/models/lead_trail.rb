@@ -12,6 +12,8 @@ class LeadTrail < ActiveRecord::Base
     if new_status == 'rejected'
       ret += "#{lead.bad_quality_reason.humanize}: " if lead.bad_quality_reason
       ret += lead.bad_quality_comment if lead.bad_quality_comment
+    elsif new_status == 'deleted'
+      ret += lead.bad_quality_comment if lead.bad_quality_comment
     end
     ret
   end

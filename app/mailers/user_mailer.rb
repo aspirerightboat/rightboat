@@ -1,5 +1,6 @@
 class UserMailer < ApplicationMailer
   add_template_helper BoatsHelper
+  add_template_helper QrcodeHelper
   layout 'mailer'
 
   def saved_search_updated(user_id, searches)
@@ -45,6 +46,16 @@ class UserMailer < ApplicationMailer
     kind = @alert_reason == 'favourite' ? 'Favourite' : 'Enquired'
     mail(to: to_email, subject: "#{kind} boat status changed - #{@boat.manufacturer_model} - Rightboat")
   end
+
+  def boat_detail(user_id, boat_id)
+    @user = User.find(user_id)
+    @boat = Boat.find(boat_id)
+    attach_boat_pdf
+
+    to_email = STAGING_EMAIL || @user.email
+    mail(to: to_email, subject: "Boat Detail ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
+  end
+
 
   def new_berth_enquiry(berth_enquiry_id)
     @berth_enquiry = BerthEnquiry.find(berth_enquiry_id)

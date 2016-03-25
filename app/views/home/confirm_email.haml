@@ -11,11 +11,11 @@
     .alert.alert-warning= alert
 
   %h1 Email Activation
-  %p(style="margin: 25px 0") Confirmation instructions were sent to your email <b>#{current_user.email}</b>.
+  %p(style="margin: 25px 0") Confirmation instructions were sent to your email <b>#{current_user&.email}</b>.
   %p If you didn't receive the email, click Resend.
   = form_tag resend_confirmation_path, class: 'form-inline' do
     .form-group
       = label_tag :email, 'Email'
-      = text_field_tag :email, params[:email] || current_user.try(:email), class: 'form-control', 'data-validetta' => 'required,email'
+      = text_field_tag :email, params[:email] || current_user&.email, class: 'form-control', 'data-validetta' => 'required,email'
     .form-group
       %button.nice-button(type="submit") Resend

@@ -12,7 +12,7 @@ $ ->
       $form = $('#dialog_confirm')
       if inputs.reason.trim() != ''
         $form.prepend('<input type="hidden" name="authenticity_token" value="' + $('[name="csrf-token"]').attr('content') + '">')
-        $form.attr('action', $('.delete-lead').attr('href')).attr('method', 'post')
+        $form.attr('action', $(e.currentTarget).attr('href')).attr('method', 'post')
         $form.submit()
 
   return unless $('#lead-graph').length > 0

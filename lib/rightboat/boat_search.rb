@@ -7,7 +7,8 @@ module Rightboat
 
     attr_reader :facets_data, :search
 
-    attr_reader :q, :manufacturer_model, :manufacturer, :model, :category, :country, :boat_type, :manufacturer_id, :model_id,
+    attr_reader :q, :manufacturer_model, :manufacturer, :model, :model_ids,
+                :category, :country, :boat_type, :manufacturer_id, :model_id,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max, :country_id, :boat_type_id,
                 :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
@@ -67,6 +68,7 @@ module Rightboat
 
         any_of { country.each { |country_id| with :country_id, country_id } } if country
         any_of { category.each { |category_id| with :category_id, category_id } } if category
+        any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids
         with :boat_type, boat_type if boat_type
 
         if with_facets
@@ -141,6 +143,7 @@ module Rightboat
       @boat_type_id = params[:boat_type_id] if params[:boat_type_id].present?
       @category = read_tags(params[:category])
       @country = read_tags(params[:country])
+      @model_ids = read_tags(params[:model_ids])
       @boat_type = read_str(params[:boat_type])
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])

@@ -19,8 +19,8 @@ class BoatsController < ApplicationController
     @boats = Rightboat::BoatSearch.new.do_search(search_params).results
 
     @model_infos = @manufacturer.models.joins(:boats, :manufacturer).where(boats: {status: 'active'})
-                       .group('models.slug, models.name, manufacturers.slug').order(:name)
-                       .pluck('models.slug, models.name, manufacturers.slug, COUNT(*)')
+                       .group('models.id, models.slug, models.name, manufacturers.slug').order(:name)
+                       .pluck('models.id, models.slug, models.name, manufacturers.slug, COUNT(*)')
   end
 
   def manufacturers_by_letter
@@ -97,6 +97,18 @@ class BoatsController < ApplicationController
                }
            }
 
+  end
+
+  def filter
+    head :bad_request unless request.xhr?
+
+    search_params = {order: current_search_order}
+
+    if params[:model_ids]
+      search_params[:model_ids] = params[:model_ids].to_s.split(',')
+    end
+
+    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
   end
 
   private

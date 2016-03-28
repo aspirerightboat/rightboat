@@ -102,6 +102,7 @@ Rails.application.routes.draw do
 
   get 'boats-for-sale', to: 'boats#index', as: :boats
   get 'boats-for-sale/:manufacturer', to: 'boats#manufacturer', as: :sale_manufacturer
+  get 'boats-for-sale/:manufacturer/filter', to: 'boats#filter' #, as: :sale_filter
   get 'boats-for-sale/:manufacturer/:model', to: 'boats#model', as: :sale_model
   get 'boats-for-sale/:manufacturer/:model/:boat', to: 'boats#show', as: :sale_boat
   get 'boats-for-sale/:manufacturer/:model/:boat/pdf', to: 'boats#pdf', as: :sale_boat_pdf

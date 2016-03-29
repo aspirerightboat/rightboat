@@ -1,12 +1,16 @@
 .row.topmost-row
   .col-xs-12
-    %ul.pipe-list
-      - if controller_name == 'manufacturers' && action_name == 'show'
-        %li <small>Back to #{link_to 'Manufacturers', manufacturers_path}</small>
-      - elsif controller_name == 'models' && action_name == 'show'
+    - if controller_name == 'boats' && action_name == 'model'
+      %small
+        ← #{link_to 'Boats for sale', boats_path}
+        ← #{link_to @manufacturer.name, make_path(@manufacturer)}
 
-      - else
-        %li{style: ('font-weight:bold')}= link_to_unless_current 'Manufacturer', manufacturers_path
-        %li{style: ('font-weight:bold' if controller_name == 'models')}= link_to_unless_current 'Model', models_path
-        %li{style: ('font-weight:bold' if controller_name == 'boat_types')}= link_to_unless_current 'Category', boat_types_path
-        %li{style: ('font-weight:bold' if controller_name == 'countries')}= link_to_unless_current 'Location', countries_path
+      -#- elsif controller_name == 'boats' && action_name == 'show'
+      -#  %small
+      -#    ← #{link_to 'Boats for sale', boats_path}
+      -#    ← #{link_to @manufacturer.name, make_path(@manufacturer)}
+      -#    ← #{link_to @model.name, makemodel_path(@model)}
+
+    - elsif controller_name != 'boats' || action_name != 'index'
+      %small
+        ← #{link_to 'Boats for sale', boats_path}

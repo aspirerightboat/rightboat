@@ -1,9 +1,7 @@
-- back ||= false
-
 .boat-vertical-thumb.col-sm-4.col-xs-12.text-center.boat-view{'data-boat-ref' => boat.slug,
                                                               'data-length' => boat.length_m.to_f,
                                                               'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
-  = link_to boat_path(boat.slug, back: back) do
+  = link_to makemodel_boat_path(boat) do
     .boat-img-thumb
       - if boat.primary_image
         = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)

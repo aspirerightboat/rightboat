@@ -5,9 +5,11 @@ class ApplicationController < ActionController::Base
   helper_method :current_currency, :current_length_unit, :current_layout_mode, :current_search_order, :current_broker
 
   def current_currency
-    @current_currency ||= Currency.cached_by_name(cookies[:currency]) ||
-        (Country.find_by(iso: request.location.country_code).try(:currency) if request.location) ||
-        Currency.default
+    @current_currency ||= begin
+      Currency.cached_by_name(cookies[:currency]) ||
+      (location = safe_geocoder_location) && Country.find_by(iso: location.country_code).try(:currency) ||
+      Currency.default
+    end
   end
 
   def set_current_currency(currency_name)
@@ -52,6 +54,15 @@ class ApplicationController < ActionController::Base
       @current_broker ||= User.find_by(id: cookies[:broker_id])
     else
       @current_broker ||= current_user
+    end
+  end
+
+  def safe_geocoder_location
+    begin
+      request.location
+    rescue Errno::ENETUNREACH => e
+      logger.error "#{e.class.name}: #{e.message}\n#{e.backtrace.join("\n")}"
+      nil
     end
   end
 end

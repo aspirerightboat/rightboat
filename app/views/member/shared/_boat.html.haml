@@ -5,12 +5,12 @@
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
     .boat-img-thumb
-      = link_to boat_path(boat, back: true), class: boat.offer_status.dasherize do
+      = link_to makemodel_boat_path(boat), class: boat.offer_status.dasherize do
         - if boat.primary_image
           = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
         - else
           .no-image
-    .caption(href="#{boat_path(boat, back: true)}")
+    .caption(href="#{makemodel_boat_path(boat)}")
       .boat-links.text-right.pull-right
         - if controller_name == 'enquiries'
           .clearfix

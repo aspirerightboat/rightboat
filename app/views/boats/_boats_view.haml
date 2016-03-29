@@ -1,0 +1,7 @@
+#boats_view.row(data-layout-mode="#{current_layout_mode}")
+  - boats.each do |b|
+    = render layout: 'boats/boat', locals: {boat: b} do
+      -#
+  .col-xs-12
+    = paginate boats
+  .loading-overlay

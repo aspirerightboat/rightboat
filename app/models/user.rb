@@ -11,7 +11,10 @@ class User < ActiveRecord::Base
       'ADMIN' => 99
   }
 
-  CUSTOMER_DETAIL_REQUESTERS = %w(nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com jamie.coombes@sunseekertorquay.com sales@southamptonwaters.co.uk mark@williamsandsmithells.com)
+  CUSTOMER_DETAIL_REQUESTERS = %w(
+      nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com
+      jamie.coombes@sunseekertorquay.com sales@southamptonwaters.co.uk mark@williamsandsmithells.com
+  )
 
   serialize :broker_ids, Array
 
@@ -129,11 +132,7 @@ class User < ActiveRecord::Base
   private
 
   def slug_candidates
-    [
-        username,
-        [first_name, last_name],
-        [email]
-    ]
+    [(company_name if company?), [first_name, last_name], email]
   end
 
   def self.find_for_database_authentication(warden_conditions)

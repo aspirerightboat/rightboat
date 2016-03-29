@@ -1,4 +1,4 @@
-- boat_url = boat_url(@boat.slug)
+- boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
 - mail = @office.try(:email) || @boat.user.email
 
 %p Dear #{@enquiry.first_name},

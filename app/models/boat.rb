@@ -84,6 +84,7 @@ class Boat < ActiveRecord::Base
   belongs_to :vat_rate
   belongs_to :currency
   belongs_to :country
+  has_many :old_slugs, as: :sluggable, dependent: :delete_all
 
   validates_presence_of :manufacturer, :model
   validate :valid_manufacturer_model
@@ -142,6 +143,10 @@ class Boat < ActiveRecord::Base
     "RB#{100000 + id}"
   end
 
+  # def self.id_from_ref_no(ref_no)
+  #   ref_no[/.*rb(\d+)\z/i, 1].to_i - 100000
+  # end
+
   def full_location
     [location, country.try(:name)].reject(&:blank?).join(', ')
   end
@@ -188,10 +193,7 @@ class Boat < ActiveRecord::Base
   private
 
   def slug_candidates
-    [
-      name,
-      manufacturer_model
-    ]
+    [ref_no]
   end
 
   def valid_manufacturer_model

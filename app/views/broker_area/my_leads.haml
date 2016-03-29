@@ -16,7 +16,7 @@
         %td #{lead.id}
         %td #{lead.name}
         - boat = lead.boat
-        %td #{link_to boat.manufacturer_model, boat_path(boat.slug)}
+        %td #{link_to boat.manufacturer_model, makemodel_boat_path(boat)}
         %td #{distance_of_time_in_words(lead.created_at, Time.current)} ago
         %td= "#{distance_of_time_in_words(lead.broker_accessed_at, Time.current)} ago" if lead.broker_accessed_at
         %td

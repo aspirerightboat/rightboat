@@ -1,0 +1,25 @@
+- @page_title = 'Boats for sale on Rightboat.com'
+
+= render layout: 'shared/boats_for_sale' do
+  .row
+    .col-xs-12
+      - cache 'boats-index-filters', expires_in: 1.hour do
+        - boats_index_filters_data
+        .filters-box
+          %h3 Manufacturers by letter
+          .letters-row #{render 'shared/manufacturer_letters'}
+
+          %h3 Top Manufacturers
+          %ul.flex-six-columns
+            - @top_manufacturer_infos.each do |maker_name, maker_slug, boats_count|
+              %li #{link_to maker_name, make_path(maker_slug)} <small>(#{boats_count})</small>
+
+          %h3 Categories
+          %ul.flex-six-columns
+            - @boat_types.each do |bt|
+              %li #{link_to bt.name, boat_type_path(bt)} <small>(#{bt.boats_count})</small>
+
+          %h3 Locations
+          %ul.flex-six-columns
+            - @countries.each do |c|
+              %li #{link_to c.name, country_path(c)} <small>(#{c.boats_count})</small>

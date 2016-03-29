@@ -14,15 +14,16 @@
     .col-xs-12
       %h1= @page_title
 
-      .filters-box
+      .filters-box.filter-models-box
         %h3 Models
         %ul.flex-six-columns
-          - @model_infos.each do |model_slug, model_name, boats_count|
-            %li #{link_to model_name, model_path(model_slug)} <small>(#{boats_count})</small>
+          - @model_infos.each do |model_id, model_slug, model_name, manufacturer_slug, boats_count|
+            %li.checkbox-container
+              %input.filter-model(type="checkbox" id="model_#{model_slug.underscore}" data-model="#{model_id}")
+              %label(for="model_#{model_slug.underscore}")
+                %span.filter-item
+                  #{link_to model_name, sale_model_path(manufacturer: manufacturer_slug, model: model_slug)}
+                  %small (#{boats_count})
+        %button.filter-btn Apply Filter
 
-  .row(data-layout-mode="#{current_layout_mode}")
-    - @boats.each do |b|
-      = render layout: 'boats/boat', locals: {boat: b} do
-        -#
-    .col-xs-12
-      = paginate @boats
+  = render partial: 'boats_view', locals: {boats: @boats}

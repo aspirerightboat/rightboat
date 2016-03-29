@@ -30,7 +30,7 @@
   - when 'price_changed'
     %p
       #{@alert_reason == 'favourite' ? 'Your favourite boat' : 'The boat you have enquired about'}
-      #{link_to @boat.manufacturer_model, boat_url(@boat)} has changed price.
+      #{link_to @boat.manufacturer_model, sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)} has changed price.
       New price is #{number_to_currency(@boat.price, unit: @boat.safe_currency.symbol, precision: 2)}.
 
 %br

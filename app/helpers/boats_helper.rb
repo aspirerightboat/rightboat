@@ -87,4 +87,21 @@ module BoatsHelper
   def implicit_boats_count(count)
     count >= 10000 ? '10,000 plus' : count
   end
+
+  def boats_index_filters_data
+    @top_manufacturer_infos = Manufacturer.joins(:boats).where(boats: {status: 'active'})
+                                  .group('manufacturers.name, manufacturers.slug')
+                                  .order('COUNT(*) DESC').limit(60)
+                                  .pluck('manufacturers.name, manufacturers.slug, COUNT(*)').sort_by!(&:first)
+
+    @boat_types = BoatType.joins(:boats).where(boats: {status: 'active'})
+                      .group('boat_types.name, boat_types.slug')
+                      .order('boat_types.name')
+                      .select('boat_types.name, boat_types.slug, COUNT(*) AS boats_count')
+
+    @countries = Country.joins(:boats).where(boats: {status: 'active'})
+                     .group('countries.name, countries.slug')
+                     .order('countries.name')
+                     .select('countries.name, countries.slug, COUNT(*) AS boats_count')
+  end
 end

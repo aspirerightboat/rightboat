@@ -1,4 +1,6 @@
 class OldSlug < ActiveRecord::Base
   belongs_to :sluggable, polymorphic: true
-  belongs_to :boat, -> { where(old_slugs: {sluggable_type: 'Boat'}) }, foreign_key: 'sluggable_id'
+  belongs_to :boat, foreign_key: 'sluggable_id'
+
+  scope :boats, -> { where(sluggable_type: 'Boat') }
 end

@@ -193,7 +193,7 @@ class Boat < ActiveRecord::Base
   private
 
   def slug_candidates
-    ["#{name} #{ref_no}".strip]
+    [ref_no]
   end
 
   def valid_manufacturer_model

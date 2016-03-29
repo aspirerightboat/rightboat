@@ -6,6 +6,13 @@ class BoatsController < ApplicationController
 
   def manufacturer
     @manufacturer = Manufacturer.find_by(slug: params[:manufacturer])
+
+    if !@manufacturer
+      # handle old boat urls
+      boat = OldSlug.boats.find_by(slug: params[:manufacturer])&.boat
+      redirect_to makemodel_boat_path(boat) and return if boat
+    end
+
     redirect_to(action: :index) and return if !@manufacturer
 
     params[:manufacturer] = @manufacturer.name # so in advanced search panel manufacturer will be filled
@@ -53,14 +60,9 @@ class BoatsController < ApplicationController
   end
 
   def show
-    # handle old boat urls
-    if !params[:model] && !params[:boat]
-      boat = OldSlug.find_by(slug: params[:manufacturer])&.boat
-      redirect_to makemodel_boat_path(boat) and return if boat
-    end
-
     @boat = Boat.active.find_by(slug: params[:boat]) if params[:boat].present?
-    @boat = OldSlug.find_by(slug: params[:boat])&.boat if !@boat
+    @boat = OldSlug.boats.find_by(slug: params[:boat])&.boat if !@boat
+
     if !@boat
       if (model = Model.find_by(slug: params[:model]))
         path = makemodel_path(model)

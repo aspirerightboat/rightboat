@@ -11,6 +11,6 @@ module ActiveAdmin::BoatsHelper
   end
 
   def boat_link(boat)
-    link_to boat.manufacturer_model, boat
+    link_to boat.manufacturer_model, makemodel_boat_path(boat)
   end
 end

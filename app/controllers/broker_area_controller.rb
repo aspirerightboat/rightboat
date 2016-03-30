@@ -7,7 +7,7 @@ class BrokerAreaController < ApplicationController
   end
 
   def getting_started
-    cookies[:broker_id] = params[:broker_id] if current_broker&.admin? && params[:broker_id].present?
+    cookies[:broker_id] = params[:broker_id] if current_user&.admin? && params[:broker_id].present?
   end
 
   def details

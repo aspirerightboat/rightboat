@@ -24,7 +24,7 @@
         %li Source ID: <b>#{@boat.source_id || @boat.source_url}</b>
         %li
           #{link_to 'Boat details', makemodel_boat_path(@boat)}
-          (#{link_to 'PDF', makemodel_boat_pdf_path(@boat, format: 'pdf')})
+          (#{link_to 'PDF', makemodel_boat_pdf_path(@boat)})
 
       %h2 Enquiry Details
       %ul

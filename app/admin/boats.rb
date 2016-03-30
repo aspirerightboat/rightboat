@@ -117,7 +117,7 @@ ActiveAdmin.register Boat do
     end
 
     def find_resource
-      Boat.find(params[:id])
+      Boat.find_by(slug: params[:id]) || Boat.find(params[:id])
     end
   end
 

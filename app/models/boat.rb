@@ -1,7 +1,4 @@
 class Boat < ActiveRecord::Base
-  extend FriendlyId
-  friendly_id :slug_candidates, use: [:slugged, :finders]
-
   enum status: [:active, :inactive]
   SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
   OFFER_STATUSES = %w(available under_offer sold)
@@ -63,6 +60,7 @@ class Boat < ActiveRecord::Base
   after_save :update_leads_price
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
+  after_create :assign_slug
 
   has_many :favourites, dependent: :delete_all
   has_many :enquiries
@@ -102,6 +100,8 @@ class Boat < ActiveRecord::Base
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 
   def self.boat_view_includes; includes(:manufacturer, :currency, :primary_image, :model, :vat_rate) end
+
+  def to_param; slug end
 
   def similar_options(required_currency = nil, length_unit = nil)
     options = {
@@ -192,10 +192,6 @@ class Boat < ActiveRecord::Base
 
   private
 
-  def slug_candidates
-    [ref_no]
-  end
-
   def valid_manufacturer_model
     if (model_id_changed? || manufacturer_id_changed?) && model && model.manufacturer != manufacturer
       errors.add :model_id, "[#{model}] should belongs to manufacturer[#{manufacturer}]"
@@ -282,5 +278,9 @@ class Boat < ActiveRecord::Base
     else
       self.status = 'inactive'
     end
+  end
+
+  def assign_slug
+    update_column(:slug, ref_no.downcase)
   end
 end

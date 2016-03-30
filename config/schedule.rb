@@ -25,3 +25,4 @@ every(1.hour) { rake 'import:download_boatstream_feed' }
 every(1.day, at: '8:00') { rake 'export:run_all' }
 every(1.day, at: '23:00') { rake 'import:rearrange_imports' }
 every(1.day, at: '23:10') { rake 'error_events:remove_old' }
+every(1.day, at: '23:15') { rake 'boat_pdfs:cleanup' }

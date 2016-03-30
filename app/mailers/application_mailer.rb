@@ -9,7 +9,7 @@ class ApplicationMailer < ActionMailer::Base
   private
 
   def attach_boat_pdf
-    file_name = "Rightboat-#{[@boat.manufacturer, @boat.model].reject(&:blank?).join('-')}-#{@boat.ref_no}.pdf"
-    attachments[file_name] = WickedPdf.new.pdf_from_string(render 'boats/pdf', layout: 'pdf')
+    file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)
+    attachments[File.basename(file_path)] = File.read(file_path)
   end
 end

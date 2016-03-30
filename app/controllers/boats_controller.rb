@@ -8,6 +8,12 @@ class BoatsController < ApplicationController
     @manufacturer = Manufacturer.find_by(slug: params[:manufacturer])
 
     if !@manufacturer
+      # handle debugging boat urls
+      if params[:manufacturer].to_s =~ /rb\d+\z/i
+        boat = Boat.find_by(id: Boat.id_from_ref_no(params[:manufacturer]))
+        redirect_to makemodel_boat_path(boat) and return if boat
+      end
+
       # handle old boat urls
       boat = OldSlug.boats.find_by(slug: params[:manufacturer])&.boat
       redirect_to makemodel_boat_path(boat) and return if boat
@@ -80,27 +86,18 @@ class BoatsController < ApplicationController
   def pdf
     @boat = Boat.active.find_by(slug: params[:boat])
 
-    can_view_lead = current_user.try(:admin?) ||
+    can_view_lead = current_user&.admin? || current_user&.broker? ||
         Enquiry.where(boat_id: @boat.id).where('remote_ip = ? OR user_id = ?', request.remote_ip, current_user.try(:id) || 0).exists?
 
     if !can_view_lead
       redirect_to("#{makemodel_boat_path(@boat)}#enquiry_popup", alert: I18n.t('messages.not_authorized')) and return
     end
 
-    UserMailer.boat_detail(current_user.id, @boat.id).deliver_now
+    # UserMailer.boat_detail(current_user.id, @boat.id).deliver_now
 
-    send_data render_to_string(
-      pdf: 'pdf',
-      template: 'boats/pdf.html.haml',
-      layout: 'layouts/pdf.html.haml',
-      margin: { bottom: 16 },
-      footer: {
-         html: {
-             template:  'shared/_pdf_footer.html.haml',
-             layout:    'layouts/pdf.html.haml'
-         }
-      }), filename: "Rightboat-#{[@boat.manufacturer, @boat.model].reject(&:blank?).join('-')}-#{@boat.ref_no}.pdf", type: 'application/pdf'
+    file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)
 
+    send_data File.read(file_path), filename: File.basename(file_path), type: 'application/pdf'
   end
 
   def filter

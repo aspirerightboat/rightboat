@@ -143,9 +143,9 @@ class Boat < ActiveRecord::Base
     "RB#{100000 + id}"
   end
 
-  # def self.id_from_ref_no(ref_no)
-  #   ref_no[/.*rb(\d+)\z/i, 1].to_i - 100000
-  # end
+  def self.id_from_ref_no(ref_no)
+    ref_no[/.*rb(\d+)\z/i, 1].to_i - 100000
+  end
 
   def full_location
     [location, country.try(:name)].reject(&:blank?).join(', ')

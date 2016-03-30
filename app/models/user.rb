@@ -129,6 +129,10 @@ class User < ActiveRecord::Base
     broker_info.try(:contact_name) || name
   end
 
+  def broker?
+    company?
+  end
+
   private
 
   def slug_candidates

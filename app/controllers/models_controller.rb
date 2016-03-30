@@ -4,7 +4,7 @@ class ModelsController < ApplicationController
   end
 
   def show
-    @model = Model.find_by(slug: params[:model])
+    @model = Model.find_by(slug: params[:model]) || OldSlug.models.find_by(slug: params[:model])&.model
     redirect_to(boats_path) and return if !@model
 
     redirect_to makemodel_path(@model)

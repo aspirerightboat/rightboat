@@ -2,9 +2,6 @@ class Model < ActiveRecord::Base
   include FixSpelling
   include BoatOwner
 
-  extend FriendlyId
-  friendly_id :slug_candidates, use: [:slugged, :finders]
-
   belongs_to :manufacturer, inverse_of: :models
   has_many :buyer_guides
   has_many :finances
@@ -14,6 +11,7 @@ class Model < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :manufacturer_id
 
   after_save :reindex_boats
+  after_create :regenerate_slug
 
   searchable do
     text(:name_full_ngram, as: :name_full_ngram, boost: 2) { |m| m.name }
@@ -24,6 +22,8 @@ class Model < ActiveRecord::Base
 
     join :live, target: Boat, type: :boolean, join: {from: :model_id, to: :id}
   end
+
+  def to_param; slug end
 
   def to_s
     name
@@ -84,6 +84,7 @@ class Model < ActiveRecord::Base
       merge_and_destroy!(other_model)
     else
       update!(name: new_name)
+      regenerate_slug
     end
   end
 
@@ -95,8 +96,13 @@ class Model < ActiveRecord::Base
     end
   end
 
-  def slug_candidates
-    [ name, "rb-#{name}" ]
+  def regenerate_slug
+    new_slug = name.to_slug
+    new_slug = name.to_verbose_slug if Model.where(slug: new_slug, manufacturer_id: manufacturer_id).where.not(id: id).exists?
+
+    OldSlug.find_or_create_by(sluggable_type: 'Model', sluggable_id: id, slug: slug) if slug && new_slug != slug
+
+    update_column(:slug, new_slug) if new_slug != slug
   end
 
 end

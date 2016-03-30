@@ -13,4 +13,12 @@ class String
     self
   end
 
+  def to_slug
+    downcase.gsub(/[^a-z0-9]+/, ' ').squeeze(' ').strip.gsub(' ', '-').squeeze('-')[0..50]
+  end
+
+  def to_verbose_slug
+    downcase.strip.gsub(/[^a-z0-9]/, '-')[0..50]
+  end
+
 end

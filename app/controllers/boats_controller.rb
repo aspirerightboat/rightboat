@@ -48,8 +48,7 @@ class BoatsController < ApplicationController
   end
 
   def model
-    @model = Model.find_by(slug: params[:model])
-    redirect_to(action: :index) and return if !@model
+    return if !load_makemodel
 
     params[:model] = @model.name
     params[:manufacturer] = @model.manufacturer.name
@@ -70,14 +69,8 @@ class BoatsController < ApplicationController
     @boat = OldSlug.boats.find_by(slug: params[:boat])&.boat if !@boat
 
     if !@boat
-      if (model = Model.find_by(slug: params[:model]))
-        path = makemodel_path(model)
-      elsif (manufacturer = Manufacturer.find_by(slug: params[:manufacturer]))
-        path = make_path(manufacturer)
-      else
-        path = {action: :index}
-      end
-      redirect_to(path, alert: I18n.t('messages.boat_not_exist')) and return
+      return if !load_makemodel
+      redirect_to({action: :index}, alert: I18n.t('messages.boat_not_exist')) and return
     end
 
     store_recent
@@ -128,5 +121,27 @@ class BoatsController < ApplicationController
     else
       Activity.create(attrs.merge(user_id: current_user.try(:id)))
     end
+  end
+
+  def load_makemodel
+    manufacturer_slug = params[:manufacturer]
+    model_slug = params[:model]
+
+    @manufacturer = Manufacturer.find_by(slug: manufacturer_slug)
+    redirect_to({action: :index}, alert: 'Manufacturer not found') and return false unless @manufacturer
+
+    @model = Model.find_by(slug: model_slug, manufacturer_id: @manufacturer.id)
+
+    if !@model
+      model = OldSlug.models.joins('JOIN models ON models.id = sluggable_id')
+                  .where(models: {manufacturer_id: @manufacturer.id}, old_slugs: {slug: model_slug}).first&.model
+      if model
+        redirect_to(sale_model_path(manufacturer: @manufacturer, model: model)) and return false
+      else
+        redirect_to(sale_manufacturer_path(manufacturer: @manufacturer), alert: 'Model not found') and return false
+      end
+    end
+
+    true
   end
 end

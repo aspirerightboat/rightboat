@@ -158,6 +158,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'email/track' => 'email_trackings#open'
+
   # old site redirects
   get '/all/boats-for-sale/:name', to: redirect('/manufacturer/%{name}')
   get '/all/boats-for-sale/*other', to: redirect('/')

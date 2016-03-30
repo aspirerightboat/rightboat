@@ -28,10 +28,9 @@ ActiveAdmin.register SavedSearchesAlert do
     column :opened_at do |ssa|
 
       if ssa.opened_at.present?
-        res = []
-        res << content_tag(:span, "opened", class: "status_tag yes")
-        res << content_tag(:span, l(ssa.opened_at, format: :full_datetime))
-        res.join(" ").html_safe
+        content_tag(:span, l(ssa.opened_at, format: :full_datetime))
+      else
+        content_tag(:span, '-')
       end
     end
 

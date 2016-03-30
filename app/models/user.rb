@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   CUSTOMER_DETAIL_REQUESTERS = %w(
       nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com
       jamie.coombes@sunseekertorquay.com sales@southamptonwaters.co.uk mark@williamsandsmithells.com
+      inquiries@denisonyachtsales.com info@msp-yacht.de
   )
 
   serialize :broker_ids, Array

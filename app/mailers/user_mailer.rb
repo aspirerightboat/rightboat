@@ -1,6 +1,7 @@
 class UserMailer < ApplicationMailer
   add_template_helper BoatsHelper
   add_template_helper QrcodeHelper
+  helper :mailer
   layout 'mailer'
 
   def saved_search_updated(user_id, searches)

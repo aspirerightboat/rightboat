@@ -4,6 +4,10 @@
 %p
   New listings have been posted to Rightboat that match your following Saved #{t('search_plural', count: @searches.size)}:
 
+-## At this moment we are storing the first saved search only.
+-## TODO: Track all saved searches.
+= track_url(@user.id, @searches.first.first.id)
+
 - @searches.each do |saved_search, new_boats|
   %p Search for #{saved_search.search_title}:
   %table.boats-list

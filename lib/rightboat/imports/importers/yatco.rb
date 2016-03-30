@@ -84,8 +84,8 @@ module Rightboat
                 case
                 when key == 'model_year' && boat.model.blank? then boat.model = val
                 when key =~ /description/i && boat.description.blank? then boat.description = val
-                when key == 'location_region_name' && boat.location.blank? then boat.location = val
-                when key == 'location_state' && boat.location.blank? then boat.location = val
+                when key =~ /location_(region_name|state)/
+                  boat.location = val if boat.location.blank?
                 when key == 'sales_person' then boat.office[:name] = boat.office[:contact_name] = val
                 when key == 'sales_person_fax' then boat.office[:fax] = val
                 when key == 'sales_person_email' then boat.office[:email] = val
@@ -95,7 +95,7 @@ module Rightboat
                 when key =~ /^sales_p(?:er|re)son_city$/ then boat.office[:address_attributes][:town_city] = val # "preson" misspelled in xml
                 when key =~ /^sales_p(?:er|re)son_state$/ then boat.office[:address_attributes][:state] = val # "preson" misspelled in xml
                 when key =~ /^sales_p(?:er|re)son_postal_code$/ then boat.office[:address_attributes][:zip] = val # "preson" misspelled in xml
-                # when key == 'sales_person_id'
+                when key == 'sales_person_id'
                 when val.length < 256 then boat.set_missing_attr(key, val) # Ignore other long values
                 end
               end

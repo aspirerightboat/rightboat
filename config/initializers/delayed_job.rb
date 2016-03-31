@@ -19,7 +19,7 @@ module Delayed
             block.call(job, *args)
           rescue StandardError => error
             context = {job: {id: job.id, handler: job.handler}, error_location: 'Delayed Job Worker'}
-            Rightboat::CleverErrorsNotifier.try_notify(error, nil, nil, context)
+            Rightboat::CleverErrorsNotifier.try_notify(error, nil, nil, context) if Rails.env.production?
             raise error
           end
         end

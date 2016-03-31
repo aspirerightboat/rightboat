@@ -110,7 +110,7 @@
             = label_tag :new_used_used, 'Used'
         .form-group.row
           .col-xs-4.save-search
-            = link_to 'Save this search', member_saved_searches_path(params.except(:controller, :action)),
+            = link_to 'Save Search and Set Alert', member_saved_searches_path(params.except(:controller, :action)),
                        method: :post, remote: true, class: 'btn-flat require-login simple-ajax-link',
                        data: {'login-title' => 'Please sign in or join as a member to save your search.'}
             .result-popup

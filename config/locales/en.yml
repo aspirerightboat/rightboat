@@ -37,3 +37,7 @@ en:
   messages:
     boat_not_exist: This boat does not exists anymore.
     not_authorized: You are not authorized to access the page.
+
+  time:
+    formats:
+      full_datetime: "%B %d, %Y %H:%M"

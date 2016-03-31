@@ -6,13 +6,15 @@ class UserMailer < ApplicationMailer
 
   def saved_search_updated(user_id, searches)
     @user = User.find(user_id)
-    @searches_ids = []
+    saved_search_ids = []
     @searches = searches.map { |saved_search_id, boat_ids|
       saved_search = SavedSearch.find_by(id: saved_search_id)
       next if !saved_search
-      @searches_ids << saved_search_id
+      saved_search_ids << saved_search_id
       [saved_search, Boat.where(id: boat_ids).includes(:manufacturer, :model, :primary_image, :currency, :vat_rate, :country).to_a]
     }.compact
+
+    @saved_searches_alert = SavedSearchesAlert.create(user_id: user_id, saved_search_ids: saved_search_ids)
 
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: 'New Search Listings Alert - Rightboat')

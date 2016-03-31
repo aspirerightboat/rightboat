@@ -1,9 +1,6 @@
 module SavedSearchesMailerHelper
-  def saved_searches_mail_track_url(user_id, saved_search_ids)
-    saved_search_alert = SavedSearchesAlert.create({user_id: user_id, saved_search_ids: saved_search_ids})
-
-    url = "#{root_url}email/track?alert_id=#{saved_search_alert.id}.png"
-    image_tag(url, style: "display: none")
+  def track_email_open_saved_searches(saved_searches_alert)
+    url = saved_search_opened_email_trackings_url(token: saved_searches_alert.token, format: 'png')
+    image_tag(url, style: 'display: none', size: '1x1')
   end
-
 end

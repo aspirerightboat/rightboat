@@ -165,7 +165,11 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'email/track' => 'email_trackings#open'
+  resources :email_trackings, only: [] do
+    collection do
+      get :saved_search_opened
+    end
+  end
 
   # old site redirects
   get '/all/boats-for-sale/:name', to: redirect('/manufacturer/%{name}')

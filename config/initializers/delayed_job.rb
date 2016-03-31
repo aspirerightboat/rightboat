@@ -9,24 +9,26 @@ Delayed::Worker.delay_jobs = !Rails.env.test?
 Delayed::Worker.raise_signal_exceptions = :term
 Delayed::Worker.logger = Logger.new("#{Rails.root}/log/delayed_job.log", 5, 50.megabytes)
 
-module Delayed
-  module Plugins
-    class ErrorsNotifier < Plugin
+if Rails.env.production?
+  module Delayed
+    module Plugins
+      class ErrorsNotifier < Plugin
 
-      callbacks do |lifecycle|
-        lifecycle.around(:invoke_job) do |job, *args, &block|
-          begin
-            block.call(job, *args)
-          rescue StandardError => error
-            context = {job: {id: job.id, handler: job.handler}, error_location: 'Delayed Job Worker'}
-            Rightboat::CleverErrorsNotifier.try_notify(error, nil, nil, context) if Rails.env.production?
-            raise error
+        callbacks do |lifecycle|
+          lifecycle.around(:invoke_job) do |job, *args, &block|
+            begin
+              block.call(job, *args)
+            rescue StandardError => error
+              context = {job: {id: job.id, handler: job.handler}, error_location: 'Delayed Job Worker'}
+              Rightboat::CleverErrorsNotifier.try_notify(error, nil, nil, context)
+              raise error
+            end
           end
         end
-      end
 
+      end
     end
   end
-end
 
-Delayed::Worker.plugins << Delayed::Plugins::ErrorsNotifier
+  Delayed::Worker.plugins << Delayed::Plugins::ErrorsNotifier
+end

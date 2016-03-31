@@ -23,6 +23,7 @@
 %p #{@enquiry.created_at.strftime('%d %b %Y')}
 
 %p Please login to your #{link_to 'broker account', lead_url(@enquiry)} to view the full customer details
+%p If you would like to contact the customer directly, please select this #{mail_to @enquiry.email, 'link'}.
 
 %br
 %p

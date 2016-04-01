@@ -125,7 +125,7 @@ class EnquiriesController < ApplicationController
   end
 
   def can_view_as_broker(broker_user)
-    broker_user && broker_user.company? && @enquiry.boat.user == broker_user
+    current_user.admin? || (broker_user && broker_user.company? && @enquiry.boat.user == broker_user)
   end
 
   def can_view_as_buyer(user)

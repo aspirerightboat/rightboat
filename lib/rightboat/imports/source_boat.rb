@@ -270,18 +270,20 @@ module Rightboat
 
             address_attrs = office.delete(:address_attributes)
 
+            office_id = office[:source_id]
             if office[:source_id].blank?
-              office[:source_id] = XXhash.xxh32(office.each_with_object('') { |(k, v), s| s << "#{k}#{v}" }).to_s
+              office_id = XXhash.xxh32(office.each_with_object('') { |(k, v), s| s << "#{k}#{v}" }).to_s
             end
 
-            target_office = @@user_offices.find { |o| o.source_id.present? && o.source_id == office[:source_id] }
+            target_office = @@user_offices.find { |o| o.source_id.present? && o.source_id == office_id }
             target_office ||= @@user_offices.find { |o| o.source_id.blank? && office.all? { |k, v| o.send(k) == v } }
             target_office ||= user.offices.new
 
             target_office.assign_attributes(office)
+            target_office.source_id = office_id
             target_office.name ||= user.company_name
             address = target_office.address || Address.new
-            address.assign_attributes(address_attrs)
+            address.assign_attributes(address_attrs) if address_attrs
             office_changed = target_office.changed?
             address_changed = address.changed?
 

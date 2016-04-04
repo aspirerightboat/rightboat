@@ -152,6 +152,10 @@ GEM
     diff-lcs (1.2.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
+    email_spec (2.0.0)
+      htmlentities (~> 4.3.3)
+      launchy (~> 2.1)
+      mail (~> 2.6.3)
     equalizer (0.0.11)
     erubis (2.7.0)
     excon (0.45.3)
@@ -601,6 +605,7 @@ DEPENDENCIES
   delayed_job_active_record
   delayed_job_web
   devise
+  email_spec
   factory_girl
   figaro
   fog

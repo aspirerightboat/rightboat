@@ -100,6 +100,7 @@ end
 group :test do
   gem 'rspec-rails'
   gem 'factory_girl'
+  gem 'email_spec'
   gem 'database_cleaner'
   gem 'capybara'
 end

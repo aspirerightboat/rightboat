@@ -1,5 +1,18 @@
 FactoryGirl.define do
-  factory :boat do
+  factory :boat, class: Boat do
+    user
+    association :category, factory: :boat_category
+    boat_type
+    currency
+    engine_model
+    engine_manufacturer
+    drive_type
+    country
+    fuel_type
+    vat_rate
+    manufacturer
+    model
+
     sequence(:name) { |n| "boat-name-#{n}" }
     sequence(:slug) { |n| "boat-slug-#{n}" }
 
@@ -61,6 +74,7 @@ FactoryGirl.define do
   end
 
   factory :model do
+    manufacturer
     sequence(:name) { |n| "model-#{n}" }
     sequence(:slug) { |n| "model-slug-#{n}" }
     sailing 0

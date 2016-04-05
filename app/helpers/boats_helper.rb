@@ -81,7 +81,8 @@ module BoatsHelper
       ret << pair if ret.none? { |k, v| k == pair[0] }
     end
 
-    ret.each { |pair| pair[1] = 'N/A' if pair[1].blank? }
+    #ret.each { |pair| pair[1] = 'N/A' if pair[1].blank? }
+    ret.select { |pair| !pair[1].blank? }
   end
 
   def implicit_boats_count(count)

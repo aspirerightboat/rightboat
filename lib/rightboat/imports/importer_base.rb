@@ -91,7 +91,7 @@ module Rightboat
         (log 'Terminated'; return) if @exit_worker
 
         if @scraped_source_ids.none?
-          log_error 'Import Blank'
+          log_warning 'Import Blank'
 
           return if @import_trail.error_msg.present?
         end

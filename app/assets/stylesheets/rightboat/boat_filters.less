@@ -19,3 +19,27 @@
   background: linear-gradient(to bottom, #e4e4e4, #fafafa);
   margin-top: 0.5em;
 }
+
+#filter_tags {
+  margin-bottom: 0.5em;
+
+  &::before {
+    content: 'Filters: ';
+    font-weight: bold;
+  }
+}
+.filter-tag {
+  display: inline-block;
+  padding: 3px 6px;
+  color: white;
+
+  .esc {
+    cursor: pointer;
+  }
+  &[data-filter-slug=models] {
+    background-color: #00bb83;
+  }
+  &[data-filter-slug=countries] {
+    background-color: #cd4a7c;
+  }
+}

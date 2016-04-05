@@ -29,11 +29,21 @@ class BoatsController < ApplicationController
     }
 
     search_params[:order] = params[:order] if params[:order].present?
+    if params[:country] && (country = Country.find_by(slug: params[:country]))
+      search_params[:country] = [country.id]
+    elsif params[:countries]
+      search_params[:country] = params[:countries]
+    end
+
     @boats = Rightboat::BoatSearch.new.do_search(search_params).results
 
-    @model_infos = @manufacturer.models.joins(:boats, :manufacturer).where(boats: {status: 'active'})
-                       .group('models.id, models.slug, models.name, manufacturers.slug').order(:name)
-                       .pluck('models.id, models.slug, models.name, manufacturers.slug, COUNT(*)')
+    @model_infos = @manufacturer.models.joins(:boats).where(boats: {status: 'active'})
+                       .group('models.id, models.slug, models.name').order('models.name')
+                       .pluck('models.id, models.slug, models.name, COUNT(*)')
+
+    @country_infos = Country.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
+                     .group('countries.id, countries.name, countries.slug').order('countries.name')
+                     .pluck('countries.id, countries.name, countries.slug, COUNT(*)')
   end
 
   def manufacturers_by_letter
@@ -97,9 +107,13 @@ class BoatsController < ApplicationController
     head :bad_request unless request.xhr?
 
     search_params = {order: current_search_order}
-
-    if params[:model_ids]
-      search_params[:model_ids] = params[:model_ids].to_s.split(',')
+    if params[:models]
+      search_params[:model_ids] = model_ids = params[:models].split(',')
+      @model_infos = Model.where(id: model_ids).order(:name).pluck(:id, :name)
+    end
+    if params[:countries]
+      search_params[:country] = country_ids = params[:countries].split(',')
+      @country_infos = Country.where(id: country_ids).order(:name).pluck(:id, :name)
     end
 
     @boats = Rightboat::BoatSearch.new.do_search(search_params).results

@@ -128,9 +128,9 @@ $ ->
     $('#login_popup').modal('show')
 
   $('a[href*="#"]').click (e) ->
-    target = $(this).attr('href').replace(/^\//, '')
-    if $(target).length && !$(target).hasClass('fav-link')
-      scrollToTarget(target)
+    $target = $($(@).attr('href').replace(/^\//, ''))
+    if $target.length && !$target.hasClass('fav-link') && !$target.hasClass('filters-box')
+      scrollToTarget($target)
       false
 
   $('.cool-select').select2()

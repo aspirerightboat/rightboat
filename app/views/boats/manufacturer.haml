@@ -47,4 +47,4 @@
                       %small (#{boats_count})
             %button.filter-btn Apply Filter
 
-  = render partial: 'boats_view', locals: {boats: @boats}
+  = render partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params.merge(action: 'filter'), remote: true}}

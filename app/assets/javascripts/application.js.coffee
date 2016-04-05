@@ -77,7 +77,7 @@ window.requireLogin = (e, disable_history)->
     return false
   true
 
-scrollToTarget = (target) ->
+window.scrollToTarget = (target) ->
   $('html, body').animate
     scrollTop: $(target).offset().top
   , 500

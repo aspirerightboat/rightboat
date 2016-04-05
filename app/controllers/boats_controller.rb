@@ -21,8 +21,6 @@ class BoatsController < ApplicationController
 
     redirect_to(action: :index) and return if !@manufacturer
 
-    params[:manufacturer] = @manufacturer.name # so in advanced search panel manufacturer will be filled
-
     search_params = {
         manufacturer_id: @manufacturer.id,
         page: params[:page] || 1
@@ -59,9 +57,6 @@ class BoatsController < ApplicationController
 
   def model
     return if !load_makemodel
-
-    params[:model] = @model.name
-    params[:manufacturer] = @model.manufacturer.name
 
     search_params = {
         model_id: @model.id,
@@ -107,7 +102,8 @@ class BoatsController < ApplicationController
     head :bad_request unless request.xhr?
 
     search_params = {order: current_search_order,
-                     manufacturer_id: Manufacturer.find_by!(slug: params[:manufacturer]).id}
+                     manufacturer_id: Manufacturer.find_by!(slug: params[:manufacturer]).id,
+                     page: params[:page] || 1}
 
     if params[:models]
       search_params[:model_ids] = model_ids = params[:models].split(',')

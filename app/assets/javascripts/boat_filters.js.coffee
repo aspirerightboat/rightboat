@@ -15,7 +15,7 @@ $ ->
       apply_filter()
 
   apply_filter = ->
-    $('#boats_view .loading-overlay').show()
+    $('.boats-view .loading-overlay').show()
     params = {}
     $('.array-filter-box').each (i, e) ->
       name = $(e).data('filter-slug')
@@ -24,3 +24,7 @@ $ ->
     url = window.location.pathname + '/filter?' + $.param(params)
     $.getScript(url)
     false
+
+  if $('.boats-view').length
+    $(document).on 'ajax:beforeSend', '.boats-view .remote-paginate a', ->
+      $('.boats-view .loading-overlay').show()

@@ -75,9 +75,8 @@ class LeadsMailer < ApplicationMailer
 
   def broker_emails(broker)
     ret = [broker.email]
-    if (additional_email = broker.broker_info.try(:additional_email))
-      ret << additional_email
-    end
+    additional_email = broker.broker_info.try(:additional_email) || []
+    ret += additional_email
     ret
   end
 

@@ -81,7 +81,7 @@ class BrokerAreaController < ApplicationController
                                  offices_attributes: [:id, :name, :contact_name, :daytime_phone, :evening_phone, :mobile,
                                                       :fax, :email, :website, :_destroy,
                                                       address_attributes: [:id, :line1, :line2, :county, :town_city, :zip, :country_id]],
-                                 broker_info_attributes: [:id, :additional_email, :website, :contact_name, :position,
+                                 broker_info_attributes: [:id, :additional_email_raw, :website, :contact_name, :position,
                                                           :vat_number, :logo])
   end
 end

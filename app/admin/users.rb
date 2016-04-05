@@ -5,7 +5,7 @@ ActiveAdmin.register User do
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
                 broker_info_attributes: [:id, :contact_name, :position, :description, :discount,
                                          :lead_length_rate, :lead_min_price, :lead_max_price, :payment_method, :xero_contact_id,
-                                         :website, :additional_email, :vat_number, :logo, :lead_email_distribution, :_destroy]
+                                         :website, :additional_email_raw, :vat_number, :logo, :lead_email_distribution, :_destroy]
 
   config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'
   menu priority: 20
@@ -91,7 +91,7 @@ ActiveAdmin.register User do
         ff.input :lead_max_price
         ff.input :discount
         ff.input :website
-        ff.input :additional_email
+        ff.input :additional_email_raw, label: 'Additional email(seperated by comma)', input_html: {class: 'select-array'}
         ff.input :vat_number
         ff.input :logo
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options

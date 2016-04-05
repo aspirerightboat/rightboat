@@ -6,4 +6,6 @@
 #= require utils
 #= require highcharts
 #= require underscore
+#= require select2
+#= require select_array
 #= require_tree ./admin

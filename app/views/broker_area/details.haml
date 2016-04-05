@@ -21,7 +21,7 @@
         = f.fields_for :broker_info do |ff|
           .form-group
             = ff.label :additional_email, 'Additional Email'
-            = ff.email_field :additional_email, class: 'form-control'
+            = ff.text_field :additional_email_raw, class: 'form-control select-array'
           .form-group
             = ff.label :website
             = ff.text_field :website, class: 'form-control'

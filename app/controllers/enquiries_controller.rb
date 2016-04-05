@@ -71,7 +71,7 @@ class EnquiriesController < ApplicationController
   end
 
   def signup_and_view_pdf
-    user = User.new(params.permit(:title, :first_name, :last_name, :email, :password, :password_confirmation))
+    user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
     user.role = 'PRIVATE'
     user.email_confirmed = true
 

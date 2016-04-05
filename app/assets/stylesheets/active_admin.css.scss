@@ -6,6 +6,7 @@
 //
 //= require_tree ./admin
 //= require jquery-ui/autocomplete
+//= require select2
 
 // For example, to change the sidebar width:
 // $sidebar-width: 242px;
@@ -83,4 +84,8 @@ a.job-action {
 
 p {
   margin-bottom: 1em;
+}
+
+.select2-container {
+  width: calc(80% - 22px)
 }

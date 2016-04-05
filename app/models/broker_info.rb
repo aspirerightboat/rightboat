@@ -2,6 +2,9 @@ class BrokerInfo < ActiveRecord::Base
   LEAD_EMAIL_DISTRIBUTIONS = %w(user_and_office user_only office_only)
   PAYMENT_METHODS = %w(none card dd)
 
+  serialize :additional_email, Array
+  attr_accessor :additional_email_raw
+
   belongs_to :user
 
   mount_uploader :logo, BrokerLogoUploader
@@ -15,6 +18,14 @@ class BrokerInfo < ActiveRecord::Base
     else
       LEAD_EMAIL_DISTRIBUTIONS
     end
+  end
+
+  def additional_email_raw
+    self.additional_email.join(',')
+  end
+
+  def additional_email_raw=(values)
+    self.additional_email = values.split(',')
   end
 
   private

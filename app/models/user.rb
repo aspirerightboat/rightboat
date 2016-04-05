@@ -6,7 +6,6 @@ class User < ActiveRecord::Base
 
   ROLES = {
       'PRIVATE' => 0,
-      'MANUFACTURER' => 1,
       'COMPANY' => 2,
       'ADMIN' => 99
   }
@@ -23,7 +22,6 @@ class User < ActiveRecord::Base
   scope :inactive, -> { where active: false }
   scope :general, -> { where(role: ROLES['PRIVATE']) }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
-  scope :organizations, -> { where(role: [ROLES['COMPANY'], ROLES['MANUFACTURER']]).order(:company_name) }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable

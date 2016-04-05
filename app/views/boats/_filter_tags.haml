@@ -5,3 +5,5 @@
   - if @country_infos
     - @country_infos.each do |country_id, country_name|
       .filter-tag(data-filter-slug="countries" data-id="country_#{country_id}") #{country_name} <span class="esc">×</span>
+  .clear-filters-btn
+    Clear filters

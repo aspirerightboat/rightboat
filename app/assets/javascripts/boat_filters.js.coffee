@@ -3,10 +3,15 @@ $ ->
     $('.array-filter-box .filter-btn', @).click -> apply_filter()
 
   if $('#filter_tags').length
-    $(document).on 'click', '.filter-tag .esc', (e) ->
+    $(document).on 'click', '.filter-tag .esc', ->
       $filter_tag = $(@).closest('.filter-tag')
       $('#' + $filter_tag.data('id')).prop('checked', false)
       $filter_tag.remove()
+      apply_filter()
+
+    $(document).on 'click', '.clear-filters-btn', ->
+      $('#filter_tags .filter-tag').remove()
+      $('.array-filter-box .filter-checkbox').prop('checked', false)
       apply_filter()
 
   apply_filter = ->

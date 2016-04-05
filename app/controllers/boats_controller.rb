@@ -106,7 +106,9 @@ class BoatsController < ApplicationController
   def filter
     head :bad_request unless request.xhr?
 
-    search_params = {order: current_search_order}
+    search_params = {order: current_search_order,
+                     manufacturer_id: Manufacturer.find_by!(slug: params[:manufacturer]).id}
+
     if params[:models]
       search_params[:model_ids] = model_ids = params[:models].split(',')
       @model_infos = Model.where(id: model_ids).order(:name).pluck(:id, :name)

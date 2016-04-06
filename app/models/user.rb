@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
       jamie.coombes@sunseekertorquay.com sales@southamptonwaters.co.uk mark@williamsandsmithells.com
       inquiries@denisonyachtsales.com info@msp-yacht.de
   )
+  BOAT_YEAR_REQUESTERS = %w(inquiries@denisonyachtsales.com)
 
   serialize :broker_ids, Array
 
@@ -116,6 +117,10 @@ class User < ActiveRecord::Base
 
   def customer_detail_requested?
     CUSTOMER_DETAIL_REQUESTERS.include?(email)
+  end
+
+  def boat_year_requested?
+    BOAT_YEAR_REQUESTERS.include?(email)
   end
 
   def send_email_confirmation

@@ -31,8 +31,6 @@ $ ->
 
   window.update_filters_counts = (all_counts) ->
     $.each all_counts, (entities, counts) ->
-      console.log(entities, counts)
       $('.array-filter-box[data-filter-slug=' + entities + '] .filter-checkbox').each ->
-        console.log($(@).data('id'), counts[$(@).data('id')])
         new_count = counts[$(@).data('id')] || 0
-        $(@).closest('.checkbox-container').find('.filter-item small').text('(+' + new_count + ')')
+        $(@).closest('.checkbox-container').find('.filter-item small').text('(' + new_count + ')')

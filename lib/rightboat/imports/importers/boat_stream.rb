@@ -98,6 +98,7 @@ module Rightboat
                     when 'PricingABIE'
                       case @tree[5]
                       when 'PriceHideIndicator' # true | false
+                        @boat.poa = !!(chars =~ /true/i)
                       when 'Price'
                         case @tree[6]
                         when 'ChargeAmount'

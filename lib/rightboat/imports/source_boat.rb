@@ -207,7 +207,7 @@ module Rightboat
 
         handle_office
 
-        target.poa = price.blank? || price.to_i <= 0
+        target.poa ||= price.blank? || price.to_i <= 0
 
         handle_images
 

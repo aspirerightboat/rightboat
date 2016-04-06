@@ -28,3 +28,11 @@ $ ->
   if $('.boats-view').length
     $(document).on 'ajax:beforeSend', '.boats-view .remote-paginate a', ->
       $('.boats-view .loading-overlay').show()
+
+  window.update_filters_counts = (all_counts) ->
+    $.each all_counts, (entities, counts) ->
+      console.log(entities, counts)
+      $('.array-filter-box[data-filter-slug=' + entities + '] .filter-checkbox').each ->
+        console.log($(@).data('id'), counts[$(@).data('id')])
+        new_count = counts[$(@).data('id')] || 0
+        $(@).closest('.checkbox-container').find('.filter-item small').text('(+' + new_count + ')')

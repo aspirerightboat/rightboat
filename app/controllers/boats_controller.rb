@@ -101,20 +101,34 @@ class BoatsController < ApplicationController
   def filter
     head :bad_request unless request.xhr?
 
-    search_params = {order: current_search_order,
-                     manufacturer_id: Manufacturer.find_by!(slug: params[:manufacturer]).id,
-                     page: params[:page] || 1}
+    page = params[:page] || 1
+    order_col, order_dir = Rightboat::BoatSearch.read_order(current_search_order)
+    manufacturer_id = Manufacturer.find_by!(slug: params[:manufacturer]).id
+    model_ids = (params[:models].split(',').presence if params[:models])
+    country_ids = (params[:countries].split(',').presence if params[:countries])
+    boat_includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
 
-    if params[:models]
-      search_params[:model_ids] = model_ids = params[:models].split(',')
-      @model_infos = Model.where(id: model_ids).order(:name).pluck(:id, :name)
-    end
-    if params[:countries]
-      search_params[:country] = country_ids = params[:countries].split(',')
-      @country_infos = Country.where(id: country_ids).order(:name).pluck(:id, :name)
+    search = Boat.solr_search(include: boat_includes) do
+      with :live, true
+      paginate page: page, per_page: Rightboat::BoatSearch::PER_PAGE
+      order_by order_col, order_dir if order_col
+
+      with :manufacturer_id, manufacturer_id
+
+      @country_ids_filter = any_of { country_ids.each { |country_id| with :country_id, country_id } } if country_ids
+      @model_ids_filter = any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids
+
+      facet :country_id, exclude: [@country_ids_filter].compact
+      facet :model_id, exclude: [@model_ids_filter].compact
     end
 
-    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
+    @maker_page_facets_data = {
+        countries: search.facet(:country_id).rows.map { |row| [row.value, row.count] }.to_h,
+        models: search.facet(:model_id).rows.map { |row| [row.value, row.count] }.to_h,
+    }
+    @model_infos = Model.where(id: model_ids).order(:name).pluck(:id, :name) if model_ids
+    @country_infos = Country.where(id: country_ids).order(:name).pluck(:id, :name) if country_ids
+    @boats = search.results
   end
 
   private

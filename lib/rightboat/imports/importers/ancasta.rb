@@ -53,12 +53,13 @@ module Rightboat::Imports
           daytime_phone: boat_nodes['Phone'].text,
           email: boat_nodes['Email'].text,
       }
-      boat.description = prepare_description(boat_nodes['Description'].inner_html)
+      boat.description = prepare_description(boat_nodes['Description'].inner_html) || ''
+      boat.short_description = boat.description
       boat_node.element_children.select { |n| n.name.start_with?('Text') }.map do |node|
         if node.text.present?
           header = node.name.sub('Text', '')
           text = prepare_description(node.inner_html)
-          boat.description << "<h3>#{header}</h3>#{text}"
+          boat.description += "<h3>#{header}</h3>#{text}"
         end
       end
       boat

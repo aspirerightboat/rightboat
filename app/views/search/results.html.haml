@@ -15,7 +15,7 @@
   = render 'shared/navbar'
 
 = render 'shared/search_bar'
-#main-content.container(data-prev-url="#{@prev_url}")
+#main_content.container(data-prev-url="#{@prev_url}")
   - if @boats.length > 0
     #boats-list.row(data-layout-mode="#{current_layout_mode}")
       = render @boats

@@ -44,7 +44,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
 
   = render 'shared/pswp'
 
-  #main-content
+  #main_content
     - if @boat.user == current_user || @boat.offer_available?
       .boat-header
         .container

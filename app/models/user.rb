@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :lead_trails, dependent: :nullify
   has_many :saved_searches, dependent: :delete_all
   has_many :exports, dependent: :delete_all
+  has_many :mail_clicks
 
   mount_uploader :avatar, AvatarUploader
 

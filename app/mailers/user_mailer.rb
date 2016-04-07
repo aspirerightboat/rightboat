@@ -2,6 +2,7 @@ class UserMailer < ApplicationMailer
   add_template_helper BoatsHelper
   add_template_helper QrcodeHelper
   add_template_helper SavedSearchesMailerHelper
+  add_template_helper MailerHelper
   layout 'mailer'
 
   def saved_search_updated(user_id, searches)
@@ -13,6 +14,11 @@ class UserMailer < ApplicationMailer
       saved_search_ids << saved_search_id
       [saved_search, Boat.where(id: boat_ids).includes(:manufacturer, :model, :primary_image, :currency, :vat_rate, :country).to_a]
     }.compact
+
+    @utm_params = {
+        content: "#{self.class.name}-#{self.action_name}",
+        campaign: 'saved_searches',
+    }
 
     @saved_searches_alert = SavedSearchesAlert.create(user_id: user_id, saved_search_ids: saved_search_ids)
 

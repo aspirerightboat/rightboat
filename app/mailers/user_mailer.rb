@@ -16,7 +16,7 @@ class UserMailer < ApplicationMailer
     }.compact
 
     @utm_params = {
-        content: "#{self.class.name}-#{self.action_name}",
+        content: "#{self.class.name}-#{action_name}",
         campaign: 'saved_searches',
     }
 

@@ -1,6 +1,0 @@
-$('.boats-view').replaceWith('#{j render(partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params, remote: true}})}');
-- if params[:page]
-  scrollToTarget($('.boats-view'));
-$('#filter_tags').replaceWith('#{j render(partial: 'filter_tags', locals: {model_infos: @model_infos, country_infos: @country_infos})}');
-$('#filter_tags').toggle(#{@model_infos.present? || @country_infos.present?});
-update_filters_counts(#{@maker_page_facets_data.to_json.html_safe});

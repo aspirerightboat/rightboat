@@ -1,8 +1,48 @@
 $ ->
-  $('.search-boat-filters').each ->
-    $('.array-filter-box .filter-btn', @).click -> apply_filter()
+  if $('#manufacturer_view').length
+    $(document).on 'click', '.apply-filter-btn', -> apply_filter()
 
-  if $('#filter_tags').length
+    apply_filter = ->
+      if $('.boats-view .loading-overlay').is(':visible')
+        return
+
+      params = {}
+      $('.array-filter-box').each (i, e) ->
+        name = $(e).data('filter-slug')
+        ids = $('.filter-checkbox:checked', e).map((ii, ee) -> $(ee).data('id')).get().join('-')
+        params[name] = ids if ids
+      url = location.pathname + (if params == {} then '' else '?' + $.param(params))
+      xhr_load(url)
+      history.pushState(null, null, url)
+
+      false
+
+    show_loading_overlay = (show) ->
+      $('.boats-view .loading-overlay').toggle(show)
+
+    xhr_load = (url) ->
+      show_loading_overlay(true)
+      $.get(url)
+      .done (data) ->
+        alert(data.slice(0, 20))
+        $('#manufacturer_view').replaceWith(data)
+        #        qwe = if data then 'state present' else 'state empty'
+        #        alert('pushState, ' + qwe + ', ' + url)
+        #        full_html = document.documentElement.outerHTML
+      .always ->
+        show_loading_overlay(false)
+
+#    $(window).on 'popstate'
+#    window.onpopstate = (e) ->
+    window.addEventListener 'popstate', (e) ->
+#      data = e.state
+#      qwe = if data then 'state present' else 'state empty'
+#      alert('popstate, ' + qwe + ', ' + location.href)
+#      if data
+#        document.documentElement.outerHTML = data
+      xhr_load(location.href)
+#      $('#manufacturer_view').replaceWith(data)
+
     $(document).on 'click', '.filter-tag .esc', ->
       $filter_tag = $(@).closest('.filter-tag')
       $('#' + $filter_tag.data('id')).prop('checked', false)
@@ -10,27 +50,9 @@ $ ->
       apply_filter()
 
     $(document).on 'click', '.clear-filters-btn', ->
-      $('#filter_tags .filter-tag').remove()
+      $('.filter-tags .filter-tag').remove()
       $('.array-filter-box .filter-checkbox').prop('checked', false)
       apply_filter()
 
-  apply_filter = ->
-    $('.boats-view .loading-overlay').show()
-    params = {}
-    $('.array-filter-box').each (i, e) ->
-      name = $(e).data('filter-slug')
-      ids = $('.filter-checkbox:checked', e).map((ii, ee) -> $(ee).data('id')).get().join(',')
-      params[name] = ids if ids
-    url = window.location.pathname + '/filter?' + $.param(params)
-    $.getScript(url)
-    false
-
-  if $('.boats-view').length
     $(document).on 'ajax:beforeSend', '.boats-view .remote-paginate a', ->
-      $('.boats-view .loading-overlay').show()
-
-  window.update_filters_counts = (all_counts) ->
-    $.each all_counts, (entities, counts) ->
-      $('.array-filter-box[data-filter-slug=' + entities + '] .filter-checkbox').each ->
-        new_count = counts[$(@).data('id')] || 0
-        $(@).closest('.checkbox-container').find('.filter-item small').text('(' + new_count + ')')
+      show_loading_overlay(true)

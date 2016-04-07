@@ -1,4 +1,4 @@
-#filter_tags
+.filter-tags
   - if @model_infos
     - @model_infos.each do |model_id, model_name|
       .filter-tag(data-filter-slug="models" data-id="model_#{model_id}") #{model_name} <span class="esc">×</span>

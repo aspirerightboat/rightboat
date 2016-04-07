@@ -10,41 +10,4 @@
   = render 'shared/navbar'
 
 = render layout: 'shared/boats_for_sale' do
-  .row
-    .col-xs-12
-      %h1= @page_title
-
-      #filter_tags(style="display: none;")
-
-      - manufacturer_slug = @manufacturer.slug
-      .filter-tabs
-        %ul.filter-tabs-nav
-          %li.active
-            %a(href="#model_filters") Models
-          %li
-            %a(href="#location_filters") Locations
-        .filter-tabs-content.search-boat-filters
-          #model_filters.filters-box.array-filter-box(data-filter-slug="models")
-            %ul.flex-six-columns
-              - @model_infos.each do |model_id, model_slug, model_name, boats_count|
-                %li.checkbox-container
-                  - model_checkbox_id = "model_#{model_id}"
-                  %input.filter-checkbox(type="checkbox" id="#{model_checkbox_id}" data-id="#{model_id}")
-                  %label(for="#{model_checkbox_id}")
-                    %span.filter-item
-                      #{link_to model_name, sale_model_path(manufacturer: manufacturer_slug, model: model_slug)}
-                      %small (#{boats_count})
-            %button.filter-btn Apply Filter
-          #location_filters.filters-box.array-filter-box.hidden(data-filter-slug="countries")
-            %ul.flex-six-columns
-              - @country_infos.each do |c_id, c_name, c_slug, boats_count|
-                %li.checkbox-container
-                  - country_checkbox_id = "country_#{c_id}"
-                  %input.filter-checkbox(type="checkbox" id="#{country_checkbox_id}" data-id="#{c_id}")
-                  %label(for="#{country_checkbox_id}")
-                    %span.filter-item
-                      #{link_to c_name, sale_manufacturer_path(manufacturer: manufacturer_slug, country: c_slug)}
-                      %small (#{boats_count})
-            %button.filter-btn Apply Filter
-
-  = render partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params.merge(action: 'filter'), remote: true}}
+  = render partial: 'manufacturer_view'

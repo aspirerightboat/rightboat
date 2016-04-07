@@ -21,27 +21,46 @@ class BoatsController < ApplicationController
 
     redirect_to(action: :index) and return if !@manufacturer
 
-    search_params = {
-        manufacturer_id: @manufacturer.id,
-        page: params[:page] || 1
-    }
-
-    search_params[:order] = params[:order] if params[:order].present?
-    if params[:country] && (country = Country.find_by(slug: params[:country]))
-      search_params[:country] = [country.id]
+    page = params[:page] || 1
+    order_col, order_dir = Rightboat::BoatSearch.read_order(current_search_order)
+    model_ids = (params[:models].split('-').presence if params[:models])
+    if params[:country]
+      country_ids = [params[:country]].presence
     elsif params[:countries]
-      search_params[:country] = params[:countries]
+      country_ids = params[:countries].split('-').presence
+    end
+    boat_includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
+    manufacturer_id = @manufacturer.id
+
+    search = Boat.solr_search(include: boat_includes) do
+      with :live, true
+      with :manufacturer_id, manufacturer_id
+      order_by order_col, order_dir if order_col
+      paginate page: page, per_page: Rightboat::BoatSearch::PER_PAGE
+
+      model_ids_filter = (any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids)
+      country_ids_filter = (any_of { country_ids.each { |country_id| with :country_id, country_id } } if country_ids)
+
+      facet :country_id, exclude: country_ids_filter
+      facet :model_id, exclude: model_ids_filter
     end
 
-    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
+    @boats = search.results
 
-    @model_infos = @manufacturer.models.joins(:boats).where(boats: {status: 'active'})
-                       .group('models.id, models.slug, models.name').order('models.name')
-                       .pluck('models.id, models.slug, models.name, COUNT(*)')
+    @filters_data = fetch_maker_filters_data
 
-    @country_infos = Country.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
-                     .group('countries.id, countries.name, countries.slug').order('countries.name')
-                     .pluck('countries.id, countries.name, countries.slug, COUNT(*)')
+    @model_counts = search.facet(:model_id).rows.map { |row| [row.value, row.count] }.to_h
+    @country_counts = search.facet(:country_id).rows.map { |row| [row.value, row.count] }.to_h
+
+    @model_filter_tags = Model.where(id: model_ids).order(:name).pluck(:id, :name) if model_ids
+    @country_filter_tags = Country.where(id: country_ids).order(:name).pluck(:id, :name) if country_ids
+
+    @model_ids = model_ids
+    @country_ids = country_ids
+
+    if request.xhr?
+      render partial: 'manufacturer_view'
+    end
   end
 
   def manufacturers_by_letter
@@ -98,39 +117,6 @@ class BoatsController < ApplicationController
     send_data File.read(file_path), filename: File.basename(file_path), type: 'application/pdf'
   end
 
-  def filter
-    head :bad_request unless request.xhr?
-
-    page = params[:page] || 1
-    order_col, order_dir = Rightboat::BoatSearch.read_order(current_search_order)
-    manufacturer_id = Manufacturer.find_by!(slug: params[:manufacturer]).id
-    model_ids = (params[:models].split(',').presence if params[:models])
-    country_ids = (params[:countries].split(',').presence if params[:countries])
-    boat_includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
-
-    search = Boat.solr_search(include: boat_includes) do
-      with :live, true
-      paginate page: page, per_page: Rightboat::BoatSearch::PER_PAGE
-      order_by order_col, order_dir if order_col
-
-      with :manufacturer_id, manufacturer_id
-
-      @country_ids_filter = any_of { country_ids.each { |country_id| with :country_id, country_id } } if country_ids
-      @model_ids_filter = any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids
-
-      facet :country_id, exclude: [@country_ids_filter].compact
-      facet :model_id, exclude: [@model_ids_filter].compact
-    end
-
-    @maker_page_facets_data = {
-        countries: search.facet(:country_id).rows.map { |row| [row.value, row.count] }.to_h,
-        models: search.facet(:model_id).rows.map { |row| [row.value, row.count] }.to_h,
-    }
-    @model_infos = Model.where(id: model_ids).order(:name).pluck(:id, :name) if model_ids
-    @country_infos = Country.where(id: country_ids).order(:name).pluck(:id, :name) if country_ids
-    @boats = search.results
-  end
-
   private
 
   def set_back_link
@@ -169,5 +155,24 @@ class BoatsController < ApplicationController
     end
 
     true
+  end
+
+  def fetch_maker_filters_data
+    Rails.cache.fetch "manufacturer_#{@manufacturer.id}_filters_data", expires_in: 30.minutes do
+      model_infos = Model.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
+                        .group('models.id, models.slug, models.name')
+                        .having('COUNT(*) > 0').order('models.name')
+                        .pluck('models.id, models.slug, models.name')
+
+      country_infos = Country.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
+                          .group('countries.id, countries.slug, countries.name')
+                          .having('COUNT(*) > 0').order('countries.name')
+                          .pluck('countries.id, countries.slug, countries.name')
+
+      {
+          model_infos: model_infos,
+          country_infos: country_infos,
+      }
+    end
   end
 end

@@ -41,6 +41,7 @@
 #= require jquery.remotipart
 #= require cocoon
 #= require dropzone
+#= require select_array
 #= require_self
 #= require_tree .
 

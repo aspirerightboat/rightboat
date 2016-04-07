@@ -13,8 +13,8 @@ module Rightboat
       validates_presence_of :user, :source_id, :manufacturer, :model
 
       NORMAL_ATTRIBUTES = [
-        :source_id, :name, :description, :short_description, :poa, :price, :year_built, :offer_status, :length_m,
-        :new_boat, :source_url, :owners_comment
+        :source_id, :name, :description, :short_description, :poa, :price, :year_built, :offer_status,
+        :length_m, :length_f, :new_boat, :source_url, :owners_comment
       ]
 
       SPEC_ATTRS = [
@@ -207,7 +207,7 @@ module Rightboat
 
         handle_office
 
-        target.poa = price.blank? || price.to_i <= 0
+        target.poa ||= price.blank? || price.to_i <= 0
 
         handle_images
 

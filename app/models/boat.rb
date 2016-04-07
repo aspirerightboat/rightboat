@@ -152,7 +152,11 @@ class Boat < ActiveRecord::Base
   end
 
   def length_ft
-    length_m.m_to_ft.round(2) if length_m
+    if length_f
+      length_f.round(2)
+    elsif length_m
+      length_m.m_to_ft.round(2)
+    end
   end
 
   def geocoded?

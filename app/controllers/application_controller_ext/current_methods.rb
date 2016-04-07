@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
 
 
   def current_search_order
-    @current_search_order ||= cookies[:search_order] || 'score_desc'
+    @current_search_order ||= cookies[:search_order] || 'price_desc'
   end
 
   def set_current_search_order(order)

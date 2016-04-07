@@ -27,9 +27,11 @@ module Rightboat::Imports
       boat.manufacturer = boat_nodes['Make'].text
       boat.model = boat_nodes['Model'].text
       boat.length_m = boat_nodes['Lengthmt'].text
+      boat.length_f = boat_nodes['Lengthft'].text
       boat.hull_material = boat_nodes['HullMaterial'].text
       boat.engine = boat_nodes['Engine'].text
       boat.engine_code = boat_nodes['EngineCode'].text
+      boat.fuel_type = boat_nodes.to_s =~ /diesel/i ? 'Diesel' : 'Gasoline'
       boat.category = boat_nodes['Class'].text
       boat.location = boat_nodes['Located'].text
       boat.country = boat_nodes['Country'].text.presence
@@ -51,12 +53,13 @@ module Rightboat::Imports
           daytime_phone: boat_nodes['Phone'].text,
           email: boat_nodes['Email'].text,
       }
-      boat.description = prepare_description(boat_nodes['Description'].inner_html)
+      boat.description = prepare_description(boat_nodes['Description'].inner_html) || ''
+      boat.short_description = boat.description
       boat_node.element_children.select { |n| n.name.start_with?('Text') }.map do |node|
         if node.text.present?
           header = node.name.sub('Text', '')
           text = prepare_description(node.inner_html)
-          boat.description << "<h3>#{header}</h3>#{text}"
+          boat.description += "<h3>#{header}</h3>#{text}"
         end
       end
       boat

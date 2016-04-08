@@ -25,7 +25,8 @@ class BoatsController < ApplicationController
     order_col, order_dir = Rightboat::BoatSearch.read_order(current_search_order)
     model_ids = (params[:models].split('-').presence if params[:models])
     if params[:country]
-      country_ids = [params[:country]].presence
+      country = Country.find_by(slug: params[:country])
+      country_ids = ([country.id.to_s] if country)
     elsif params[:countries]
       country_ids = params[:countries].split('-').presence
     end

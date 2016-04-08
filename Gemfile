@@ -103,6 +103,7 @@ group :test do
   gem 'email_spec'
   gem 'database_cleaner'
   gem 'capybara'
+  gem 'nokogiri'
 end
 
 group :development, :staging do

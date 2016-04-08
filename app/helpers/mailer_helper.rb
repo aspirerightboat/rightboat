@@ -1,7 +1,8 @@
 module MailerHelper
-  def track_email_click_params(utm_params, saved_searches_alert_token = nil)
+  def track_email_click_params(utm_params:, user_id:, saved_searches_alert_token: nil)
     {
         token: saved_searches_alert_token,
+        i: Base64.urlsafe_encode64(user_id.to_s, padding: false),
         utm_source: utm_params[:source] || 'subscription',
         utm_medium: utm_params[:medium] || 'email',
         utm_campaign: utm_params[:campaign],

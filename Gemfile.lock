@@ -623,6 +623,7 @@ DEPENDENCIES
   mongo
   mongoid
   mysql2
+  nokogiri
   open_uri_redirections
   permanent_records
   premailer-rails

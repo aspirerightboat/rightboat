@@ -48,4 +48,4 @@
                       %small (#{@country_counts[country_id] || 0})
             %button.apply-filter-btn Apply Filter
 
-  = render partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params, remote: true}}
+  = render partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params}}

@@ -57,10 +57,6 @@ class BoatsController < ApplicationController
 
     @model_ids = model_ids
     @country_ids = country_ids
-
-    if request.xhr?
-      render partial: 'manufacturer_view'
-    end
   end
 
   def manufacturers_by_letter

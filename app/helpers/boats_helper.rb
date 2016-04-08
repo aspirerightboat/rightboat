@@ -54,8 +54,8 @@ module BoatsHelper
     #ret << ['Seller', boat.user.name] if full_spec
     ret << ['Price', boat_price_with_converted(boat), 'price']
     ret << ['Year', boat.year_built]
-    ret << ['Make', boat.manufacturer.name]
-    ret << ['Model', boat.model.name]
+    ret << ['Make', link_to(boat.manufacturer.name, sale_manufacturer_path(manufacturer: boat.manufacturer))]
+    ret << ['Model', link_to(boat.model.name, sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model.id))]
     ret << ['Boat Type', boat.boat_type]
     ret << ['LOA', boat_length(boat), 'loa']
     ret << ['Beam', converted_size(spec_value_by_name['beam_m'])]
@@ -66,7 +66,9 @@ module BoatsHelper
     ret << ['Fuel', boat.fuel_type.try(:name)]
     ret << ['Berths', spec_value_by_name['berths_count']]
     ret << ['Cabins', spec_value_by_name['cabins_count']]
-    ret << ['Location', boat.country.to_s]
+    ret << ['Location', link_to(boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
+                                                                          models: boat.model.id,
+                                                                          country: boat.country.slug))]
     ret << ['Tax Status', boat.tax_status]
     ret << ['RB Ref', boat.ref_no]
     ret << ['Hull Material', spec_value_by_name['hull_material']]

@@ -4,6 +4,7 @@ module Rightboat
     YEARS_RANGE = (Date.today.year - 30)..Date.today.year
     PRICES_RANGE = 0..100_000_000
     LENGTHS_RANGE = 0..300
+    PER_PAGE = 30
 
     attr_reader :facets_data, :search
 
@@ -19,7 +20,7 @@ module Rightboat
 
       @with_facets = opts[:with_facets]
       @includes = opts[:includes] || [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
-      @per_page = opts[:per_page] || 30
+      @per_page = opts[:per_page] || PER_PAGE
 
       @search = Boat.solr_search(include: includes) do
         fulltext q if q
@@ -107,6 +108,13 @@ module Rightboat
       @search.hits
     end
 
+    def self.read_order(target_order)
+      if target_order.present? && ORDER_TYPES.include?(target_order)
+        m = target_order.match(/\A(.*)_(asc|desc)\z/)
+        [m[1], m[2]]
+      end
+    end
+
     private
 
     def fetch_facets_data(search)
@@ -114,10 +122,10 @@ module Rightboat
       year_stats = search.stats(:year)
       length_stats = search.stats(:length_m)
 
-      country_facet = search.facet(:country_id).rows
-      filtered_country_ids = country_facet.map(&:value) + (country.presence || [])
+      country_facet_rows = search.facet(:country_id).rows
+      filtered_country_ids = country_facet_rows.map(&:value) + (country.presence || [])
       countries_data = Country.where(id: filtered_country_ids).order(:name).pluck(:id, :name).map do |id, name|
-        count = country_facet.find { |x| x.value == id }.try(:count) || 0
+        count = country_facet_rows.find { |x| x.value == id }.try(:count) || 0
         [id, name, count]
       end.sort_by(&:third).reverse
 
@@ -155,12 +163,7 @@ module Rightboat
       @new_used = read_hash(params[:new_used], 'new', 'used')
       @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
-      if params[:order].present? && ORDER_TYPES.include?(params[:order])
-        @order = params[:order]
-        m = @order.match(/\A(.*)_(asc|desc)\z/)
-        @order_col = m[1]
-        @order_dir = m[2].to_sym
-      end
+      @order_col, @order_dir = self.class.read_order(params[:order])
       @exclude_ref_no = params[:exclude_ref_no]
     end
 

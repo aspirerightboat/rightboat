@@ -1,0 +1,9 @@
+.filter-tags
+  - if @model_infos
+    - @model_infos.each do |model_id, model_name|
+      .filter-tag(data-filter-slug="models" data-id="model_#{model_id}") #{model_name} <span class="esc">×</span>
+  - if @country_infos
+    - @country_infos.each do |country_id, country_name|
+      .filter-tag(data-filter-slug="countries" data-id="country_#{country_id}") #{country_name} <span class="esc">×</span>
+  .clear-filters-btn
+    Clear filters

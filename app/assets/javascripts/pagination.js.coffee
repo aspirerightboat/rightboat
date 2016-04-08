@@ -18,7 +18,7 @@ loadPrevPage = ->
 $ ->
   if $('.view-more-link').length > 0
     isLoading = false
-    if $('#main-content').data('prev-url') == 'boats-for-sale'
+    if $('#main_content').data('prev-url') == 'boats-for-sale'
       prevViewPage = parseInt(sessionStorage.getItem('currentPage'))
       sessionStorage.removeItem('currentPage')
       prevPosition = parseInt(sessionStorage.getItem('currentScrollTop'))

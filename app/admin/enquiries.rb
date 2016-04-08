@@ -8,7 +8,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   actions :all, except: [:destroy]
 
   filter :first_name_or_surname_or_email_cont, as: :string, label: 'Customer'
-  filter :boat_user_id, as: :select, collection: User.organizations, label: 'Broker'
+  filter :boat_user_id, as: :select, collection: User.companies, label: 'Broker'
   filter :id
   filter :created_at, label: 'Date of Lead'
   filter :updated_at, label: 'Last Status Change'

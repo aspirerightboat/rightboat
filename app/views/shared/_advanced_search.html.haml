@@ -109,12 +109,8 @@
             = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
             = label_tag :new_used_used, 'Used'
         .form-group.row
-          .col-xs-4.save-search
-            = link_to 'Save Search and Set Alert', member_saved_searches_path(params.except(:controller, :action)),
-                       method: :post, remote: true, class: 'btn-flat require-login simple-ajax-link',
-                       data: {'login-title' => 'Please sign in or join as a member to save your search.'}
-            .result-popup
-              Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
+          .col-xs-4
+            = render partial: 'shared/save_search_btn', locals: {nav_link: false}
           .col-xs-8
             %button.btn-flat(type="submit") Search
       .result-info.col-sm-12.col-md-12.text-center

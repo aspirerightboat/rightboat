@@ -28,7 +28,7 @@ RSpec.describe "saved search alert feature" do
                         'utm_source=subscription',
                         'utm_campaign=saved_searches',
                         "utm_content=UserMailer-saved_search_updated",
-                        "sent_at=#{I18n.localize(saved_search_alert.created_at, format: :short_datetime)}",
+                        "sent_at=#{saved_search_alert.created_at.to_date.to_s(:db)}",
                         "i=#{Base64.urlsafe_encode64(user.id.to_s, padding: false)}"
                       ] }
 

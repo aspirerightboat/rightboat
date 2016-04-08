@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   def mail_click_params_mapped(params = {})
     {
         user_id: Base64.urlsafe_decode64(params[:i]),
-        url: request.original_url.split('?').first,
+        url: request.path,
         action_fullname: params[:utm_content],
         saved_searches_alert_id: SavedSearchesAlert.find_by(token: params[:token])&.id,
         email_sent_at: params[:sent_at]

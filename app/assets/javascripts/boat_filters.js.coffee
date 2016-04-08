@@ -1,6 +1,6 @@
 $ ->
   if $('#manufacturer_view').length
-    $(document).on 'click', '.apply-filter-btn', -> apply_filter()
+    $('.apply-filter-btn').click -> apply_filter()
 
     apply_filter = ->
       if $('.boats-view .loading-overlay').is(':visible')
@@ -24,13 +24,13 @@ $ ->
       show_loading_overlay(true)
       location.href = url
 
-    $(document).on 'click', '.filter-tag .esc', ->
+    $('.filter-tag .esc').click ->
       $filter_tag = $(@).closest('.filter-tag')
       $('#' + $filter_tag.data('id')).prop('checked', false)
       $filter_tag.remove()
       apply_filter()
 
-    $(document).on 'click', '.clear-filters-btn', ->
+    $('.clear-filters-btn').click ->
       $('.filter-tags .filter-tag').remove()
       $('.array-filter-box .filter-checkbox').prop('checked', false)
       apply_filter()

@@ -41,3 +41,4 @@ en:
   time:
     formats:
       full_datetime: "%B %d, %Y %H:%M"
+      short_datetime: "%Y-%m-%d"

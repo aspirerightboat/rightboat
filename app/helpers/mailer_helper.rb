@@ -6,7 +6,8 @@ module MailerHelper
         utm_source: utm_params[:source] || 'subscription',
         utm_medium: utm_params[:medium] || 'email',
         utm_campaign: utm_params[:campaign],
-        utm_content: utm_params[:content]
+        utm_content: utm_params[:content],
+        sent_at: utm_params[:sent_at]
     }
   end
 end

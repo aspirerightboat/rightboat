@@ -18,6 +18,7 @@ class UserMailer < ApplicationMailer
     @utm_params = {
         content: "#{self.class.name}-#{action_name}",
         campaign: 'saved_searches',
+        sent_at: I18n.localize(Time.zone.now, format: :short_datetime)
     }
 
     @saved_searches_alert = SavedSearchesAlert.create(user_id: user_id, saved_search_ids: saved_search_ids)

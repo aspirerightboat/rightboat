@@ -18,7 +18,8 @@ class ApplicationController < ActionController::Base
         user_id: Base64.urlsafe_decode64(params[:i]),
         url: request.original_url.split('?').first,
         action_fullname: params[:utm_content],
-        saved_searches_alert_id: SavedSearchesAlert.find_by(token: params[:token])&.id
+        saved_searches_alert_id: SavedSearchesAlert.find_by(token: params[:token])&.id,
+        email_sent_at: params[:sent_at]
     }
   end
 end

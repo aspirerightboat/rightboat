@@ -41,7 +41,8 @@ RSpec.describe BoatsController do
           utm_campaign: 'saved_searches',
           utm_content: 'UserMailer-saved_search_updated',
           i: Base64.urlsafe_encode64(user.id.to_s, padding: false),
-          token: saved_search_alert.token
+          token: saved_search_alert.token,
+          sent_at: I18n.localize(saved_search_alert.created_at, format: :short_datetime)
       })
     }
 
@@ -52,11 +53,19 @@ RSpec.describe BoatsController do
       expect(MailClick.last.attributes).to include mail_click_hash
     end
 
-    it "doesn't store mail click entity for same mail and same url" do
+    it "doesn't store mail click entity for same mail, url, date" do
       get :show, utm_show_params
       get :show, utm_show_params
 
       expect(MailClick.count).to eq 1
+    end
+
+    it "stores mail click entity for same mail, url but different dates" do
+      get :show, utm_show_params
+      utm_show_params[:sent_at] = I18n.localize(saved_search_alert.created_at + 1.day, format: :short_datetime)
+      get :show, utm_show_params
+
+      expect(MailClick.count).to eq 2
     end
 
     it "doesn't store mail click entity for invalid utm params" do

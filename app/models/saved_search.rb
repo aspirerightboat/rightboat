@@ -7,7 +7,7 @@ class SavedSearch < ActiveRecord::Base
   serialize :tax_status, Hash
   serialize :new_used, Hash
 
-  belongs_to :user
+  belongs_to :user, counter_cache: true
 
   def search_title
     not_defined = '..'

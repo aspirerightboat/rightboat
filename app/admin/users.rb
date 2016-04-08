@@ -32,11 +32,9 @@ ActiveAdmin.register User do
     column :role do |user|
       user.role_name
     end
-    column :no_of_active_boats, sortable: 'boats_count' do |user|
-      user.boats_count
-    end
     column :current_sign_in_at
     column :sign_in_count
+    column :saved_searches_count
     column('created_at') { |user| time_ago_with_hint(user.created_at) }
     actions do |user|
       if user.company?
@@ -112,9 +110,6 @@ ActiveAdmin.register User do
     column :slug
     column :company_name
     column :role
-    column :no_of_active_boats do |user|
-      user.boats_count
-    end
     column :sign_in_count
     column :phone
     column :fax
@@ -133,6 +128,7 @@ ActiveAdmin.register User do
     column :payment_method do |user|
       user.broker_info.payment_method if user.company?
     end
+    column :saved_searches_count
   end
 
   show do

@@ -28,7 +28,11 @@
           %td= i + 1
           %td= ss.q
           %td= ss.manufacturer
-          %td= ss.model
+          %td
+            - if ss.models.present?
+              = Model.where(id: ss.models).pluck(:name).to_sentence
+            - else
+              = ss.model
           %td= ss.boat_type
           %td= Country.where(id: ss.country).pluck(:name).join(', ')
           %td= ss.new_used.keys.join(' / ')

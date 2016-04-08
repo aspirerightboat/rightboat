@@ -5,15 +5,10 @@
       %button(type='submit')
         %i.icon.icon-search
     %ul.nav.navbar-nav.page-links
-      - if controller_name.in?(%w(search manufacturers)) || @back_url
+      - if controller_name == 'search' || @back_url
         %li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search nav-link'
       - if controller_name == 'search'
-        %li.save-search
-          = link_to 'Save Search and Set Alert', member_saved_searches_path(params.except(:controller, :action)),
-                     method: :post, remote: true, class: 'nav-link require-login',
-                     data: {'login-title' => 'Please sign in or join as a member to save your search.'}
-          .result-popup
-            Your search has been saved. You will receive an email each time a boat is listed that meets this criteria. Manage and amend this alert #{link_to 'here', member_user_alert_path}.
+        %li= render partial: 'shared/save_search_btn', locals: {nav_link: true}
       - if @boat
         %li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'nav-link'
       - if @back_url

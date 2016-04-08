@@ -4,6 +4,7 @@ class SavedSearch < ActiveRecord::Base
 
   serialize :country, Array
   serialize :category, Array
+  serialize :models, Array
   serialize :tax_status, Hash
   serialize :new_used, Hash
 
@@ -45,13 +46,14 @@ class SavedSearch < ActiveRecord::Base
         boat_type: params[:boat_type].to_s,
         order: params[:order].to_s,
         manufacturer: params[:manufacturer].to_s,
-        model: params[:model].to_s
+        model: params[:model].to_s,
     }
 
     if !user.saved_searches.where(fixed_params)
             .where('tax_status = ?', params[:tax_status].to_yaml)
             .where('new_used = ?', params[:new_used].to_yaml)
             .where('country = ?', params[:country].to_yaml) #.where('category = ?', params[:category].to_yaml)
+            .where('models = ?', params[:models].to_yaml)
             .exists?
       ss = user.saved_searches.new(params)
       ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)

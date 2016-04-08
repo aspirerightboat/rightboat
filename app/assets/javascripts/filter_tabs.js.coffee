@@ -11,21 +11,15 @@ $ ->
       $('.filter-tab-content', $filter_tabs).each ->
         $(@).toggleClass('hidden', @ != target_tab)
 
-#      set_content_height()
       false
 
-#    set_content_height = ->
-#      $('.filter-tabs-content').css(height: $('.array-filter-box').outerHeight());
-#
-#    set_content_height()
-
-    collapsed = Cookies.get('filter_collapsed')
-    collapsed = true if collapsed == undefined
-
-    $('.filter-tabs-content').toggleClass('collapsed', Cookies.get('filter_collapsed'))
-
-    $('.filter-tabs-content').find('.do-collapse, .overlay').click ->
-      $cont = $(@).closest('.filter-tabs-content')
-      $cont.toggleClass('collapsed')
-      Cookies.set('filter_collapsed', $cont.hasClass('collapsed'))
-      false
+    $('.filter-tabs-content').each ->
+      $tabs_content = $(@)
+      $('.toggle-collapse, .overlay', $tabs_content).click ->
+        $tabs_content.toggleClass('collapsed')
+        if !$tabs_content.hasClass('collapsed')
+          $tab_content = $('.filter-tab-content:visible', $tabs_content)
+          if !$tab_content.data('height')
+            height = $tab_content.outerHeight()
+            $tab_content.css(height: height).data('height', height) # set height for css animation
+        false

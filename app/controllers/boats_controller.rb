@@ -57,6 +57,8 @@ class BoatsController < ApplicationController
 
     @model_ids = model_ids
     @country_ids = country_ids
+
+    @filters_collapsed = !model_ids && !country_ids
   end
 
   def manufacturers_by_letter

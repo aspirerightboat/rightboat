@@ -19,7 +19,7 @@ RSpec.describe BoatsController do
     let(:mail_click_hash) {
       {
           'user_id' => user.id,
-          'url' => sale_boat_url({manufacturer: boat.manufacturer,
+          'url' => sale_boat_path({manufacturer: boat.manufacturer,
                                   model: boat.model,
                                   boat: boat}),
           'action_fullname' => "UserMailer-saved_search_updated",
@@ -42,7 +42,7 @@ RSpec.describe BoatsController do
           utm_content: 'UserMailer-saved_search_updated',
           i: Base64.urlsafe_encode64(user.id.to_s, padding: false),
           token: saved_search_alert.token,
-          sent_at: I18n.localize(saved_search_alert.created_at, format: :short_datetime)
+          sent_at: saved_search_alert.created_at.to_date.to_s(:db)
       })
     }
 
@@ -62,7 +62,7 @@ RSpec.describe BoatsController do
 
     it "stores mail click entity for same mail, url but different dates" do
       get :show, utm_show_params
-      utm_show_params[:sent_at] = I18n.localize(saved_search_alert.created_at + 1.day, format: :short_datetime)
+      utm_show_params[:sent_at] = (saved_search_alert.created_at + 1.day).to_date.to_s(:db)
       get :show, utm_show_params
 
       expect(MailClick.count).to eq 2

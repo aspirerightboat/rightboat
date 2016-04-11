@@ -8,6 +8,7 @@ class Enquiry < ActiveRecord::Base
   belongs_to :user
   belongs_to :boat
   belongs_to :invoice
+  belongs_to :saved_searches_alert
   belongs_to :accessed_by_broker, class_name: 'User'
   has_many :lead_trails, foreign_key: 'lead_id'
 

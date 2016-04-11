@@ -1,5 +1,5 @@
 ActiveAdmin.register SavedSearchesAlert do
-  menu parent: 'Users'
+  menu parent: 'Mails'
 
   config.sort_order = 'id_desc'
   permit_params :user_id, :saved_search_ids, :opened_at

@@ -5,7 +5,7 @@ ActiveAdmin.register_page 'Mails' do
     columns do
       column do
         total_sent = SavedSearchesAlert.count
-        total_opened = SavedSearchesAlert.where("opened_at is not null").count
+        total_opened = SavedSearchesAlert.where("opened_at IS NOT NULL").count
         total_clicked = MailClick.count
 
         render partial: 'stats', locals: {

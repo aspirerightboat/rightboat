@@ -1,0 +1,20 @@
+.panel
+  %h3 Mails Stats
+  .panel_contents
+    .total
+      %span
+        Total mails sent (we are tracking Saved Searches Updated atm):
+      %strong
+        = total_sent
+
+    .opened
+      %span
+        Total mails that were opened:
+      %strong
+        = total_opened
+
+    .clicked
+      %span
+        Total mails that were Clicked:
+      %strong
+        = total_clicked

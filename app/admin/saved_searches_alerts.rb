@@ -8,10 +8,15 @@ ActiveAdmin.register SavedSearchesAlert do
   filter :saved_search_ids
   filter :opened_at
   filter :created_at
+
   controller do
     def scoped_collection
       end_of_association_chain.includes(:user)
     end
+  end
+
+  sidebar 'Tools', only: [:index, :show_statistics] do
+    para { link_to 'Show Stats', admin_mails_path, class: 'button' }
   end
 
   index do

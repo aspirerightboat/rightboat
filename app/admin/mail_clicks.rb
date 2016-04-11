@@ -12,7 +12,7 @@ ActiveAdmin.register MailClick do
   filter :email_sent_at
 
   sidebar 'Tools', only: [:index, :show_statistics] do
-    para { link_to 'Show Stats', {action: :show_stats}, method: :get, class: 'button' }
+    para { link_to 'Show Stats', admin_mails_path, class: 'button' }
   end
 
   controller do
@@ -36,8 +36,6 @@ ActiveAdmin.register MailClick do
 
     actions
   end
-
-  collection_action :show_stats, method: :get 
 
   csv do
     column :id

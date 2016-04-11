@@ -13,13 +13,23 @@ $ ->
 
       false
 
-    $('.filter-tabs-content').each ->
-      $tabs_content = $(@)
-      $('.toggle-collapse, .overlay', $tabs_content).click ->
+    $('.filter-tabs').each ->
+      $tabs = $(@)
+      $tabs_content = $('.filter-tabs-content', $tabs)
+      $toggle = $('.toggle-collapse', $tabs)
+
+      update_toggle_text = ->
+        collapsed = $tabs_content.hasClass('collapsed')
+        $toggle.text(if collapsed then $toggle.data('expand-text') else $toggle.data('collapse-text'))
+
+      update_toggle_text()
+
+      $('.overlay', $tabs_content).add($toggle).click ->
         $tabs_content.toggleClass('collapsed')
         if !$tabs_content.hasClass('collapsed')
           $tab_content = $('.filter-tab-content:visible', $tabs_content)
           if !$tab_content.data('height')
             height = $tab_content.outerHeight()
             $tab_content.css(height: height).data('height', height) # set height for css animation
+        update_toggle_text()
         false

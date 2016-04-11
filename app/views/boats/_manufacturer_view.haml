@@ -20,7 +20,7 @@
             %a(href="#model_filters") Models
           %li
             %a(href="#location_filters") Locations
-        .filter-tabs-content.search-boat-filters{class: ('collapsed' if @filters_collapsed)}
+        .filter-tabs-content.search-boat-filters.collapsed
           .overlay
 
           #model_filters.filter-tab-content.filters-box.array-filter-box(data-filter-slug="models")
@@ -37,7 +37,6 @@
                       - if cnt > 0
                         %small (#{cnt})
             %button.apply-filter-btn Apply Filter
-            %a.toggle-collapse(href="#") Collapse Filters
 
           #location_filters.filter-tab-content.filters-box.array-filter-box.hidden(data-filter-slug="countries")
             %ul.flex-six-columns
@@ -53,6 +52,7 @@
                       - if cnt > 0
                         %small (#{cnt})
             %button.apply-filter-btn Apply Filter
-            %a.toggle-collapse(href="#") Collapse Filters
+
+        %a.toggle-collapse(href="#" data-expand-text="↓ Expand Filters" data-collapse-text="↑ Collapse Filters")
 
   = render partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params}}

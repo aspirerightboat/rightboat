@@ -2,7 +2,7 @@ ActiveAdmin.register MailClick do
   menu parent: 'Mails'
 
   config.sort_order = 'id_desc'
-  permit_params :user_id, :saved_searches_alert_id, :opened_at
+  permit_params :user_id, :saved_searches_alert_id, :url, :action_fullname, :email_sent_at
 
   filter :user
   filter :saved_searches_alert_id
@@ -10,6 +10,10 @@ ActiveAdmin.register MailClick do
   filter :action_fullname_cont, label: 'Action Fullname Contains'
   filter :created_at
   filter :email_sent_at
+
+  sidebar 'Tools', only: [:index, :show_statistics] do
+    para { link_to 'Show Stats', {action: :show_stats}, method: :get, class: 'button' }
+  end
 
   controller do
     def scoped_collection
@@ -33,6 +37,8 @@ ActiveAdmin.register MailClick do
     actions
   end
 
+  collection_action :show_stats, method: :get 
+
   csv do
     column :id
     column :url
@@ -43,5 +49,4 @@ ActiveAdmin.register MailClick do
     column :created_at
     column :updated_at
   end
-
 end

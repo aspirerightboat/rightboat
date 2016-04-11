@@ -1,0 +1,5 @@
+- @page_title = "#{@manufacturer.name.pluralize} for sale"
+
+$('#manufacturer_view').replaceWith('#{j render(partial: 'manufacturer_view')}');
+- if params[:page]
+  scrollToTarget($('.boats-view'));

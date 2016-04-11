@@ -11,11 +11,45 @@
   display: none;
   z-index: 100;
 }
-#boats_view {
+.boats-view {
   position: relative;
 }
-.filter-btn {
+.apply-filter-btn {
   border: 1px solid #b9b9b9;
   background: linear-gradient(to bottom, #e4e4e4, #fafafa);
   margin-top: 0.5em;
+}
+
+.filter-tags {
+  margin-bottom: 1em;
+
+  &::before {
+    content: 'Filters: ';
+    font-weight: bold;
+  }
+}
+.filter-tag {
+  display: inline-block;
+  padding: 3px 6px;
+  color: white;
+
+  .esc {
+    cursor: pointer;
+  }
+  &[data-filter-slug=models] {
+    background-color: #00bb83;
+  }
+  &[data-filter-slug=countries] {
+    background-color: #cd4a7c;
+  }
+}
+
+.clear-filters-btn {
+  display: inline-block;
+  padding: 2px 5px;
+  color: black;
+  border: 1px solid #b9b9b9;
+  background: linear-gradient(to bottom, #e4e4e4, #fafafa);
+  cursor: pointer;
+  margin-left: 1ex;
 }

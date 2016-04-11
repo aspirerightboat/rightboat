@@ -6,7 +6,6 @@ class User < ActiveRecord::Base
 
   ROLES = {
       'PRIVATE' => 0,
-      'MANUFACTURER' => 1,
       'COMPANY' => 2,
       'ADMIN' => 99
   }
@@ -24,7 +23,6 @@ class User < ActiveRecord::Base
   scope :inactive, -> { where active: false }
   scope :general, -> { where(role: ROLES['PRIVATE']) }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
-  scope :organizations, -> { where(role: [ROLES['COMPANY'], ROLES['MANUFACTURER']]).order(:company_name) }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -48,6 +46,7 @@ class User < ActiveRecord::Base
   has_many :lead_trails, dependent: :nullify
   has_many :saved_searches, dependent: :delete_all
   has_many :exports, dependent: :delete_all
+  has_many :mail_clicks
 
   mount_uploader :avatar, AvatarUploader
 
@@ -58,9 +57,9 @@ class User < ActiveRecord::Base
 
   # validates_inclusion_of :title, within: TITLES, allow_blank: true
 
-  validates_presence_of :first_name, :last_name, unless: :organization?
-  validates_presence_of :company_name, if: :organization?
-  validates_url :company_weburl, allow_blank: true, if: :organization?
+  validates_presence_of :first_name, :last_name, unless: :company?
+  validates_presence_of :company_name, if: :company?
+  validates_url :company_weburl, allow_blank: true, if: :company?
 
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
@@ -101,15 +100,9 @@ class User < ActiveRecord::Base
   alias_method :to_s, :name
   alias_method :display_name, :name # for active_admin
 
-  ROLES.each do |role_name, _|
-    define_method "#{role_name.to_s.underscore}?" do
-      self.role.to_i == ROLES[role_name.to_s]
-    end
-  end
-
-  def organization?
-    self.company? || self.manufacturer?
-  end
+  def private?; role == ROLES['PRIVATE'] end
+  def company?; role == ROLES['COMPANY'] end
+  def admin?; role == ROLES['ADMIN'] end
 
   def confirm_email_token
     Digest::MD5.hexdigest("#{email}RightBoatSalt")

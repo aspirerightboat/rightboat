@@ -97,6 +97,15 @@ group :development, :test do
   gem 'binding_of_caller'
 end
 
+group :test do
+  gem 'rspec-rails'
+  gem 'factory_girl'
+  gem 'email_spec'
+  gem 'database_cleaner'
+  gem 'capybara'
+  gem 'nokogiri'
+end
+
 group :development, :staging do
   gem 'sunspot_solr'
 end

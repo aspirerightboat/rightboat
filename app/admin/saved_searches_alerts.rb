@@ -1,5 +1,5 @@
 ActiveAdmin.register SavedSearchesAlert do
-  menu parent: 'Users'
+  menu parent: 'Mails'
 
   config.sort_order = 'id_desc'
   permit_params :user_id, :saved_search_ids, :opened_at
@@ -28,7 +28,7 @@ ActiveAdmin.register SavedSearchesAlert do
     column :opened_at do |ssa|
 
       if ssa.opened_at.present?
-        content_tag(:span, l(ssa.opened_at, format: :full_datetime))
+        content_tag(:span, l(ssa.opened_at, format: :long))
       else
         content_tag(:span, '-')
       end

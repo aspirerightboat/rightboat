@@ -1,0 +1,3 @@
+panel 'Mail Statistics' do
+   div { 'stats'.html_safe }
+end

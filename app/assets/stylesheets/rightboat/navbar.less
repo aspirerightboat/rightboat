@@ -75,8 +75,9 @@ a.navbar-brand {
     background: transparent;
   }
 }
-.page-links > li > a {
+.page-links .nav-link {
   background-color: #2d83a8;
+  color: white;
   padding: 2px 6px !important;
   text-decoration: none;
   margin-top: 8px;
@@ -86,6 +87,7 @@ a.navbar-brand {
 
   &:hover, &:focus {
     background-color: #2d83a8 !important;
+    color: white;
   }
 }
 .view-mode-icon {
@@ -117,8 +119,12 @@ a.navbar-brand {
 
   .navbar-text {
     margin-right: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+
     span {
       color: @rb-color-dark;
+      vertical-align: middle;
     }
   }
   .rb-select2-md {

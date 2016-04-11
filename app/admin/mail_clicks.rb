@@ -6,8 +6,8 @@ ActiveAdmin.register MailClick do
 
   filter :user
   filter :saved_searches_alert_id
-  filter :url
-  filter :action_fullname
+  filter :url_cont, label: 'URL Contains'
+  filter :action_fullname_cont, label: 'Action Fullname Contains'
   filter :created_at
   filter :email_sent_at
 

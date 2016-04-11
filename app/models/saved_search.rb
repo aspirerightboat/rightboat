@@ -8,7 +8,7 @@ class SavedSearch < ActiveRecord::Base
   serialize :tax_status, Hash
   serialize :new_used, Hash
 
-  belongs_to :user
+  belongs_to :user, counter_cache: true
 
   def search_title
     not_defined = '..'
@@ -39,23 +39,29 @@ class SavedSearch < ActiveRecord::Base
         price_max: params[:price_max].presence,
         length_min: params[:length_min].presence,
         length_max: params[:length_max].presence,
-        length_unit: params[:length_unit].to_s,
-        currency: params[:currency].to_s,
+        length_unit: params[:length_unit].presence,
+        currency: params[:currency].presence,
         ref_no: params[:ref_no].to_s,
         q: params[:q].to_s,
-        boat_type: params[:boat_type].to_s,
+        boat_type: params[:boat_type].presence,
         order: params[:order].to_s,
         manufacturer: params[:manufacturer].to_s,
         model: params[:model].to_s,
     }
 
-    if !user.saved_searches.where(fixed_params)
-            .where('tax_status = ?', params[:tax_status].to_yaml)
-            .where('new_used = ?', params[:new_used].to_yaml)
-            .where('country = ?', params[:country].to_yaml) #.where('category = ?', params[:category].to_yaml)
-            .where('models = ?', params[:models].to_yaml)
-            .exists?
-      ss = user.saved_searches.new(params)
+    query = user.saved_searches.where(fixed_params)
+
+    [:tax_status, :new_used, :country, :models].each do |p|
+      if params[p].blank?
+        query = query.where("#{p} IS NULL")
+      else
+        fixed_params[p] = params[p]
+        query = query.where("#{p} = ?", params[p].to_yaml)
+      end
+    end
+
+    if !query.exists?
+      ss = user.saved_searches.new(fixed_params)
       ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)
       ss.save!
     end

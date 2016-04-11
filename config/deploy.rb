@@ -41,6 +41,7 @@ set :disallow_pushing, true
 # if you prefer bzip2/unbzip2 instead of gzip
 #set :compressor, :bzip2
 
+require 'capistrano/deploy_lock'
 
 namespace :deploy do
   # after :check,   'monit:setup'

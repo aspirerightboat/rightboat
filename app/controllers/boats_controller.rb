@@ -22,6 +22,7 @@ class BoatsController < ApplicationController
     redirect_to(action: :index) and return if !@manufacturer
 
     page = params[:page] || 1
+    set_current_search_order(params[:order]) if params[:order]
     order_col, order_dir = Rightboat::BoatSearch.read_order(current_search_order)
     model_ids = (params[:models].split('-').presence if params[:models])
     if params[:country]

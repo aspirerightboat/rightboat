@@ -21,6 +21,14 @@ class SearchController < ApplicationController
       return
     end
 
+    if params[:q] && (boat = find_makemodel_boat(params[:q]))
+      if boat.manufacturer.name.downcase == params[:q].strip.downcase
+        redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return
+      else
+        redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model_id) and return
+      end
+    end
+
     params.delete(:page) unless request.xhr?
     set_current_search_order(params[:q].present? ? 'score_desc' : 'price_desc') if params[:order].blank?
     params[:order] ||= current_search_order
@@ -40,6 +48,19 @@ class SearchController < ApplicationController
   end
 
   private
+
+  def find_makemodel_boat(q)
+    search = Boat.solr_search do
+      with :live, true
+      paginate page: 1, per_page: 1
+      any_of do
+        with :manufacturer, q
+        with :manufacturer_model, q
+      end
+    end
+
+    search.results.first
+  end
 
   def save_session_settings
     set_current_currency params[:currency]

@@ -1,7 +1,7 @@
 = track_email_open_saved_searches(@saved_searches_alert)
 
 %p
-  Dear #{@user.name},
+  Dear #{@user.name_with_title},
 
 %p
   New listings have been posted to Rightboat that match your following Saved #{t('search_plural', count: @searches.size)}:

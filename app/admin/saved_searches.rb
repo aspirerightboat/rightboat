@@ -5,7 +5,7 @@ ActiveAdmin.register SavedSearch do
   permit_params :user_id, :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
                 :length_unit, :manufacturer, :model, :currency, :ref_no
 
-  filter :user, collection: -> { User.general.order(:first_name, :last_name) }
+  filter :user, collection: -> { User.not_companies.order(:first_name, :last_name) }
 
   controller do
     def scoped_collection

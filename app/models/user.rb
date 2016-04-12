@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   scope :inactive, -> { where active: false }
   scope :general, -> { where(role: ROLES['PRIVATE']) }
   scope :companies, -> { where(role: ROLES['COMPANY']).order(:company_name) }
+  scope :not_companies, -> { where.not(role: ROLES['COMPANY']) }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -91,6 +92,10 @@ class User < ActiveRecord::Base
   end
 
   def full_name
+    "#{first_name} #{last_name}".strip
+  end
+
+  def name_with_title
     "#{title} #{first_name} #{last_name}".strip.titleize
   end
 

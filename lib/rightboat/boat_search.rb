@@ -163,7 +163,10 @@ module Rightboat
       @new_used = read_hash(params[:new_used], 'new', 'used')
       @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
-      @order_col, @order_dir = self.class.read_order(params[:order])
+      if params[:order]
+        @order = params[:order]
+        @order_col, @order_dir = self.class.read_order(@order)
+      end
       @exclude_ref_no = params[:exclude_ref_no]
     end
 

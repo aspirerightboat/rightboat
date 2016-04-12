@@ -111,7 +111,7 @@ module Rightboat
     def self.read_order(target_order)
       if target_order.present? && ORDER_TYPES.include?(target_order)
         m = target_order.match(/\A(.*)_(asc|desc)\z/)
-        [m[1], m[2]]
+        [m[1].to_sym, m[2].to_sym]
       end
     end
 

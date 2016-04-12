@@ -12,7 +12,7 @@
       %td
         - invoice.enquiries.each do |lead|
           = link_to lead.id.to_s, admin_lead_url(lead)
-      %td= link_to invoice.user.name, admin_user_url(invoice.user)
+      %td= link_to invoice.user.name_with_title, admin_user_url(invoice.user)
       %td.text-right £#{format_pence invoice.total_ex_vat}
   %tr
     %td(colspan="4" style="border-bottom: 1px solid lightgray; height: 1em")

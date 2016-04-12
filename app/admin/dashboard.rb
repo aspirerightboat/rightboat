@@ -181,6 +181,14 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node User.general.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
+            tr do
+              td do
+                text_node 'Total Private Users with Alerted Saved Searches:'
+              end
+              td do
+                text_node User.joins(:saved_searches).where('saved_searches.alert = ?', true).group('users.id').having('count(saved_searches.id) > ?', 0).count.keys.length
+              end
+            end
           end
         end
       end

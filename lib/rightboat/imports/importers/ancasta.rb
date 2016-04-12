@@ -31,7 +31,11 @@ module Rightboat::Imports
       boat.hull_material = boat_nodes['HullMaterial'].text
       boat.engine = boat_nodes['Engine'].text
       boat.engine_code = boat_nodes['EngineCode'].text
-      boat.fuel_type = boat_nodes.to_s =~ /diesel/i ? 'Diesel' : 'Gasoline'
+      if boat_nodes.to_s =~ /diesel/i
+        boat.fuel_type = 'Diesel'
+      elsif boat_nodes.to_s =~ /gasoline/i
+        boat.fuel_type = 'Gasoline'
+      end
       boat.category = boat_nodes['Class'].text
       boat.location = boat_nodes['Located'].text
       boat.country = boat_nodes['Country'].text.presence

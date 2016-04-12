@@ -91,7 +91,7 @@
           .col-xs-4
             = label_tag :country
           .col-xs-8
-            - general_options = general_facets[:countries_data].map { |id, name, count| ["#{name} (#{count})", id] }
+            - general_options = general_facets[:countries_data].map { |id, name, count| [count ? "#{name} (#{count})" : name, id] }
             - filtered_data = (@search_facets[:countries_data].to_json if @search_facets)
             - selected_ids = [*(params[:country] || [])].to_json if params[:country].present?
             = select_tag 'country[]', options_for_select(general_options), class: 'select-black select-full multiple-country-select', multiple: 'multiple', data: {filtered_data: filtered_data, selected_ids: selected_ids}

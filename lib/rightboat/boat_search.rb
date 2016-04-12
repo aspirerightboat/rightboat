@@ -1,5 +1,7 @@
 module Rightboat
   class BoatSearch
+    include Rightboat::SolrRetry
+
     ORDER_TYPES = %w(score_desc created_at_desc price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
     YEARS_RANGE = (Date.today.year - 30)..Date.today.year
     PRICES_RANGE = 0..100_000_000
@@ -90,11 +92,13 @@ module Rightboat
     end
 
     def general_facets
-      search = Boat.solr_search do
-        with :live, true
-        facet :country_id
-        stats :year, :price, :length_m
-        paginate page: 1, per_page: 0
+      search = solr_retry(1) do
+        Boat.solr_search do
+          with :live, true
+          facet :country_id
+          stats :year, :price, :length_m
+          paginate page: 1, per_page: 0
+        end
       end
 
       fetch_facets_data(search)
@@ -118,24 +122,28 @@ module Rightboat
     private
 
     def fetch_facets_data(search)
-      price_stats = search.stats(:price)
-      year_stats = search.stats(:year)
-      length_stats = search.stats(:length_m)
+      price_stats = search&.stats(:price)
+      year_stats = search&.stats(:year)
+      length_stats = search&.stats(:length_m)
 
-      country_facet_rows = search.facet(:country_id).rows
-      filtered_country_ids = country_facet_rows.map(&:value) + (country.presence || [])
-      countries_data = Country.where(id: filtered_country_ids).order(:name).pluck(:id, :name).map do |id, name|
-        count = country_facet_rows.find { |x| x.value == id }.try(:count) || 0
-        [id, name, count]
-      end.sort_by(&:third).reverse
+      if search
+        country_facet_rows = search.facet(:country_id).rows
+        filtered_country_ids = country_facet_rows.map(&:value) + (country.presence || [])
+        countries_data = Country.where(id: filtered_country_ids).order(:name).pluck(:id, :name).map do |id, name|
+          count = country_facet_rows.find { |x| x.value == id }.try(:count) || 0
+          [id, name, count]
+        end.sort_by(&:third).reverse
+      else
+        countries_data = Country.order(:name).pluck(:id, :name).map { |id, name| [id, name, nil] }
+      end
 
       @facets_data = {
-          price_min:  (price_stats.data && price_stats.min.try(:floor)) || PRICES_RANGE.min,
-          price_max:  (price_stats.data && price_stats.max.try(:ceil)) || PRICES_RANGE.max,
-          year_min:   (year_stats.data && year_stats.min.try(:floor)) || YEARS_RANGE.min,
-          year_max:   (year_stats.data && year_stats.max.try(:ceil)) || YEARS_RANGE.max,
-          length_min: (length_stats.data && length_stats.min.try(:floor)) || LENGTHS_RANGE.min,
-          length_max: (length_stats.data && length_stats.max.try(:ceil)) || LENGTHS_RANGE.max,
+          price_min:  price_stats&.data&.min&.floor || PRICES_RANGE.min,
+          price_max:  price_stats&.data&.max&.ceil || PRICES_RANGE.max,
+          year_min:   year_stats&.data&.min&.floor || YEARS_RANGE.min,
+          year_max:   year_stats&.data&.max&.ceil || YEARS_RANGE.max,
+          length_min: length_stats&.data&.min&.floor || LENGTHS_RANGE.min,
+          length_max: length_stats&.data&.max&.ceil || LENGTHS_RANGE.max,
           countries_data: countries_data
       }
     end
@@ -164,8 +172,8 @@ module Rightboat
       @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
       if params[:order]
-        @order = params[:order]
-        @order_col, @order_dir = self.class.read_order(@order)
+        @order_col, @order_dir = self.class.read_order(params[:order])
+        @order = params[:order] if @order_col
       end
       @exclude_ref_no = params[:exclude_ref_no]
     end

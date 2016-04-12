@@ -47,6 +47,7 @@ class BoatsController < ApplicationController
     end
 
     @boats = search.results
+    @total_count = @boats.total_count
 
     @filters_data = fetch_maker_filters_data
 

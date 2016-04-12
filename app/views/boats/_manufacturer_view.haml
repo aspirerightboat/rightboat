@@ -1,7 +1,7 @@
 #manufacturer_view
   .row
     .col-xs-12
-      %h1= @page_title
+      %h1 #{@page_title}
 
       - if @model_filter_tags || @country_filter_tags
         .filter-tags
@@ -13,6 +13,8 @@
               .filter-tag(data-filter-slug="countries" data-id="country_#{country_id}") #{country_name} <span class="esc">×</span>
           .clear-filters-btn
             Clear filters
+
+      %small #{@total_count} boats found
 
       .filter-tabs
         %ul.filter-tabs-nav

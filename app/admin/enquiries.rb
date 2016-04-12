@@ -13,6 +13,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   filter :created_at, label: 'Date of Lead'
   filter :updated_at, label: 'Last Status Change'
   filter :status, as: :select, collection: -> { Enquiry::STATUSES }
+  filter :saved_searches_alert_id, label: 'Mail ID'
 
   controller do
     def scoped_collection
@@ -37,6 +38,11 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column :status
     column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
     column('Lead Price £') { |lead| b { lead.lead_price } }
+    column('Mail ID') do |lead|
+      if lead.saved_searches_alert_id.present?
+        link_to(lead.saved_searches_alert_id, admin_saved_searches_alert_path(lead.saved_searches_alert_id))
+      end
+    end
     actions do |enquiry|
       item 'Delete', delete_admin_lead_path(enquiry), class: 'delete-lead'
     end

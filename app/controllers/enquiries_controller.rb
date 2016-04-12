@@ -5,14 +5,17 @@ class EnquiriesController < ApplicationController
   before_action :require_buyer_or_broker, only: [:show]
   before_action :require_broker_payment_method, only: [:show]
   before_action :remember_when_broker_accessed, only: [:show]
+  before_action :add_saved_searches_alert_id, only: [:create]
 
   def create
     # disable captcha for easy use
     # if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
     #   enquiry.captcha_correct = false
     # end
+
     if !request.xhr?
       redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
+      return
     end
 
     if params[:has_account] == 'true' && !current_user
@@ -99,7 +102,12 @@ class EnquiriesController < ApplicationController
 
   def enquiry_params
     params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
-          .merge({user_id: current_user.try(:id), remote_ip: request.remote_ip, browser: request.env['HTTP_USER_AGENT']})
+          .merge({
+                   user_id: current_user.try(:id),
+                   remote_ip: request.remote_ip,
+                   browser: request.env['HTTP_USER_AGENT'],
+                   saved_searches_alert_id: @saved_searches_alert_id&.id
+                 })
   end
 
   def load_enquiry
@@ -137,6 +145,12 @@ class EnquiriesController < ApplicationController
       @enquiry.broker_accessed_at = Time.current
       @enquiry.accessed_by_broker = current_user
       @enquiry.save!
+    end
+  end
+
+  def add_saved_searches_alert_id
+    if cookies['tracking_token'].present?
+      @saved_searches_alert_id = SavedSearchesAlert.find_by(token: cookies[:tracking_token])
     end
   end
 

@@ -85,5 +85,13 @@ RSpec.describe BoatsController do
       expect(MailClick.count).to eq 0
     end
 
+    it "checks if cookie was set to track the leads" do
+      get :show, show_params
+      expect(response.cookies['tracking_token']).to be_nil
+
+      get :show, utm_show_params
+      expect(response.cookies['tracking_token']).to eq(saved_search_alert.token)
+    end
+
   end
 end

@@ -125,4 +125,20 @@ FactoryGirl.define do
     newsletter true
     enquiry true
   end
+
+  factory :broker_info do
+    user
+    lead_length_rate 1.0
+    discount 0.0
+
+    sequence(:website) { |n| "website-#{n}" }
+    sequence(:description) { |n| "description-#{n}" }
+    sequence(:email) { |n| "email-#{n}@test.com" }
+    # sequence(:additional_email) { |n| "email-#{n}@test.com" }
+    sequence(:contact_name) { |n| "contact-name-#{n}" }
+    lead_min_price 5
+    lead_max_price 300
+    payment_method "none"
+  end
+
 end

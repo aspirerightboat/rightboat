@@ -6,7 +6,7 @@ set :repo_url, 'git@github.com:OxygenCapitalLimited/rightboat.git'
 
 set :deploy_to, '/var/www/rightboat_v2'
 set :linked_files, %w(config/database.yml config/secrets.yml config/application.yml config/smtp.yml public/sitemap.xml.gz public/robots.txt)
-set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/uploads public/boat_images public/exports solr/data import_data)
+set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/uploads public/boat_images public/exports solr/data import_data boat_pdfs)
 
 set :scm, :git
 set :branch, ENV['BRANCH'] || 'master'

@@ -3,7 +3,8 @@ ActiveAdmin.register Office do
 
   config.sort_order = 'name_asc'
   permit_params :user_id, :name, :email, :daytime_phone, :evening_phone,
-                :fax, :mobile, :website, address_attributes: []
+                :fax, :mobile, :website,
+                address_attributes: [:line1, :line2, :town_city, :county, :country_id, :zip, :addressible_id, :addressible_type]
 
   filter :user, as: :select, collection: -> { User.order(:company_name, :first_name) }
   filter :email

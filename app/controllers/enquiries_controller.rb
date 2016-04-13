@@ -71,6 +71,11 @@ class EnquiriesController < ApplicationController
     user.role = 'PRIVATE'
     user.email_confirmed = true
 
+    if user.phone.blank?
+      lead = Enquiry.where(email: user.email).where("phone IS NOT NULL AND phone <> ''").first
+      user.phone = [lead.country_code.presence, lead.phone.gsub(/\D/, '')].compact.join('-')
+    end
+
     if user.save
       sign_in(user)
       render json: {location: member_enquiries_path}

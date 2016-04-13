@@ -9,7 +9,9 @@ class ApplicationController < ActionController::Base
     when ActiveRecord::RecordNotFound,
         ActionController::RoutingError,
         ActionController::UnknownFormat
-      not_found
+      redirect_to_not_found
+    when Rightboat::SolrIsDownError
+      redirect_to_maintenance
     else
       Rightboat::CleverErrorsNotifier.try_notify(exception, request, current_user)
       if Rails.env.production?

@@ -34,13 +34,14 @@
   %h1 <b>#{@boat.manufacturer}</b>
   - if @boat.model && @boat.model.name != 'Unknown'
     %h2 #{@boat.model}
-  %h3 #{boat_price(@boat, Currency.find_by(name: 'GBP'))}(#{boat_price(@boat, Currency.find_by(name: 'USD'))}) &nbsp;&nbsp;&nbsp;&nbsp;#{@boat.tax_status}
+  %h3 #{boat_price(@boat, Currency.default)} &nbsp;&nbsp;&nbsp;&nbsp;#{@boat.tax_status}
   %h3 #{@boat.year_built} year
   %h3 #{@boat.ref_no}
   %h3 #{@boat.source_id}
   .qr-code-block
-    - boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
-    = render partial: 'shared/qr_code', locals: {url: boat_url, size: 8}
+    -# boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
+    -# use ref_no instead of url fore regular size of qrcode
+    = render partial: 'shared/qr_code', locals: {url: @boat.ref_no}
     .qr-code-hint Scan to view boat online
 
 .page-break

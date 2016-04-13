@@ -176,7 +176,7 @@ module Rightboat
           full_spec_link = doc.link_with(href: /pl_boat_full_detail/)
           full_spec_uri = doc.uri.merge(full_spec_link.uri)
 
-          boat = SourceBoat.new(source_url: doc.uri.to_s)
+          boat = SourceBoat.new(source_url: doc.uri.to_s, importer: self)
 
           boat.length_m = job[:length_m]
           process_codes(boat, job[:codes])

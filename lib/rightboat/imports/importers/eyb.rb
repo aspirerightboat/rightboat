@@ -356,7 +356,7 @@ module Rightboat
 
         def process_job(job)
           doc = job[:ad]
-          boat = SourceBoat.new
+          boat = SourceBoat.new(importer: self)
 
           doc.element_children.each do |node|
             next if node.name.start_with?('Deal_') || node.name == 'An_Broker'

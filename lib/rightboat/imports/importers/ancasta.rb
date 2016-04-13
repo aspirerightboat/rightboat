@@ -21,7 +21,7 @@ module Rightboat::Imports
     def process_job(job)
       boat_node = job[:boat_node]
       boat_nodes = boat_node.element_children.index_by(&:name)
-      boat = SourceBoat.new
+      boat = SourceBoat.new(importer: self)
       boat.source_id = boat_node['Id']
       boat.year_built = boat_nodes['Year'].text
       boat.manufacturer = boat_nodes['Make'].text

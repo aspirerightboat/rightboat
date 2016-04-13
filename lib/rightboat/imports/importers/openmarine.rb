@@ -158,7 +158,7 @@ module Rightboat
 
         def process_job(job)
           advert_node = job[:advert_node]
-          boat = SourceBoat.new
+          boat = SourceBoat.new(importer: self)
 
           boat.office_id = job[:office_id]
           boat.source_id = advert_node['ref']

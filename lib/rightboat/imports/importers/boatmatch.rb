@@ -50,7 +50,7 @@ module Rightboat
         end
 
         def process_job(job)
-          boat = SourceBoat.new
+          boat = SourceBoat.new(importer: self)
 
           job[:item].element_children.each do |c|
             key = c.name

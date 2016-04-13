@@ -79,8 +79,6 @@ Rails.application.routes.draw do
   post 'boats/:id/request-details', to: 'enquiries#create', as: :request_details
   post 'signup-and-view-pdf', to: 'enquiries#signup_and_view_pdf', as: :signup_and_view_pdf
   post 'follow-lead-maker-model', to: 'enquiries#follow_maker_model', as: :follow_lead_maker_model
-  # get 'captcha', to: 'captcha#image'
-  # get 'captcha/new', to: 'captcha#new'
 
   resource :home, controller: :home, path: '/' do
     collection do

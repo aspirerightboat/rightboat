@@ -8,11 +8,6 @@ class EnquiriesController < ApplicationController
   before_action :add_saved_searches_alert_id, only: [:create]
 
   def create
-    # disable captcha for easy use
-    # if !Rightboat::Captcha.correct?(session[:captcha].with_indifferent_access, params[:enquiry][:captcha])
-    #   enquiry.captcha_correct = false
-    # end
-
     if !request.xhr?
       redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
       return
@@ -35,7 +30,6 @@ class EnquiriesController < ApplicationController
     enquiry.mark_if_suspicious(current_user, request.remote_ip)
 
     if enquiry.save
-      # session.delete(:captcha)
       enquiry.create_lead_trail(true)
       redirect_to_enquiries = current_user.present?
 
@@ -50,7 +44,6 @@ class EnquiriesController < ApplicationController
       json[:show_result_popup] = true if !current_user
       render json: json
     else
-      # session[:captcha] = Rightboat::Captcha.generate
       render json: enquiry.errors.full_messages, status: 422, root: false
     end
   end

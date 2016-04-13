@@ -73,10 +73,6 @@ class Enquiry < ActiveRecord::Base
 
   private
 
-  # def add_captcha_error
-  #   errors.add(:captcha, 'is invalid') if captcha_correct != nil && !captcha_correct
-  # end
-
   def send_quality_check_email
     if status_changed? && status == 'quality_check'
       LeadsMailer.lead_quality_check(id).deliver_later

@@ -17,7 +17,6 @@ class Enquiry < ActiveRecord::Base
   validates_format_of :email, with: /\A\S+@\S+\z/, allow_blank: true
 
   before_validation :fill_user_info
-  # before_validation :add_captcha_error
 
   before_save :update_lead_price
   after_save :send_quality_check_email
@@ -68,7 +67,7 @@ class Enquiry < ActiveRecord::Base
   end
 
   def handle_lead_created_mails
-    LeadCreatedMailsJob.perform_later(id)
+    Delayed::Job.enqueue LeadCreatedMailsJob.new(id)
   end
 
   private

@@ -36,7 +36,7 @@ module Rightboat
             @char = ''
             @tree.push(el)
             if el == 'VehicleRemarketing'
-              @boat = SourceBoat.new(importer: self)
+              @boat = SourceBoat.new(importer: @importer)
             end
           end
 

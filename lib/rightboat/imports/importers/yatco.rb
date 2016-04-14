@@ -62,7 +62,7 @@ module Rightboat
 
         def process_job(job)
           doc = get("http://data.yatco.com/dataservice/#{@import.param['api_key']}/vesseldetails/#{job[:vessel_id]}")
-          boat = SourceBoat.new
+          boat = SourceBoat.new(importer: self)
           boat.office = { address_attributes: {} }
 
           doc.search('Vessel').first.children.each do |node|

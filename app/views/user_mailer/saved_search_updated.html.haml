@@ -26,6 +26,17 @@
           - else
             %p
               Please find above links for new boats that match your Saved Search on Rightboat.
+
+          - manufacturers_links = conditional_manufacturer_link(saved_search)
+          - models_links = conditional_model_link(saved_search)
+
+          - if manufacturers_links.present?
+            %p.manufactures
+              Click to visit #{manufacturers_links} manufacturers page
+          - if models_links.present?
+            %p.models
+              Click to visit #{models_links} models page
+
 %p
   You can manage your alerts and email settings from the #{link_to 'My Alerts', member_user_alert_url}
   page within #{link_to 'My Rightboat', member_root_url}.

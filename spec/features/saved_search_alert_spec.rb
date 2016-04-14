@@ -50,5 +50,61 @@ RSpec.describe "saved search alert feature" do
       boat_summary_link = document.xpath("//a[text()='Boat Summary']/@href").text.split('?').last
       expect(boat_summary_link.split('&')).to include(*utm_params)
     end
+
+
+    context 'mail links to maker/model page' do
+        let!(:manufacturer2) { create :manufacturer }
+        let!(:model2) { create :model, manufacturer: manufacturer2 }
+        let!(:model3) { create :model, manufacturer: manufacturer }
+
+      context 'saved search created from advanced search page' do
+        let!(:saved_search) { create :saved_search,
+                                     user: user,
+                                     first_found_boat_id: boat.id,
+                                     manufacturer: "#{manufacturer.name},#{manufacturer2.name}",
+                                     model: "#{model.name},#{model2.name},#{model3.name}"   }
+
+        it "user's email contains link to manufactures page and to models page" do
+          allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
+
+          SavedSearchNoticesJob.new.perform
+          document = Nokogiri::HTML(last_email.html_part.body.decoded)
+
+          boat_manufactures_links = document.css("p.manufactures a").text
+          boat_models_links = document.css("p.models a").text
+
+          expect(boat_manufactures_links).to include(manufacturer2.name)
+          expect(boat_manufactures_links).to include(manufacturer.name)
+
+          expect(boat_models_links).to include(model.name)
+          expect(boat_models_links).to include(model2.name)
+          expect(boat_models_links).to include(model3.name)
+        end
+      end
+
+      context 'saved search created from filters page' do
+        let!(:saved_search) { create :saved_search,
+                                     user: user,
+                                     first_found_boat_id: boat.id,
+                                     models: [model.id, model2.id, model3.id] }
+
+        it "user's email contains link to models page and doesn't contain links to manufactures" do
+          allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
+
+          SavedSearchNoticesJob.new.perform
+          document = Nokogiri::HTML(last_email.html_part.body.decoded)
+
+          boat_manufactures_links = document.css("p.manufactures a").text
+          boat_models_links = document.css("p.models a").text
+
+          expect(boat_manufactures_links).to eq ""
+
+          expect(boat_models_links).to include(model2.name)
+          expect(boat_models_links).to include(model3.name)
+          expect(boat_models_links).to include(model.name)
+        end
+      end
+
+    end
   end
 end

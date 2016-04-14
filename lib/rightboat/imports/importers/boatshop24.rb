@@ -72,7 +72,7 @@ module Rightboat
         def process_job(job=nil)
           #url = job[:url]
           url = '/cabin-cruiser/viking-20/76336'
-          boat = SourceBoat.new
+          boat = SourceBoat.new(importer: self)
           fields = {}
           boat.source_id = url[/\d+$/].to_s
           url = advert_url(url)

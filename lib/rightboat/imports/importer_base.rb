@@ -193,7 +193,6 @@ module Rightboat
         increment_stats = []
         source_boat.user = @user
         source_boat.import = @import
-        source_boat.importer = self
 
         # retry saving for deadlock error
         retries = 0

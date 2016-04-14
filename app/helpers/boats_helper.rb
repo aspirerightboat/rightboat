@@ -66,9 +66,11 @@ module BoatsHelper
     ret << ['Fuel', boat.fuel_type.try(:name)]
     ret << ['Berths', spec_value_by_name['berths_count']]
     ret << ['Cabins', spec_value_by_name['cabins_count']]
-    ret << ['Location', link_to_if(boat.country, boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
-                                                                                           models: boat.model.id,
-                                                                                           country: boat.country.slug))]
+    if boat.country
+      ret << ['Location', link_to(boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
+                                                                            models: boat.model.id,
+                                                                            country: boat.country.slug))]
+    end
     ret << ['Tax Status', boat.tax_status]
     ret << ['RB Ref', boat.ref_no]
     ret << ['Hull Material', spec_value_by_name['hull_material']]

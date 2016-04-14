@@ -152,7 +152,7 @@ Rails.application.routes.draw do
     post 'favourites', to: 'favourites#create', as: :favourite, constraints: { format: :json }
     resource :user_alert, controller: :user_alert, path: 'alerts', only: [:update]
     resources :user_notifications, only: [:index]
-    resources :saved_searches, path: 'saved-searches', only: [:index, :create, :destroy] do
+    resources :saved_searches, path: 'saved-searches', only: [:create, :destroy] do
       post :toggle, on: :member
     end
     resources :boats, except: [:show]

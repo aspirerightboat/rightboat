@@ -1,8 +1,4 @@
 class Member::SavedSearchesController < Member::BaseController
-  def index
-    @saved_searches = current_user.saved_searches.order('id DESC').to_a
-  end
-
   def create
     params[:country] = params.delete(:countries).split('-') if params[:countries]
     params[:models] = params[:models].split('-') if params[:models]

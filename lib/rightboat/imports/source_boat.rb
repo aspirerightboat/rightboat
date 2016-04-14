@@ -76,7 +76,7 @@ module Rightboat
         :plotter, :plotter_year, :power, :power_110v, :power_12v, :power_220v, :power_24v,
         :profile_url, :propeller, :propeller_code, :propeller_type,
         :radar, :radar_detector, :radar_detector_year, :radar_reflector, :radar_year, :remaining,
-        :radiotape_player, :radiotape_player_year, :reg_details, :regata, :removable_cockpit_table,
+        :radiotape_player, :radiotape_player_year, :range, :reg_details, :regata, :removable_cockpit_table,
         :repeater, :repeater_count, :repeater_makemodel, :repeater_year,
         :rig, :rig_code, :rod_holders, :rope_cutter, :saloon, :scissors, :searchlight, :seating_capacity, :seating_system,
         :sailing_equipment, :seawater_pump, :shore_inverter, :shore_power, :shore_power_inlet, :shower, :solar_panels, :solar_panels_year, :solent,

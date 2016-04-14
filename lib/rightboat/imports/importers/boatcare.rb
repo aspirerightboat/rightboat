@@ -52,7 +52,7 @@ module Rightboat
 
         def process_job(job)
           url = job[:url]
-          boat = SourceBoat.new
+          boat = SourceBoat.new(importer: self)
           fields = {}
           boat.source_id = url[/([a-zA-Z0-9\-\.]+$)/].gsub(/\.htm/, '')
           url = advert_url(url)

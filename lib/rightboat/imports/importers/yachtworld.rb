@@ -131,6 +131,7 @@ module Rightboat
               'Number of bathrooms' => :bathrooms,
               'Max Load Capacity' => :max_load_capacity,
               'Seating Capacity' => :seating_capacity,
+              'Range' => :range,
               'Freeboard' => :freeboard
           }
         end
@@ -173,11 +174,8 @@ module Rightboat
 
           doc = get(source_url)
 
-          full_spec_link = doc.link_with(href: /pl_boat_full_detail/)
-          full_spec_uri = doc.uri.merge(full_spec_link.uri)
-
-          boat = SourceBoat.new(source_url: doc.uri.to_s)
-
+          boat = SourceBoat.new(source_url: doc.uri.to_s, importer: self)
+          boat.source_id = url_param(source_url, 'boat_id')
           boat.length_m = job[:length_m]
           process_codes(boat, job[:codes])
           boat.location = job[:location]
@@ -186,74 +184,94 @@ module Rightboat
           desc_td = doc.root.at_css('tr[align=left] td')
           description = prepare_description(desc_td)
 
-          doc = get(full_spec_uri)
-          boat.source_id = url_param(source_url, 'boat_id')
-          h3 = doc.root.at_css('h3')
-          h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
+          if full_spec_link = doc.link_with(href: /pl_boat_full_detail/)
+            full_spec_uri = doc.uri.merge(full_spec_link.uri)
+            doc = get(full_spec_uri)
 
-          h3.parent.css('li').each do |li|
-            attr, data = fix_whitespace(li.text).split(/\s*:\s*/)
-            assign_boat_attr(boat, attr, data)
-          end
+            h3 = doc.root.at_css('h3')
+            h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
 
-          details1 = doc.root.at_css('h2:contains("Additional Specs, Equipment")').ancestors('div').first
-          details1.css('h2').remove
-          section = nil
-          details1.traverse do |node|
-            if node.text?
-              str = fix_whitespace(node.text)
-              next if str.blank?
-
-              if node.parent.name == 'strong'
-                section = str
-              elsif str[':']
-                attr, data = str.split(/\s*:\s/)
-                assign_boat_attr(boat, attr, data)
-              elsif str.present? && section == 'Boat Name'
-                boat.name = str
-              end
+            h3.parent.css('li').each do |li|
+              attr, data = fix_whitespace(li.text).split(/\s*:\s*/)
+              assign_boat_attr(boat, attr, data)
             end
-          end
 
-          details2_b = doc.root.at_css('b:contains("Yacht\'s Descriptions")')
-          details2 = (details2_b.ancestors('div').first if details2_b)
-          if details2_b
+            details1 = doc.root.at_css('h2:contains("Additional Specs, Equipment")').ancestors('div').first
+            details1.css('h2').remove
             section = nil
-            attr = nil
-            details2.css('td').each do |td|
-              if td[:class] == 'sectHead'
-                section = fix_whitespace(td.text)
-              elsif td[:width] == '25%'
-                str = fix_whitespace(td.text)
-                if str.end_with?(':')
-                  attr = str.chomp(':')
-                  attr = 'Generator Manufacturer' if section == 'Generators' && attr == 'Manufacturer'
-                else
-                  assign_boat_attr(boat, attr, str)
+            details1.traverse do |node|
+              if node.text?
+                str = fix_whitespace(node.text)
+                next if str.blank?
+
+                if node.parent.name == 'strong'
+                  section = str
+                elsif str[':']
+                  attr, data = str.split(/\s*:\s/)
+                  assign_boat_attr(boat, attr, data)
+                elsif str.present? && section == 'Boat Name'
+                  boat.name = str
                 end
               end
             end
-          end
 
-          cur_details = details2 || details1
-          while (cur_details = cur_details.next)
-            next if cur_details.name != 'div'
-            next if !cur_details.at_css('b')
-            next if cur_details.at_css('b:contains("Disclaimer")')
-            description << prepare_description(cur_details)
+            details2_b = doc.root.at_css('b:contains("Yacht\'s Descriptions")')
+            details2 = (details2_b.ancestors('div').first if details2_b)
+            if details2_b
+              section = nil
+              attr = nil
+              details2.css('td').each do |td|
+                if td[:class] == 'sectHead'
+                  section = fix_whitespace(td.text)
+                elsif td[:width] == '25%'
+                  str = fix_whitespace(td.text)
+                  if str.end_with?(':')
+                    attr = str.chomp(':')
+                    attr = 'Generator Manufacturer' if section == 'Generators' && attr == 'Manufacturer'
+                  else
+                    assign_boat_attr(boat, attr, str)
+                  end
+                end
+              end
+            end
+
+            cur_details = details2 || details1
+            while (cur_details = cur_details.next)
+              next if cur_details.name != 'div'
+              next if !cur_details.at_css('b')
+              next if cur_details.at_css('b:contains("Disclaimer")')
+              description << prepare_description(cur_details)
+            end
+
+            if boat.manufacturer && !boat.model && h3_manufacturer_model[boat.manufacturer]
+              boat.model = h3_manufacturer_model.sub(boat.manufacturer, '').strip
+            end
+
+            boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map do |n|
+              url = n[:src].sub(/\?.*/, '')
+              {url: url}
+            end
+          else
+            h3 = doc.root.at_css('h3')
+            h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
+
+            h3.parent.css('li').each do |li|
+              attr, data = fix_whitespace(li.text).split(/\s*:\s*/)
+              assign_boat_attr(boat, attr, data)
+            end
+
+            if gallery_link = doc.link_with(href: /photo_gallery/)
+              gallery_uri = doc.uri.merge(gallery_link.uri)
+              doc = get(gallery_uri)
+              boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map do |n|
+                url = n[:src].sub(/\?.*/, '')
+                {url: url}
+              end
+            end
           end
 
           boat.description = description
-
-          if boat.manufacturer && !boat.model && h3_manufacturer_model[boat.manufacturer]
-            boat.model = h3_manufacturer_model.sub(boat.manufacturer, '').strip
-          end
           boat.manufacturer_model = h3_manufacturer_model if !boat.manufacturer && !boat.model
-
-          boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map do |n|
-            url = n[:src].sub(/\?.*/, '')
-            {url: url}
-          end
           boat
         end
 

@@ -69,11 +69,7 @@ class EnquiriesController < ApplicationController
     user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
     user.role = 'PRIVATE'
     user.email_confirmed = true
-
-    if user.phone.blank?
-      lead = Enquiry.where(email: user.email).where("phone IS NOT NULL AND phone <> ''").first
-      user.phone = [lead.country_code.presence, lead.phone.gsub(/\D/, '')].compact.join('-')
-    end
+    user.assign_phone_from_leads
 
     if user.save
       sign_in(user)

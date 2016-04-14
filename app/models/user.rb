@@ -137,6 +137,13 @@ class User < ActiveRecord::Base
     company?
   end
 
+  def assign_phone_from_leads
+    if phone.blank?
+      lead = Enquiry.where(email: email).where("phone IS NOT NULL AND phone <> ''").first
+      self.phone = [lead.country_code.presence, lead.phone.gsub(/\D/, '')].compact.join('-') if lead
+    end
+  end
+
   private
 
   def slug_candidates

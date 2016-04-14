@@ -1,6 +1,8 @@
 class LeadsApproveJob
   def perform
     deadline = RBConfig[:leads_approve_delay].hours.ago
-    Enquiry.pending.where('updated_at < ?', deadline).find_each { |x| x.update(status: 'approved') }
+    Enquiry.pending.joins(:last_lead_trail).where('lead_trails.created_at < ?', deadline).each do |x|
+      x.update(status: 'approved')
+    end
   end
 end

@@ -26,11 +26,10 @@ class EnquiriesController < ApplicationController
 
     enquiry = Enquiry.new(enquiry_params)
     enquiry.boat = Boat.find_by(slug: params[:id])
-    enquiry.boat_currency_rate = (enquiry.boat.currency || Currency.default).rate
+    enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
     enquiry.mark_if_suspicious(current_user, request.remote_ip)
 
     if enquiry.save
-      enquiry.create_lead_trail(true)
       redirect_to_enquiries = current_user.present?
 
       enquiry.handle_lead_created_mails unless enquiry.suspicious?

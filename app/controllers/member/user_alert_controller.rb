@@ -1,12 +1,15 @@
 class Member::UserAlertController < Member::BaseController
-  def show
-    @user_alert = current_user.user_alert
-  end
-
   def update
     current_user.user_alert.update_attributes!(user_alert_params)
-    current_user.saved_searches.update_all(alert: user_alert_params[:saved_searches])
-    redirect_to({action: :show}, notice: 'Your settings were saved')
+    if params[:saved_searches].present?
+      saved_searches_alert_true = params[:saved_searches].select { |_, val| val == {'alert' => 'true'} }
+      saved_searches_alert_false = params[:saved_searches].select { |_, val| val == {'alert' => 'false'} }
+
+      current_user.saved_searches.where(id: saved_searches_alert_true.keys).update_all(alert: true)
+      current_user.saved_searches.where(id: saved_searches_alert_false.keys).update_all(alert: false)
+    end
+
+    redirect_to(member_user_notifications_path, notice: 'Your settings were saved')
   end
 
   private

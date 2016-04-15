@@ -17,7 +17,7 @@ class SearchController < ApplicationController
       ctl.request = request
       ctl.response = response
       ctl.create
-      redirect_to member_saved_searches_path, notice: 'Your search was saved'
+      redirect_to member_user_notifications_path, notice: 'Your search was saved'
       return
     end
 

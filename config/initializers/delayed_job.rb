@@ -32,3 +32,6 @@ if Rails.env.production?
 
   Delayed::Worker.plugins << Delayed::Plugins::ErrorsNotifier
 end
+
+# fix random "Job failed to load: undefined class/module" problem on prod
+Dir["#{Rails.root}/app/jobs/*"].each { |file| require(File.basename(file, '.rb')) }

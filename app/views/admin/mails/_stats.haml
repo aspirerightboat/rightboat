@@ -23,4 +23,4 @@
       %span
         Total Leads that were created from the mails:
       %strong
-        = total_leads
+        = link_to(total_leads, admin_leads_path(q:{ created_at_gteq: created_at_gteq, created_at_lteq: created_at_lteq, saved_searches_alert_id_greater_than: 0 }))

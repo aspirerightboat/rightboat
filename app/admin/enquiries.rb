@@ -38,7 +38,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     column :status
     column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
     column('Lead Price £') { |lead| b { lead.lead_price } }
-    column('Mail ID') do |lead|
+    column('Mail ID', sortable: :saved_searches_alert_id) do |lead|
       if lead.saved_searches_alert_id.present?
         link_to(lead.saved_searches_alert_id, admin_saved_searches_alert_path(lead.saved_searches_alert_id))
       end

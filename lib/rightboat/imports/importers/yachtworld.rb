@@ -157,7 +157,7 @@ module Rightboat
               job = {}
               job[:length_m] = read_length(tds[3].text)
               if location == 'Sale Pending'
-                job[:offer_status] = 'sale_pending'
+                job[:offer_status] = 'under_offer'
               else
                 job[:location] = location
               end

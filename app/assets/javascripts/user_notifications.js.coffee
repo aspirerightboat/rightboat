@@ -11,7 +11,7 @@ $ ->
 
   $('.toggle-saved-searches-alerts .toggle-alert').on 'click', (e, data, status, xhr) ->
     e.preventDefault()
-    if  $('.toggle-saved-searches-alerts input[type=checkbox]').prop('checked') == true
+    if $('.toggle-saved-searches-alerts input[type=checkbox]').prop('checked')
       if $(@).hasClass('label-default')
         $(@).addClass('label-success').removeClass('label-default')
         $(@).text('Alert On')

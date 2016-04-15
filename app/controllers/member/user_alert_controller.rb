@@ -9,7 +9,7 @@ class Member::UserAlertController < Member::BaseController
       current_user.saved_searches.where(id: saved_searches_alert_false.keys).update_all(alert: false)
     end
 
-    redirect_to( member_user_notifications_path, notice: 'Your settings were saved')
+    redirect_to(member_user_notifications_path, notice: 'Your settings were saved')
   end
 
   private

@@ -1,5 +1,5 @@
 .save-search
-  = link_to 'Save Search & Set Notification', member_saved_searches_path(params.except(:controller, :action)),
+  = link_to 'Save Search', member_saved_searches_path(params.except(:controller, :action)),
                        method: :post, remote: true, class: "btn-flat require-login simple-ajax-link#{' nav-link' if nav_link}",
                        data: {'login-title' => 'Please sign in or join as a member to save your search.'}
   .result-popup

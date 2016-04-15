@@ -22,7 +22,7 @@ RSpec.describe EnquiriesController do
     let!(:saved_search_alert) { SavedSearchesAlert.create(user_id: user.id, saved_search_ids: [saved_search.id]) }
 
 
-    let(:utm_params){
+    let(:utm_params) {
       {
         utm_medium: 'email',
         utm_source: 'subscription',
@@ -74,7 +74,7 @@ RSpec.describe EnquiriesController do
 
   context '#signup_and_view_pdf' do
     let!(:user) { create :user }
-    let!(:broker) { create :user}
+    let!(:broker) { create :user }
     let!(:broker_info) { create :broker_info, user: broker }
 
     let!(:manufacturer) { create :manufacturer }

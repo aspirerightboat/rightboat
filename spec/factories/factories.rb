@@ -41,14 +41,20 @@ FactoryGirl.define do
 
   factory :currency do
     name 'USD'
-    rate 1
+    rate 1.4161
     symbol '$'
     sequence(:position)
 
-    trait :euro do
+    trait :eur do
       name 'EUR'
       symbol '€'
-      rate 1.2
+      rate 1.2553
+    end
+
+    trait :gbp do
+      name 'GBP'
+      symbol '£'
+      rate 1
     end
   end
 

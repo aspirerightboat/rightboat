@@ -2,14 +2,15 @@
   .navbar-h Boats <strong>For Sale</strong>
 
 - content_for :navbar_links do
-  - if controller_name == 'boats' && action_name == 'model'
+  - if !(controller_name == 'boats' && action_name == 'index')
     %li= link_to '← Boats for sale', boats_path, class: 'nav-link'
-    %li= link_to "← #{@manufacturer.name}", sale_manufacturer_path(@manufacturer), class: 'nav-link'
-  - if controller_name == 'boats' && action_name == 'manufacturer' && (params[:models] || params[:countries])
-    = render partial: 'shared/save_search_btn', locals: {nav_link: true}
 
-  - elsif controller_name != 'boats' || action_name != 'index'
-    %li= link_to '← Boats for sale', boats_path, class: 'nav-link'
+  - if controller_name == 'boats' && action_name == 'model'
+    %li= link_to "← #{@manufacturer.name}", sale_manufacturer_path(@manufacturer), class: 'nav-link'
+
+  - if controller_name == 'boats' && action_name == 'manufacturer' && (params[:models] || params[:countries])
+    %li= render partial: 'shared/save_search_btn', locals: {nav_link: true}
+
 
 = render 'shared/search_bar'
 

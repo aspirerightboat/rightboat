@@ -1,5 +1,5 @@
-- @page_title = "#{@model.name} boats for sale"
-- @page_description = @page_title
+- @page_title = "#{@manufacturer.name} #{@model.name} boats for sale"
+- @page_description = "Browse various #{@manufacturer.name} #{@model.name} boats for sale, Rightboat.com offers thousands of boats for sale listed by trusted brokers from around the World"
 - @canonical_url = sale_model_url(@manufacturer, @model)
 
 - content_for :meta_tags do
@@ -8,7 +8,7 @@
 = render layout: 'shared/boats_for_sale' do
   .row
     .col-xs-12
-      %h1 #{@manufacturer.name} #{@model.name} boats
+      %h1 #{@page_title}
   .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|
       = render layout: 'boats/boat', locals: {boat: b} do

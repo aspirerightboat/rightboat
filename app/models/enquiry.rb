@@ -71,7 +71,7 @@ class Enquiry < ActiveRecord::Base
   end
 
   def handle_lead_created_mails
-    Delayed::Job.enqueue LeadCreatedMailsJob.new(id)
+    LeadCreatedMailsJob.new(id).perform
   end
 
   private

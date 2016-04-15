@@ -2,6 +2,7 @@ class HomeController < ApplicationController
   # TODO: after_filter :register_statistics, only: :index
 
   before_action :require_confirmed_email, only: [:index]
+  before_filter :load_recent
 
   def index
     if user_signed_in? && params[:popup_login]
@@ -13,8 +14,6 @@ class HomeController < ApplicationController
     @featured_boats = Rails.cache.fetch 'rb.featured_boats', expires_in: 1.hour do
       Boat.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.not_deleted.order('RAND()')
     end
-    recently_viewed_boat_ids = Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id)
-    @recent_boats = Boat.where(id: recently_viewed_boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
     @newest_boats = Boat.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
     @recent_tweets = Rails.env.development? ? [] : Rightboat::TwitterFeed.all
   end
@@ -53,6 +52,17 @@ class HomeController < ApplicationController
         Statistics.record_featured_boat_view(boat)
       end
     end
+  end
+
+  def load_recent
+    if cookies[:recently_viewed_boat_ids]
+      boat_ids = cookies[:recently_viewed_boat_ids].split(',')
+    else
+      boat_ids = Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id)
+      cookies[:recently_viewed_boat_ids] = boat_ids.join(',')
+    end
+
+    @recent_boats = Boat.where(id: boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
   end
 
 end

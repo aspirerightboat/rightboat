@@ -152,11 +152,15 @@ module Rightboat
             rows.each do |row|
               tds = row.element_children
               location = tds[9].text
-              next if location == 'Sold' || location == 'Sale Pending'
+              next if location == 'Sold'
 
               job = {}
               job[:length_m] = read_length(tds[3].text)
-              job[:location] = location
+              if location == 'Sale Pending'
+                job[:offer_status] = 'sale_pending'
+              else
+                job[:location] = location
+              end
               job[:codes] = fix_whitespace(tds[8].text)
               job[:source_url] = doc.uri.merge(tds[4].at_css('a')['href']).to_s
 
@@ -179,7 +183,7 @@ module Rightboat
           boat.length_m = job[:length_m]
           process_codes(boat, job[:codes])
           boat.location = job[:location]
-          boat.country = job[:location].split(', ').last
+          boat.offer_status = job[:offer_status] if job[:offer_status]
 
           desc_td = doc.root.at_css('tr[align=left] td')
           description = prepare_description(desc_td)
@@ -190,11 +194,7 @@ module Rightboat
 
             h3 = doc.root.at_css('h3')
             h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
-
-            h3.parent.css('li').each do |li|
-              attr, data = fix_whitespace(li.text).split(/\s*:\s*/)
-              assign_boat_attr(boat, attr, data)
-            end
+            get_attrs(boat, h3)
 
             details1 = doc.root.at_css('h2:contains("Additional Specs, Equipment")').ancestors('div').first
             details1.css('h2').remove
@@ -254,11 +254,7 @@ module Rightboat
           else
             h3 = doc.root.at_css('h3')
             h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
-
-            h3.parent.css('li').each do |li|
-              attr, data = fix_whitespace(li.text).split(/\s*:\s*/)
-              assign_boat_attr(boat, attr, data)
-            end
+            get_attrs(boat, h3)
 
             if gallery_link = doc.link_with(href: /photo_gallery/)
               gallery_uri = doc.uri.merge(gallery_link.uri)
@@ -271,8 +267,22 @@ module Rightboat
           end
 
           boat.description = description
+          boat.country = boat.location.split(', ').last unless boat.country
           boat.manufacturer_model = h3_manufacturer_model if !boat.manufacturer && !boat.model
           boat
+        end
+
+        def get_attrs(boat, node)
+          node.parent.css('li').each do |li|
+            text = li.text
+            if text =~ /located in/i
+              boat.location = text.gsub(/located in/i, '').strip
+              boat.country = 'United States of America' if text =~ /\(US\)/
+            else
+              attr, data = fix_whitespace(text).split(/\s*:\s*/)
+              assign_boat_attr(boat, attr, data)
+            end
+          end
         end
 
         def process_codes(boat, codes)

@@ -142,21 +142,21 @@
                 %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
                 %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
 
-    :javascript
-      $(function() {
-        $('.flexslider').slick({
-          slidesToShow: 1,
-          arrows: true
-        });
-        if (#{params[:popup_login].to_json}) {
-          $('#login_popup').modal('show');
-        }
-        $('.slick-nav').slick({
-          autoplay: true,
-          autoplaySpeed: 30000,
-          infinite: true,
-          slidesToShow: 3,
-          slidesToScroll: 3
-        });
-        $('.slick-nav .caption').css({visibility: 'visible'})
+  :javascript
+    $(function() {
+      $('.flexslider').slick({
+        slidesToShow: 1,
+        arrows: true
       });
+      if (#{params[:popup_login].to_json}) {
+        $('#login_popup').modal('show');
+      }
+      $('.slick-nav').slick({
+        autoplay: true,
+        autoplaySpeed: 30000,
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 3
+      });
+      $('.slick-nav .caption').css({visibility: 'visible'})
+    });

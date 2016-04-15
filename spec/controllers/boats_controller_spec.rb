@@ -26,7 +26,7 @@ RSpec.describe BoatsController do
           'saved_searches_alert_id' => saved_search_alert.id
       }
     }
-    let(:show_params){
+    let(:show_params) {
       {
           model: model.slug,
           manufacturer: manufacturer.slug,
@@ -34,8 +34,8 @@ RSpec.describe BoatsController do
       }
     }
 
-    let(:utm_show_params){
-      show_params.merge({
+    let(:utm_show_params) {
+      show_params.merge(
           utm_medium: 'email',
           utm_source: 'subscription',
           utm_campaign: 'saved_searches',
@@ -43,7 +43,7 @@ RSpec.describe BoatsController do
           i: Base64.urlsafe_encode64(user.id.to_s, padding: false),
           token: saved_search_alert.token,
           sent_at: saved_search_alert.created_at.to_date.to_s(:db)
-      })
+      )
     }
 
     it "stores mail click entity if utm_params present" do

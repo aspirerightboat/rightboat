@@ -11,6 +11,7 @@ class Enquiry < ActiveRecord::Base
   belongs_to :saved_searches_alert
   belongs_to :accessed_by_broker, class_name: 'User'
   has_many :lead_trails, foreign_key: 'lead_id'
+  belongs_to :last_lead_trail, foreign_key: 'last_lead_trail_id', class_name: 'LeadTrail'
 
   validates_presence_of :boat_id
   validates_presence_of :email, :first_name, :surname, if: 'user_id.blank?'
@@ -22,7 +23,9 @@ class Enquiry < ActiveRecord::Base
   after_save :send_quality_check_email
   after_save :mail_if_suspicious
   after_save :became_not_suspicious
-  after_update :create_lead_trail, :admin_reviewed_email
+  after_update :admin_reviewed_email
+  after_create :create_lead_trail
+  after_update :create_lead_trail, if: :status_changed?
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: 'approved') }
@@ -37,8 +40,9 @@ class Enquiry < ActiveRecord::Base
   end
   alias_method :to_s, :name
 
-  def create_lead_trail(force = false)
-    LeadTrail.create!(lead: self, user: $current_user, new_status: status) if force || status_changed?
+  def create_lead_trail
+    lead_trail = LeadTrail.create!(lead: self, user: $current_user, new_status: status)
+    update_column(:last_lead_trail_id, lead_trail.id)
   end
 
   def update_lead_price

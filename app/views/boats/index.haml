@@ -1,4 +1,5 @@
 - @page_title = 'Boats for sale on Rightboat.com'
+- @canonical_url = boats_url
 
 = render layout: 'shared/boats_for_sale' do
   .row
@@ -12,7 +13,7 @@
           %h3 Top Manufacturers
           %ul.flex-six-columns
             - @top_manufacturer_infos.each do |maker_name, maker_slug, boats_count|
-              %li #{link_to maker_name, make_path(maker_slug)} <small>(#{boats_count})</small>
+              %li #{link_to maker_name, sale_manufacturer_path(maker_slug)} <small>(#{boats_count})</small>
 
           %h3 Categories
           %ul.flex-six-columns

@@ -1,6 +1,6 @@
-- @page_title = "#{@manufacturer.name.pluralize} for sale"
-- @page_description = "#{@manufacturer.name} boats for sale - If you are looking to buy a new or used #{@manufacturer.name} we have an excellent selection for you covering UK, USA, Europe, Med, Caribbean, Asia and Worldwide"
-- @canonical_url = manufacturer_url(@manufacturer.slug)
+- @page_title = "#{@manufacturer.name} boats for sale"
+- @page_description = "If you are looking to buy a new or used #{@manufacturer.name} we have an excellent selection for you covering UK, USA, Europe, Med, Caribbean, Asia and Worldwide"
+- @canonical_url = sale_manufacturer_url(@manufacturer)
 
 - content_for :meta_tags do
   %meta(name="robots" content="index, follow")

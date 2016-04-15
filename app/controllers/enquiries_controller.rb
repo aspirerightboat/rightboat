@@ -26,11 +26,10 @@ class EnquiriesController < ApplicationController
 
     enquiry = Enquiry.new(enquiry_params)
     enquiry.boat = Boat.find_by(slug: params[:id])
-    enquiry.boat_currency_rate = (enquiry.boat.currency || Currency.default).rate
+    enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
     enquiry.mark_if_suspicious(current_user, request.remote_ip)
 
     if enquiry.save
-      enquiry.create_lead_trail(true)
       redirect_to_enquiries = current_user.present?
 
       enquiry.handle_lead_created_mails unless enquiry.suspicious?
@@ -70,11 +69,7 @@ class EnquiriesController < ApplicationController
     user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
     user.role = 'PRIVATE'
     user.email_confirmed = true
-
-    if user.phone.blank?
-      lead = Enquiry.where(email: user.email).where("phone IS NOT NULL AND phone <> ''").first
-      user.phone = [lead.country_code.presence, lead.phone.gsub(/\D/, '')].compact.join('-')
-    end
+    user.assign_phone_from_leads
 
     if user.save
       sign_in(user)

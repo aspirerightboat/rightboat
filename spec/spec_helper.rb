@@ -40,4 +40,5 @@ end
 FactoryGirl.definition_file_paths = %w{spec/factories/}
 FactoryGirl.find_definitions
 
+ActiveRecord::Migration.maintain_test_schema!
 

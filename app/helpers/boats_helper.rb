@@ -67,9 +67,9 @@ module BoatsHelper
     ret << ['Berths', spec_value_by_name['berths_count']]
     ret << ['Cabins', spec_value_by_name['cabins_count']]
     if boat.country
-      ret << ['Location', link_to_if(boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
-                                                                               models: boat.model.id,
-                                                                               country: boat.country.slug))]
+      ret << ['Location', link_to(boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
+                                                                            models: boat.model.id,
+                                                                            country: boat.country.slug))]
     end
     ret << ['Tax Status', boat.tax_status]
     ret << ['RB Ref', boat.ref_no]

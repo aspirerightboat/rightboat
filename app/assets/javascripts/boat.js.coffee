@@ -18,7 +18,7 @@ window.initBoatView = (el) ->
     $.ajax
       url: '/my-rightboat/favourites'
       dataType: 'JSON'
-      data: {boat_id: boat_id}
+      data: {boat_id: $(this).data('boat-id')}
       method: 'POST'
     .success (response) ->
       active = response.active

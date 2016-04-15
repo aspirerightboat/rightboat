@@ -43,7 +43,7 @@ module BoatsHelper
     fav_class = favourited ? 'fav-link active' : 'fav-link'
     fav_title = favourited ? 'Unfavourite' : 'Favourite'
 
-    link_to 'Favourite', "#favourite-#{boat.id}", id: "favourite-#{boat.id}", class: fav_class, title: fav_title, data: {toggle: 'tooltip', placement: 'top'}
+    link_to 'Favourite', "#favourite-#{boat.id}", id: "favourite-#{boat.id}", class: fav_class, title: fav_title, data: {'boat-id' => boat.id, toggle: 'tooltip', placement: 'top'}
   end
 
   def boat_specs(boat, full_spec = false)

@@ -12,7 +12,7 @@
         %td.container
           %table
             %tr
-              %td= image_tag 'mail_header.png', alt: 'Find Your Rightboat', class: 'img-responsive'
+              %td= email_image_tag 'mail_header.png', alt: 'Find Your Rightboat', class: 'img-responsive'
             %tr
               %td
                 .content.text-right= link_to 'Log in', new_user_session_url
@@ -58,15 +58,15 @@
                       %ul.list-unstyled.left-text-pad.last
                         %li
                           = link_to 'https://www.facebook.com/Rightboat', rel: 'nofollow' do
-                            = image_tag 'icon-fb.png', alt: '', class: 'social-link'
+                            = email_image_tag 'icon_fb.png', alt: '', class: 'social-link'
                             \/Rightboat
                         %li
                           = link_to 'https://twitter.com/rightboat', rel: 'nofollow' do
-                            = image_tag 'icon-tw.png', alt: '', class: 'social-link'
+                            = email_image_tag 'icon_tw.png', alt: '', class: 'social-link'
                             @rightboat
                         %li
                           = link_to 'https://www.linkedin.com/company/rightboat-ltd', rel: 'nofollow' do
-                            = image_tag 'icon-in.png', alt: '', class: 'social-link'
+                            = email_image_tag 'icon_in.png', alt: '', class: 'social-link'
                             \/rightboat
               %tr
                 %td

@@ -2,7 +2,6 @@ class UserMailer < ApplicationMailer
   add_template_helper BoatsHelper
   add_template_helper QrcodeHelper
   add_template_helper SavedSearchesMailerHelper
-  add_template_helper MailerHelper
   add_template_helper ConditionalLinksHelper
   layout 'mailer'
 

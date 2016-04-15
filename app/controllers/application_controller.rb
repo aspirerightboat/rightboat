@@ -68,22 +68,12 @@ class ApplicationController < ActionController::Base
   end
 
   def makemodel_boat_path(boat)
-    sale_boat_path(manufacturer: boat.manufacturer, model: boat.model, boat: boat)
+    sale_boat_path(boat.manufacturer, boat.model, boat)
   end
   helper_method :makemodel_boat_path
 
-  def makemodel_path(model)
-    sale_model_path(manufacturer: model.manufacturer, model: model)
-  end
-  helper_method :makemodel_path
-
-  def make_path(maker)
-    sale_manufacturer_path(manufacturer: maker)
-  end
-  helper_method :make_path
-
   def makemodel_boat_pdf_path(boat)
-    sale_boat_pdf_path(manufacturer: boat.manufacturer, model: boat.model, boat: boat)
+    sale_boat_pdf_path(boat.manufacturer, boat.model, boat)
   end
   helper_method :makemodel_boat_pdf_path
 end

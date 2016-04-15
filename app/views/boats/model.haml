@@ -1,6 +1,6 @@
 - @page_title = "#{@model.name} boats for sale"
 - @page_description = @page_title
-- @canonical_url = sale_model_url(manufacturer: @model.manufacturer, model: @model)
+- @canonical_url = sale_model_url(@manufacturer, @model)
 
 - content_for :meta_tags do
   %meta(name="robots" content="index, follow")

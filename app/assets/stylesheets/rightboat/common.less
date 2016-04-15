@@ -119,3 +119,21 @@ abbr {
 .topmost-row {
   margin-bottom: 1em;
 }
+
+.blue-shaded-panel {
+  border-radius: 0;
+  border: 1px solid @rb-color-primary;
+
+  &.padded {
+    margin-top: 10px;
+    margin-left: 20px;
+  }
+  .panel-heading {
+    border-radius: 0;
+    background-color: lighten(@rb-color-primary, 10%);
+  }
+  .alert.alert-info {
+    background-color: lighten(@rb-color-primary, 30%);
+    border-radius: 0;
+  }
+}

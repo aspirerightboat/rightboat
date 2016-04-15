@@ -1,7 +1,7 @@
 class Boat < ActiveRecord::Base
   enum status: [:active, :inactive]
   SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
-  OFFER_STATUSES = %w(available under_offer sold)
+  OFFER_STATUSES = %w(available under_offer sold sale_pending)
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)
 

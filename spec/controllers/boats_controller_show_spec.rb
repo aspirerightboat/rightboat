@@ -5,12 +5,12 @@ RSpec.describe BoatsController do
   let!(:model) { create :model, manufacturer: manufacturer }
   let!(:currency) { create :currency }
   let!(:boat_without_country) { create :boat, country: nil, model: model, manufacturer: manufacturer, currency: currency }
-  let!(:currency_gbp) { create :currency, :gbp }
 
   context '#show' do
     render_views
 
     it 'should show boat page for boat without country' do
+      create :currency, :gbp
       expect(boat_without_country.country).to be_nil
       get :show, {model: model, manufacturer: manufacturer, boat: boat_without_country}
       expect(response).to be_success

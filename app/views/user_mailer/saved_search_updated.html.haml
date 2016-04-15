@@ -27,8 +27,8 @@
             %p
               Please find above links for new boats that match your Saved Search on Rightboat.
 
-          - manufacturers_links = conditional_manufacturer_link(saved_search)
-          - models_links = conditional_model_link(saved_search)
+          - manufacturers_links = saved_search_manufacturers_link(saved_search)
+          - models_links = saved_search_models_link(saved_search)
 
           - if manufacturers_links.present?
             %p.manufactures

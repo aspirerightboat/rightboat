@@ -1,5 +1,5 @@
 module ConditionalLinksHelper
-  def conditional_manufacturer_link(saved_search)
+  def saved_search_manufacturers_link(saved_search)
     if saved_search.manufacturer.present?
       manufacturers = Manufacturer.where(name: saved_search.manufacturer.split(','))
       links = []
@@ -12,7 +12,7 @@ module ConditionalLinksHelper
     end
   end
 
-  def conditional_model_link(saved_search)
+  def saved_search_models_link(saved_search)
     links = []
 
     manufacrturer_models = if saved_search.model.present?

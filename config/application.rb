@@ -21,8 +21,8 @@ module Rightboat
     config.i18n.default_locale = :en
 
     config.autoload_paths << 'lib'
-    config.autoload_paths << 'app/jobs'
-    config.autoload_paths << 'app/admin/concerns'
+    config.autoload_paths << "#{Rails.root}/app/jobs"
+    config.autoload_paths << "#{Rails.root}/app/admin/concerns"
 
     Dir["#{Rails.root}/lib/misc/*.rb"].each {|file| require file }
     require 'rightboat/imports/importer_base' # fix "Circular dependency" error while running multithreaded import

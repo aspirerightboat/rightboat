@@ -69,10 +69,9 @@
                             = link_to 'Delete', member_saved_search_path(ss), class: 'label label-danger', method: :delete,
                                       remote: true, format: :js, data: {disable_with: 'Delete...'}
                           %td
-                            = link_to (ss.alert ? 'Alert On' : 'No Alert'), toggle_member_saved_search_path(ss),
-                                      class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}", method: :post,
-                                      remote: true, format: :js, data: {disable_with: 'Alert...'}
-
+                            = link_to (ss.alert ? 'Alert On' : 'No Alert'), '#',
+                                      class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}"
+                            = hidden_field_tag("saved_searches[#{ss.id}][alert]", ss.alert, class: "saved-search-field #{dom_id(ss)}")
 
         .form-group
           = f.check_box :favorites

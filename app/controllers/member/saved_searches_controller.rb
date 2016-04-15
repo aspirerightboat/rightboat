@@ -16,9 +16,4 @@ class Member::SavedSearchesController < Member::BaseController
     @saved_search = SavedSearch.find(params[:id])
     @saved_search.destroy
   end
-
-  def toggle
-    @saved_search = SavedSearch.find(params[:id])
-    @saved_search.update(alert: !@saved_search.alert)
-  end
 end

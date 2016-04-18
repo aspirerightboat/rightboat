@@ -34,3 +34,8 @@ $ ->
       $('.filter-tags .filter-tag').remove()
       $('.array-filter-box .filter-checkbox').prop('checked', false)
       apply_filter()
+
+    $('.array-filter-box .group-h').click ->
+      $checkboxes = $(@).closest('.grouped').find('input[type=checkbox]')
+      check = !$checkboxes.first().prop('checked')
+      $checkboxes.prop('checked', check)

@@ -169,13 +169,25 @@ class BoatsController < ApplicationController
                         .having('COUNT(*) > 0').order('models.name')
                         .pluck('models.id, models.slug, models.name')
 
+      last_model_group = nil
+      model_infos_grouped = model_infos.each_with_object([]) do |model_info, arr|
+        model_name = model_info[2]
+        model_group = Model.model_group_from_name(model_name)
+        if model_group == last_model_group
+          arr.last << model_info
+        else
+          arr << [model_info]
+        end
+        last_model_group = model_group
+      end
+
       country_infos = Country.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
                           .group('countries.id, countries.slug, countries.name')
                           .having('COUNT(*) > 0').order('countries.name')
                           .pluck('countries.id, countries.slug, countries.name')
 
       {
-          model_infos: model_infos,
+          model_infos_grouped: model_infos_grouped,
           country_infos: country_infos,
       }
     end

@@ -27,17 +27,22 @@
 
           #model_filters.filter-tab-content.filters-box.array-filter-box(data-filter-slug="models")
             %ul.flex-six-columns
-              - @filters_data[:model_infos].each do |model_id, model_slug, model_name|
-                %li.checkbox-container
-                  - model_checkbox_id = "model_#{model_id}"
-                  %input.filter-checkbox(type="checkbox" id="#{model_checkbox_id}"
-                                         data-id="#{model_id}"){checked: (true if @model_ids&.include?(model_id.to_s))}
-                  %label(for="#{model_checkbox_id}")
-                    %span.filter-item
-                      #{link_to model_name, sale_model_path(manufacturer: @manufacturer.slug, model: model_slug)}
-                      - cnt = @model_counts[model_id] || 0
-                      - if cnt > 0
-                        %small (#{cnt})
+              - @filters_data[:model_infos_grouped].each do |group|
+                - grouped = group.many?
+                %li{class: ('grouped' if grouped)}
+                  - if grouped
+                    .group-h All #{Model.model_group_from_name(group.first[2])}
+                  - group.each do |model_id, model_slug, model_name|
+                    .checkbox-container
+                      - model_checkbox_id = "model_#{model_id}"
+                      %input.filter-checkbox(type="checkbox" id="#{model_checkbox_id}"
+                                             data-id="#{model_id}"){checked: (true if @model_ids&.include?(model_id.to_s))}
+                      %label(for="#{model_checkbox_id}")
+                        %span.filter-item
+                          #{link_to model_name, sale_model_path(manufacturer: @manufacturer.slug, model: model_slug)}
+                          - cnt = @model_counts[model_id] || 0
+                          - if cnt > 0
+                            %small (#{cnt})
             %button.apply-filter-btn Apply Filter
 
           #location_filters.filter-tab-content.filters-box.array-filter-box.hidden(data-filter-slug="countries")

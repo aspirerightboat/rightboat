@@ -59,14 +59,6 @@ class ApplicationController < ActionController::Base
     cookies.delete(:_rightboat_session, domain: '.rightboat.com') if cookies[:_rightboat_session]
   end
 
-  def redirect_to_not_found
-    redirect_to '/404.html'
-  end
-
-  def redirect_to_maintenance
-    redirect_to '/503.html'
-  end
-
   def makemodel_boat_path(boat)
     sale_boat_path(boat.manufacturer, boat.model, boat)
   end

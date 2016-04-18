@@ -9,13 +9,13 @@ class ApplicationController < ActionController::Base
     when ActiveRecord::RecordNotFound,
         ActionController::RoutingError,
         ActionController::UnknownFormat
-      redirect_to_not_found
+      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     when Rightboat::SolrIsDownError
-      redirect_to_maintenance
+      render file: "#{Rails.root}/public/503.html", layout: false, status: :service_unavailable
     else
       Rightboat::CleverErrorsNotifier.try_notify(exception, request, current_user)
       if Rails.env.production?
-        render file: "#{Rails.root}/public/500.html", status: 500, layout: false
+        render file: "#{Rails.root}/public/500.html", layout: false, status: :internal_server_error
       else
         raise exception
       end

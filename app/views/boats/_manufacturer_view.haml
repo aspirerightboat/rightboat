@@ -31,7 +31,7 @@
                 - grouped = group.many?
                 %li{class: ('grouped' if grouped)}
                   - if grouped
-                    .group-h All #{Model.model_group_from_name(group.first[2])}
+                    .group-h Check/uncheck all #{Model.model_group_from_name(group.first[2])}
                   - group.each do |model_id, model_slug, model_name|
                     .checkbox-container
                       - model_checkbox_id = "model_#{model_id}"

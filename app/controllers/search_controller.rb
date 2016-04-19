@@ -21,7 +21,7 @@ class SearchController < ApplicationController
       return
     end
 
-    if params[:q].present? && (boat = find_makemodel_boat(params[:q]))
+    if params[:q].present? && (boat = find_makemodel_boat(params[:q].titleize))
       if boat.manufacturer.name.downcase == params[:q].strip.downcase
         redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return
       else

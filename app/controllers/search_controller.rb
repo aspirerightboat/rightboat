@@ -3,12 +3,12 @@ class SearchController < ApplicationController
   after_filter :log_search_terms, only: :results
 
   def manufacturer
-    render json: Manufacturer.solr_suggest_names(params[:q])
+    render json: Manufacturer.solr_suggest_by_term(params[:q])
   end
 
   def model
-    manufacturer_names = params[:manufacturer_names].to_s.split(',')
-    render json: Model.solr_suggest_names(params[:q], manufacturer_names)
+    manufacturer_ids = params[:manufacturer_ids].to_s.split(',')
+    render json: Model.solr_suggest_by_term(params[:q], manufacturer_ids)
   end
 
   def results

@@ -41,11 +41,11 @@ $ ->
         dataType: 'JSON'
         delay: 150
         data: (term, page) ->
-          h = {q: term, page: page}
-          h['manufacturer_names'] = $('#search_manufacturer').val() if select_id == 'search_model'
+          h = {q: term}
+          h.manufacturer_ids = $('#search_manufacturer').val() if select_id == 'search_model'
           h
         results: (data, page) ->
-          {results: $.map(data.search, (item) -> {id: item, text: item})}
+          {results: $.map(data.search, (item) -> {id: item[0], text: item[1]})}
         cache: true
 
   $('select#layout_mode').select2

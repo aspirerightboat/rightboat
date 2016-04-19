@@ -28,8 +28,5 @@ $ ->
         $tabs_content.toggleClass('collapsed')
         if !$tabs_content.hasClass('collapsed')
           $tab_content = $('.filter-tab-content:visible', $tabs_content)
-          if !$tab_content.data('height')
-            height = $tab_content.outerHeight()
-            $tab_content.css(height: height).data('height', height) # set height for css animation
         update_toggle_text()
         false

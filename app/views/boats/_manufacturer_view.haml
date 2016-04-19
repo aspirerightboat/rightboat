@@ -60,6 +60,6 @@
                         %small (#{cnt})
             %button.apply-filter-btn Apply Filter
 
-        %a.toggle-collapse(href="#" data-expand-text="↓ Expand Filters" data-collapse-text="↑ Collapse Filters")
+        %a.toggle-collapse(href="#" data-collapse-text="↑ Collapse Filters") ↓ Expand Filters
 
   = render partial: 'boats_view', locals: {boats: @boats, paginate_options: {params: params}}

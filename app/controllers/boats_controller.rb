@@ -173,7 +173,7 @@ class BoatsController < ApplicationController
       model_infos_grouped = model_infos.each_with_object([]) do |model_info, arr|
         model_name = model_info[2]
         model_group = Model.model_group_from_name(model_name)
-        if last_model_group && model_group.casecmp(last_model_group) >= 0
+        if last_model_group && model_group.casecmp(last_model_group) == 0
           arr.last << model_info
         else
           arr << [model_info]

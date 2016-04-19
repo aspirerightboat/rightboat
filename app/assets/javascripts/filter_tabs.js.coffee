@@ -17,10 +17,12 @@ $ ->
       $tabs = $(@)
       $tabs_content = $('.filter-tabs-content', $tabs)
       $toggle = $('.toggle-collapse', $tabs)
+      collapse_text = $toggle.data('collapse-text') || $toggle.text()
+      expand_text = $toggle.data('expand-text') || $toggle.text()
 
       update_toggle_text = ->
         collapsed = $tabs_content.hasClass('collapsed')
-        $toggle.text(if collapsed then $toggle.data('expand-text') else $toggle.data('collapse-text'))
+        $toggle.text(if collapsed then expand_text else collapse_text)
 
       update_toggle_text()
 

@@ -58,8 +58,7 @@ class HomeController < ApplicationController
     if cookies[:recently_viewed_boat_ids]
       boat_ids = cookies[:recently_viewed_boat_ids].split(',')
     else
-      boat_ids = Activity.recent.show.where(ip: request.remote_ip).limit(3).pluck(:target_id)
-      cookies[:recently_viewed_boat_ids] = boat_ids.join(',')
+      boat_ids = []
     end
 
     @recent_boats = Boat.where(id: boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)

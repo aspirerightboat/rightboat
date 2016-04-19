@@ -16,7 +16,7 @@
                     .col-xs-4
                       = f.label :boat_type, 'Boat Type'
                     .col-xs-8
-                      = f.radio_button :boat_type, @saved_search.boat_type.blank?, id: 'saved_search_boat_type_all'
+                      = radio_button_tag 'saved_search[boat_type]', '', @saved_search.boat_type.blank?, id: 'saved_search_boat_type_all'
                       = f.label :boat_type_all, 'All'
                       = f.radio_button :boat_type, 'Power'
                       = f.label :boat_type_power, 'Power'
@@ -71,7 +71,7 @@
                 .col-sm-6.col-xs-12
                   .row
                     .col-xs-5.col-sm-4
-                      = f.label :year, 'Length'
+                      = f.label :length_unit, 'Length'
                       = f.select :length_unit, length_unit_options, {}, { class: 'select-white select-sm select-general' }
                     .col-xs-7.col-sm-8
                       .row

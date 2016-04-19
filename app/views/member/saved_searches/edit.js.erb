@@ -31,7 +31,7 @@ $('#saved_search_manufacturer, #saved_search_model').each(function(){
           q: term,
           page: page
         };
-        if (select_id === 'search_model') {
+        if (select_id === 'saved_search_model') {
           h['manufacturer_names'] = $('#saved_search_manufacturer').val();
         }
         return h;

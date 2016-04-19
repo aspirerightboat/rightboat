@@ -1,4 +1,12 @@
 class Member::SavedSearchesController < Member::BaseController
+  def edit
+    @saved_search = SavedSearch.find_by(id: params[:id])
+  end
+
+  def update
+    # binding.pry
+  end
+
   def create
     params[:country] = params.delete(:countries).split('-') if params[:countries]
     params[:models] = params[:models].split('-') if params[:models]

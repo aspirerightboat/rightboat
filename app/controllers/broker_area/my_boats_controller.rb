@@ -2,7 +2,7 @@ module BrokerArea
   class MyBoatsController < CommonController
 
     def index
-      @boats = current_broker.boats.not_deleted.boat_view_includes.includes(:country).page(params[:page]).per(15)
+      @boats = current_broker.boats.active.not_deleted.boat_view_includes.includes(:country).page(params[:page]).per(15)
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
       @offices = current_broker.offices.order(:name)
     end

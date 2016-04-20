@@ -59,7 +59,7 @@ class Model < ActiveRecord::Base
   end
 
   def self.solr_suggest_by_term(term, manufacturer_ids = nil)
-    search = solr_search do
+    search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true
       any_of { manufacturer_ids.each { |m_id| with :manufacturer_id, m_id } } if manufacturer_ids.present?

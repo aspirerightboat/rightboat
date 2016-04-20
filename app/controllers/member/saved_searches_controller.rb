@@ -1,6 +1,7 @@
 class Member::SavedSearchesController < Member::BaseController
   def edit
     @saved_search = SavedSearch.find_by(id: params[:id])
+    @current_length_unit = @saved_search.length_unit
   end
 
   def update

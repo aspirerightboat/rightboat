@@ -1,7 +1,5 @@
 module Rightboat
   class BoatSearch
-    include SolrRetry
-
     ORDER_TYPES = %w(score_desc created_at_desc price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
     YEARS_RANGE = (Date.today.year - 30)..Date.today.year
     PRICES_RANGE = 0..100_000_000
@@ -18,19 +16,13 @@ module Rightboat
     attr_reader :with_facets, :includes, :per_page
 
     def do_search(search_params, opts = {})
-      solr_retry(raise_exception: true) do
-        do_search_without_retry(search_params, opts)
-      end
-    end
-
-    def do_search_without_retry(search_params, opts = {})
       read_params(search_params)
 
       @with_facets = opts[:with_facets]
       @includes = opts[:includes] || [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
       @per_page = opts[:per_page] || PER_PAGE
 
-      @search = Boat.solr_search(include: includes) do
+      @search = Boat.retryable_solr_search!(include: includes) do
         fulltext q if q
         with :live, true
         with :ref_no, ref_no if ref_no
@@ -98,13 +90,11 @@ module Rightboat
     end
 
     def general_facets
-      search = solr_retry(retries: 1) do
-        Boat.solr_search do
-          with :live, true
-          facet :country_id
-          stats :year, :price, :length_m
-          paginate page: 1, per_page: 0
-        end
+      search = Boat.retryable_solr_search(retries: 1) do
+        with :live, true
+        facet :country_id
+        stats :year, :price, :length_m
+        paginate page: 1, per_page: 0
       end
 
       fetch_facets_data(search)

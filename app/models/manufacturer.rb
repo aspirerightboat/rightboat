@@ -36,7 +36,7 @@ class Manufacturer < ActiveRecord::Base
   end
 
   def self.solr_suggest_by_term(term)
-    search = solr_search do
+    search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true
       order_by :name, :asc

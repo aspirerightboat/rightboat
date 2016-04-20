@@ -24,9 +24,6 @@ module Rightboat
     config.autoload_paths << "#{Rails.root}/app/jobs"
     config.autoload_paths << "#{Rails.root}/app/admin/concerns"
 
-    Dir["#{Rails.root}/lib/misc/*.rb"].each {|file| require file }
-    require 'rightboat/imports/importer_base' # fix "Circular dependency" error while running multithreaded import
-
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 

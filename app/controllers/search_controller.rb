@@ -12,15 +12,6 @@ class SearchController < ApplicationController
   end
 
   def results
-    if params[:save_search]
-      ctl = Member::SavedSearchesController.new
-      ctl.request = request
-      ctl.response = response
-      ctl.create
-      redirect_to member_user_notifications_path, notice: 'Your search was saved'
-      return
-    end
-
     if params[:q].present? && (boat = find_makemodel_boat(params[:q].titleize))
       if boat.manufacturer.name.downcase == params[:q].strip.downcase
         redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return

@@ -125,19 +125,11 @@ class BoatsController < ApplicationController
   end
 
   def store_recent
-    ip = request.remote_ip
-    attrs = { target_id: @boat.id, action: :show, ip: ip }
-
-    if (activity = Activity.where(attrs).first)
-      activity.update(count: activity.count + 1)
-    else
-      Activity.create(attrs.merge(user_id: current_user.try(:id)))
-      recently_viewed_boat_ids = [@boat.id]
-      if cookies[:recently_viewed_boat_ids]
-        recently_viewed_boat_ids += cookies[:recently_viewed_boat_ids].split(',')
-      end
-      cookies[:recently_viewed_boat_ids] = recently_viewed_boat_ids.uniq[0..2].join(',')
+    recently_viewed_boat_ids = [@boat.id]
+    if cookies[:recently_viewed_boat_ids]
+      recently_viewed_boat_ids += cookies[:recently_viewed_boat_ids].split(',')
     end
+    cookies[:recently_viewed_boat_ids] = recently_viewed_boat_ids.uniq[0..2].join(',')
   end
 
   def load_makemodel

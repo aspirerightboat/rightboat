@@ -16,7 +16,7 @@
       .row(data-layout-mode="gallery")
         = render @featured_boats
 
-  - if @recent_boats.any?
+  - if @recent_boats.present?
     #recent-boats
       %h3.toolbar-title My Recent Views
       .container

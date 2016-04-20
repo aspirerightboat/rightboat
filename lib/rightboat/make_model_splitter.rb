@@ -5,7 +5,7 @@ module Rightboat
     # if not exists in solr, use split method
     # e.g. yachtworld: Marine Projects Sigma 38, Alloy Yachts Pilothouse
     def self.split(mnm)
-      search = Boat.solr_search do
+      search = Boat.retryable_solr_search! do
         with :manufacturer_model, mnm
         order_by :live, :desc
         paginate per_page: 1

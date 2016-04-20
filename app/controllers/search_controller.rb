@@ -50,7 +50,7 @@ class SearchController < ApplicationController
   private
 
   def find_makemodel_boat(q)
-    search = Boat.solr_search do
+    search = Boat.retryable_solr_search! do
       with :live, true
       paginate page: 1, per_page: 1
       any_of do

@@ -144,7 +144,7 @@ ActiveAdmin.register Boat do
   end
 
   collection_action :reindex_deleted_boats, method: :post do
-    search = Boat.solr_search do
+    search = Boat.retryable_solr_search! do
       with :live, true
       paginate page: 1, per_page: Boat.count
     end

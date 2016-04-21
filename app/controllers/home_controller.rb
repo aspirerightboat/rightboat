@@ -2,7 +2,6 @@ class HomeController < ApplicationController
   # TODO: after_filter :register_statistics, only: :index
 
   before_action :require_confirmed_email, only: [:index]
-  before_filter :load_recent
 
   def index
     if user_signed_in? && params[:popup_login]
@@ -16,6 +15,7 @@ class HomeController < ApplicationController
     end
     @newest_boats = Boat.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
     @recent_tweets = Rails.env.development? ? [] : Rightboat::TwitterFeed.all
+    load_recent_boats
   end
 
   def contact
@@ -27,7 +27,7 @@ class HomeController < ApplicationController
   end
 
   def marine_services
-    @pate_title = 'Maring Services'
+    @pate_title = 'Marine Services'
   end
 
   def privacy_policy
@@ -46,6 +46,7 @@ class HomeController < ApplicationController
   end
 
   private
+
   def register_statistics
     unless @featured_boats.blank?
       @featured_boats.each do |boat|
@@ -54,14 +55,11 @@ class HomeController < ApplicationController
     end
   end
 
-  def load_recent
+  def load_recent_boats
     if cookies[:recently_viewed_boat_ids]
       boat_ids = cookies[:recently_viewed_boat_ids].split(',')
-    else
-      boat_ids = []
+      @recent_boats = Boat.active.where(id: boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
     end
-
-    @recent_boats = Boat.where(id: boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
   end
 
 end

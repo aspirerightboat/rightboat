@@ -34,7 +34,7 @@ class BoatsController < ApplicationController
     boat_includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
     manufacturer_id = @manufacturer.id
 
-    search = Boat.solr_search(include: boat_includes) do
+    search = Boat.retryable_solr_search!(include: boat_includes) do
       with :live, true
       with :manufacturer_id, manufacturer_id
       order_by order_col, order_dir if order_col

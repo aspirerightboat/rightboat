@@ -1,0 +1,110 @@
+$('#saved_search_edit_popup').remove();
+$('body').append('<%= j render('form_popup') %>');
+$('#saved_search_edit_popup').modal('show');
+
+$('#saved_search_manufacturer, #saved_search_model').each(function(){
+  var select_id = this.id;
+  var url = '/search/' + select_id.replace('saved_search_', '');
+  return $(this).select2({
+    tags: true,
+    minimumInputLength: 0,
+    tokenSeparators: [','],
+
+    initSelection: function(el, callback) {
+      var tags = $(el).val().split(',');
+      var data = $.map(tags, function(token) {
+        return {
+          id: token,
+          text: token
+        };
+      });
+      callback(data);
+    },
+
+    ajax: {
+      url: url,
+      dataType: 'JSON',
+      delay: 150,
+      data: function(term, page) {
+        var h;
+        h = {
+          q: term,
+          page: page
+        };
+        if (select_id === 'saved_search_model') {
+          h['manufacturer_names'] = $('#saved_search_manufacturer').val();
+        }
+        return h;
+      },
+
+      results: function(data, page) {
+        return {
+          results: $.map(data.search, function(item) {
+            return {
+              id: item,
+              text: item
+            };
+          })
+        };
+      },
+
+      cache: true
+    }
+  });
+});
+
+$('select.select-currency').each(function(){
+  return $(this).select2({
+    minimumResultsForSearch: Infinity,
+    dropdownAutoWidth: true,
+    formatSelection: function(viewMode, container, escapeMarkup) {
+      return viewMode.text;
+    },
+    formatResult: function(viewMode, container, escapeMarkup) {
+      var ret;
+      ret = '<span';
+      if (viewMode.id === 'USD') {
+        ret += ' class="priority-last"';
+      }
+      return ret += '>' + viewMode.text + ' <small>' + viewMode.id + '</small></span>';
+    }
+  });
+});
+
+
+$('select.select-general').each(function() {
+  var $sel = $(this);
+  var options = {
+    minimumResultsForSearch: Infinity
+  };
+
+  if ($sel.hasClass('select-white')) {
+    options = $.extend(options, {
+      dropdownCssClass: 'select-white'
+    });
+  }
+  return $sel.select2(options).on('change', function(e) {
+    var $allOption;
+    $allOption = $(this).find('option[value=""]');
+    if ($allOption.length && $allOption.text().match(/^all$/i)) {
+      if ($allOption.is(':selected')) {
+        $sel.select2('val', '');
+      }
+    }
+    if ($sel.attr('id') === 'manufacturer_id') {
+      return window.syncModel(e.added.id, $sel.parents('form').find('#model_id'));
+    }
+  });
+});
+
+$('.saved-multiple-country-select').each(function() {
+  var $sel = $(this);
+  var selected_ids = $sel.data('selected-ids') || [];
+  $.each($sel.children('option'), function(i, option) {
+    var id = $(option).val();
+    if ($.inArray(id, selected_ids) >= 0) {
+      $(option).prop('selected', true);
+    }
+  });
+  return $sel.select2();
+});

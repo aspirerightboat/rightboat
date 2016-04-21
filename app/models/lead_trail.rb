@@ -4,6 +4,7 @@ class LeadTrail < ActiveRecord::Base
 
   scope :pending, -> { where(new_status: 'pending') }
   scope :approved, -> { where(new_status: 'approved') }
+  scope :batched, -> { where(status: 'batched') }
   scope :rejected, -> { where(new_status: 'rejected') }
   scope :invoiced, -> { where(new_status: 'invoiced') }
 

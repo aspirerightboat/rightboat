@@ -20,8 +20,7 @@ class Manufacturer < ActiveRecord::Base
   after_save :reindex_boats
 
   searchable do
-    text(:name_full_ngram, as: :name_full_ngram, boost: 2) { |m| m.name }
-    text(:name_ngram, as: :name_ngram, boost: 1) { |m| m.name }
+    text(:name_ngram, as: :name_ngram) { |m| m.name }
     integer :id
     string :name, stored: true
 

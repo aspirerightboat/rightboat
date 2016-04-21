@@ -12,6 +12,7 @@ class CreateInvoicesJob
     inv_logger.info("Found #{all_leads.size} leads for #{brokers.size} brokers")
 
     contact_by_broker = ensure_contacts(brokers)
+    branding_theme = $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
 
     Invoice.transaction do
       xero_invoices = []
@@ -25,7 +26,6 @@ class CreateInvoicesJob
         xi.line_amount_types = 'Exclusive'
         xi.date = Time.current.to_date
         xi.due_date = xi.date
-        branding_theme = $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
         xi.branding_theme_id = branding_theme.branding_theme_id if branding_theme
 
         vat_rate = broker.address.try(:country).try(:iso) == 'GB' ? 0.2 : 0

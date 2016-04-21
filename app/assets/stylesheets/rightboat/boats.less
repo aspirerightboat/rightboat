@@ -103,8 +103,9 @@
     top: 0;
     left: 20px;
     z-index: 1;
+    opacity: 0.5;
     .glyphicon{
-      text-shadow: 0px 1px 0px #cccccc;
+      text-shadow: 0px 1px 0px #aaa;
     }
   }
   &.selected, &.thumbnail:hover {
@@ -118,6 +119,15 @@
     }
     .tick {
       display: block;
+    }
+  }
+  &.selected{
+    .tick{
+      color: white;
+      opacity: 1;
+      .glyphicon{
+        text-shadow: 0px -1px 0px #aaa;
+      }
     }
   }
 }
@@ -203,7 +213,7 @@ a.fav-link.active:not(.remove-fav):before {
 
 .boat-img-thumb {
   position: relative;
-
+  overflow: hidden;
   &.under-offer, &.sold {
     &::before {
       background-repeat: no-repeat;
@@ -221,18 +231,14 @@ a.fav-link.active:not(.remove-fav):before {
   &.under-offer::before { background-image: image-url('strip-under-offer.png'); }
   &.sold::before { background-image: image-url('strip-sold.png'); }
 
-  a {
-    &:extend(.embed-responsive);
-    padding-bottom: 66.6667%;
-    background: #f0f0f0;
-
+  img {
     .overlay { display: none; }
+
+    width: 100%;
+    .transition(all .25s ease-out);
+
     &:hover {
-      img { transform: scale(1.2); }
-    }
-    img {
-      width: 100%;
-      .transition(all .25s ease-out);
+      transform: scale(1.2);
     }
   }
 }

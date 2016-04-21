@@ -77,8 +77,7 @@
 
 .boat-thumb.thumbnail {
   .assign-gutter(margin-bottom);
-  border: 1px solid @rb-color-primary;
-
+  border: 1px solid #cccccc;
   h4, h5 {
     line-height: 1.2em;
     margin: 0;
@@ -96,13 +95,31 @@
   &, & .caption {
     .transition(all .25s ease-out);
   }
-  &.thumbnail:hover {
+  .tick{
+    display: none;
+    color: white;
+    font-size: 40px;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    z-index: 1;
+    .glyphicon{
+      text-shadow: 0px 1px 0px #cccccc;
+    }
+  }
+  &.selected, &.thumbnail:hover {
+    border: 1px solid @rb-color-primary;
     background: @rb-color-primary;
     .caption {
       color: #FFF;
       .fav-link, .share-link {
         color: white;
       }
+    }
+  }
+  &.selected {
+    .tick {
+      display: block;
     }
   }
 }

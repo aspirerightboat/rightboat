@@ -4,13 +4,14 @@
   .boat-thumb.thumbnail.boat-view{'data-boat-ref' => boat.slug,
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
+    .tick
+      %span.glyphicon.glyphicon-ok-circle
     .boat-img-thumb{class: boat.offer_status.dasherize}
-      = link_to boat_url do
-        - if boat.primary_image
-          = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
-        - else
-          .no-image
-    .caption{href: boat_url}
+      - if boat.primary_image
+        = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
+      - else
+        .no-image
+    .caption
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-detail-item.boat-price.pull-right.text-right
@@ -26,6 +27,6 @@
       .boat-links.boat-links-bottom
         = favourite_link_to boat
         = render 'shared/social_share', boat: boat
-        = link_to 'View Boat Details', boat_url, class: 'btn-flat pull-right btn-black'
+        = link_to 'View Boat Summary', boat_url, class: 'btn-flat pull-right btn-black'
       = yield if block_given?
       .clearfix

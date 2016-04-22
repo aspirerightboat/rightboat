@@ -50,6 +50,7 @@ ActiveAdmin.register User do
   filter :first_name
   filter :last_name
   filter :company_name
+  filter :address_country_id, as: :select, collection: Country.order(:name)
   filter :current_sign_in_at
   filter :sign_in_count
   filter :created_at

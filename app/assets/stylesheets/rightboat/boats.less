@@ -18,6 +18,9 @@
     .caption { height: 90px; padding: 10px; }
     h4, h5 {
       font-size: 0.9em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     h5 { margin-bottom: 0; }
     .boat-price {
@@ -25,8 +28,15 @@
       text-align: left;
       font-size: 0.85em;
     }
-    .boat-length, .boat-year, .boat-location, .boat-links-bottom {
+    .boat-length, .boat-year, .boat-location{
       display: none;
+    }
+    .boat-links-bottom {
+      .action-links { display: none;}
+      .view-summary {
+        &:extend(.btn-xs);
+        font-size: 75%;
+      }
     }
   }
 
@@ -75,10 +85,47 @@
   }
 }
 
+.boat-thumb.thumbnail.multiselectable{
+  .tick{
+    display: none;
+    color: white;
+    font-size: 40px;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    z-index: 1;
+    opacity: 0.5;
+    .glyphicon{
+      text-shadow: 0px 1px 0px #aaa;
+    }
+  }
+  &.selected, &.thumbnail:hover {
+    border: 1px solid @rb-color-primary;
+    background: @rb-color-primary;
+    .caption {
+      color: #FFF;
+      .fav-link, .share-link {
+        color: white;
+      }
+    }
+    .tick {
+      display: block;
+    }
+  }
+  &.selected{
+    .tick{
+      color: white;
+      opacity: 1;
+      .glyphicon{
+        text-shadow: 0px -1px 0px #aaa;
+      }
+    }
+  }
+}
+
 .boat-thumb.thumbnail {
   .assign-gutter(margin-bottom);
-  border: 1px solid @rb-color-primary;
-
+  border: 1px solid #cccccc;
   h4, h5 {
     line-height: 1.2em;
     margin: 0;
@@ -97,6 +144,7 @@
     .transition(all .25s ease-out);
   }
   &.thumbnail:hover {
+    border: 1px solid @rb-color-primary;
     background: @rb-color-primary;
     .caption {
       color: #FFF;
@@ -104,6 +152,9 @@
         color: white;
       }
     }
+  }
+  .tick{
+    display: none;
   }
 }
 
@@ -188,7 +239,7 @@ a.fav-link.active:not(.remove-fav):before {
 
 .boat-img-thumb {
   position: relative;
-
+  overflow: hidden;
   &.under-offer, &.sold {
     &::before {
       background-repeat: no-repeat;
@@ -206,18 +257,14 @@ a.fav-link.active:not(.remove-fav):before {
   &.under-offer::before { background-image: image-url('strip-under-offer.png'); }
   &.sold::before { background-image: image-url('strip-sold.png'); }
 
-  a {
-    &:extend(.embed-responsive);
-    padding-bottom: 66.6667%;
-    background: #f0f0f0;
-
+  img {
     .overlay { display: none; }
+
+    width: 100%;
+    .transition(all .25s ease-out);
+
     &:hover {
-      img { transform: scale(1.2); }
-    }
-    img {
-      width: 100%;
-      .transition(all .25s ease-out);
+      transform: scale(1.2);
     }
   }
 }

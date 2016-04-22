@@ -9,12 +9,19 @@
     .embed-responsive.embed-responsive-home-page
 
 #main_content
+  #multiselected-request-for-details
+    .row
+      .col-xs-12
+        = link_to 'Request details on all selected', '#', remote: true, class: 'btn-sm nice-button', id: 'button-request-for-details'
+        .processing.hide
+          Processing...
+
   - if @featured_boats.any?
     #featured-boats.nabvar-tools
       %h3.toolbar-title Featured Boats
     #featured-wrap.container
       .row(data-layout-mode="gallery")
-        = render @featured_boats
+        = render @featured_boats, multiselectable: true
 
   - if @recent_boats.present?
     #recent-boats

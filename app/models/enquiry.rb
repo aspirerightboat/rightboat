@@ -1,6 +1,6 @@
 class Enquiry < ActiveRecord::Base
 
-  STATUSES = %w(pending quality_check approved rejected invoiced suspicious deleted)
+  STATUSES = %w(pending quality_check approved rejected invoiced suspicious batched deleted)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
   attr_accessor :suspicious_title
@@ -29,6 +29,7 @@ class Enquiry < ActiveRecord::Base
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: 'approved') }
+  scope :batched, -> { where(status: 'batched') }
   scope :rejected, -> { where(status: 'rejected') }
   scope :invoiced, -> { where(status: 'invoiced') }
   scope :not_invoiced, -> { where(invoice_id: nil) }

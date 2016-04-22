@@ -466,7 +466,19 @@ module Rightboat
       def cleanup_short_description(desc)
         return '' if desc.blank?
         desc = desc[0..480]
-        desc = desc.sub(/[^>.!]+\z/, '').presence || "#{desc}..."
+        while true
+          if (pos = desc =~ /[^>.!]+\z/).nil?
+            break
+          end
+          prev = pos - 1
+          if desc[prev..pos] =~ /\.\d/
+            desc = desc[0..(prev - 1)]
+          else
+            desc = desc[0..prev]
+            break
+          end
+        end
+        desc = "#{desc}..." if desc.blank?
         desc.gsub!(/\S+@\S(?:\.\S)+/, '') # remove email
         desc.gsub!(/[\d\(\) -]{9,20}/, '') # remove phone
         desc.gsub!(%r{(?:https?://|www\.)\S+}, '') # remove url

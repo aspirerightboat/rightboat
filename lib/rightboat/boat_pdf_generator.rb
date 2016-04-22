@@ -20,16 +20,18 @@ module Rightboat
             locals: {:@boat => boat},
             template: 'boats/pdf.html.haml',
             layout: 'layouts/pdf.html.haml',
-            margin: { bottom: 16 },
-            footer: {
-                html: {
-                    template:  'shared/_pdf_footer.html.haml',
-                    layout:    'layouts/pdf.html.haml'
-                }
-            }
+            margin: { bottom: 16 }
         )
 
-        pdf = WickedPdf.new.pdf_from_string(pdf)
+        pdf = WickedPdf.new.pdf_from_string(pdf,
+            footer: {
+              spacing: -10,
+              content: view.render({
+                template:  'shared/_pdf_footer.html.haml',
+                layout:    'layouts/pdf.html.haml'
+              })
+            }
+        )
 
         File.open(pdf_file_path, 'wb') { |file| file << pdf }
       end

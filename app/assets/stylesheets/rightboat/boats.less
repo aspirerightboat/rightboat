@@ -18,6 +18,9 @@
     .caption { height: 90px; padding: 10px; }
     h4, h5 {
       font-size: 0.9em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     h5 { margin-bottom: 0; }
     .boat-price {
@@ -25,8 +28,15 @@
       text-align: left;
       font-size: 0.85em;
     }
-    .boat-length, .boat-year, .boat-location, .boat-links-bottom {
+    .boat-length, .boat-year, .boat-location{
       display: none;
+    }
+    .boat-links-bottom {
+      .action-links { display: none;}
+      .view-summary {
+        &:extend(.btn-xs);
+        font-size: 75%;
+      }
     }
   }
 

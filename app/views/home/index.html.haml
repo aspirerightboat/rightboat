@@ -15,6 +15,7 @@
         = link_to 'Request details on all selected', '#', remote: true, class: 'btn-sm nice-button', id: 'button-request-for-details'
         .processing.hide
           Processing...
+        %span#number-selected
 
   - if @featured_boats.any?
     #featured-boats.nabvar-tools

@@ -9,11 +9,12 @@
     .tick
       %span.glyphicon.glyphicon-ok-circle
     .boat-img-thumb{class: boat.offer_status.dasherize}
-      - if boat.primary_image
-        = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
-      - else
-        .no-image
-    .caption
+      = link_to boat_url do
+        - if boat.primary_image
+          = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
+        - else
+          .no-image
+    .caption{ data: { url: boat_url } }
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-detail-item.boat-price.pull-right.text-right

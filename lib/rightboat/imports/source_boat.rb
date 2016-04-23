@@ -233,7 +233,7 @@ module Rightboat
 
         # ensure spec records exists
         importer.jobs_mutex.synchronize do
-          @@spec_id_by_name ||= Specification.pluck(:name, :id).to_h
+          @@spec_id_by_name ||= (Misspelling.where(source_type: 'Specification').pluck(:alias_string, :source_id).to_h.merge Specification.pluck(:name, :id).to_h)
           new_specs_hash.each_key do |name|
             @@spec_id_by_name[name] ||= Specification.create(name: name, display_name: name.titleize).id
           end

@@ -19,7 +19,7 @@ module FixSpelling
         end
         self.class.reflections.each do |name, reflection|
           macro = reflection.macro.to_s
-          if macro =~ /has_/
+          if macro =~ /has_/ && !reflection.options[:through]
             self.send(name.to_sym).update_all(reflection.foreign_key => target.id)
           end
         end

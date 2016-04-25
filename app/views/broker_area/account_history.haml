@@ -16,7 +16,7 @@
         %td(title="#{distance_of_time_in_words_to_now(lead.invoice.created_at)} ago") #{lead.invoice.created_at.to_date.to_s(:db)}
         %td #{link_to lead.id, lead_path(lead)}
         - boat = lead.boat
-        %td #{link_to boat.display_name, boat}
+        %td #{link_to boat.display_name, makemodel_boat_path(boat)}
         %td.text-right #{"#{boat.length_m}m" if boat.length_m}
         %td.text-right #{boat.price} #{(boat.currency || Currency.default).symbol if boat.price}
         %td.text-right #{format_pence lead.lead_price}

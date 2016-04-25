@@ -3,6 +3,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'sunspot/rails/spec_helper'
+require 'rspec/json_expectations'
 require 'email_spec'
 require 'devise'
 

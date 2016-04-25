@@ -1,5 +1,7 @@
 $ ->
   if $('.multiselectable').length
+    file_url = ''
+    status_url = ''
 
     toggleBottomBar = () ->
       if $('.boat-thumb.thumbnail.selected').length > 0
@@ -69,3 +71,7 @@ $ ->
         data: selectedBoats,
         dataType: "json",
         contentType: 'application/json'
+      .done (response) ->
+        $('#multiselected-request-for-details .processing').text(response.status).show()
+      .fail (response) ->
+        debugger

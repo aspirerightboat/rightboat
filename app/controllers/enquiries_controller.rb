@@ -1,5 +1,5 @@
 class EnquiriesController < ApplicationController
-  before_action :authenticate_user!, except: [:create, :signup_and_view_pdf]
+  before_action :authenticate_user!, except: [:create, :create_batch, :signup_and_view_pdf]
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
@@ -45,6 +45,14 @@ class EnquiriesController < ApplicationController
     else
       render json: enquiry.errors.full_messages, status: 422, root: false
     end
+  end
+
+  def create_batch
+    job = BatchUploadJob.create
+    boats_refs = params[:boats_refs] || []
+
+    ZipPdfDetailsJob.new(job.id, boats_refs).perform
+    render json: job
   end
 
   def show

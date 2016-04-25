@@ -101,6 +101,7 @@ group :test do
   gem 'rspec-rails'
   gem 'factory_girl'
   gem 'email_spec'
+  gem 'rspec-json_expectations'
   gem 'database_cleaner'
   gem 'capybara'
   gem 'nokogiri'

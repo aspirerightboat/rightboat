@@ -12,10 +12,9 @@
   #multiselected-request-for-details
     .row
       .col-xs-12
-        = link_to 'Request details on all selected', '#', remote: true, class: 'btn-sm nice-button', id: 'button-request-for-details'
-        .processing.hide
-          Processing...
-        %span#number-selected
+        = link_to 'Request details on all selected', '#', remote: true, class: 'btn-sm nice-button pull-left', id: 'button-request-for-details'
+        #number-selected.pull-left
+        .processing.pull-left.inline-loading
 
   - if @featured_boats.any?
     #featured-boats.nabvar-tools

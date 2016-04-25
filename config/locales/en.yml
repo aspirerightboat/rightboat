@@ -41,3 +41,6 @@ en:
   messages:
     boat_not_exist: This boat does not exists anymore.
     not_authorized: You are not authorized to access the page.
+  support:
+    array:
+      :last_word_connector: " and "

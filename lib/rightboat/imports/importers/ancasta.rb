@@ -2,6 +2,26 @@ module Rightboat::Imports
   class Importers::Ancasta < ImporterBase
     include ActionView::Helpers::TextHelper # for simple_format
 
+    ENGINE_TYPES = {
+      '3D' => 'Tri Diesel',
+      '3P' => 'Tri Petrol',
+      '1D' => 'Single Diesel',
+      '1G' => 'Single LPG',
+      '1O' => 'Single Outboard',
+      '1P' => 'Single Petrol',
+      '2D' => 'Twin Diesel',
+      '2O' => 'Twin Outboard',
+      '2P' => 'Twin Petrol',
+      '2E' => 'Twin Electric',
+      '2P' => 'Twin Petrol',
+      '2ES' => 'Twin Electric',
+      '1DS' => 'Single Diesel',
+      '2DS' => 'Twin Diesel',
+      '1OS' => 'Single Outboard',
+      '1EP' => 'Single Electric',
+      '1ES' => 'Single Electric'
+    }
+
     def self.params_validators
       {source_url: :presence}
     end
@@ -30,7 +50,9 @@ module Rightboat::Imports
       boat.length_f = boat_nodes['Lengthft'].text
       boat.hull_material = boat_nodes['HullMaterial'].text
       boat.engine = boat_nodes['Engine'].text
-      boat.engine_code = boat_nodes['EngineCode'].text
+      unless (engine_code = boat_nodes['EngineCode'].text).blank?
+        boat.engine_type = ENGINE_TYPES[engine_code]
+      end
       if boat_nodes.to_s =~ /diesel/i
         boat.fuel_type = 'Diesel'
       elsif boat_nodes.to_s =~ /gasoline/i
@@ -59,11 +81,11 @@ module Rightboat::Imports
       }
       boat.description = prepare_description(boat_nodes['Description'].inner_html) || ''
       boat.short_description = boat.description
-      %w(TextBridge TextMachinery TextRig TextAccomodation BcbComments TextInventory).each do |nodename|
+      %w(TextBridge TextMachinery TextRig TextAccomodation TextInventory BcbComments).each do |nodename|
         node = boat_nodes[nodename]
         if node && node.text.present?
           header = node.name.sub('Text', '')
-          header = 'Details' if header == 'Bridge'
+          header = 'Layout' if header == 'Bridge'
           header = 'Accommodation' if header == 'Accomodation'
           header = 'Brokers Comments' if header == 'BcbComments'
           text = prepare_description(node.inner_html)

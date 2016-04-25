@@ -1,24 +1,22 @@
 class Member::SavedSearchesController < Member::BaseController
   def edit
-    @saved_search = SavedSearch.find_by(id: params[:id])
+    @saved_search = SavedSearch.find(params[:id])
     @current_length_unit = @saved_search.length_unit
   end
 
   def update
-    @saved_search = SavedSearch.find_by(id: params[:id])
+    @saved_search = SavedSearch.find(params[:id])
+    permitted_params = permit_saved_search_params(params.require(:saved_search))
 
-    if @saved_search.update(update_params)
+    if @saved_search.update(permitted_params)
       redirect_to member_user_notifications_path, notice: 'Your search was saved'
     else
-      redirect_to member_user_notifications_path, notice: 'Something went wrong'
+      redirect_to member_user_notifications_path, alert: 'Something went wrong'
     end
   end
 
   def create
-    params[:country] = params.delete(:countries).split('-') if params[:countries]
-    params[:models] = params[:models].split('-') if params[:models]
-
-    SavedSearch.create_and_run(current_user, create_params)
+    SavedSearch.create_and_run(current_user, permit_saved_search_params(params))
 
     render json: {}
   end
@@ -30,15 +28,13 @@ class Member::SavedSearchesController < Member::BaseController
 
   private
 
-  def create_params
-    params.permit(:year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                  :length_unit, :manufacturer, :model, :currency, :ref_no, :q, :boat_type, :order,
-                  tax_status: [:paid, :unpaid], new_used: [:new, :used], country: [], category: [], models: [])
-  end
+  def permit_saved_search_params(params)
+    params[:manufacturers] = params[:manufacturers].split('-') if params[:manufacturers]&.is_a?(String)
+    params[:models] = params[:models].split('-') if params[:models]&.is_a?(String)
 
-  def update_params
-    params.require(:saved_search).permit(:year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                  :length_unit, :manufacturer, :model, :currency, :ref_no, :q, :boat_type, :order,
-                  tax_status: [:paid, :unpaid], new_used: [:new, :used], country: [], category: [], models: [])
+    params.permit(:year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
+                  :length_unit, :currency, :ref_no, :q, :boat_type, :order,
+                  tax_status: [:paid, :unpaid], new_used: [:new, :used],
+                  manufacturers: [], models: [], countries: [])
   end
 end

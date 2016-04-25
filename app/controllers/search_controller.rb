@@ -3,24 +3,15 @@ class SearchController < ApplicationController
   after_filter :log_search_terms, only: :results
 
   def manufacturer
-    render json: Manufacturer.solr_suggest_names(params[:q])
+    render json: Manufacturer.solr_suggest_by_term(params[:q])
   end
 
   def model
-    manufacturer_names = params[:manufacturer_names].to_s.split(',')
-    render json: Model.solr_suggest_names(params[:q], manufacturer_names)
+    manufacturer_ids = params[:manufacturer_ids].to_s.split(',')
+    render json: Model.solr_suggest_by_term(params[:q], manufacturer_ids)
   end
 
   def results
-    if params[:save_search]
-      ctl = Member::SavedSearchesController.new
-      ctl.request = request
-      ctl.response = response
-      ctl.create
-      redirect_to member_user_notifications_path, notice: 'Your search was saved'
-      return
-    end
-
     if params[:q].present? && (boat = find_makemodel_boat(params[:q].titleize))
       if boat.manufacturer.name.downcase == params[:q].strip.downcase
         redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return

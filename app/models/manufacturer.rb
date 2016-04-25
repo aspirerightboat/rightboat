@@ -35,14 +35,14 @@ class Manufacturer < ActiveRecord::Base
     !OUTBOARDS.include?(name)
   end
 
-  def self.solr_suggest_names(term)
+  def self.solr_suggest_by_term(term)
     search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true
       order_by :name, :asc
     end
 
-    search.hits.map { |h| h.stored(:name) }
+    search.hits.map { |h| [h.primary_key, h.stored(:name)] }
   end
 
   def merge_and_destroy!(other_manufacturer)

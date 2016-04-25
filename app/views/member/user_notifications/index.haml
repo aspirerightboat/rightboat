@@ -33,10 +33,10 @@
                       %tr
                         %th #
                         %th Keyword
-                        %th Manufacturer
-                        %th Model
+                        %th Manufacturers
+                        %th Models
                         %th Boat Type
-                        %th Country
+                        %th Countries
                         %th New / Used
                         %th Year
                         %th Price
@@ -47,14 +47,12 @@
                         %tr(data-ss-id="#{ss.id}")
                           %td= i + 1
                           %td= ss.q
-                          %td= ss.manufacturer
                           %td
-                            - if ss.models.present?
-                              = Model.where(id: ss.models).pluck(:name).to_sentence
-                            - else
-                              = ss.model
+                            - puts('ss.manufacturers', ss.manufacturers, Manufacturer.where(id: ss.manufacturers.map(&:to_i)).count)
+                            = Manufacturer.where(id: ss.manufacturers).pluck(:name).join(', ') if ss.manufacturers.present?
+                          %td= Model.where(id: ss.models).pluck(:name).join(', ') if ss.models.present?
                           %td= ss.boat_type
-                          %td= Country.where(id: ss.country).pluck(:name).join(', ')
+                          %td= Country.where(id: ss.countries).pluck(:name).join(', ')
                           %td= ss.new_used.keys.join(' / ')
                           %td= "#{"from #{ss.year_min} " if ss.year_min}#{"upto #{ss.year_max}" if ss.year_max}"
                           %td

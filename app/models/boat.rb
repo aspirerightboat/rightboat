@@ -104,10 +104,11 @@ class Boat < ActiveRecord::Base
   def to_param; slug end
 
   def similar_options(required_currency = nil, length_unit = nil)
+    length_unit ||= 'm'
     options = {
         exclude_ref_no: ref_no,
         boat_type:  boat_type.try(:name_stripped),
-        length_unit: length_unit ||= 'm'
+        length_unit: length_unit
     }
 
     if !poa?

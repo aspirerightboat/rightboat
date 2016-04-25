@@ -27,15 +27,17 @@
             %p
               Please find above links for new boats that match your Saved Search on Rightboat.
 
-          - manufacturers_links = saved_search_manufacturers_link(saved_search)
-          - models_links = saved_search_models_link(saved_search)
-
+          - manufacturers_links = saved_search_manufacturer_links(saved_search)
           - if manufacturers_links.present?
-            %p.manufactures
-              Click to visit #{manufacturers_links} manufacturers page
+            %p.manufacturers
+              - page_plural = t('page_plural', count: saved_search.manufacturers.size)
+              Also visit #{manufacturers_links} manufacturer #{page_plural}.
+
+          - models_links = saved_search_model_links(saved_search)
           - if models_links.present?
             %p.models
-              Click to visit #{models_links} models page
+              - page_plural = t('page_plural', count: saved_search.models.size)
+              Also visit #{models_links} model #{page_plural}.
 
 %p
   You can manage your alerts and email settings from the #{link_to 'My Notifications', member_user_notifications_url}

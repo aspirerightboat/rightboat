@@ -58,9 +58,7 @@ class Model < ActiveRecord::Base
     end
   end
 
-  def self.solr_suggest_names(term, manufacturer_names = nil)
-    manufacturer_ids = (Manufacturer.where(name: manufacturer_names).pluck(:id) if manufacturer_names.present?)
-
+  def self.solr_suggest_by_term(term, manufacturer_ids = nil)
     search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true
@@ -68,7 +66,7 @@ class Model < ActiveRecord::Base
       order_by :name, :asc
     end
 
-    search.hits.map { |h| h.stored(:name) }
+    search.hits.map { |h| [h.primary_key, h.stored(:name)] }
   end
 
   def prepend_name!(prepend_part)

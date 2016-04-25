@@ -8,8 +8,8 @@ module Rightboat
 
     attr_reader :facets_data, :search
 
-    attr_reader :q, :manufacturer_model, :manufacturer, :model, :model_ids,
-                :category, :country, :boat_type, :manufacturer_id, :model_id,
+    attr_reader :q, :manufacturer_model, :manufacturer_ids, :model_ids,
+                :country_ids, :boat_type, :manufacturer_id, :model_id,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max, :country_id, :boat_type_id,
                 :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
@@ -51,8 +51,9 @@ module Rightboat
           end
         end
 
-        with(:manufacturer, manufacturer) if manufacturer
-        with(:model, model) if model
+        any_of { manufacturer_ids.each { |manufacturer_id| with :manufacturer_id, manufacturer_id } } if manufacturer_ids
+        any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids
+
         with(:manufacturer_id, manufacturer_id) if manufacturer_id
         with(:model_id, model_id) if model_id
         with(:country_id, country_id) if country_id
@@ -67,9 +68,8 @@ module Rightboat
         with(:year).greater_than_or_equal_to(year_min) if year_min
         with(:year).less_than_or_equal_to(year_max) if year_max
 
-        any_of { country.each { |country_id| with :country_id, country_id } } if country
-        any_of { category.each { |category_id| with :category_id, category_id } } if category
-        any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids
+        any_of { country_ids.each { |country_id| with :country_id, country_id } } if country_ids
+        # any_of { category.each { |category_id| with :category_id, category_id } } if category
         with :boat_type, boat_type if boat_type
 
         if with_facets
@@ -124,7 +124,7 @@ module Rightboat
 
       if search
         country_facet_rows = search.facet(:country_id).rows
-        filtered_country_ids = country_facet_rows.map(&:value) + (country.presence || [])
+        filtered_country_ids = country_facet_rows.map(&:value) + (country_ids.presence || [])
         countries_data = Country.where(id: filtered_country_ids).order(:name).pluck(:id, :name).map do |id, name|
           count = country_facet_rows.find { |x| x.value == id }.try(:count) || 0
           [id, name, count]
@@ -146,16 +146,15 @@ module Rightboat
 
     def read_params(params)
       @q = read_str(params[:q])
-      @manufacturer_model = read_tags(params[:manufacturer_model])
-      @manufacturer = read_tags(params[:manufacturer])
-      @model = read_tags(params[:model])
+      @manufacturer_model = read_str(params[:manufacturer_model])
+      @manufacturer_ids = read_tags(params[:manufacturers])
+      @model_ids = read_tags(params[:models])
       @manufacturer_id = params[:manufacturer_id] if params[:manufacturer_id].present?
       @model_id = params[:model_id] if params[:model_id].present?
       @country_id = params[:country_id] if params[:country_id].present?
       @boat_type_id = params[:boat_type_id] if params[:boat_type_id].present?
-      @category = read_tags(params[:category])
-      @country = read_tags(params[:country])
-      @model_ids = read_tags(params[:model_ids])
+      # @category = read_tags(params[:category])
+      @country_ids = read_tags(params[:countries])
       @boat_type = read_str(params[:boat_type])
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
@@ -180,7 +179,7 @@ module Rightboat
 
     def read_tags(tags)
       if tags.present?
-        tags.is_a?(Array) ? tags : tags.split(/\s*,\s*/).reject(&:blank?).presence
+        tags.is_a?(Array) ? tags : tags.split('-').reject(&:blank?).presence
       end
     end
 

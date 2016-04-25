@@ -6,7 +6,7 @@
                                   'data-boat-ref' => boat.slug,
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
-    .tick
+    .tick{ data: {boat_ref: boat.ref_no} }
       %span.glyphicon.glyphicon-ok-circle
     .boat-img-thumb{class: boat.offer_status.dasherize}
       = link_to boat_url do

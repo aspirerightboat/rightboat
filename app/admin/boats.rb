@@ -141,6 +141,7 @@ ActiveAdmin.register Boat do
 
   sidebar 'Tools', only: [:index] do
     para { link_to 'Reindex deleted boats', {action: :reindex_deleted_boats}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
+    para { link_to 'Remove cached pdfs', {action: :remove_pdfs}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
   end
 
   collection_action :reindex_deleted_boats, method: :post do
@@ -153,6 +154,14 @@ ActiveAdmin.register Boat do
     Sunspot.index! fix_boats if fix_boats.any?
     redirect_to (request.referer || {action: :index}),
                 notice: "Found #{live_boats.size} live boats and #{fix_boats.size} of them are actually deleted. Reindex these boats"
+  end
+
+  collection_action :remove_pdfs, method: :post do
+    inner_dirs = Dir["#{Rails.root}/boat_pdfs/*"]
+    FileUtils.rm_rf(inner_dirs) if inner_dirs.any?
+
+    redirect_to (request.referer || {action: :index}),
+                notice: "Removed #{inner_dirs.size} directories with cached pdf files"
   end
 
   member_action :statistics, method: :get do

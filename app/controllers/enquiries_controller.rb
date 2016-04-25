@@ -86,7 +86,7 @@ class EnquiriesController < ApplicationController
     lead = Enquiry.find(params[:lead_id])
     boat = lead.boat
 
-    SavedSearch.create_and_run(current_user, manufacturer: boat.manufacturer.name, model: boat.model.name)
+    SavedSearch.create_and_run(current_user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])
 
     head :ok
   end

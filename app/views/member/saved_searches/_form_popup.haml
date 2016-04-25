@@ -23,21 +23,19 @@
                       = f.radio_button :boat_type, 'Sail'
                       = f.label :boat_type_sail, 'Sail'
 
-
               .form-group.row
                 .col-md-6.col-xs-12
                   .row
                     .col-xs-4
-                      = f.label :manufacturer, 'Manufacturer'
+                      = label_tag :manufacturers_picker, 'Manufacturers'
                     .col-xs-8
-                      = f.text_field :manufacturer, class: 'select-black select-full tags-input', placeholder: 'e.g. Beneteau'
+                      = manufacturers_picker_field('saved_search[manufacturers]', @saved_search.manufacturers)
                 .col-md-6.col-xs-12
                   .row
                     .col-xs-4
-                      = f.label :model, 'Model'
+                      = f.label :models_picker, 'Models'
                     .col-xs-8
-                      = f.text_field :model, class: 'select-black select-full tags-input', placeholder: 'e.g. Oceanis 34'
-
+                      = models_picker_field('saved_search[models]', @saved_search.models)
 
               .form-group.row
                 .col-sm-6.col-xs-12
@@ -84,10 +82,10 @@
                 .col-sm-6.col-xs-12
                   .row
                     .col-xs-12
-                      = f.label :country, 'Country'
+                      = f.label :country, 'Countries'
                       - general_options = general_facets[:countries_data].map { |id, name, count| [count ? "#{name} (#{count})" : name, id] }
-                      - selected_ids = @saved_search.country.to_json
-                      = f.select :country, options_for_select(general_options), {}, { class: 'select-black select-full saved-multiple-country-select', multiple: true, data: { selected_ids: selected_ids } }
+                      - selected_ids = @saved_search.countries.to_json
+                      = f.select :countries, options_for_select(general_options), {}, {class: 'select-black select-full saved-multiple-country-select', multiple: true, data: {selected_ids: selected_ids}}
 
 
               .form-group.row

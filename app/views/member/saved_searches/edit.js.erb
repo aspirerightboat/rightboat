@@ -1,57 +1,7 @@
 $('#saved_search_edit_popup').remove();
 $('body').append('<%= j render('form_popup') %>');
 $('#saved_search_edit_popup').modal('show');
-
-$('#saved_search_manufacturer, #saved_search_model').each(function(){
-  var select_id = this.id;
-  var url = '/search/' + select_id.replace('saved_search_', '');
-  return $(this).select2({
-    tags: true,
-    minimumInputLength: 0,
-    tokenSeparators: [','],
-
-    initSelection: function(el, callback) {
-      var tags = $(el).val().split(',');
-      var data = $.map(tags, function(token) {
-        return {
-          id: token,
-          text: token
-        };
-      });
-      callback(data);
-    },
-
-    ajax: {
-      url: url,
-      dataType: 'JSON',
-      delay: 150,
-      data: function(term, page) {
-        var h;
-        h = {
-          q: term,
-          page: page
-        };
-        if (select_id === 'saved_search_model') {
-          h['manufacturer_names'] = $('#saved_search_manufacturer').val();
-        }
-        return h;
-      },
-
-      results: function(data, page) {
-        return {
-          results: $.map(data.search, function(item) {
-            return {
-              id: item,
-              text: item
-            };
-          })
-        };
-      },
-
-      cache: true
-    }
-  });
-});
+window.reload_search_pickers();
 
 $('select.select-currency').each(function(){
   return $(this).select2({

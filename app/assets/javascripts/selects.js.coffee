@@ -24,30 +24,33 @@ $ ->
         ret += ' class="priority-last"' if viewMode.id is 'USD'
         ret += '>' + viewMode.text + ' <small>' + viewMode.id + '</small></span>'
 
-  $('#search_manufacturer, #search_model').each ->
-    select_id = @id
-    url = '/search/' + select_id.replace('search_', '')
-    $(@).select2
-      tags: true
-      minimumInputLength: 0
-      tokenSeparators: [ ',' ]
-      initSelection: (el, callback) ->
-        tags = $(el).val().split(',')
-        data = $.map(tags, (token) -> {id: token, text: token})
-        callback data
-        return
-      ajax:
-        url: url
-        dataType: 'JSON'
-        delay: 150
-        data: (term, page) ->
-          h = {q: term}
-          h.manufacturer_ids = $('#search_manufacturer').val() if select_id == 'search_model'
-          h
-        results: (data, page) ->
-          {results: $.map(data.search, (item) -> {id: item[0], text: item[1]})}
-        cache: true
-
+  window.reload_search_pickers = ->
+    $('#manufacturers_picker, #models_picker').each ->
+      select_id = @id
+      url = '/search/' + select_id.replace('s_picker', '')
+      $(@).select2
+        tags: true
+        minimumInputLength: 0
+        separator: '-'
+        tokenSeparators: [',']
+        initSelection: (el, callback) ->
+          tags = $(el).data('initial-tags') || []
+          data = $.map(tags, (arr) -> {id: arr[0], text: arr[1]})
+          callback data
+          return
+        ajax:
+          url: url
+          dataType: 'JSON'
+          delay: 150
+          data: (term, page) ->
+            h = {q: term}
+            h.manufacturer_ids = $('#manufacturers_picker').val() if select_id == 'models_picker'
+            h
+          results: (data, page) ->
+            {results: $.map(data.search, (item) -> {id: item[0], text: item[1]})}
+          cache: true
+  window.reload_search_pickers()
+  
   $('select#layout_mode').select2
     minimumResultsForSearch: Infinity
     formatSelection: (viewMode, container, escapeMarkup) ->

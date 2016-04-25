@@ -25,6 +25,10 @@ en:
     one: "Search"
     many: "Searches"
     other: "Searches"
+  page_plural:
+    one: "page"
+    many: "pages"
+    other: "pages"
   search_orders:
     score_desc: "Best Match"
     created_at_desc: "Newly listed"

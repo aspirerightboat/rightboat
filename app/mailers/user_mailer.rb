@@ -2,7 +2,7 @@ class UserMailer < ApplicationMailer
   add_template_helper BoatsHelper
   add_template_helper QrcodeHelper
   add_template_helper SavedSearchesMailerHelper
-  add_template_helper ConditionalLinksHelper
+  add_template_helper MakemodelLinksHelper
   layout 'mailer'
 
   def saved_search_updated(user_id, searches)

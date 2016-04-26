@@ -51,7 +51,7 @@ class EnquiriesController < ApplicationController
     job = BatchUploadJob.create
     boats_refs = params[:boats_refs] || []
 
-    ZipPdfDetailsJob.new(job.id, boats_refs).perform
+    ZipPdfDetailsJob.new(job_id: job.id, boats_refs: boats_refs).perform
     render json: job
   end
 

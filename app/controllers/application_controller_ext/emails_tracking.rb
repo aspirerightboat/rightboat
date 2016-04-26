@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
     if all_params_present?(params) && params[:utm_medium] == 'email'
       MailClick.create(mail_click_params_mapped(params))
       if [:token].present?
-        cookies[:tracking_token]={ value: params[:token], expires: 1.day.from_now }
+        cookies[:tracking_token] = {value: params[:token], expires: 1.day.from_now}
       end
     end
   end

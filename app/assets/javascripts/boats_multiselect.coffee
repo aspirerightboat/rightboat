@@ -6,6 +6,8 @@ $ ->
 
     toggleBottomBar = () ->
       if $('.boat-thumb.thumbnail.selected').length > 0
+        if jobStatus.length == 0
+          $('#multiselected-request-for-details .processing').text('').hide()
         $('#multiselected-request-for-details #number-selected').text(word_with_number('boat', $('.multiselectable.selected').length) + ' selected')
         $('#multiselected-request-for-details').animate
           bottom: '0px'
@@ -44,6 +46,9 @@ $ ->
       .done (response) ->
         $('#multiselected-request-for-details .processing').text(response.status).show()
         jobStatus = response.status
+        if jobStatus != 'processing'
+          $('#multiselected-request-for-details .processing').text(response.status).removeClass('inline-loading')
+          jobStatus = ''
 
     #
     # End of declaration
@@ -69,6 +74,12 @@ $ ->
       if $('.multiselectable.selected').length == 0
         window.location = $(@).data('url')
 
+    $('#button-request-for-details-clear').click ->
+      $('.multiselectable').removeClass('selected')
+      toggleBottomBar()
+      Cookies.remove 'boats_multi_selected'
+      false
+
     $('#button-request-for-details').on 'click', (e) ->
       e.preventDefault()
       selectedBoats = Cookies.get 'boats_multi_selected'
@@ -81,7 +92,7 @@ $ ->
         dataType: "json",
         contentType: 'application/json'
       .done (response) ->
-        $('#multiselected-request-for-details .processing').text(response.status).show()
+        $('#multiselected-request-for-details .processing').text(response.status).addClass('inline-loading').show()
         jobStatus = response.status
         jobID = response.id
 

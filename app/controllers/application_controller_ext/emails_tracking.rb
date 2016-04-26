@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   before_action :catch_email_click
 
+  private
+
   def catch_email_click
     if all_params_present?(params) && params[:utm_medium] == 'email'
       MailClick.create(mail_click_params_mapped(params))
@@ -9,8 +11,6 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-
-  private
 
   def all_params_present?(params)
     %w(utm_source utm_medium utm_campaign utm_content).all? { |key| params.has_key?(key) }

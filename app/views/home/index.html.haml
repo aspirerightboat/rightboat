@@ -9,6 +9,7 @@
     .embed-responsive.embed-responsive-home-page
 
 #main_content
+
   #multiselected-request-for-details
     .row
       .col-xs-12
@@ -76,13 +77,14 @@
         to get in touch with the right broker authorised to sell the boat.
       %p
         We have a vast range of boats and yachts listed from right across the world. You can find everything from small
-        #{link_to 'fishing boats', boat_type_path('fishing-boats')} to #{link_to 'mega yachts', boat_type_path('super-yacht')}
+        #{link_to 'fishing boats', search_path(q: 'fishing boat')}
+        to #{link_to 'mega yachts', search_path(q: 'mega yacht')}
         and so many other great types of boats including
         #{link_to 'sailing yachts', boat_type_path('sailing-yacht')},
         #{link_to 'powerboats', boat_type_path('power')},
         #{link_to 'multihulls', search_path(q: 'multihull')},
-        #{link_to 'motor cruisers', boat_type_path('cruiser')},
-        #{link_to 'RIBs', boat_type_path('rib')} and many more boat types.
+        #{link_to 'motor cruisers', search_path(q: 'motor cruiser')},
+        #{link_to 'RIBs', search_path(q: 'rib')} and many more boat types.
       %p
         To give you a flavour of what we help sell and to help you on your journey in boat ownership,
         here is a quick review of the main types of boats and yachts for sale, however this list isn’t exhaustive:
@@ -94,16 +96,16 @@
         Technically starting at a mere 24 metres (> 79 feet) in length and delivering all round excellence,
         these boats often sport saunas and jacuzzis and require a full time, live aboard, crew.
         These boats are what dreams are made of! Often custom built by shipyards across the globe, top manufacturers such as
-        #{%w(Azimut Ferretti Benetti).map { |x| m = Manufacturer.find_by(name: x); link_to(x, (m ? sale_manufacturer_path(m) : '#')) }.to_sentence(last_word_connector: ' and ').html_safe}
+        #{maker_links_by_names(%w(Azimut Ferretti Benetti))}
         lead the way in this ever evolving luxury marketplace. One day eh…..!
 
       %h4 Sailing Yachts
       %p
         If the thought of the wind in your sails gets your heart racing, our vast selection of
         sailing yachts will not disappoint. Rightboat offers thousands of new and used
-        #{link_to 'sailing yachts', boat_type_path('Sailing yacht')} for sale including yachts
+        #{link_to 'sailing yachts', boat_type_path('sailing-yacht')} for sale including yachts
         from many of the most prestigious boat builders such as
-        #{%w(Beneteau Dufour Jeanneau Bavaria Hunter Catalina Lagoon).map { |x| m = Manufacturer.find_by(name: x); link_to(x, (m ? sale_manufacturer_path(m) : '#')) }.to_sentence(last_word_connector: ' or ').html_safe}
+        #{maker_links_by_names(%w(Beneteau Dufour Jeanneau Bavaria Hunter Catalina Lagoon))}
         to suit all budgets and abilities. If it’s single hull, multi-hull or racing yachts,
         you will find them all in our inventory of boats for sale.
 
@@ -111,18 +113,18 @@
       %p
         If getting from A to B with a bit more than the wind to rely on is your passion, then look
         no further that Rightboat.com. If it’s on the water with an engine you’ll find it here, from
-        #{link_to 'fishing boats', boat_type_path('Fishing Boats')}, to sports boats and cruisers,
+        #{link_to 'fishing boats', search_path(q: 'fishing boat')}, to sports boats and cruisers,
         to flybridge yachts and motor sailors, Rightboat offers thousands to choose from,
         listed for sale by reputable brokers around the globe,
         you will find quality vessels from well known manufacturers such as
-        #{['Fairline', 'Princess', 'Sunseeker', 'Sea Ray', 'Boston Whaler', 'Carver', 'Riva'].map { |x| m = Manufacturer.find_by(name: x); link_to(x, (m ? sale_manufacturer_path(m) : '#')) }.join(', ').html_safe}
+        #{maker_links_by_names(['Fairline', 'Princess', 'Sunseeker', 'Sea Ray', 'Boston Whaler', 'Carver', 'Riva'])}
         and many more.
 
       %h4 Rigid Inflatable Boats (RIBS)
       %p
         Known as the 4x4’s of the sea these highly versatile craft have become very popular over the last 15 years.
         From a luxury high performance boat by Scorpion RIBS, Stingher or Pasoce, to a fun, family weekend run-around by
-        #{%w(Avon Zodiac Brig Humber).map { |x| m = Manufacturer.find_by(name: x); link_to(x, (m ? sale_manufacturer_path(m) : '#')) }.to_sentence(last_word_connector: ' or ').html_safe}.
+        #{maker_links_by_names(%w(Avon Zodiac Brig Humber), ' or ')}.
         These boats are suitable for all budgets and are great fun for all involved.
 
       %h4 Fishing Boats
@@ -131,7 +133,7 @@
         fishing boats are one of the most popular types of boats for sale.
         If you are looking for a recreational family fisher-cruiser or a full on trawler, we have a broad selection.
         Choose inshore or further offshore, and you will discover fishing boats from manufacturers such as
-        #{%w(Jeanneau Quicksilver Bayliner).map { |x| m = Manufacturer.find_by(name: x); link_to(x, (m ? sale_manufacturer_path(m) : '#')) }.join(', ').html_safe}
+        #{maker_links_by_names(%w(Jeanneau Quicksilver Bayliner), ', ')}
         and many more.
       %p
         We hope you enjoy the fully re-designed Rightboat marketplace,

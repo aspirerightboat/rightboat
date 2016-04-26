@@ -15,7 +15,7 @@
     = render 'shared/hotjar_tracking'
   %body.member-area(id="#{controller_name}-#{action_name}")
     = render 'shared/google_tag_manager'
-    - if @visited_activity.nil?
+    - if !cookies[:visited]
       = render 'shared/cookies_warning'
     - if content_for? :header
       = yield :header

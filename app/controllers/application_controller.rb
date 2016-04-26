@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :load_visited
-  after_action :set_visited
 
   before_action :global_current_user
   before_action :clear_old_session
@@ -28,15 +26,6 @@ class ApplicationController < ActionController::Base
   # prevent flash message in devise controller
   def is_flashing_format?
     false
-  end
-
-  def load_visited
-    @visited_attrs = { action: :visited, ip: request.remote_ip }
-    @visited_activity = Activity.where(@visited_attrs).first
-  end
-
-  def set_visited
-    Activity.create(@visited_attrs) if @visited_activity.nil?
   end
 
   def require_broker_user

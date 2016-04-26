@@ -18,10 +18,7 @@ module MakemodelLinksHelper
   end
 
   def saved_search_manufacturer_links(saved_search)
-    if saved_search.manufacturers.present?
-      manufacturers = Manufacturer.where(id: saved_search.manufacturers)
-      manufacturer_links(manufacturers)
-    end
+    manufacturer_links(Manufacturer.where(id: saved_search.manufacturers))
   end
 
   def saved_search_model_links(saved_search)

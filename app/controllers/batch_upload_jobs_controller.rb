@@ -1,4 +1,4 @@
-class BatchUploadJobController < ApplicationController
+class BatchUploadJobsController < ApplicationController
   def show
     @job = BatchUploadJob.find_by(id: params[:id])
     if @job.present?

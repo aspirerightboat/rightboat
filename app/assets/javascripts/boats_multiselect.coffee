@@ -1,7 +1,8 @@
 $ ->
   if $('.multiselectable').length
     file_url = ''
-    status_url = ''
+    jobID = ''
+    jobStatus = ''
 
     toggleBottomBar = () ->
       if $('.boat-thumb.thumbnail.selected').length > 0
@@ -35,6 +36,14 @@ $ ->
 
       if selectedBoats.length > 0
         toggleBottomBar()
+
+    getStatus = () ->
+      $.ajax
+        type: "get",
+        url: 'batch_upload_jobs/' + jobID,
+      .done (response) ->
+        $('#multiselected-request-for-details .processing').text(response.status).show()
+        jobStatus = response.status
 
     #
     # End of declaration
@@ -73,5 +82,14 @@ $ ->
         contentType: 'application/json'
       .done (response) ->
         $('#multiselected-request-for-details .processing').text(response.status).show()
+        jobStatus = response.status
+        jobID = response.id
+
+        intervalId = setInterval ( ->
+          getStatus()
+          if jobStatus != 'processing'
+            clearInterval(intervalId)
+        ), 1000
+
       .fail (response) ->
-        debugger
+        $('#multiselected-request-for-details .processing').text(response.error).show()

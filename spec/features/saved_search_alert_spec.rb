@@ -18,7 +18,7 @@ RSpec.describe "saved search alert feature" do
 
   context 'new boat is created' do
     let(:new_boat) { create(:boat, country: country, model: model, manufacturer: manufacturer)}
-    let(:emails) { ActionMailer::Base.deliveries } # here all tests are stored for test env
+    let(:emails) { ActionMailer::Base.deliveries } # here all mails are stored for test env
     let(:last_email) { emails.last }
     let(:updated_save_search) { SavedSearch.last }
     let(:saved_search_alert) { SavedSearchesAlert.where(user_id: user.id).last }
@@ -61,8 +61,8 @@ RSpec.describe "saved search alert feature" do
         let!(:saved_search) { create :saved_search,
                                      user: user,
                                      first_found_boat_id: boat.id,
-                                     manufacturer: "#{manufacturer.name},#{manufacturer2.name}",
-                                     model: "#{model.name},#{model2.name},#{model3.name}"   }
+                                     manufacturers: [manufacturer, manufacturer2],
+                                     models: [model, model2, model3] }
 
         it "user's email contains link to manufactures page and to models page" do
           allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
@@ -70,7 +70,7 @@ RSpec.describe "saved search alert feature" do
           SavedSearchNoticesJob.new.perform
           document = Nokogiri::HTML(last_email.html_part.body.decoded)
 
-          boat_manufactures_links = document.css("p.manufactures a").text
+          boat_manufactures_links = document.css("p.manufacturers a").text
           boat_models_links = document.css("p.models a").text
 
           expect(boat_manufactures_links).to include(manufacturer2.name)
@@ -94,7 +94,7 @@ RSpec.describe "saved search alert feature" do
           SavedSearchNoticesJob.new.perform
           document = Nokogiri::HTML(last_email.html_part.body.decoded)
 
-          boat_manufactures_links = document.css("p.manufactures a").text
+          boat_manufactures_links = document.css("p.manufacturers a").text
           boat_models_links = document.css("p.models a").text
 
           expect(boat_manufactures_links).to eq ""

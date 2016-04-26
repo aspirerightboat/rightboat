@@ -147,4 +147,8 @@ FactoryGirl.define do
     payment_method "none"
   end
 
+  factory :batch_upload_job do
+    url ''
+  end
+
 end

@@ -1,23 +1,23 @@
 - current_year = Date.today.year
 
-#finance-popup.modal.fade
+#finance_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} &times;
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
         .h My Right Finance
       .modal-body
         %p By filling in a few simple details, we will be able to send your finance request to Rightboat selected partners who will assist in delivering finance quotes directly to you.
-        = form_for Finance.new, remote: true, data: {format: :json}, html: { class: 'finance-form', multipart: true } do |f|
+        = form_for Finance.new, remote: true, data: {format: :json}, html: {id: 'finance_form'} do |f|
           .form-group.row
             .col-md-5.col-xs-12 1. Manufacturer
             .col-md-5.col-xs-12
-              = f.select :manufacturer_id, Manufacturer.order(:name).collect { |x| [ x.name, x.id ] }, {prompt: 'Please select'}, class: 'select-general select-white'
+              = f.select :manufacturer_id, Manufacturer.order(:name).pluck(:id, :name).map { |id, name| [name, id] }, {prompt: 'Please select'}, class: 'select-general select-white', data: {'onchange-fill-models' => '#finances_models_select'}, id: 'finances_makers_select'
           .form-group.row
             .col-md-5.col-xs-12 2. Model
             .col-md-5.col-xs-12
-              = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general select-white'
+              = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general select-white', id: 'finances_models_select'
           .form-group.row
             .col-md-5.col-xs-12 3. Age of Vessel
             .col-md-5.col-xs-12
@@ -48,7 +48,7 @@
             .col-md-9.col-xs-12
               We will send your enquiry to Rightboat selected partners to assist in your search.
 
-#finance-result-popup.modal.fade
+#finance_result_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header

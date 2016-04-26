@@ -1,23 +1,21 @@
-window.syncModel = (manufacturer, $modelSelect) ->
+window.syncModel = (maker_id, $modelSelect) ->
   value = $modelSelect.val()
   $modelSelect.attr('disabled', 'disabled')
-  if manufacturer && manufacturer.length
+  if maker_id
     $.ajax
       type: "GET"
-      url: '/api/manufacturers/' + manufacturer + "/models"
+      url: '/api/manufacturers/' + maker_id + "/models"
       dataType: "JSON"
       data:
-        manufacturer: manufacturer
+        manufacturer: maker_id
     .success (options) ->
       $modelSelect.empty()
       $('<option>').attr('value', '').text('Any').appendTo($modelSelect)
       $.each options, ->
-        $('<option>').attr('value', this[0]).text(this[1]).appendTo($modelSelect)
-      if value
-        $modelSelect.val(value)
+        $opt = $('<option>').attr('value', this[0]).text(this[1]).appendTo($modelSelect)
+        $opt.prop('selected', true) if this[0] == value
       if $modelSelect.hasClass('select-general')
-        $modelSelect.select2
-          minimumResultsForSearch: Infinity
+        $modelSelect.generalSelect()
     .always ->
       $modelSelect.removeAttr('disabled')
 

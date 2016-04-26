@@ -1,0 +1,19 @@
+%p Dear Manager,
+%p #{link_to @finance.user.full_name, admin_user_url(@finance.user)} has posted new <b>finance</b> to Rightboat.
+
+%h4 Finance detail
+%p
+  <b>Manufacturer:</b> #{@finance.manufacturer&.name}
+  %br
+  <b>Model:</b> #{@finance.model&.name}
+  %br
+  <b>Age of Vessel:</b> #{@finance.age_of_vessel}
+  %br
+  <b>Location:</b> #{@finance.country&.name}
+  %br
+  <b>Price:</b> #{@finance.price} #{@finance.price_currency}
+  %br
+  <b>Loan amount required:</b> #{@finance.loan_amount} #{@finance.loan_amount_currency}
+
+%br
+%p You can manage this finance on #{link_to 'here', admin_finance_url(@finance.id)}.

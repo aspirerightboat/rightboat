@@ -71,9 +71,15 @@ Rails.application.routes.draw do
   # resources :feedbacks, only: [:create]
   # resources :mail_subscriptions, only: [:create]
   # resources :marine_enquiries, only: [:create]
-  resources :berth_enquiries, only: [:create]
-  resources :insurances, only: [:create]
-  resources :finances, only: [:create]
+  resources :berth_enquiries, only: [:create] do
+    collection { get :load_popup }
+  end
+  resources :insurances, only: [:create] do
+    collection { get :load_popup }
+  end
+  resources :finances, only: [:create] do
+    collection { get :load_popup }
+  end
 
   get 'search', to: 'search#results'
   post 'boats/:id/request-details', to: 'enquiries#create', as: :request_details

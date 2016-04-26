@@ -6,10 +6,10 @@
     %h5 1. Boat Type:
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :manufacturer
-      .col-md-8.col-xs-12= f.select :manufacturer_id, Manufacturer.order(:name).collect { |x| [ x.name, x.id ] }, {}, include_blank: false, class: 'select-general'
+      .col-md-8.col-xs-12= f.select :manufacturer_id, Manufacturer.order(:name).pluck(:id, :name).map { |id, name| [name, id] }, {}, include_blank: false, class: 'select-general', data: {'onchange-fill-models' => '#sell_boat_models_select'}, id: 'sell_boat_makers_select'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :model
-      .col-md-8.col-xs-12= f.select :model_id, [[f.object.model.try(:name), f.object.model.try(:id)]], {}, include_blank: false, class: 'select-general', 'data-validetta' => 'required'
+      .col-md-8.col-xs-12= f.select :model_id, [[f.object.model.try(:name), f.object.model.try(:id)]], {}, include_blank: false, class: 'select-general', 'data-validetta' => 'required', id: 'sell_boat_models_select'
     .form-group.clearfix
       .col-md-4.col-xs-12= f.label :year_built
       .col-md-8.col-xs-12= f.select :year_built, ((current_year - 40)..current_year).to_a.reverse, {}, class: 'select-general', 'data-validetta' => 'number'

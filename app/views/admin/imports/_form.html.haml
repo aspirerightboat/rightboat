@@ -42,7 +42,6 @@
           if (!(validations instanceof Array))
             validations = [validations];
           var required = validations[0] == 'presence' ? ' <span style="color:red">*</span>' : '';
-          console.log();
           var hint = (validations[1] && validations[1][0] == '(') ? ' <i style="font-weight:normal">'+validations[1].replace('(?-mix:\\A', '').replace('\\z)', '')+'</i>' : '';
           $('<li class="string input required stringish">').appendTo($ol)
             .append('<label for="'+id+'" class="label">'+key + required + hint+'</label>')

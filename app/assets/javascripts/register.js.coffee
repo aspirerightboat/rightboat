@@ -6,17 +6,7 @@ $ ->
     false
 
   $('.simple-ajax-form').each ->
-    $(this).simpleAjaxForm()
-
-  $('.insurance-form').simpleAjaxForm ($form) ->
-    $('.alert', $form).remove()
-    $('#insurance-popup').modal('hide')
-    $('#insurance-result-popup').displayPopup()
-
-  $('.finance-form').simpleAjaxForm ($form) ->
-    $('.alert', $form).remove()
-    $('#finance-popup').modal('hide')
-    $('#finance-result-popup').displayPopup()
+    $(@).simpleAjaxForm()
 
   $('.reset-password-form').simpleAjaxForm ($form) ->
     $('.alert', $form).remove()

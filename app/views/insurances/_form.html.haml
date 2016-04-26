@@ -1,15 +1,15 @@
 - current_year = Date.today.year
 
-#insurance-popup.modal.fade
+#insurance_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} &times;
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
         .h My Right Insurance
       .modal-body
         %p By filling in a few simple details, we will be able to send your insurance request to Rightboat selected partners who will assist in delivering insurance quotes directly to you.
-        = form_for Insurance.new, remote: true, data: {format: :json}, html: { class: 'insurance-form', multipart: true } do |f|
+        = form_for Insurance.new, remote: true, data: {format: :json}, html: {id: 'insurance_form'} do |f|
           .form-group.row
             .col-md-5.col-xs-12 1. Type of Cover
             .col-md-5.col-xs-12
@@ -17,11 +17,11 @@
           .form-group.row
             .col-md-5.col-xs-12 2. Manufacturer
             .col-md-5.col-xs-12
-              = f.select :manufacturer_id, Manufacturer.order(:name).collect { |x| [ x.name, x.id ] }, {prompt: 'Please select'}, class: 'select-general select-white'
+              = f.select :manufacturer_id, Manufacturer.order(:name).pluck(:id, :name).map { |id, name| [name, id] }, {prompt: 'Please select'}, class: 'select-general select-white', data: {'onchange-fill-models' => '#insurances_models_select'}, id: 'insurances_makers_select'
           .form-group.row
             .col-md-5.col-xs-12 3. Model
             .col-md-5.col-xs-12
-              = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general select-white'
+              = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general select-white', id: 'insurances_models_select'
           .form-group.row
             .col-md-5.col-xs-12 4. Age of Vessel
             .col-md-5.col-xs-12
@@ -53,7 +53,7 @@
             .col-md-9.col-xs-12
               We will send your enquiry to Rightboat selected partners to assist in your search.
 
-#insurance-result-popup.modal.fade
+#insurance_result_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header

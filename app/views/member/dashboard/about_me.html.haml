@@ -2,7 +2,7 @@
   %h1 About Me
   %hr
   - if user_signed_in?
-    = form_for current_user, url: user_profile_path, remote: true, data: {format: :json, message: 'Setting was saved successfully.'},
+    = form_for current_user, url: user_profile_path, remote: true, data: {format: :json},
         method: :put, html: { class: 'simple-ajax-form', multipart: true } do |f|
       .row
         .col-sm-8.col-xs-12

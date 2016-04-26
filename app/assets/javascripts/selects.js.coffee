@@ -1,20 +1,30 @@
 $ ->
+  $.fn.generalSelect = ->
+    @.each ->
+      $sel = $(@)
+      options = minimumResultsForSearch: Infinity
+      if $sel.hasClass('select-white')
+        options.dropdownCssClass = 'select-white'
 
-  $('select.select-general').each ->
-    $this = $(this)
-    options = minimumResultsForSearch: Infinity
-    if $this.hasClass('select-white')
-      options = $.extend(options, dropdownCssClass: 'select-white')
-    $this.select2(options).on 'change', (e) ->
-      $allOption = $(this).find('option[value=""]')
-      if $allOption.length and $allOption.text().match(/^all$/i)
-        if $allOption.is(':selected')
-          $this.select2 'val', ''
-      if $this.attr('id') == 'manufacturer_id'
-        window.syncModel(e.added.id, $this.parents('form').find('#model_id'))
+      $sel.select2(options)
 
-  $('select.select-currency').each ->
-    $(this).select2
+      if !$sel.initialized
+        $sel.initialized = true
+        $sel.on 'change', ->
+          $allOption = $(@).find('option[value=""]')
+          if $allOption.length and $allOption.text().match(/^all$/i)
+            if $allOption.is(':selected')
+              $sel.select2 'val', ''
+          if $sel.data('onchange-fill-models')
+            maker_id = $sel.val()
+            $modelsSelect = $($sel.data('onchange-fill-models'))
+            window.syncModel(maker_id, $modelsSelect)
+
+  $('.select-general').generalSelect()
+
+
+  $.fn.currencySelect = ->
+    @.select2
       minimumResultsForSearch: Infinity
       dropdownAutoWidth: true
       formatSelection: (viewMode, container, escapeMarkup) ->
@@ -24,8 +34,11 @@ $ ->
         ret += ' class="priority-last"' if viewMode.id is 'USD'
         ret += '>' + viewMode.text + ' <small>' + viewMode.id + '</small></span>'
 
-  window.reload_search_pickers = ->
-    $('#manufacturers_picker, #models_picker').each ->
+  $('.select-currency').currencySelect()
+
+  
+  $.fn.makemodelPickers = ->
+    @.each ->
       select_id = @id
       url = '/search/' + select_id.replace('s_picker', '')
       $(@).select2
@@ -49,7 +62,9 @@ $ ->
           results: (data, page) ->
             {results: $.map(data.search, (item) -> {id: item[0], text: item[1]})}
           cache: true
-  window.reload_search_pickers()
+
+  $('.manufacturers-picker, .models-picker').makemodelPickers()
+  
   
   $('select#layout_mode').select2
     minimumResultsForSearch: Infinity
@@ -78,8 +93,8 @@ $ ->
         $sel.append(opt)
     $sel.select2()
 
-  $('select.country-select').each ->
-    $(this).select2
+  $.fn.countrySelect = ->
+    $(@).select2
       minimumResultsForSearch: Infinity
       dropdownAutoWidth: true
       formatSelection: (viewMode, container, escapeMarkup) ->
@@ -88,6 +103,7 @@ $ ->
         ret = '<span'
         ret += ' class="priority-last"' if /Turkey/.test viewMode.text
         ret += '>' + viewMode.text + '</span>'
+  $('.country-select').countrySelect();
 
   $('select.country-code-select').each ->
     $(this).select2

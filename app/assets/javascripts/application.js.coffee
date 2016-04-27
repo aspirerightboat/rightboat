@@ -115,18 +115,19 @@ $ ->
     $('.page-links .save-search a').trigger 'click'
   sessionStorage.removeItem('saveSearch')
 
-  target = window.location.hash
-  if $(target).length
-    if $(target).hasClass 'modal'
-      $(target).modal('show')
-    else if $(target).data('method') == 'post'
-      $(target).click()
-    else if $(target).hasClass('fav-link')
-      window.favLink = $(target)
-    else
-      scrollToTarget(target)
-#  else if ['#berths_popup', '#finance_popup', 'insurance_popup'].indexOf(target) > -1 and $('.login-top').length > 0
-#    $('#login_popup').modal('show')
+  if (target = window.location.hash)
+    if $(target).length
+      if $(target).hasClass 'modal'
+        $(target).modal('show')
+      else if $(target).data('method') == 'post'
+        $(target).click()
+      else if $(target).hasClass('fav-link')
+        window.favLink = $(target)
+      else
+        scrollToTarget(target)
+    else if ['#berths_popup', '#finance_popup', '#insurance_popup'].indexOf(target) > -1
+      setTimeout (-> $('[data-load-popup-id="' + target.replace('#', '') + '"]').click()), 10
+
 
   $('a[href*="#"]').click (e) ->
     $target = $($(@).attr('href').replace(/^\//, ''))

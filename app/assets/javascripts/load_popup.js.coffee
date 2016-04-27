@@ -1,6 +1,10 @@
 $ ->
   $('.load-popup').click ->
     $link = $(@)
+
+    if $link.hasClass('require-login') && $('.login-top').length
+      return false
+
     popup_id = $link.data('load-popup-id')
     popup_url = $link.data('load-popup-url')
 

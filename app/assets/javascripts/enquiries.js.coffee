@@ -15,7 +15,7 @@ $ ->
       ###
     .on 'ajax:success', (e, data, status, xhr) ->
       json = xhr.responseJSON
-      $(document.body).append(json.google_conversion)
+      $(document.body).append(json.google_conversion) if json.google_conversion
       if json.show_result_popup
         $('#enquiry_result_popup').displayPopup()
 
@@ -31,13 +31,17 @@ $ ->
     $('.enquiry-without-phone').click ->
       $('.enquiry-form').submit()
 
-    $('.signup-for-pdf-form').on 'ajax:before', (e) ->
+    $('#enquiry_signup_form')
+    .on 'ajax:before', (e) ->
       $('#signup_email').val($('#enquiry_email').val())
       $('#signup_title').val($('#enquiry_title').val())
       $('#signup_first_name').val($('#enquiry_first_name').val())
       $('#signup_last_name').val($('#enquiry_last_name').val())
       $('#signup_phone').val($('#enquiry_country_code').val() + ' ' + $('#enquiry_phone').val())
       $('#signup_boat').val($form.data('boat-slug'))
+    .on 'ajax:success', (e, data, status, xhr) ->
+      json = xhr.responseJSON
+      $(document.body).append(json.google_conversion) if json.google_conversion
 
   $('.hide-enquiry').on 'ajax:success', (e, data, status, xhr) ->
     $(@).closest('.boat-thumb-container').fadeOut()

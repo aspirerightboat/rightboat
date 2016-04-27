@@ -6,15 +6,15 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    user = User.new(params.permit(:title, :first_name, :last_name, :email, :username, :password, :password_confirmation))
-    user.role = 'PRIVATE'
-    user.assign_phone_from_leads
+    @user = User.new(params.permit(:title, :first_name, :last_name, :email, :username, :password, :password_confirmation))
+    @user.role = 'PRIVATE'
+    @user.assign_phone_from_leads
 
-    if user.save
-      env['warden'].set_user(user)
-      render json: { location: user_area_path(user) }
+    if @user.save
+      env['warden'].set_user(@user)
+      render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion', locals: {form_name: 'signup_form'})}
     else
-      render json: user.errors.full_messages, root: false, status: 422
+      render json: @user.errors.full_messages, root: false, status: 422
     end
   end
 
@@ -79,4 +79,5 @@ class RegistrationsController < Devise::RegistrationsController
   def user_area_path(user)
     user.company? ? getting_started_broker_area_path : member_root_path
   end
+  helper_method :user_area_path
 end

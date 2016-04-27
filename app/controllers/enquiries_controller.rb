@@ -73,7 +73,8 @@ class EnquiriesController < ApplicationController
 
     if user.save
       sign_in(user)
-      render json: {location: member_enquiries_path}
+      render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
+                                                        locals: {form_name: 'enquiry_signup_form'})}
     else
       render json: user.errors.full_messages, root: false, status: 422
     end

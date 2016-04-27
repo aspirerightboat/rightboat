@@ -8,21 +8,7 @@ class EnquiriesController < ApplicationController
   before_action :add_saved_searches_alert_id, only: [:create]
 
   def create
-    if !request.xhr?
-      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
-      return
-    end
-
-    if params[:has_account] == 'true' && !current_user
-      user = User.find_by(email: params[:email])
-
-      if user && user.valid_password?(params[:password])
-        sign_in(user)
-        user.remember_me! if params[:remember_me]
-      else
-        render json: ['Invalid email or password'], root: false, status: 403 and return
-      end
-    end
+    resolve_user(request, params)
 
     enquiry = Enquiry.new(enquiry_params)
     enquiry.boat = Boat.find_by(slug: params[:id])
@@ -48,6 +34,11 @@ class EnquiriesController < ApplicationController
   end
 
   def create_batch
+    resolve_user(request, params)
+    # binding.pry
+
+    # enquiry = Enquiry.new(enquiry_params)
+
     job = BatchUploadJob.create
     boats_refs = params[:boats_refs] || []
 
@@ -155,4 +146,21 @@ class EnquiriesController < ApplicationController
     end
   end
 
+  def resolve_user(request, params)
+    if !request.xhr?
+      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
+      return
+    end
+
+    if params[:has_account] == 'true' && !current_user
+      user = User.find_by(email: params[:email])
+
+      if user && user.valid_password?(params[:password])
+        sign_in(user)
+        user.remember_me! if params[:remember_me]
+      else
+        render json: ['Invalid email or password'], root: false, status: 403 and return
+      end
+    end
+  end
 end

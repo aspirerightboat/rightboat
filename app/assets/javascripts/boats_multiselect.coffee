@@ -64,6 +64,7 @@ $ ->
       toggleBottomBar()
 
     $('.boat-thumb.thumbnail.multiselectable').on 'click', (e) ->
+      return if $(e.target).hasClass('view-summary') # obey view summary button in anyt case
       if $('.multiselectable.selected').length > 0 # in selected mode
         e.preventDefault()
         $(@).toggleClass('selected')
@@ -81,14 +82,18 @@ $ ->
       false
 
     $('#button-request-for-details').on 'click', (e) ->
+      $('#enquiry_popup').displayPopup()
+
+    $('#send_button').on 'click', (e) ->
       e.preventDefault()
       selectedBoats = Cookies.get 'boats_multi_selected'
+      selectedBoatsData = JSON.parse(selectedBoats || null)
+      formData = $('.enquiry-form').serializeObject()
       Cookies.remove 'boats_multi_selected'
-
       $.ajax
         type: "POST",
         url: 'boats/request-batched-details',
-        data: selectedBoats,
+        data: JSON.stringify($.extend(formData, selectedBoatsData)),
         dataType: "json",
         contentType: 'application/json'
       .done (response) ->
@@ -103,4 +108,4 @@ $ ->
         ), 1000
 
       .fail (response) ->
-        $('#multiselected-request-for-details .processing').text(response.error).show()
+        $('#multiselected-request-for-details .processing').text(response.statusText).show()

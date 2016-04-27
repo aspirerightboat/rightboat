@@ -2,15 +2,6 @@ require 'spec_helper'
 
 RSpec.describe EnquiriesController do
   include Devise::TestHelpers
-
-  let!(:broker) { create :user }
-  let!(:broker_info) { create :broker_info, user: broker }
-
-  let!(:manufacturer) { create :manufacturer }
-  let!(:model) { create :model, manufacturer: manufacturer }
-  let!(:country) { create :country }
-  let!(:boat) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
-
   context '#create' do
     let!(:user) do
       u = create :user
@@ -20,6 +11,13 @@ RSpec.describe EnquiriesController do
       u
     end
 
+    let!(:broker) { create :user}
+    let!(:broker_info) { create :broker_info, user: broker }
+
+    let!(:manufacturer) { create :manufacturer }
+    let!(:model) { create :model, manufacturer: manufacturer }
+    let!(:country) { create :country }
+    let!(:boat) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
     let!(:saved_search) { create :saved_search, user: user, first_found_boat_id: boat.id }
     let!(:saved_search_alert) { SavedSearchesAlert.create(user_id: user.id, saved_search_ids: [saved_search.id]) }
 
@@ -76,7 +74,12 @@ RSpec.describe EnquiriesController do
 
   context '#signup_and_view_pdf' do
     let!(:user) { create :user }
+    let!(:broker) { create :user }
+    let!(:broker_info) { create :broker_info, user: broker }
 
+    let!(:manufacturer) { create :manufacturer }
+    let!(:model) { create :model, manufacturer: manufacturer }
+    let!(:country) { create :country }
     let!(:boat1) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
     let!(:boat2) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
 
@@ -145,6 +148,7 @@ RSpec.describe EnquiriesController do
 
         expect(response).to be_success
         expect(response.body).to include_json(id: 1, status: 'pending', url: nil)
+        expect(Enquiry.count).to eq 3
       end
     end
 

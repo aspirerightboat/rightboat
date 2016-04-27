@@ -89,3 +89,11 @@ p {
 .select2-container {
   width: calc(80% - 22px)
 }
+
+.select2-display-none {
+  display: none !important;
+}
+
+.select2-container-multi .select2-choices .select2-search-field input.select2-active {
+  background: none !important;
+}

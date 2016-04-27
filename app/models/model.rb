@@ -86,6 +86,7 @@ class Model < ActiveRecord::Base
   end
 
   def self.model_group_from_name(model_name)
+    model_name = model_name.strip
     if model_name =~ /\A\d/
       model_name.match(/\A([^ ]+)/)[1]
     else

@@ -81,7 +81,7 @@ $ ->
     else if field == 'price'
       'GBP'
 
-  initSlider = ($slider, fromUnit=null) ->
+  window.initSlider = ($slider, fromUnit=null) ->
     field = $slider.data('input')
     unless unit = $slider.data('unit')
       unit = defaultUnit(field)

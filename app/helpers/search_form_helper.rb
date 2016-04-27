@@ -5,7 +5,7 @@ module SearchFormHelper
 
     text_field_tag name, manufacturer_ids&.join('-'), id: 'manufacturers_picker',
                    data: {initial_tags: manufacturers&.to_json},
-                   class: 'select-black select-full tags-input', placeholder: 'e.g. Beneteau'
+                   class: 'select-black select-full tags-input manufacturers-picker', placeholder: 'e.g. Beneteau'
   end
 
   def models_picker_field(name, model_ids = nil)
@@ -14,6 +14,6 @@ module SearchFormHelper
 
     text_field_tag name, model_ids&.join('-'), id: 'models_picker',
                    data: {initial_tags: models&.to_json},
-                   class: 'select-black select-full tags-input', placeholder: 'e.g. Oceanis 34'
+                   class: 'select-black select-full tags-input models-picker', placeholder: 'e.g. Oceanis 34'
   end
 end

@@ -1,5 +1,5 @@
 %p Dear Manager,
-%p #{link_to @berth_enquiry.user.to_s, admin_user_url(@berth_enquiry.user.slug)} has posted new <b>berth enquiry</b> to Rightboat.
+%p #{link_to @berth_enquiry.user.full_name, admin_user_url(@berth_enquiry.user)} has posted new <b>berth enquiry</b> to Rightboat.
 
 %h4 Berth enquiry detail
 %p
@@ -16,4 +16,4 @@
   <b>Location:</b> #{@berth_enquiry.location}
 
 %br
-%p You can manage this boat on #{link_to 'here', admin_berth_enquiry_url(@berth_enquiry.id)}.
+%p You can manage this berth enquiry on #{link_to 'here', admin_berth_enquiry_url(@berth_enquiry.id)}.

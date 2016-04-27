@@ -27,6 +27,14 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.new_berth_enquiry(BerthEnquiry.last.id)
   end
 
+  def new_finance
+    UserMailer.new_finance(Finance.last.id)
+  end
+
+  def new_insurance
+    UserMailer.new_insurance(Insurance.last.id)
+  end
+
   def new_private_user
     UserMailer.new_private_user(User.last.id)
   end

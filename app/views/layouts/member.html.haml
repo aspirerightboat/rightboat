@@ -47,11 +47,7 @@
 
     = render 'shared/footer'
 
-    - if user_signed_in?
-      = render 'berth_enquiries/form'
-      = render 'insurances/form'
-      = render 'finances/form'
-    - else
+    - if !user_signed_in?
       = render 'shared/session_popup'
 
     - if content_for? :body_scripts

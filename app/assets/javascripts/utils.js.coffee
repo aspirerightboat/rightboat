@@ -37,14 +37,15 @@ $ ->
       $('.alert', $form).remove()
       if onComplete
         onComplete($form, e, data, status, xhr)
-      else if xhr.responseJSON && (loc = xhr.responseJSON.location)
-        setTimeout (->
-          $submit.addClass('inline-loading')
-          $submit.prop('disabled', true)
-        ), 10
-        window.location = loc
-      else if message = $form.data('message')
-        $('<div class="alert alert-info">' + message + '</div>').prependTo($form).hide().show(200)
+      else if (json = xhr.responseJSON)
+        if json.location
+          setTimeout (->
+            $submit.addClass('inline-loading')
+            $submit.prop('disabled', true)
+          ), 10
+          window.location = json.location
+        else if json.alert
+          $('<div class="alert alert-info">' + json.alert + '</div>').prependTo($form).hide().show(200)
     .on 'ajax:error', (e, xhr) ->
       $('.alert', $form).remove()
       if xhr.status == '200' # goes here when attached file

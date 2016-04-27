@@ -46,7 +46,7 @@ class RegistrationsController < Devise::RegistrationsController
     if user.errors.any?
       render json: user.errors.full_messages, root: false, status: 422
     else
-      render json: {}
+      render json: {alert: 'Setting was saved successfully'}
     end
   end
 

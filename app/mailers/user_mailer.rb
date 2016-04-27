@@ -73,6 +73,16 @@ class UserMailer < ApplicationMailer
     mail(to: 'info@rightboat.com', subject: 'New berth enquiry - Rightboat')
   end
 
+  def new_finance(finance_id)
+    @finance = Finance.find(finance_id)
+    mail(to: 'info@rightboat.com', subject: 'New finance - Rightboat')
+  end
+
+  def new_insurance(insurance_id)
+    @insurance = Insurance.find(insurance_id)
+    mail(to: 'info@rightboat.com', subject: 'New insurance - Rightboat')
+  end
+
   def new_private_user(user_id)
     @user = User.find(user_id)
     mail(to: 'info@rightboat.com', subject: 'New private user - Rightboat')

@@ -1,10 +1,10 @@
 $ ->
   $('.register-broker-link').click ->
     $link = $(@)
-    if !$link.hasClass('.inline-loading')
-      $link.addClass('.inline-loading')
+    if !$link.hasClass('inline-loading')
+      $link.addClass('inline-loading')
       $.getScript($(@).data('url'))
-      .always -> $link.removeClass('.inline-loading')
+      .always -> $link.removeClass('inline-loading')
     false
 
 $.fn.initRegisterBrokerPopup = ->

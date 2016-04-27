@@ -1,9 +1,13 @@
 class InsurancesController < ApplicationController
 
+  def load_popup
+  end
+
   def create
     @insurance = current_user.insurances.new(insurance_params)
 
     if @insurance.save
+      UserMailer.new_insurance(@insurance.id).deliver_later
       render json: {}, status: 200
     else
       render json: @insurance.errors.full_messages, root: false, status: 422

@@ -1,7 +1,7 @@
 $(function() {
+  $('#saved_search_edit_popup').remove();
+  $(document.body).append('<%= j render('form_popup') %>');
   var $popup = $('#saved_search_edit_popup');
-  $popup.remove();
-  $('body').append('<%= j render('form_popup') %>');
 
   $popup.displayPopup();
   $('.manufacturers-picker, .models-picker', $popup).makemodelPickers();

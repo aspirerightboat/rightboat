@@ -59,8 +59,8 @@ Rails.application.routes.draw do
   get 'news/newsletter-2015-12', to: 'home#welcome', as: :newsletter
 
   resource :search, controller: :search, only: [], constraints: {format: :json} do
-    get :manufacturer
-    get :model
+    get :manufacturers
+    get :models
   end
 
   # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }

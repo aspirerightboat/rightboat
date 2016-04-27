@@ -36,12 +36,13 @@ $ ->
 
   $('.select-currency').currencySelect()
 
-  
+
   $.fn.makemodelPickers = ->
     @.each ->
-      select_id = @id
-      url = '/search/' + select_id.replace('s_picker', '')
-      $(@).select2
+      $sel = $(@)
+      collection = $sel.data('collection')
+      url = '/search/' + collection
+      $sel.select2
         tags: true
         minimumInputLength: 0
         separator: '-'
@@ -57,7 +58,7 @@ $ ->
           delay: 150
           data: (term, page) ->
             h = {q: term}
-            h.manufacturer_ids = $('#manufacturers_picker').val() if select_id == 'models_picker'
+            h.manufacturer_ids = $sel.closest('form').find('input.manufacturers-picker').val() if collection == 'models'
             h
           results: (data, page) ->
             {results: $.map(data.search, (item) -> {id: item[0], text: item[1]})}

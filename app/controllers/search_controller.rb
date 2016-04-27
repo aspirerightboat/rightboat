@@ -2,11 +2,11 @@ class SearchController < ApplicationController
   before_filter :save_session_settings, only: :results
   after_filter :log_search_terms, only: :results
 
-  def manufacturer
+  def manufacturers
     render json: Manufacturer.solr_suggest_by_term(params[:q])
   end
 
-  def model
+  def models
     manufacturer_ids = params[:manufacturer_ids].to_s.split(',')
     render json: Model.solr_suggest_by_term(params[:q], manufacturer_ids)
   end

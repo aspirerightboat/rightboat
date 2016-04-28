@@ -82,13 +82,12 @@ $ ->
       false
 
     $('#button-request-for-details').on 'click', (e) ->
-      $('#enquiry_popup').displayPopup()
+      $('#enquiry_first_popup').displayPopup()
 
-    $('#send_button').on 'click', (e) ->
-      e.preventDefault()
+    $('#message_send_button').on 'click', (e) ->
       selectedBoats = Cookies.get 'boats_multi_selected'
       selectedBoatsData = JSON.parse(selectedBoats || null)
-      formData = $('.enquiry-form').serializeObject()
+      formData = $('.enquiries-form').serializeObject()
       Cookies.remove 'boats_multi_selected'
       $.ajax
         type: "POST",
@@ -100,10 +99,22 @@ $ ->
         $('#multiselected-request-for-details .processing').text(response.status).addClass('inline-loading').show()
         jobStatus = response.status
         jobID = response.id
-
-#        $(document.body).append(response.google_conversion)
+        $(document.body).append(response.google_conversion)
         if response.show_result_popup
-         $('#enquiry_result_popup').displayPopup()
+          $('#enquiry_second_popup').displayPopup()
+        else
+          $('#enquiry_first_popup').modal('hide')
+
+        $('.signup-for-pdfs-form')
+        .on 'ajax:before', (e) ->
+          $('#signup_email').val response.email
+          $('#signup_title').val response.title
+          $('#signup_first_name').val response.first_name
+          $('#signup_last_name').val response.last_name
+          $('#signup_phone').val response.full_phone_number
+          $('#signup_has_account').val response.has_account
+        .on 'ajax:success', (e) ->
+          $('#enquiry_second_popup').modal('hide')
 
         intervalId = setInterval ( ->
           getStatus()

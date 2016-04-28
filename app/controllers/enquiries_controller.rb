@@ -56,12 +56,16 @@ class EnquiriesController < ApplicationController
       enquiry.save
       saved_enquiries_errors << enquiry.errors.full_messages
     end
-
     if saved_enquiries_errors.flatten.blank?
       json = job.as_json
       json[:google_conversion] = google_conversions
       json[:show_result_popup] = true if !current_user
-
+      json[:title] = enquiry_params[:title]
+      json[:first_name] = enquiry_params[:first_name]
+      json[:last_name] = enquiry_params[:surname]
+      json[:email] = enquiry_params[:email]
+      json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
+      json[:has_account] = User.find_by(email: params[:email]).present?
       render json: json
     else
       render json: saved_enquiries_errors.uniq, status: 422, root: false
@@ -87,14 +91,20 @@ class EnquiriesController < ApplicationController
   end
 
   def signup_and_view_pdf
+    resolve_user(request, params)
+    if current_user
+      current_user.personalize_enquiries
+      render json: {location: ''}
+      return
+    end
+
     user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
     user.role = 'PRIVATE'
     user.email_confirmed = true
     user.assign_phone_from_leads
-
     if user.save
       sign_in(user)
-      render json: {location: member_enquiries_path}
+      render json: {location: ''}
     else
       render json: user.errors.full_messages, root: false, status: 422
     end

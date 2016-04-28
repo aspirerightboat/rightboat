@@ -1,11 +1,11 @@
 - content_for :head_scripts do
   %script(type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8")
 
-#enquiry_popup.modal.fade
+#enquiry_first_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
-        - unless current_user
+        -# unless current_user
           = link_to 'Sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
@@ -16,7 +16,7 @@
             The full boats specifications and broker details will be available for immediate viewing and your enquiries will be forwarded to the selling brokers.
             This request is free and you are under no obligation.
 
-        = form_tag request_batched_details_path, class: 'enquiry-form', remote: true do
+        = form_tag request_batched_details_path, class: 'enquiries-form', remote: true do
           - unless current_user
             = hidden_field_tag :has_account
             .row.ha-toggle
@@ -54,12 +54,12 @@
                 = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
-              %button.btn-flat.btn-black#send_button(type="button")
+              %button.btn-flat.btn-black#message_send_button(type="button")
                 %span.ha-toggle Send
                 - unless current_user
                   %span.ha-toggle.hidden Login & Send
 
-#enquiry_result_popup.modal.fade
+#enquiry_second_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
@@ -74,13 +74,14 @@
           To view the full specifications and PDFs in #{link_to 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}
           simply enter a password:
 
-        = form_tag signup_and_view_pdf_path, class: 'signup-for-pdf-form simple-ajax-form p', remote: true, data: {format: :json} do
+        = form_tag signup_and_view_pdf_path, class: 'signup-for-pdfs-form simple-ajax-form p', remote: true, data: {format: :json} do
           = hidden_field_tag :email, nil, id: 'signup_email'
           = hidden_field_tag :title, nil, id: 'signup_title'
           = hidden_field_tag :first_name, nil, id: 'signup_first_name'
           = hidden_field_tag :last_name, nil, id: 'signup_last_name'
           = hidden_field_tag :phone, nil, id: 'signup_phone'
           = hidden_field_tag :boat_id, nil, id: 'signup_boat'
+          = hidden_field_tag :has_account, nil, id: 'signup_has_account'
           .row
             .col-sm-6.col-xs-12
               .form-group

@@ -92,6 +92,7 @@ group :development, :test do
   gem 'letter_opener'
   gem 'quiet_assets'
   gem 'bullet'
+  gem 'pry-byebug'
   gem 'wkhtmltopdf-binary'
   gem 'better_errors'
   gem 'binding_of_caller'

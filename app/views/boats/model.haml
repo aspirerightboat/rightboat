@@ -8,6 +8,10 @@
 = render layout: 'shared/boats_for_sale' do
   .row
     .col-xs-12
+      #{link_to 'Boats for sale', boats_path, class: 'nav-link'}
+      → #{link_to @manufacturer.name, sale_manufacturer_path(@manufacturer), class: 'nav-link'}
+      → #{@model.name}
+
       %h1 #{@page_title}
   .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|

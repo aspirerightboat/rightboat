@@ -10,4 +10,7 @@
   = render 'shared/navbar'
 
 = render layout: 'shared/boats_for_sale' do
+  #{link_to 'Boats for sale', boats_path, class: 'nav-link'}
+  → #{@manufacturer.name}
+
   = render partial: 'manufacturer_view'

@@ -4,6 +4,9 @@
 = render layout: 'shared/boats_for_sale' do
   .row
     .col-xs-12
+      #{link_to 'Boats for sale', boats_path, class: 'nav-link'}
+      → #{@letter.upcase}
+
       %h1 Manufacturers by letter #{@letter.upcase}
       = render 'shared/manufacturer_letters'
 

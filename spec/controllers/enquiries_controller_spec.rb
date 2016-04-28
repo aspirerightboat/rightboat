@@ -2,6 +2,13 @@ require 'spec_helper'
 
 RSpec.describe EnquiriesController do
   include Devise::TestHelpers
+  let!(:broker) { create :user}
+  let!(:broker_info) { create :broker_info, user: broker }
+
+  let!(:manufacturer) { create :manufacturer }
+  let!(:model) { create :model, manufacturer: manufacturer }
+  let!(:country) { create :country }
+
   context '#create' do
     let!(:user) do
       u = create :user
@@ -11,12 +18,6 @@ RSpec.describe EnquiriesController do
       u
     end
 
-    let!(:broker) { create :user}
-    let!(:broker_info) { create :broker_info, user: broker }
-
-    let!(:manufacturer) { create :manufacturer }
-    let!(:model) { create :model, manufacturer: manufacturer }
-    let!(:country) { create :country }
     let!(:boat) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
     let!(:saved_search) { create :saved_search, user: user, first_found_boat_id: boat.id }
     let!(:saved_search_alert) { SavedSearchesAlert.create(user_id: user.id, saved_search_ids: [saved_search.id]) }
@@ -74,12 +75,7 @@ RSpec.describe EnquiriesController do
 
   context '#signup_and_view_pdf' do
     let!(:user) { create :user }
-    let!(:broker) { create :user }
-    let!(:broker_info) { create :broker_info, user: broker }
 
-    let!(:manufacturer) { create :manufacturer }
-    let!(:model) { create :model, manufacturer: manufacturer }
-    let!(:country) { create :country }
     let!(:boat1) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
     let!(:boat2) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
 
@@ -138,21 +134,46 @@ RSpec.describe EnquiriesController do
 
   context "#create_batch" do
     let!(:boats) { create_list(:boat, 3, country: country, model: model, manufacturer: manufacturer, user: broker) }
-    let!(:boat_params) { {'boats_refs' => boats.map(&:ref_no)} }
 
-    context "user logged in" do
+    let!(:params_1) do
+      {
+          has_account: '',
+          title: '',
+          first_name: 'aa',
+          surname: 'sd',
+          email: 'sdsd@sdsd.c',
+          password: '',
+          phone: '',
+          message: 'asdasd',
+          boats_ids: boats.map(&:id),
+          enquiry: {
+              title: '',
+              first_name: 'first name',
+              surname: 'last name',
+              email: 'sdsd@sdsd.c',
+              phone: '',
+              message: 'asdasd',
+              country_code: ''
+          }
+      }
+    end
+    context "user not logged in" do
       it 'expects to get boats ids to process and returns job status as result' do
-        expect(ZipPdfDetailsJob).to receive(:new).with(1, boats.map(&:ref_no)).and_call_original
+        allow(RBConfig).to receive(:[]).with(:lead_price_coef_bound).and_return(500_000)
+        allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
+        allow(RBConfig).to receive(:[]).with(:lead_gap_minutes).and_return(3)
 
-        xhr :post, :create_batch, boat_params
+        allow_any_instance_of(Enquiry).to receive(:update_lead_price).and_return(22)
+        xhr :post, :create_batch, params_1
 
         expect(response).to be_success
-        expect(response.body).to include_json(id: 1, status: 'pending', url: nil)
-        expect(Enquiry.count).to eq 3
+        expect(response.body).to include_json(id: 1, status: 'processing', url: '')
+        expect(BatchUploadJob.count).to eq 1
+        expect(Enquiry.batched.count).to eq 3
       end
     end
 
-    context "user not logged in" do
+    context "user logged in" do
 
     end
   end

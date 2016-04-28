@@ -53,16 +53,15 @@ class Enquiry < ActiveRecord::Base
     end
   end
 
-  def mark_if_suspicious(user, remote_ip)
+  def mark_if_suspicious(user, remote_ip, standalone: true)
     if (remote_country = Rightboat::DbIpApi.country(remote_ip))
       suspicious_countries = Country.where(suspicious: true).pluck(:iso)
       if remote_country.in?(suspicious_countries)
         mark_suspicious("Lead from blocked country #{remote_country} – review required")
       end
     end
-
     last_lead = Enquiry.where(user ? {user: user} : {remote_ip: remote_ip}).last
-    if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
+    if (last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago) && standalone
       mark_suspicious('Multiple leads received – review required')
     end
   end

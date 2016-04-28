@@ -1,16 +1,9 @@
 class ZipPdfDetailsJob
-  attr_accessor :boats_refs, :boats, :job
+  attr_accessor :boats, :job
 
-  def initialize(job_id:, boats_refs: [], user: nil)
-    @job = BatchUploadJob.find_by(id: job_id)
-    raise 'Job Not Found' unless job
-
-    @boats_refs = boats_refs
-    @user = user
-
-    @boats =  boats_refs.map do |ref_no|
-      Boat.find_by(id: Boat.id_from_ref_no(ref_no))
-    end
+  def initialize(job:, boats: [])
+    @job = job
+    @boats = boats
   end
 
   def perform

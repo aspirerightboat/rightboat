@@ -13,7 +13,7 @@
       .modal-body
         %p
           %b
-            The full boat specifications and broker details will be available for immediate viewing and your enquiry will be forwarded to the selling broker.
+            The full boats specifications and broker details will be available for immediate viewing and your enquiries will be forwarded to the selling brokers.
             This request is free and you are under no obligation.
 
         = form_tag request_batched_details_path, class: 'enquiry-form', remote: true do
@@ -68,10 +68,10 @@
         .h Message Sent
       .modal-body
         %p
-          Thank you for your enquiry
+          Thank you for your enquiries
 
         %p
-          To view the full specification and PDF in #{link_to 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}
+          To view the full specifications and PDFs in #{link_to 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}
           simply enter a password:
 
         = form_tag signup_and_view_pdf_path, class: 'signup-for-pdf-form simple-ajax-form p', remote: true, data: {format: :json} do

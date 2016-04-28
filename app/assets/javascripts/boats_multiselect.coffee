@@ -23,18 +23,18 @@ $ ->
 
     sendSelectedBoatsToCookies = () ->
       array = []
-      $.each $('.selected .tick[data-boat-ref]'), (_, el) ->
-        array.push $(el).data('boat-ref')
-      Cookies.set 'boats_multi_selected', JSON.stringify({'boats_refs' : array})
+      $.each $('.selected .tick[data-boat-id]'), (_, el) ->
+        array.push $(el).data('boat-id')
+      Cookies.set 'boats_multi_selected', JSON.stringify({'boats_ids' : array})
 
     loadMultiSelected = () ->
       selectedBoats = []
 
       if Cookies.get 'boats_multi_selected'
-        selectedBoats = JSON.parse(Cookies.get 'boats_multi_selected').boats_refs
+        selectedBoats = JSON.parse(Cookies.get 'boats_multi_selected').boats_ids
 
-      $.each selectedBoats, (_, ref_no) ->
-        $('.tick[data-boat-ref=' + ref_no + ']').parents('.multiselectable').addClass('selected')
+      $.each selectedBoats, (_, id) ->
+        $('.tick[data-boat-id=' + id + ']').parents('.multiselectable').addClass('selected')
 
       if selectedBoats.length > 0
         toggleBottomBar()
@@ -100,6 +100,10 @@ $ ->
         $('#multiselected-request-for-details .processing').text(response.status).addClass('inline-loading').show()
         jobStatus = response.status
         jobID = response.id
+
+#        $(document.body).append(response.google_conversion)
+        if response.show_result_popup
+         $('#enquiry_result_popup').displayPopup()
 
         intervalId = setInterval ( ->
           getStatus()

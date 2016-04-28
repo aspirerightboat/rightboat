@@ -35,15 +35,37 @@ class EnquiriesController < ApplicationController
 
   def create_batch
     resolve_user(request, params)
-    # binding.pry
-
-    # enquiry = Enquiry.new(enquiry_params)
 
     job = BatchUploadJob.create
-    boats_refs = params[:boats_refs] || []
+    boats_ids = params[:boats_ids] || []
+    google_conversions = ''
+    saved_enquiries_errors = []
 
-    ZipPdfDetailsJob.new(job_id: job.id, boats_refs: boats_refs).perform
-    render json: job
+    @boats = Boat.where(id: boats_ids).includes(:user)
+
+    ZipPdfDetailsJob.new(job: job, boats: @boats).perform
+
+    @boats.each do |boat|
+      enquiry = Enquiry.new(enquiry_params)
+      enquiry.boat = boat
+      enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
+      enquiry.mark_if_suspicious(current_user, request.remote_ip, standalone: false)
+      google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
+                       locals: {lead_price: enquiry.lead_price})
+      enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
+      enquiry.save
+      saved_enquiries_errors << enquiry.errors.full_messages
+    end
+
+    if saved_enquiries_errors.flatten.blank?
+      json = job.as_json
+      json[:google_conversion] = google_conversions
+      json[:show_result_popup] = true if !current_user
+
+      render json: json
+    else
+      render json: saved_enquiries_errors.uniq, status: 422, root: false
+    end
   end
 
   def show
@@ -93,7 +115,7 @@ class EnquiriesController < ApplicationController
   private
 
   def enquiry_params
-    params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
+    @enquiry_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
           .merge({
                    user_id: current_user.try(:id),
                    remote_ip: request.remote_ip,

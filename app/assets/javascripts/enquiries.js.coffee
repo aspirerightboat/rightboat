@@ -1,18 +1,9 @@
 $ ->
-# $('#enquiry_popup').on 'show.bs.modal', ->
-#   $('form', @).renderCaptcha()
-
   $('.enquiry-form').each ->
     $form = $(@).simpleAjaxForm()
     $form
     .on 'ajax:before', (e) ->
       $('#has_account').val $('.enquiry-form #password').is(':visible')
-      ###
-      $phone = $('#enquiry_phone')
-      if $phone.is(':visible') && !$phone.val() && !$('#phone_popup').is(':visible')
-        $('#phone_popup').modal('show')
-        false
-      ###
     .on 'ajax:success', (e, data, status, xhr) ->
       json = xhr.responseJSON
       $(document.body).append(json.google_conversion)
@@ -27,9 +18,6 @@ $ ->
       if (!loggedIn)
         $('#features_popup').modal('show')
         false
-
-    $('.enquiry-without-phone').click ->
-      $('.enquiry-form').submit()
 
     $('.signup-for-pdf-form').on 'ajax:before', (e) ->
       $('#signup_email').val($('#enquiry_email').val())

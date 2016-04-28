@@ -102,7 +102,7 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :error_msg, :user, :images, :images_count, :new_record, :tax_status, :update_country, :country, :location,
+        :import, :error_msg, :user, :images, :pending_images_count, :new_record, :tax_status, :update_country, :country, :location,
         :office, :office_id, :target, :importer
       ]
 
@@ -208,12 +208,14 @@ module Rightboat
         handle_office
 
         target.poa ||= price.blank? || price.to_i <= 0
-
-        handle_images
-
         self.new_record = target.new_record?
+        self.pending_images_count = images.size
 
-        target.save
+        saved = target.save
+
+        Delayed::Job.enqueue SaveBoatImagesJob.new(importer.import_trail.id, target.id, images) if saved
+
+        saved
       end
 
       def handle_specs
@@ -298,35 +300,6 @@ module Rightboat
           end
         elsif office_id
           target.office_id = office_id
-        end
-      end
-
-      def handle_images
-        self.images_count = 0
-        target_persisted = target.persisted?
-        boat_image_by_url = (target.boat_images.index_by(&:source_url) if target_persisted)
-
-        images.each do |item| # items possible keys: :url, :caption, :mod_time
-          url = item[:url]
-          url.strip!
-          img = (boat_image_by_url.delete(url) if target_persisted) || BoatImage.new(source_url: url, boat: target)
-
-          if (caption = item[:caption])
-            caption = caption[0..252] + '...' if caption.size > 255
-            img.caption = caption
-          end
-
-          mod_time = item[:mod_time]
-          if img.new_record? || !mod_time || mod_time > img.downloaded_at
-            img.update_image_from_source
-          end
-
-          success = !img.changed? || img.file_exists? && img.save
-          self.images_count += 1 if success
-        end
-
-        if target_persisted && boat_image_by_url.any?
-          boat_image_by_url.each { |_url, img| img.destroy }
         end
       end
 

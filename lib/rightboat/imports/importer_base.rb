@@ -7,7 +7,7 @@ module Rightboat
     class ImporterBase
       include Utils
 
-      attr_reader :jobs_mutex
+      attr_reader :jobs_mutex, :import_trail
 
       def initialize(import)
         @import = import
@@ -204,16 +204,15 @@ module Rightboat
         end
 
         if success
-          log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} images_count=#{source_boat.images_count || 0}"
+          log "Boat saved. id=#{source_boat.target.id} source_id=#{source_boat.source_id} pending_images_count=#{source_boat.pending_images_count}"
           increment_stats << [source_boat.new_record ? 'new_count' : 'updated_count', 1]
-          increment_stats << ['images_count', source_boat.images_count]
         else
-          if source_boat.errors.any?
-            msgs = source_boat.errors.full_messages
-          elsif source_boat.target
-            msgs = source_boat.target.errors.full_messages
-          end
-          log_warning 'Save Boat Error', "#{msgs.join(', ')} source_id=#{source_boat.source_id}"
+          msgs = if source_boat.errors.any?
+                   source_boat.errors.full_messages
+                 elsif source_boat.target
+                   source_boat.target.errors.full_messages
+                 end
+          log_warning 'Save Boat Error', "#{msgs&.join(', ')} source_id=#{source_boat.source_id}"
           increment_stats << ['not_saved_count', 1]
         end
 

@@ -29,13 +29,13 @@
                     .col-xs-4
                       = label_tag :manufacturers_picker, 'Manufacturers'
                     .col-xs-8
-                      = manufacturers_picker_field('saved_search[manufacturers]', @saved_search.manufacturers)
+                      = manufacturers_picker_field('saved_search[manufacturers]', @saved_search.manufacturers, 'ss_manufacturers_picker')
                 .col-md-6.col-xs-12
                   .row
                     .col-xs-4
                       = f.label :models_picker, 'Models'
                     .col-xs-8
-                      = models_picker_field('saved_search[models]', @saved_search.models)
+                      = models_picker_field('saved_search[models]', @saved_search.models, 'ss_models_picker')
 
               .form-group.row
                 .col-sm-6.col-xs-12

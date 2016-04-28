@@ -24,7 +24,9 @@ $(document).ready ->
     loadPreview(insertedItem)
 
   $('.save-search').on 'ajax:success', (e, data, status, xhr) ->
-    $(this).find('.result-popup').fadeIn()
+    json = xhr.responseJSON
+    $(document.body).append(json.google_conversion) if json.google_conversion
+    $(@).find('.result-popup').fadeIn()
 
   $(window).click ->
     $('.result-popup').fadeOut()

@@ -18,7 +18,7 @@ class Member::SavedSearchesController < Member::BaseController
   def create
     SavedSearch.create_and_run(current_user, permit_saved_search_params(params))
 
-    render json: {}
+    render json: {google_conversion: render_to_string(partial: 'shared/google_saved_search_conversion')}
   end
 
   def destroy

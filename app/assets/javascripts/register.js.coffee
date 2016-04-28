@@ -15,3 +15,7 @@ $ ->
   $('.mail-subscription-form').simpleAjaxForm ($forme, data, status, xhr) ->
     $('.alert', $form).remove()
     $('<div class="alert alert-info">' + xhr.responseText.notice + '</div>').prependTo($form).hide().show(200)
+
+  $('#signup_form').on 'ajax:success', (e, data, status, xhr) ->
+      json = xhr.responseJSON
+      $(document.body).append(json.google_conversion) if json.google_conversion

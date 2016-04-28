@@ -11,16 +11,6 @@ RSpec.describe ZipPdfDetailsJob do
 
   context '#perform' do
     let(:subject) { described_class.new(job_id: job.id, boats_refs: boats.map(&:ref_no)) }
-
-    it 'raises error if job is not found' do
-      expect { described_class.new(job_id: 'invalid', boats_refs: boats.map(&:ref_no)) }.to raise_error 'Job Not Found'
-    end
-
-    it 'finds boats and job by params' do
-      subject.perform
-      expect(subject.boats).to include(*boats)
-      expect(subject.job).to eq(job)
-    end
   end
 
 end

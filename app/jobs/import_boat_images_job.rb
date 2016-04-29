@@ -50,7 +50,7 @@ class ImportBoatImagesJob
 
   def retrieve_proxy_url
     Rails.cache.fetch('import_images_proxy', expires_in: 1.hour) do
-      json = JSON.parse open(URI.parse('http://gimmeproxy.com/api/getProxy'))
+      json = JSON.parse open(URI.parse('http://gimmeproxy.com/api/getProxy')).read
       json['curl']
     end
   end

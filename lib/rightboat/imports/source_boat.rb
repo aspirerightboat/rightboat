@@ -215,7 +215,8 @@ module Rightboat
 
         if saved
           images_job = ImportBoatImagesJob.new(importer.import_trail.id, target.id, images, import.use_proxy_for_images)
-          Delayed::Job.enqueue images_job
+          images_job.perform
+          # Delayed::Job.enqueue images_job, queue: 'import_images'
         end
 
         saved

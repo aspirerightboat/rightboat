@@ -1,5 +1,4 @@
 class BrokerAreaController < ApplicationController
-  before_action :require_confirmed_email, except: [:tc]
   before_action :require_broker_user, except: [:tc, :getting_started]
 
   def show

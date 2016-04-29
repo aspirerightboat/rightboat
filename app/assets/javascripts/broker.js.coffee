@@ -1,16 +1,3 @@
-$ ->
-  $('.register-broker-link').click ->
-    $link = $(@)
-    if !$link.hasClass('inline-loading')
-      $link.addClass('inline-loading')
-      $.getScript($(@).data('url'))
-      .always -> $link.removeClass('inline-loading')
-    false
-
-$.fn.initRegisterBrokerPopup = ->
-  $('.select-title', @).initTitleSelect()
-  @.simpleAjaxForm()
-
 openOfficePopup = ($item) ->
   $popup = $('#office_form_popup').displayPopup().data('office-item', $item)
   form = $('form', $popup)[0]

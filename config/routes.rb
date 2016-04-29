@@ -130,6 +130,9 @@ Rails.application.routes.draw do
     get :test_error
   end
 
+  resource :welcome_broker, controller: :welcome_broker, path: 'welcome-broker', only: [:show]
+  resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:create]
+
   resource :broker_area, controller: :broker_area, path: 'broker-area', only: [:show] do
     get :getting_started
     get :details
@@ -148,7 +151,6 @@ Rails.application.routes.draw do
   namespace :broker_area, path: 'broker-area' do
     resources :my_boats, path: 'my-boats', only: [:index, :new]
   end
-  resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:show, :create]
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index' # member_root_path

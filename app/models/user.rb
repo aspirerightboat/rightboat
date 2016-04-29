@@ -122,7 +122,7 @@ class User < ActiveRecord::Base
   end
 
   def send_email_confirmation
-    UserMailer.email_confirmation(id).deliver_now
+    UserMailer.email_confirmation(id).deliver_now if !company?
   end
 
   def payment_method_present?

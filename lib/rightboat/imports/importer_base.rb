@@ -240,7 +240,6 @@ module Rightboat
         dir = FileUtils.mkdir_p(dir_path).first
         @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.id}-#{@import.import_type}-#{Time.current.strftime('%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)
-        @logger.level = 0 # log all
       end
 
       def already_imported?

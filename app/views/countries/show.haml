@@ -6,8 +6,10 @@
   %meta(name="robots" content="index, follow")
 
 = render layout: 'shared/boats_for_sale' do
-  #{link_to 'Boats for sale', boats_path, class: 'nav-link'}
-  → #{@country.name}
+  %ul.breadcrumbs
+    %li= link_to 'Home', root_path
+    %li= link_to 'Boats for sale', boats_path
+    %li= @country.name
 
   %h1= @page_title
   .row(data-layout-mode="#{current_layout_mode}")

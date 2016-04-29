@@ -219,7 +219,7 @@ module Rightboat
         increment_stats << ['boats_count', 1]
         ImportTrail.where(id: @import_trail.id).update_all(increment_stats.map { |col, cnt| "#{col} = #{col} + #{cnt}" }.join(', '))
       rescue StandardError => e
-        log_ex e, 'Save Boat Error'
+        log_ex e, "Save Boat Error source_id=#{source_boat.source_id}"
       ensure
         @exit_worker = true if ENV['SAVE_ONE_BOAT']
       end

@@ -98,6 +98,16 @@
         %p
           = link_to 'Privacy policy', privacy_policy_home_path, target: '_blank'
 
+#enquiry_successfully_logged_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+      .modal-body
+        %p
+          You have successfully logged in
+
 - unless current_user
   #features_popup.modal.fade.secondary-popup
     .modal-dialog

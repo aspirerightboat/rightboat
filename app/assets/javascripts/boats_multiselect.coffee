@@ -114,7 +114,7 @@ $ ->
           $('#signup_phone').val response.full_phone_number
           $('#signup_has_account').val response.has_account
         .on 'ajax:success', (e) ->
-          $('#enquiry_second_popup').modal('hide')
+          $('#enquiry_successfully_logged_popup').displayPopup()
 
         intervalId = setInterval ( ->
           getStatus()

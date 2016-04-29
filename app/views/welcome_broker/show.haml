@@ -1,15 +1,14 @@
 - content_for :header_text do
   %h1
-    %strong Welcome, Broker
-  %h3 Please see our features
+    %strong Rightboat for Yacht Brokers
 
 #main_content.container
   .row
-    .col-xs-12
-      %h1 Broker Features
-      %p
+    .col-xs-12.col-sm-6
+      %h2
         Welcome to the World’s first, FREE to list, boat sales website.
-        Some of the reasons why we are the fastest growing boat for sales site.
+      %h5
+        Some of the reasons why we are the fastest growing boat for sales site:
 
       %h3 ● Register and list all your boats for free!
       %p
@@ -32,10 +31,9 @@
           “A £9 lead from Rightboat sold a £45,000 boat! And we had 100% of the broker fee! More leads please Rightboat!!!”
           %br
           – <em>Richard Stead, Southampton Waters Ltd, UK</em>
-  .row
-    .col-xs-12
-      %h1 Broker Registration
-      = form_tag register_broker_path, class: 'simple-ajax-form', remote: true, data: {type: :json} do
+    .col-xs-12.col-sm-6.em-section
+      %h2 Broker Registration
+      = form_tag register_broker_path, class: 'simple-ajax-form', id: 'register_broker_form', remote: true, data: {type: :json} do
         .row
           .col-xs-12
             %p If you are a professional yacht broker, provide your details below and one of our team will be in touch.
@@ -56,10 +54,10 @@
               = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title'
           .col-sm-4.col-xs-12
             .form-group
-              = text_field_tag :first_name, nil, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
+              = text_field_tag :first_name, nil, placeholder: 'First Name', id: 'first_name', class: 'form-control', 'data-validetta' => 'required'
           .col-sm-6.col-xs-12
             .form-group
-              = text_field_tag :last_name, nil, placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required'
+              = text_field_tag :last_name, nil, placeholder: 'Last name', id: 'last_name', class: 'form-control', 'data-validetta' => 'required'
         .row
           .col-xs-12.nice-buttons
             %button.nice-button(type="submit" style="min-width: 150px;") Send
@@ -69,3 +67,20 @@
             %p
               Do you have an account already?
               = link_to 'Login', '#', class: 'user-login'
+
+#broker_registered_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+        .h Dear <span id="broker_name">broker</span>
+      .modal-body
+        %p
+          Welcome to Rightboat. Our team will be in touch soon.
+          <br>Alternatively please contact us on: <b>+44 333 322 2628</b>
+        %p
+          We look forward to working with you to drive sales.
+
+        %p.nice-buttons
+          %button.nice-button(type="button" aria-label="Close" data-dismiss="modal" style="min-width: 100px;") Ok

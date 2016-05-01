@@ -16,6 +16,13 @@ class BoatImage < ActiveRecord::Base
       return
     end
 
+    # don't allow downloaded files to be created as StringIO. force a tempfile to be created.
+    # see: http://stackoverflow.com/questions/10496874/why-does-openuri-treat-files-under-10kb-in-size-as-stringio
+    if OpenURI::Buffer.const_defined?('StringMax') && OpenURI::Buffer::StringMax > 0
+      OpenURI::Buffer.send :remove_const, 'StringMax'
+      OpenURI::Buffer.const_set 'StringMax', 0
+    end
+
     begin
       headers = {}
       headers['If-Modified-Since'] = http_last_modified.httpdate if http_last_modified

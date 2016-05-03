@@ -1,9 +1,10 @@
 class ZipPdfDetailsJob
-  attr_accessor :boats, :job
+  attr_accessor :boats, :job, :enquiries
 
-  def initialize(job:, boats: [])
+  def initialize(job:, enquiries: ,boats:)
     @job = job
     @boats = boats
+    @enquiries = enquiries
   end
 
   def perform

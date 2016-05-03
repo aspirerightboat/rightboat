@@ -4,7 +4,7 @@ class BatchUploadJobsController < ApplicationController
     if @job.present?
       render json: @job
     else
-      render json: { error: error.message }, status: :not_found
+      render json: { error: @job.errors.full_messages.join('. ') }, status: :not_found
     end
   end
 end

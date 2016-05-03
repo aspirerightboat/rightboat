@@ -3,6 +3,7 @@ $ ->
     file_url = ''
     jobID = ''
     jobStatus = ''
+    intervalId = null
 
     toggleBottomBar = () ->
       if $('.boat-thumb.thumbnail.selected').length > 0
@@ -79,6 +80,7 @@ $ ->
       $('.multiselectable').removeClass('selected')
       toggleBottomBar()
       Cookies.remove 'boats_multi_selected'
+      clearInterval(intervalId)
       false
 
     $('#button-request-for-details').on 'click', (e) ->

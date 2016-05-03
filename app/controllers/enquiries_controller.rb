@@ -36,36 +36,47 @@ class EnquiriesController < ApplicationController
   def create_batch
     resolve_user(request, params)
 
-    job = BatchUploadJob.create
     boats_ids = params[:boats_ids] || []
-    google_conversions = ''
+    @google_conversions = ''
     saved_enquiries_errors = []
 
     @boats = Boat.where(id: boats_ids).includes(:user)
-
-    ZipPdfDetailsJob.new(job: job, boats: @boats).perform
-
+    @enquiries = []
     @boats.each do |boat|
       enquiry = Enquiry.new(enquiry_params)
       enquiry.boat = boat
       enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
       enquiry.mark_if_suspicious(current_user, request.remote_ip, standalone: false)
-      google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
+      @google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
                        locals: {lead_price: enquiry.lead_price})
       enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
-      enquiry.save
+
+      if enquiry.save
+        @enquiries << enquiry
+      end
+
       saved_enquiries_errors << enquiry.errors.full_messages
     end
+
     if saved_enquiries_errors.flatten.blank?
-      json = job.as_json
-      json[:google_conversion] = google_conversions
-      json[:show_result_popup] = true if !current_user
-      json[:title] = enquiry_params[:title]
-      json[:first_name] = enquiry_params[:first_name]
-      json[:last_name] = enquiry_params[:surname]
-      json[:email] = enquiry_params[:email]
-      json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
-      json[:has_account] = User.find_by(email: params[:email]).present?
+      if current_user
+        job = BatchUploadJob.create
+        json = job.as_json
+        json[:google_conversion] = google_conversions
+
+        ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
+      else
+        json = {}
+        json[:google_conversion] = @google_conversions
+        json[:show_result_popup] = true if !current_user
+        json[:title] = enquiry_params[:title]
+        json[:first_name] = enquiry_params[:first_name]
+        json[:last_name] = enquiry_params[:surname]
+        json[:email] = enquiry_params[:email]
+        json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
+        json[:has_account] = User.find_by(email: params[:email]).present?
+      end
+
       render json: json
     else
       render json: saved_enquiries_errors.uniq, status: 422, root: false
@@ -94,7 +105,12 @@ class EnquiriesController < ApplicationController
     resolve_user(request, params)
     if current_user
       current_user.personalize_enquiries
-      render json: {location: ''}
+      job = BatchUploadJob.create
+      json = job.as_json
+      json[:google_conversion] = @google_conversions
+      ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
+
+      render json: json
       return
     end
 
@@ -102,10 +118,17 @@ class EnquiriesController < ApplicationController
     user.role = 'PRIVATE'
     user.email_confirmed = true
     user.assign_phone_from_leads
+
     if user.save
       sign_in(user)
+      job = BatchUploadJob.create
+      json = job.as_json
+      json[:google_conversion] = google_conversions
       render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
                                                         locals: {form_name: 'enquiry_signup_form'})}
+      ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
+
+      render json: json
     else
       render json: user.errors.full_messages, root: false, status: 422
     end
@@ -191,8 +214,6 @@ class EnquiriesController < ApplicationController
       if user && user.valid_password?(params[:password])
         sign_in(user)
         user.remember_me! if params[:remember_me]
-      else
-        render json: ['Invalid email or password'], root: false, status: 403 and return
       end
     end
   end

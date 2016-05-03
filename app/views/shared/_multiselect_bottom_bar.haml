@@ -1,7 +1,9 @@
 #multiselected-request-for-details
   .row
-    .col-xs-12
+    .col-xs-12.col-md-4
       = link_to 'Request details on all selected', '#', remote: true, class: 'btn-sm nice-button pull-left', id: 'button-request-for-details'
-      = link_to 'Clear Selection', '#', class: 'btn-sm nice-button pull-left', id: 'button-request-for-details-clear'
       #number-selected.pull-left
-      .processing.pull-left
+    .col-xs-12.col-md-4
+      .processing
+    .col-xs-12.col-md-4
+      = link_to 'Clear Selection', '#', class: 'btn-sm nice-button pull-right', id: 'button-request-for-details-clear'

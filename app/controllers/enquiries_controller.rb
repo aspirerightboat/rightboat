@@ -8,7 +8,21 @@ class EnquiriesController < ApplicationController
   before_action :add_saved_searches_alert_id, only: [:create]
 
   def create
-    resolve_user(request, params)
+    if !request.xhr?
+      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
+      return
+    end
+
+    if params[:has_account] == 'true' && !current_user
+      user = User.find_by(email: params[:email])
+
+      if user && user.valid_password?(params[:password])
+        sign_in(user)
+        user.remember_me! if params[:remember_me]
+      else
+        render json: ['Invalid email or password'], root: false, status: 403 and return
+      end
+    end
 
     enquiry = Enquiry.new(enquiry_params)
     enquiry.boat = Boat.find_by(slug: params[:id])
@@ -102,18 +116,6 @@ class EnquiriesController < ApplicationController
   end
 
   def signup_and_view_pdf
-    resolve_user(request, params)
-    if current_user
-      current_user.personalize_enquiries
-      job = BatchUploadJob.create
-      json = job.as_json
-      json[:google_conversion] = @google_conversions
-      ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
-
-      render json: json
-      return
-    end
-
     user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
     user.role = 'PRIVATE'
     user.email_confirmed = true
@@ -121,14 +123,8 @@ class EnquiriesController < ApplicationController
 
     if user.save
       sign_in(user)
-      job = BatchUploadJob.create
-      json = job.as_json
-      json[:google_conversion] = google_conversions
       render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
                                                         locals: {form_name: 'enquiry_signup_form'})}
-      ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
-
-      render json: json
     else
       render json: user.errors.full_messages, root: false, status: 422
     end
@@ -214,6 +210,8 @@ class EnquiriesController < ApplicationController
       if user && user.valid_password?(params[:password])
         sign_in(user)
         user.remember_me! if params[:remember_me]
+      else
+        render json: ['Invalid email or password'], root: false, status: 403 and return
       end
     end
   end

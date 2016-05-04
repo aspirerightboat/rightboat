@@ -13,12 +13,7 @@
     .embed-responsive.embed-responsive-home-page
 
 #main_content
-  - if @featured_boats.any?
-    #featured-boats.nabvar-tools
-      %h3.toolbar-title Featured Boats
-    #featured-wrap.container
-      .row(data-layout-mode="gallery")
-        = render @featured_boats, multiselectable: true
+  = render 'featured_boats'
 
   - if @recent_boats.present?
     #recent-boats

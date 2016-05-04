@@ -12,9 +12,6 @@ class HomeController < ApplicationController
       return redirect_to(root_path)
     end
 
-    @featured_boats = Rails.cache.fetch 'rb.featured_boats', expires_in: 1.hour do
-      Boat.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.not_deleted.order('RAND()')
-    end
     @newest_boats = Boat.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
     @recent_tweets = Rails.env.development? ? [] : Rightboat::TwitterFeed.all
     load_recent_boats

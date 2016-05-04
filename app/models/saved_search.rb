@@ -15,15 +15,15 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def manufacturers_str
-    (Manufacturer.where(id: manufacturers).pluck(:name).join(', ') if manufacturers.present?)
+    Manufacturer.where(id: manufacturers).pluck(:name).join(', ') if manufacturers.present?
   end
 
   def models_str
-    (Model.where(id: models).pluck(:name).join(', ') if models.present?)
+    Model.where(id: models).pluck(:name).join(', ') if models.present?
   end
 
   def countries_str
-    (Country.where(id: countries).pluck(:name).join(', ') if countries.present?)
+    Country.where(id: countries).pluck(:name).join(', ') if countries.present?
   end
 
   def search_title

@@ -7,7 +7,7 @@ module Rightboat
     class ImporterBase
       include Utils
 
-      attr_reader :jobs_mutex, :import_trail
+      attr_reader :jobs_mutex, :import_trail, :images_proxy_url
 
       def initialize(import)
         @import = import
@@ -54,6 +54,8 @@ module Rightboat
         Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
 
         log "#{@manual ? 'Manual' : 'Auto'} start params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
+
+        @images_proxy_url = receive_proxy_url_or_throw
 
         throw :stop if already_imported?
       end
@@ -321,6 +323,15 @@ module Rightboat
             retry
           end
         end
+      end
+
+      def receive_proxy_url_or_throw
+        url = Rightboat::ProxyMesh.receive_proxy_url
+        log "Received images_proxy_url=#{url}"
+        url
+      rescue StandardError => e
+        log_error 'Cannot receive Proxy', "#{e.class.name}: #{e.message}"
+        throw :stop
       end
 
     end

@@ -1,9 +1,9 @@
 class ImportBoatImagesJob
-  def initialize(import_trail_id, boat_id, images_info, use_proxy)
+  def initialize(import_trail_id, boat_id, images_info, proxy_url)
     @import_trail_id = import_trail_id
     @boat_id = boat_id
     @images_info = images_info
-    @use_proxy = use_proxy
+    @proxy_url = proxy_url
   end
 
   def perform
@@ -17,8 +17,6 @@ class ImportBoatImagesJob
       logger ||= Logger.new(import_trail.log_path)
       logger.error(msg)
     }
-
-    @proxy_url = retrieve_proxy_url if @use_proxy
 
     @images_info.each do |item| # items possible keys: :url, :caption, :mod_time
       url = item[:url]
@@ -45,15 +43,6 @@ class ImportBoatImagesJob
 
     if boat_image_by_url.any?
       boat_image_by_url.each { |_url, img| img.destroy }
-    end
-  end
-
-  private
-
-  def retrieve_proxy_url
-    Rails.cache.fetch('import_images_proxy', expires_in: 1.hour) do
-      json = JSON.parse open(URI.parse('http://gimmeproxy.com/api/getProxy')).read
-      json['curl']
     end
   end
 end

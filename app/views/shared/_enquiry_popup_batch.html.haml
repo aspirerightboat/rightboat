@@ -17,6 +17,7 @@
             This request is free and you are under no obligation.
 
         = form_tag request_batched_details_path, class: 'enquiries-form', remote: true do
+          = hidden_field_tag :boats_ids
           - unless current_user
             = hidden_field_tag :has_account
             .row.ha-toggle
@@ -54,7 +55,7 @@
                 = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
-              %button.btn-flat.btn-black#message-send-button(type="button")
+              %button.btn-flat.btn-black#message-send-button(type="submit")
                 %span.ha-toggle Send
                 - unless current_user
                   %span.ha-toggle.hidden Login & Send

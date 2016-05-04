@@ -64,7 +64,7 @@ class EnquiriesController < ApplicationController
       end
     end
 
-    boats_ids = params[:boats_ids] || []
+    boats_ids = params[:boats_ids]&.split(',') || []
     google_conversions = ''
     saved_enquiries_errors = []
 

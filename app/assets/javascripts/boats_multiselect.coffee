@@ -45,7 +45,7 @@ $ ->
         type: "get",
         url: 'batch_upload_jobs/' + jobID,
       .done (response) ->
-        $('#multiselected-request-for-details .processing').text(response.status).show()
+        $('#multiselected-request-for-details .processing').text(response.status).addClass('inline-loading').show()
         jobStatus = response.status
         if jobStatus != 'processing'
           $('#multiselected-request-for-details .processing').text(response.status).removeClass('inline-loading')
@@ -88,43 +88,25 @@ $ ->
     $('#button-request-for-details').on 'click', (e) ->
       $('#enquiries_popup').displayPopup()
 
-    $('#message-send-button').on 'click', (e) ->
-      selectedBoats = Cookies.get 'boats_multi_selected'
-      selectedBoatsData = JSON.parse(selectedBoats || null)
-      formData = $('.enquiries-form').serializeObject()
+    $('.enquiries-form').simpleAjaxForm()
+    .on 'ajax:before', (e) ->
+      selectedBoats = JSON.parse(Cookies.get 'boats_multi_selected').boats_ids
+      $('#has_account').val $('.enquiries-form #password').is(':visible')
+      $('#boats_ids').val selectedBoats
+    .on 'ajax:success', (e, data, status, xhr) ->
       Cookies.remove 'boats_multi_selected'
-      $.ajax
-        type: "POST",
-        url: 'boats/request-batched-details',
-        data: JSON.stringify($.extend(formData, selectedBoatsData)),
-        dataType: "json",
-        contentType: 'application/json'
-      .done (response) ->
-        $('#multiselected-request-for-details .processing').text(response.status).addClass('inline-loading').show()
-        jobStatus = response.status
-        jobID = response.id
-        $(document.body).append(response.google_conversion)
-        if response.show_result_popup
-          $('#enquiry_second_popup').displayPopup()
-        else
-          $('#enquiry_first_popup').modal('hide')
+      json = xhr.responseJSON
+      jobID = json.id
+      jobStatus = json.status
+      $(document.body).append(json.google_conversions) if json.google_conversions
+      if json.show_result_popup
+        $('#enquiries_result_popup').displayPopup()
+      else
+        $('#enquiries_popup').modal('hide')
 
-        $('.signup-for-pdfs-form')
-        .on 'ajax:before', (e) ->
-          $('#signup_email').val response.email
-          $('#signup_title').val response.title
-          $('#signup_first_name').val response.first_name
-          $('#signup_last_name').val response.last_name
-          $('#signup_phone').val response.full_phone_number
-          $('#signup_has_account').val response.has_account
-        .on 'ajax:success', (e) ->
-          $('#enquiry_successfully_logged_popup').displayPopup()
+      intervalId = setInterval ( ->
+        getStatus()
+        if jobStatus != 'processing'
+          clearInterval(intervalId)
+      ), 1000
 
-        intervalId = setInterval ( ->
-          getStatus()
-          if jobStatus != 'processing'
-            clearInterval(intervalId)
-        ), 1000
-
-      .fail (response) ->
-        $('#multiselected-request-for-details .processing').text(response.statusText).show()

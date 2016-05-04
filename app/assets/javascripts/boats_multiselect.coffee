@@ -81,12 +81,14 @@ $ ->
       toggleBottomBar()
       Cookies.remove 'boats_multi_selected'
       clearInterval(intervalId)
+      jobStatus = ''
+      jobID = ''
       false
 
     $('#button-request-for-details').on 'click', (e) ->
-      $('#enquiry_first_popup').displayPopup()
+      $('#enquiries_popup').displayPopup()
 
-    $('#message_send_button').on 'click', (e) ->
+    $('#message-send-button').on 'click', (e) ->
       selectedBoats = Cookies.get 'boats_multi_selected'
       selectedBoatsData = JSON.parse(selectedBoats || null)
       formData = $('.enquiries-form').serializeObject()

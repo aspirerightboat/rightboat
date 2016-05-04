@@ -48,10 +48,24 @@ class EnquiriesController < ApplicationController
   end
 
   def create_batch
-    resolve_user(request, params)
+    if !request.xhr?
+      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
+      return
+    end
+
+    if params[:has_account] == 'true' && !current_user
+      user = User.find_by(email: params[:email])
+
+      if user && user.valid_password?(params[:password])
+        sign_in(user)
+        user.remember_me! if params[:remember_me]
+      else
+        render json: ['Invalid email or password'], root: false, status: 403 and return
+      end
+    end
 
     boats_ids = params[:boats_ids] || []
-    @google_conversions = ''
+    google_conversions = ''
     saved_enquiries_errors = []
 
     @boats = Boat.where(id: boats_ids).includes(:user)
@@ -61,7 +75,7 @@ class EnquiriesController < ApplicationController
       enquiry.boat = boat
       enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
       enquiry.mark_if_suspicious(current_user, request.remote_ip, standalone: false)
-      @google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
+      google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
                        locals: {lead_price: enquiry.lead_price})
       enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
 
@@ -73,23 +87,17 @@ class EnquiriesController < ApplicationController
     end
 
     if saved_enquiries_errors.flatten.blank?
-      if current_user
-        job = BatchUploadJob.create
-        json = job.as_json
-        json[:google_conversion] = google_conversions
-
-        ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
-      else
-        json = {}
-        json[:google_conversion] = @google_conversions
-        json[:show_result_popup] = true if !current_user
-        json[:title] = enquiry_params[:title]
-        json[:first_name] = enquiry_params[:first_name]
-        json[:last_name] = enquiry_params[:surname]
-        json[:email] = enquiry_params[:email]
-        json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
-        json[:has_account] = User.find_by(email: params[:email]).present?
-      end
+      job = BatchUploadJob.create
+      ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
+      json = job.as_json
+      json[:google_conversion] = @google_conversions
+      json[:show_result_popup] = true if !current_user
+      json[:title] = enquiry_params[:title]
+      json[:first_name] = enquiry_params[:first_name]
+      json[:last_name] = enquiry_params[:surname]
+      json[:email] = enquiry_params[:email]
+      json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
+      json[:has_account] = User.find_by(email: params[:email]).present?
 
       render json: json
     else
@@ -195,24 +203,6 @@ class EnquiriesController < ApplicationController
   def add_saved_searches_alert_id
     if cookies['tracking_token'].present?
       @saved_searches_alert_id = SavedSearchesAlert.find_by(token: cookies[:tracking_token])
-    end
-  end
-
-  def resolve_user(request, params)
-    if !request.xhr?
-      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
-      return
-    end
-
-    if params[:has_account] == 'true' && !current_user
-      user = User.find_by(email: params[:email])
-
-      if user && user.valid_password?(params[:password])
-        sign_in(user)
-        user.remember_me! if params[:remember_me]
-      else
-        render json: ['Invalid email or password'], root: false, status: 403 and return
-      end
     end
   end
 end

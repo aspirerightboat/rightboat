@@ -1,11 +1,11 @@
 - content_for :head_scripts do
   %script(type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8")
 
-#enquiry_first_popup.modal.fade
+#enquiries_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
-        -# unless current_user
+        - unless current_user
           = link_to 'Sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
         %button.close(aria-label="Close" data-dismiss="modal" type="button")
           %span(aria-hidden="true") &times;
@@ -54,12 +54,12 @@
                 = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
-              %button.btn-flat.btn-black#message_send_button(type="button")
+              %button.btn-flat.btn-black#message-send-button(type="button")
                 %span.ha-toggle Send
                 - unless current_user
                   %span.ha-toggle.hidden Login & Send
 
-#enquiry_second_popup.modal.fade
+#enquiries_result_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header

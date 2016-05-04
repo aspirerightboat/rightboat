@@ -11,7 +11,7 @@
         google_conversion_value: #{Rails.env.development? ? 0 : lead_price},
     });
 
-- if redirect_to_enquiries
+- if local_assigns[:redirect_to_enquiries]
   :javascript
     setTimeout(function() {
       $('.enquiry-form button[type="submit"]').addClass('inline-loading').prop('disabled', true)

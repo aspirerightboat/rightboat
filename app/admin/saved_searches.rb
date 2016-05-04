@@ -36,11 +36,10 @@ ActiveAdmin.register SavedSearch do
     column :length_max
     column :length_unit
     column :ref_no
-    column(:category) { |x| BoatCategory.where(id: x.category ).pluck(:name).join(', ') }
     column :boat_type
-    column(:country) { |x| Country.where(id: x.country ).pluck(:name).join(', ') }
-    column :manufacturer
-    column :model
+    column(:country) { |x| x.countries_str }
+    column(:manufacturer) { |x| x.manufacturers_str }
+    column(:model) { |x| x.models_str }
     column :tax_status
     column :new_used
     column :alert

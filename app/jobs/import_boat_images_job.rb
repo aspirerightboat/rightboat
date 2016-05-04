@@ -39,7 +39,9 @@ class ImportBoatImagesJob
       images_count += 1 if success
     end
 
-    ImportTrail.where(id: @import_trail_id).update_all(['images_count = images_count + ?', images_count])
+    if images_count > 0
+      ImportTrail.where(id: @import_trail_id).update_all(['images_count = images_count + ?', images_count])
+    end
 
     if boat_image_by_url.any?
       boat_image_by_url.each { |_url, img| img.destroy }

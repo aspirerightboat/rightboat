@@ -2,6 +2,8 @@ class HomeController < ApplicationController
   # TODO: after_filter :register_statistics, only: :index
 
   before_action :require_confirmed_email, only: [:index]
+  before_action :load_visited, only: [:index]
+  after_action :set_visited, only: [:index]
 
   def index
     if user_signed_in? && params[:popup_login]
@@ -60,6 +62,23 @@ class HomeController < ApplicationController
       boat_ids = cookies[:recently_viewed_boat_ids].split(',')
       @recent_boats = Boat.active.where(id: boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
     end
+  end
+
+  def load_visited
+    if !cookies[:visited]
+      visited_attrs = {action: :visited, ip: request.remote_ip}
+      @site_visited = Activity.where(visited_attrs).exists?
+
+      if @site_visited
+        cookies[:visited] = 1
+      else
+        Activity.create(visited_attrs)
+      end
+    end
+  end
+
+  def set_visited
+    cookies[:visited] = 1 if @site_visited
   end
 
 end

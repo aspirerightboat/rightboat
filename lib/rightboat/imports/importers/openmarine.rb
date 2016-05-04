@@ -105,7 +105,10 @@ module Rightboat
           broker_nodes = doc.root.element_children
           broker_node = @broker_id == 'first' ? broker_nodes[0] : broker_nodes.find { |node| @broker_id == node['code'] }
 
-          raise "No broker with ID=#{@broker_id} found" if !broker_node
+          if !broker_node
+            log_error 'No broker found', @broker_id == 'first' ? 'No brokers at all' : "broker_id=#{@broker_id}"
+            return
+          end
 
           log 'Scraping broker offices'
           inner_nodes = broker_node.element_children.index_by(&:name)

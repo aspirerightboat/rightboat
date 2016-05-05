@@ -49,12 +49,20 @@ class BoatImage < ActiveRecord::Base
       end
     rescue OpenURI::HTTPError => e
       case e.message[0,3]
-        when '404'
-          remove_file!
-          destroy(:force) if persisted?
-        when '304'
+      when '404'
+        remove_file!
+        destroy(:force) if persisted?
+      when '304'
+      when '408' # request timeout
+        if retries > 3
+          log_error_proc&.call("Image download max retries reached. url=#{url}")
         else
-          log_error_proc&.call("#{e.class.name}: #{e.message}. url=#{url}")
+          retries += 1
+          sleep 3.seconds
+          retry
+        end
+      else
+        log_error_proc&.call("#{e.class.name}: #{e.message}. url=#{url}")
       end
     end
   end

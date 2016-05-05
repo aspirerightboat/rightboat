@@ -30,6 +30,10 @@ class BoatImage < ActiveRecord::Base
       headers[:proxy_http_basic_authentication] = proxy_with_auth if proxy_with_auth
 
       open(uri, headers) do |f|
+        unless f.is_a?(Tempfile)
+          log_error_proc&.call("Invalid image file. url=#{url}")
+          return
+        end
         self.file = ActionDispatch::Http::UploadedFile.new(
             tempfile: f,
             filename: File.basename(uri.path)

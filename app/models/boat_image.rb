@@ -5,7 +5,7 @@ class BoatImage < ActiveRecord::Base
 
   mount_uploader :file, BoatImageUploader
 
-  def update_image_from_source(proxy_url: nil, log_error_proc: nil)
+  def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil)
     return if ENV['SKIP_DOWNLOAD_IMAGES']
 
     retries = 0
@@ -27,7 +27,7 @@ class BoatImage < ActiveRecord::Base
       headers = {}
       headers['If-Modified-Since'] = http_last_modified.httpdate if http_last_modified
       headers['If-None-Match'] = http_etag if http_etag
-      headers[:proxy] = proxy_url if proxy_url
+      headers[:proxy_http_basic_authentication] = proxy_with_auth if proxy_with_auth
 
       open(uri, headers) do |f|
         self.file = ActionDispatch::Http::UploadedFile.new(

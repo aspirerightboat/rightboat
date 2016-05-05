@@ -18,6 +18,12 @@ class ImportBoatImagesJob
       logger.error(msg)
     }
 
+    if @proxy_url
+      proxy_user = Rails.application.secrets.proxymesh_user
+      proxy_pass = Rails.application.secrets.proxymesh_pass
+      @proxy_with_auth = [@proxy_url, proxy_user, proxy_pass]
+    end
+
     @images_info.each do |item| # items possible keys: :url, :caption, :mod_time
       url = item[:url]
       url.strip!
@@ -30,7 +36,7 @@ class ImportBoatImagesJob
 
       mod_time = item[:mod_time]
       if img.new_record? || !mod_time || mod_time > img.downloaded_at
-        img.update_image_from_source(proxy_url: @proxy_url, log_error_proc: log_error_proc)
+        img.update_image_from_source(proxy_with_auth: @proxy_with_auth, log_error_proc: log_error_proc)
       end
 
       success = !img.changed? || img.file_exists? && img.save

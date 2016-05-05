@@ -8,7 +8,7 @@ class Rightboat::ProxyMesh
       pass = Rails.application.secrets.proxymesh_pass
       res = open('https://proxymesh.com/api/proxies/', http_basic_authentication: [user, pass]).read
       json = JSON.parse(res)
-      json['proxies'].sample
+      'http://' + json['proxies'].sample
     end
   end
 

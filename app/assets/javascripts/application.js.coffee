@@ -37,8 +37,8 @@
 #= require photoswipe.min
 #= require photoswipe-ui-default.min
 #= require validetta
-#= require jquery.remotipart
+#  require jquery.remotipart
 #= require cocoon
-#= require dropzone
+#  require dropzone
 #= require_tree ./common
 #= require_tree ./application

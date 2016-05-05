@@ -1,15 +1,16 @@
 !!!
 %html
   %head
-    %title Rightboat
-
     %meta(charset="UTF-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1")
+
+    %title Rightboat
+
     = csrf_meta_tags
 
-    %link(rel="shortcut icon" href="/favicon.png" type="image/png")
-
+    = favicon_link_tag '/favicon.png', type: 'image/png'
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = javascript_include_tag 'https://maps.google.com/maps/api/js?sensor=false'
     = render 'shared/hotjar_tracking'

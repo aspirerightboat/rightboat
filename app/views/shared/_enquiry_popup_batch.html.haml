@@ -81,7 +81,6 @@
           = hidden_field_tag :first_name, nil, id: 'signup_first_name'
           = hidden_field_tag :last_name, nil, id: 'signup_last_name'
           = hidden_field_tag :phone, nil, id: 'signup_phone'
-          = hidden_field_tag :boat_id, nil, id: 'signup_boat'
           = hidden_field_tag :has_account, nil, id: 'signup_has_account'
           .row
             .col-sm-6.col-xs-12
@@ -107,7 +106,7 @@
           %span(aria-hidden="true") &times;
       .modal-body
         %p
-          You have successfully logged in
+          Thank you for joining us
 
 - unless current_user
   #features_popup.modal.fade.secondary-popup

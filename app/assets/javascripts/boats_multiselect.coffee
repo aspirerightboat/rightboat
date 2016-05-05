@@ -100,6 +100,11 @@ $ ->
       jobStatus = json.status
       $(document.body).append(json.google_conversions) if json.google_conversions
       if json.show_result_popup
+        $('#enquiries_result_popup #signup_email').val json.email
+        $('#enquiries_result_popup #signup_title').val json.title
+        $('#enquiries_result_popup #signup_first_name').val json.first_name
+        $('#enquiries_result_popup #signup_last_name').val json.last_name
+        $('#enquiries_result_popup #signup_phone').val json.full_phone_number
         $('#enquiries_result_popup').displayPopup()
       else
         $('#enquiries_popup').modal('hide')
@@ -110,3 +115,6 @@ $ ->
           clearInterval(intervalId)
       ), 1000
 
+    $('.signup-for-pdfs-form').simpleAjaxForm()
+    .on 'ajax:success', (e, data, status, xhr) ->
+      $('#enquiry_successfully_logged_popup').displayPopup()

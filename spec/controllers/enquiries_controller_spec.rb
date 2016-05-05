@@ -79,7 +79,7 @@ RSpec.describe EnquiriesController do
     let!(:boat1) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
     let!(:boat2) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
 
-    xit 'fills user phone at registration if we know it from previous enquiries' do
+    it 'fills user phone at registration if we know it from previous enquiries' do
       allow(RBConfig).to receive(:[]).with(:lead_price_coef_bound).and_return(500_000)
       allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
       allow(RBConfig).to receive(:[]).with(:lead_gap_minutes).and_return(0)

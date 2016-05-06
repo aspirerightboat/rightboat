@@ -28,6 +28,6 @@ SitemapGenerator::Sitemap.create do
   add '/cookies_policy'
   add '/sell_my_boats'
   Boat.not_deleted.order('id DESC').includes(:manufacturer, :model).find_each do |boat|
-    add makemodel_boat_path(boat), lastmod: boat.updated_at
+    add sale_boat_path(boat.manufacturer, boat.model, boat), lastmod: boat.updated_at
   end
 end

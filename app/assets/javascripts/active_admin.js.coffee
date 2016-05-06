@@ -3,9 +3,8 @@
 #= require jquery_ujs
 #= require jquery-ui/autocomplete
 #= require autocomplete-rails
-#= require utils
 #= require highcharts
 #= require underscore
 #= require select2
-#= require select_array
+#= require_tree ./common
 #= require_tree ./admin

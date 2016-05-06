@@ -32,7 +32,21 @@ class UserMailer < ApplicationMailer
     @confirm_href = confirm_email_url(user: user_id, token: @user.confirm_email_token)
 
     to_email = STAGING_EMAIL || @user.email
-    mail(to: to_email, subject: 'Rightboat.com - email verification')
+    mail(to: to_email, subject: 'Email Verification – Rightboat')
+  end
+
+  def broker_registered(user_id)
+    @user = User.find(user_id)
+    @confirm_href = confirm_email_url(user: user_id, token: @user.confirm_email_token)
+
+    to_email = STAGING_EMAIL || @user.email
+    mail(to: to_email, subject: 'Welcome Broker – Rightboat')
+  end
+
+  def broker_registered_notify_admin(user_id)
+    @user = User.find(user_id)
+
+    mail(to: 'info@rightboat.com', subject: 'New broker registered – Rightboat')
   end
 
   def new_sell_request(boat_id, request_type)

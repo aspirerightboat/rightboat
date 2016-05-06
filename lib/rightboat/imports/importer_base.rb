@@ -7,7 +7,7 @@ module Rightboat
     class ImporterBase
       include Utils
 
-      attr_reader :jobs_mutex, :import_trail
+      attr_reader :jobs_mutex, :import_trail, :images_proxy_url
 
       def initialize(import)
         @import = import
@@ -54,6 +54,8 @@ module Rightboat
         Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
 
         log "#{@manual ? 'Manual' : 'Auto'} start params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
+
+        @images_proxy_url = receive_proxy_url_or_throw
 
         throw :stop if already_imported?
       end
@@ -219,7 +221,7 @@ module Rightboat
         increment_stats << ['boats_count', 1]
         ImportTrail.where(id: @import_trail.id).update_all(increment_stats.map { |col, cnt| "#{col} = #{col} + #{cnt}" }.join(', '))
       rescue StandardError => e
-        log_ex e, 'Save Boat Error'
+        log_ex e, "Save Boat Error source_id=#{source_boat.source_id}"
       ensure
         @exit_worker = true if ENV['SAVE_ONE_BOAT']
       end
@@ -240,7 +242,6 @@ module Rightboat
         dir = FileUtils.mkdir_p(dir_path).first
         @log_path = "#{dir}/import-log-#{@import_trail.id}-#{@import.id}-#{@import.import_type}-#{Time.current.strftime('%H-%M-%S')}.log"
         @logger = Logger.new(@log_path)
-        @logger.level = 0 # log all
       end
 
       def already_imported?
@@ -322,6 +323,15 @@ module Rightboat
             retry
           end
         end
+      end
+
+      def receive_proxy_url_or_throw
+        url = Rightboat::ProxyMesh.receive_proxy_url
+        log "Received images_proxy_url=#{url}"
+        url
+      rescue StandardError => e
+        log_error 'Cannot receive Proxy', "#{e.class.name}: #{e.message}"
+        throw :stop
       end
 
     end

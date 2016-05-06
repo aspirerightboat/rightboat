@@ -1,0 +1,15 @@
+.breadcrumbs {
+  padding: 0;
+  margin: 0 0 1em 0;
+  list-style-type: none;
+
+  li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+
+    &:not(:first-child)::before {
+      content: ' → ';
+    }
+  }
+}

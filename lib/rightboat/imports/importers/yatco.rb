@@ -64,6 +64,7 @@ module Rightboat
           doc = get("http://data.yatco.com/dataservice/#{@import.param['api_key']}/vesseldetails/#{job[:vessel_id]}")
           boat = SourceBoat.new(importer: self)
           boat.office = { address_attributes: {} }
+          boat.images = []
 
           doc.search('Vessel').first.children.each do |node|
             key = node.name.underscore.gsub('engine_engine', 'engine').gsub('hull_hull', 'hull')

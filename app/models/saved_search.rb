@@ -10,12 +10,24 @@ class SavedSearch < ActiveRecord::Base
 
   belongs_to :user, counter_cache: true
 
+  def currency_sym
+    Currency.cached_by_name(currency).try(:symbol)
+  end
+
+  def manufacturers_str
+    Manufacturer.where(id: manufacturers).pluck(:name).join(', ') if manufacturers.present?
+  end
+
+  def models_str
+    Model.where(id: models).pluck(:name).join(', ') if models.present?
+  end
+
+  def countries_str
+    Country.where(id: countries).pluck(:name).join(', ') if countries.present?
+  end
+
   def search_title
     not_defined = '..'
-    currency_sym = Currency.cached_by_name(currency).try(:symbol)
-    manufacturers_str = (Manufacturer.where(id: manufacturers).pluck(:name).join(', ') if manufacturers.present?)
-    models_str = (Model.where(id: models).pluck(:name).join(', ') if models.present?)
-    countries_str = (Country.where(id: countries).pluck(:name).join(', ') if countries.present?)
     res = ''
     res << %( Keyword = "#{q}") if q.present?
     res << %( BoatType = "#{boat_type}") if boat_type.present?

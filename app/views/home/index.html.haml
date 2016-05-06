@@ -1,5 +1,9 @@
 - @page_title = 'Boats for sale on Rightboat.com'
 
+- content_for :body_start do
+  - if !cookies[:visited]
+    = render 'shared/cookies_warning'
+
 - content_for :header do
   = render 'navbar'
   = render 'shared/advanced_search'
@@ -13,12 +17,7 @@
   = render 'shared/multiselect_bottom_bar'
   = render 'shared/enquiry_popup_batch'
 
-  - if @featured_boats.any?
-    #featured-boats.nabvar-tools
-      %h3.toolbar-title Featured Boats
-    #featured-wrap.container
-      .row(data-layout-mode="gallery")
-        = render @featured_boats, multiselectable: true
+  = render 'featured_boats'
 
   - if @recent_boats.present?
     #recent-boats

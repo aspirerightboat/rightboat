@@ -5,53 +5,68 @@ class BoatImage < ActiveRecord::Base
 
   mount_uploader :file, BoatImageUploader
 
-  def update_image_from_source
+  def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil)
     return if ENV['SKIP_DOWNLOAD_IMAGES']
 
     retries = 0
     url = URI.encode(URI.decode(source_url)).gsub('[', '%5B').gsub(']', '%5D')
     uri = (URI.parse(url) rescue nil)
-    return unless uri
+    if !uri
+      log_error_proc&.call("Invalid image url. #{url}")
+      return
+    end
+
+    # don't allow downloaded files to be created as StringIO. force a tempfile to be created.
+    # see: http://stackoverflow.com/questions/10496874/why-does-openuri-treat-files-under-10kb-in-size-as-stringio
+    if OpenURI::Buffer.const_defined?('StringMax') && OpenURI::Buffer::StringMax > 0
+      OpenURI::Buffer.send :remove_const, 'StringMax'
+      OpenURI::Buffer.const_set 'StringMax', 0
+    end
 
     begin
       headers = {}
       headers['If-Modified-Since'] = http_last_modified.httpdate if http_last_modified
       headers['If-None-Match'] = http_etag if http_etag
-      open(uri, headers) do |f|
-        temp_file = Tempfile.new('rb-import-img-')
-        temp_file.binmode
-        temp_file.write(f.read)
-        temp_file.flush
+      headers[:proxy_http_basic_authentication] = proxy_with_auth if proxy_with_auth
 
+      open(uri, headers) do |f|
+        unless f.is_a?(Tempfile)
+          log_error_proc&.call("Invalid image file. url=#{url}")
+          return
+        end
         self.file = ActionDispatch::Http::UploadedFile.new(
-            tempfile: temp_file,
+            tempfile: f,
             filename: File.basename(uri.path)
         )
-        self.content_type = FileMagic.new(FileMagic::MAGIC_MIME).file(temp_file.path).split(';').first
+        self.content_type = mime_type_by_file_content(f.path)
         self.http_last_modified = Time.parse(f.meta['last-modified']) if f.meta['last-modified']
         self.http_etag = f.meta['etag'] if f.meta['etag']
         self.downloaded_at = Time.current
-        # puts "[#{id}] - OK" if !Rails.env.production?
       end
     rescue Errno::ECONNREFUSED, Net::ReadTimeout => e
       if retries > 3
-        logger.error "#{e.class.name}: #{e.message}. Max retries reached for #{url}"
+        log_error_proc&.call("Image download max retries reached. url=#{url}")
       else
         retries += 1
-        # puts "[#{id}] Retry #{retries}" if !Rails.env.production?
         sleep 3.seconds
         retry
       end
     rescue OpenURI::HTTPError => e
       case e.message[0,3]
-        when '404'
-          # puts "[#{id}] 404 - Not found, destroy" if !Rails.env.production?
-          remove_file!
-          destroy(:force) if persisted?
-        when '304'
-          # puts "[#{id}] 304 - Not modified, continue" if !Rails.env.production?
+      when '404'
+        remove_file!
+        destroy(:force) if persisted?
+      when '304'
+      when '408' # request timeout
+        if retries > 3
+          log_error_proc&.call("Image download max retries reached. url=#{url}")
         else
-          logger.error "[#{id}] #{url} #{e.message}"
+          retries += 1
+          sleep 3.seconds
+          retry
+        end
+      else
+        log_error_proc&.call("#{e.class.name}: #{e.message}. url=#{url}")
       end
     end
   end
@@ -60,7 +75,7 @@ class BoatImage < ActiveRecord::Base
     file.file.present?
   end
 
-  # def mime_type_by_ext
-  #   MIME::Types.type_for(file.file.filename).first.content_type
-  # end
+  def mime_type_by_file_content(file_path)
+    FileMagic.new(FileMagic::MAGIC_MIME).file(file_path).split(';').first
+  end
 end

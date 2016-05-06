@@ -46,7 +46,7 @@ class RegistrationsController < Devise::RegistrationsController
     if user.errors.any?
       render json: user.errors.full_messages, root: false, status: 422
     else
-      render json: {alert: 'Setting was saved successfully'}
+      render json: {alert: 'Settings was saved successfully'}
     end
   end
 
@@ -55,10 +55,11 @@ class RegistrationsController < Devise::RegistrationsController
     if !user.email_confirmed? && user.confirm_email_token == params[:token]
       user.email_confirmed = true
       user.save!
-      flash.notice = 'Your email was confirmed'
+      flash.notice = 'Your email has been confirmed'
     end
 
-    redirect_to user_area_path(user)
+    path = user.company? ? root_path : user_area_path(user)
+    redirect_to path
   end
 
   def resend_confirmation

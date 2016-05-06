@@ -5,8 +5,9 @@ class UserMailer < ApplicationMailer
   add_template_helper MakemodelLinksHelper
   layout 'mailer'
 
-  def saved_search_updated(user_id, searches)
+  def saved_search_updated(user_id, searches, saved_searches_alert_id)
     @user = User.find(user_id)
+    @saved_searches_alert = SavedSearchesAlert.find(saved_searches_alert_id)
     saved_search_ids = []
     @searches = searches.map { |saved_search_id, boat_ids|
       saved_search = SavedSearch.find_by(id: saved_search_id)
@@ -20,8 +21,6 @@ class UserMailer < ApplicationMailer
         campaign: 'saved_searches',
         sent_at: Time.current.to_date.to_s(:db)
     }
-
-    @saved_searches_alert = SavedSearchesAlert.create(user_id: user_id, saved_search_ids: saved_search_ids)
 
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: 'New Search Listings Alert - Rightboat')

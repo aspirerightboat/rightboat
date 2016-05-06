@@ -45,10 +45,13 @@ $ ->
         type: "get",
         url: 'batch_upload_jobs/' + jobID,
       .done (response) ->
-        $('#multiselected-request-for-details .processing').text(response.status).addClass('inline-loading').show()
+        $('#multiselected-request-for-details .processing').addClass('inline-loading').show()
         jobStatus = response.status
-        if jobStatus != 'processing'
-          $('#multiselected-request-for-details .processing').text(response.status).removeClass('inline-loading')
+        if jobStatus != 'processing' && jobStatus == 'ready'
+          $('#multiselected-request-for-details .processing')
+          .removeClass('inline-loading')
+          .append("<span class='glyphicon glyphicon-download-alt'></span><a href='" + response.url + "'> Download File </a>")
+          $('#download-iframe').prop('src', response.url)
           jobStatus = ''
 
     #

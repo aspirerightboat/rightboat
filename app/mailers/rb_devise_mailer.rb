@@ -4,4 +4,7 @@ class RBDeviseMailer < Devise::Mailer
 
   include Devise::Controllers::UrlHelpers
   default template_path: 'devise/mailer'
+
+  after_action :amazon_delivery
+
 end

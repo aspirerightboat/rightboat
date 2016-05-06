@@ -4,6 +4,8 @@ class ErrorsMailer < ApplicationMailer
 
   default to: ApplicationMailer::DEVELOPER_EMAILS
 
+  after_action :gmail_delivery
+
   def error_message(exception, request, user, context = nil)
     @exception = exception
     @request = request

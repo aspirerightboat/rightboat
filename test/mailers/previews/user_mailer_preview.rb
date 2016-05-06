@@ -4,15 +4,11 @@ class UserMailerPreview < ActionMailer::Preview
     searches = SavedSearch.limit(2).pluck(:id).map.with_index do |ss_id, i|
       [ss_id, Boat.not_deleted.limit((i+1)*2).offset(i*5).pluck(:id)]
     end
-    UserMailer.saved_search_updated(User.last.id, searches)
+    UserMailer.saved_search_updated(User.last.id, searches, SavedSearchesAlert.last.id)
   end
 
   def email_confirmation
     UserMailer.email_confirmation(User.last.id)
-  end
-
-  def new_sell_request
-    UserMailer.new_sell_request(Boat.last.id, Boat::SELL_REQUEST_TYPES.sample)
   end
 
   def boat_status_changed
@@ -21,21 +17,5 @@ class UserMailerPreview < ActionMailer::Preview
 
   def boat_detail
     UserMailer.boat_detail(User.last.id, Boat.last.id)
-  end
-
-  def new_berth_enquiry
-    UserMailer.new_berth_enquiry(BerthEnquiry.last.id)
-  end
-
-  def new_finance
-    UserMailer.new_finance(Finance.last.id)
-  end
-
-  def new_insurance
-    UserMailer.new_insurance(Insurance.last.id)
-  end
-
-  def new_private_user
-    UserMailer.new_private_user(User.last.id)
   end
 end

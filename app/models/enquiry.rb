@@ -79,7 +79,7 @@ class Enquiry < ActiveRecord::Base
 
   def send_quality_check_email
     if status_changed? && status == 'quality_check'
-      LeadsMailer.lead_quality_check(id).deliver_later
+      StaffMailer.lead_quality_check(id).deliver_later
     end
   end
 
@@ -124,7 +124,7 @@ class Enquiry < ActiveRecord::Base
 
   def mail_if_suspicious
     if status_changed? && status == 'suspicious'
-      LeadsMailer.suspicious_lead(id, suspicious_title).deliver_later
+      StaffMailer.suspicious_lead(id, suspicious_title).deliver_later
     end
   end
 

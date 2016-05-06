@@ -8,7 +8,7 @@ class RegisterBrokerController < ApplicationController
     if user.save
       # env['warden'].set_user(user)
       UserMailer.broker_registered(user.id).deliver_later
-      UserMailer.broker_registered_notify_admin(user.id).deliver_later
+      StaffMailer.broker_registered_notify_admin(user.id).deliver_later
 
       render json: {}
     else

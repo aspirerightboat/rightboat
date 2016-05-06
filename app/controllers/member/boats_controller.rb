@@ -19,7 +19,7 @@ class Member::BoatsController < Member::BaseController
       flash[:notice] = 'Boat created successfully.'
       if params[:boat][:sell_request_type].present?
         params[:boat][:sell_request_type].each do |sell_request_type|
-          UserMailer.new_sell_request(@boat.id, sell_request_type).deliver_now unless params[:boat][:sell_request_type].blank?
+          StaffMailer.new_sell_request(@boat.id, sell_request_type).deliver_now unless params[:boat][:sell_request_type].blank?
         end
       end
       render json: { location: member_boats_path }

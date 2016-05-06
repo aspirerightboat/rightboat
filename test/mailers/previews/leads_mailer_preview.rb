@@ -16,10 +16,6 @@ class LeadsMailerPreview < ActionMailer::Preview
     LeadsMailer.lead_created_notify_pop_yachts(Enquiry.last.id)
   end
 
-  def lead_quality_check
-    LeadsMailer.lead_quality_check(Enquiry.last.id)
-  end
-
   def invoicing_report
     LeadsMailer.invoicing_report(Invoice.order('id DESC').limit(3).pluck(:id))
   end
@@ -29,10 +25,6 @@ class LeadsMailerPreview < ActionMailer::Preview
   end
 
   def lead_reviewed_notify_broker
-    LeadsMailer.lead_reviewed_notify_broker(Enquiry.last.id)
-  end
-
-  def suspicious_lead
-    LeadsMailer.suspicious_lead(Enquiry.last.id, 'Multiple leads received – review required')
+    LeadsMailer.lead_reviewed_notify_broker(Enquiry.where(status: 'rejected').last.id)
   end
 end

@@ -4,6 +4,8 @@ class LeadsMailer < ApplicationMailer
   add_template_helper QrcodeHelper # for pdf
   layout 'mailer'
 
+  after_action :amazon_delivery
+
   def lead_created_notify_buyer(enquiry_id)
     @enquiry = Enquiry.find(enquiry_id)
     @boat = @enquiry.boat
@@ -59,16 +61,6 @@ class LeadsMailer < ApplicationMailer
 
     to_email = STAGING_EMAIL || broker_emails(@lead.boat.user)
     mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
-  end
-
-  def suspicious_lead(lead_id, title)
-    @lead = Enquiry.find_by(id: lead_id)
-    if @lead
-      @boat = @lead.boat
-      mail(to: 'info@rightboat.com', subject: "#{title} - Rightboat")
-    else
-      message.perform_deliveries = false
-    end
   end
 
   private

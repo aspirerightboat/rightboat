@@ -179,7 +179,7 @@ class User < ActiveRecord::Base
   end
 
   def send_new_email
-    UserMailer.new_private_user(id).deliver_now
+    StaffMailer.new_private_user(id).deliver_now
   end
 
   def ensure_username

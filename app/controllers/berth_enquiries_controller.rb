@@ -7,7 +7,7 @@ class BerthEnquiriesController < ApplicationController
     @berth_enquiry = current_user.berth_enquiries.new(berth_enquiry_params)
 
     if @berth_enquiry.save
-      UserMailer.new_berth_enquiry(@berth_enquiry.id).deliver_later
+      StaffMailer.new_berth_enquiry(@berth_enquiry.id).deliver_later
       render json: {alert: 'Thank you, your request have been sent to us'}, status: 200
     else
       render json: @berth_enquiry.errors.full_messages, root: false, status: 422

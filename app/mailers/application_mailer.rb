@@ -9,6 +9,14 @@ class ApplicationMailer < ActionMailer::Base
 
   private
 
+  def gmail_delivery
+    mail.delivery_method.settings = Rails.application.secrets.gmail_smtp
+  end
+
+  def amazon_delivery
+    mail.delivery_method.settings = Rails.application.secrets.amazon_smtp
+  end
+
   def attach_boat_pdf
     file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)
     attachments[File.basename(file_path)] = File.read(file_path)

@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: '"Rightboat" <do-not-reply@rightboat.com>'
+  default from: '"Rightboat" <info@rightboat.com>'
   layout 'mailer'
   add_template_helper NumbersHelper
   add_template_helper MailerHelper

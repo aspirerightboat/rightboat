@@ -129,7 +129,8 @@ Rails.application.routes.draw do
   post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check
 
   resource :testing, controller: :testing, only: [], path: '' do
-    get :test_email
+    get :test_gmail
+    get :test_amazon
     get :test_error
   end
 

@@ -7,7 +7,7 @@ class FinancesController < ApplicationController
     @finance = current_user.finances.new(finance_params)
 
     if @finance.save
-      UserMailer.new_finance(@finance.id).deliver_later
+      StaffMailer.new_finance(@finance.id).deliver_later
       render json: {}, status: 200
     else
       render json: @finance.errors.full_messages, root: false, status: 422

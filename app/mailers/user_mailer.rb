@@ -5,8 +5,11 @@ class UserMailer < ApplicationMailer
   add_template_helper MakemodelLinksHelper
   layout 'mailer'
 
-  def saved_search_updated(user_id, searches)
+  after_action :amazon_delivery
+
+  def saved_search_updated(user_id, searches, saved_searches_alert_id)
     @user = User.find(user_id)
+    @saved_searches_alert = SavedSearchesAlert.find(saved_searches_alert_id)
     saved_search_ids = []
     @searches = searches.map { |saved_search_id, boat_ids|
       saved_search = SavedSearch.find_by(id: saved_search_id)
@@ -20,8 +23,6 @@ class UserMailer < ApplicationMailer
         campaign: 'saved_searches',
         sent_at: Time.current.to_date.to_s(:db)
     }
-
-    @saved_searches_alert = SavedSearchesAlert.create(user_id: user_id, saved_search_ids: saved_search_ids)
 
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: 'New Search Listings Alert - Rightboat')
@@ -41,20 +42,6 @@ class UserMailer < ApplicationMailer
 
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: 'Welcome Broker – Rightboat')
-  end
-
-  def broker_registered_notify_admin(user_id)
-    @user = User.find(user_id)
-
-    mail(to: 'info@rightboat.com', subject: 'New broker registered – Rightboat')
-  end
-
-  def new_sell_request(boat_id, request_type)
-    @boat = Boat.find(boat_id)
-    @user = @boat.user
-    @request_type = request_type
-
-    mail(to: 'info@rightboat.com', subject: 'New sell my boat request - Rightboat')
   end
 
   def boat_status_changed(user_id, boat_id, reason, alert_reason)
@@ -81,24 +68,4 @@ class UserMailer < ApplicationMailer
     mail(to: to_email, subject: "Boat Detail ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
-
-  def new_berth_enquiry(berth_enquiry_id)
-    @berth_enquiry = BerthEnquiry.find(berth_enquiry_id)
-    mail(to: 'info@rightboat.com', subject: 'New berth enquiry - Rightboat')
-  end
-
-  def new_finance(finance_id)
-    @finance = Finance.find(finance_id)
-    mail(to: 'info@rightboat.com', subject: 'New finance - Rightboat')
-  end
-
-  def new_insurance(insurance_id)
-    @insurance = Insurance.find(insurance_id)
-    mail(to: 'info@rightboat.com', subject: 'New insurance - Rightboat')
-  end
-
-  def new_private_user(user_id)
-    @user = User.find(user_id)
-    mail(to: 'info@rightboat.com', subject: 'New private user - Rightboat')
-  end
 end

@@ -7,7 +7,7 @@ class InsurancesController < ApplicationController
     @insurance = current_user.insurances.new(insurance_params)
 
     if @insurance.save
-      UserMailer.new_insurance(@insurance.id).deliver_later
+      StaffMailer.new_insurance(@insurance.id).deliver_later
       render json: {}, status: 200
     else
       render json: @insurance.errors.full_messages, root: false, status: 422

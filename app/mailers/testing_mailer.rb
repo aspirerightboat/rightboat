@@ -1,7 +1,15 @@
 class TestingMailer < ApplicationMailer
-  default to: %w(boats@rightboat.com)
+  default to: ApplicationMailer::DEVELOPER_EMAILS
 
-  def test_email
-    mail(subject: 'Test Email — Rightboat')
+  after_action :gmail_delivery, only: [:test_gmail]
+  after_action :amazon_delivery, only: [:test_amazon]
+
+  def test_gmail
+    mail(subject: 'Test Gmail Email — Rightboat')
   end
+
+  def test_amazon
+    mail(subject: 'Test Amazon Email - Rightboat')
+  end
+
 end

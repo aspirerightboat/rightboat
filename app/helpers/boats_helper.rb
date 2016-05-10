@@ -47,46 +47,54 @@ module BoatsHelper
   end
 
   def boat_specs(boat, full_spec = false)
-    spec_names = %w(beam_m draft_m engine_horse_power engine_count berths_count cabins_count hull_material engine)
+    spec_names = %w(beam_m draft_m draft_max draft_min engine_count berths_count cabins_count hull_material engine keel)
     spec_value_by_name = boat.boat_specifications.custom_specs_hash(spec_names)
 
     ret = []
-    #ret << ['Seller', boat.user.name] if full_spec
-    ret << ['Price', boat_price_with_converted(boat), 'price']
-    ret << ['Year', boat.year_built]
-    ret << ['Make', link_to(boat.manufacturer.name, sale_manufacturer_path(manufacturer: boat.manufacturer))]
-    ret << ['Model', link_to(boat.model.name, sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model.id))]
-    ret << ['Boat Type', boat.boat_type]
-    ret << ['LOA', boat_length(boat), 'loa']
-    ret << ['Beam', converted_size(spec_value_by_name['beam_m'])]
-    ret << ['Draft', converted_size(spec_value_by_name['draft_m'])]
-    ret << ['Engine Make', boat.engine_manufacturer.try(:name) || spec_value_by_name['engine']]
-    ret << ['HP', spec_value_by_name['engine_horse_power']]
-    ret << ['Engine Count', spec_value_by_name['engine_count']]
-    ret << ['Fuel', boat.fuel_type.try(:name)]
-    ret << ['Berths', spec_value_by_name['berths_count']]
-    ret << ['Cabins', spec_value_by_name['cabins_count']]
+    ret[0] = []
+    ret[0] << ['Make', link_to(boat.manufacturer.name, sale_manufacturer_path(manufacturer: boat.manufacturer))]
+    ret[0] << ['Model', link_to(boat.model.name, sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model.id))]
+    ret[0] << ['LOA', boat_length(boat), 'loa']
+    ret[0] << ['Beam', converted_size(spec_value_by_name['beam_m'])]
+    if spec_value_by_name['draft_max']
+      ret[0] << ['Draft Max', converted_size(spec_value_by_name['draft_max'])]
+    else
+      ret[0] << ['Draft Max', converted_size(spec_value_by_name['draft_m'])]
+    end
+    ret[0] << ['Draft Min', converted_size(spec_value_by_name['draft_min'])] if spec_value_by_name['draft_min']
+    ret[0] << ['Keel', spec_value_by_name['keel']]
+    #ret[0] << ['Hull Material', spec_value_by_name['hull_material']]
+    ret[0] << ['Boat Type', boat.boat_type]
+    ret[0] << ['RB Ref', boat.ref_no]
+
+    ret[1] = []
+    ret[1] << ['Price', boat_price_with_converted(boat), 'price']
+    ret[1] << ['Tax Status', boat.tax_status]
+    ret[1] << ['Year', boat.year_built]
+    ret[1] << ['Engine Make', boat.engine_manufacturer.try(:name) || spec_value_by_name['engine']]
+    ret[1] << ['Engine Model', boat.engine_model.try(:name)]
+    ret[1] << ['Engine Count', spec_value_by_name['engine_count']]
+    ret[1] << ['Fuel', boat.fuel_type.try(:name)]
+    ret[1] << ['Cabins', spec_value_by_name['cabins_count']]
+    ret[1] << ['Berths', spec_value_by_name['berths_count']]
+
     if boat.country
-      ret << ['Location', link_to(boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
+      ret[1] << ['Location', link_to(boat.country.name, sale_manufacturer_path(manufacturer: boat.manufacturer,
                                                                             models: boat.model.id,
                                                                             country: boat.country.slug))]
     end
-    ret << ['Tax Status', boat.tax_status]
-    ret << ['RB Ref', boat.ref_no]
-    ret << ['Hull Material', spec_value_by_name['hull_material']]
 
-    rest = if full_spec
-             boat.boat_specifications.visible_ordered_specs
-           else
-             Specification.visible_ordered_boat_specs(boat)
-           end
+    # rest = if full_spec
+    #          boat.boat_specifications.visible_ordered_specs
+    #        else
+    #          Specification.visible_ordered_boat_specs(boat)
+    #        end
 
-    rest.each do |pair|
-      ret << pair if ret.none? { |k, v| k == pair[0] }
-    end
+    # rest.each do |pair|
+    #   ret << pair if ret.none? { |k, v| k == pair[0] }
+    # end
 
-    #ret.each { |pair| pair[1] = 'N/A' if pair[1].blank? }
-    ret.select { |pair| !pair[1].blank? }
+    ret.each { |col| col.select! { |pair| !pair[1].blank? } }
   end
 
   def implicit_boats_count(count)

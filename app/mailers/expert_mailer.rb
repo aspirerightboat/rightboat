@@ -1,6 +1,8 @@
 class ExpertMailer < ApplicationMailer
   default to: ApplicationMailer::DEVELOPER_EMAILS
 
+  after_action :gmail_delivery
+
   def importing_errors(import_trail_id)
     @import_trail = ImportTrail.find(import_trail_id)
     @import = @import_trail.import

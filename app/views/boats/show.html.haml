@@ -57,13 +57,16 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
     .container
       .row.boat-description
         .boat-specs.col-md-7.col-sm-6.col-xs-12.pull-right
-          - boat_specs(@boat).each_slice(2).each do |spec_group|
+          - specs = boat_specs(@boat)
+          - (0..(specs.map{ |x| x.length }.max - 1)).each do |i|
             .row
-              - spec_group.each do |spec|
+              - (0..1).each do |j|
+                - spec = specs[j][i]
                 .col-md-6.col-sm-12
-                  %dl.dl-horizontal
-                    %dt= spec[0]
-                    %dd{'data-attr-name' => spec[2]}= spec[1]
+                  - if spec && !spec[1].blank?
+                    %dl.dl-horizontal
+                      %dt= spec[0]
+                      %dd{'data-attr-name' => spec[0]}= spec[1]
 
         .col-md-5.col-sm-6.col-xs-12.color-primary
           %h1 About this #{@boat.manufacturer_model}

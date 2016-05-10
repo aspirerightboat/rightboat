@@ -1,6 +1,10 @@
 class TestingMailerPreview < ActionMailer::Preview
 
-  def test_email
-    TestingMailer.test_email
+  def test_gmail
+    TestingMailer.test_gmail
+  end
+
+  def test_amazon
+    TestingMailer.test_amazon
   end
 end

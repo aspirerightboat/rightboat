@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: '"Rightboat" <do-not-reply@rightboat.com>'
+  default from: '"Rightboat" <info@rightboat.com>'
   layout 'mailer'
   add_template_helper NumbersHelper
   add_template_helper MailerHelper
@@ -8,6 +8,15 @@ class ApplicationMailer < ActionMailer::Base
   DEVELOPER_EMAILS = %w(don.fuller@cotoco.com llukomskyy@n-ix.com xmpolaris@hotmail.com)
 
   private
+
+  def gmail_delivery
+    mail.delivery_method.settings = Rails.application.secrets.gmail_smtp
+  end
+
+  def amazon_delivery
+    #return gmail_delivery if Rails.env.staging?
+    mail.delivery_method.settings = Rails.application.secrets.amazon_smtp
+  end
 
   def attach_boat_pdf
     file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)

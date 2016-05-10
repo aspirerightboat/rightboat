@@ -160,6 +160,8 @@ module Rightboat
             target.short_description = cleanup_short_description(short_description || description || target.description)
           when :new_boat
             target.new_boat = value.present? && value.is_a?(String) ? (value =~ /\A(?:New|N)\z/i).present? : value
+          when :poa
+            target.poa = value
           else
             target.send("#{attr_name}=", value) if value.present?
           end

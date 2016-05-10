@@ -4,7 +4,7 @@ ActiveAdmin.register SavedSearchesAlert do
   config.sort_order = 'id_desc'
   permit_params :user_id, :saved_search_ids, :opened_at
 
-  filter :user
+  filter :user, collection: -> { User.not_companies.order(:first_name, :last_name) }
   filter :saved_search_ids
   filter :opened_at
   filter :created_at

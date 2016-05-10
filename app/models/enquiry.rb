@@ -71,7 +71,7 @@ class Enquiry < ActiveRecord::Base
   end
 
   def handle_lead_created_mails
-    LeadCreatedMailsJob.new(id).perform
+    LeadCreatedMailsJob.new([id]).perform
   end
 
   private

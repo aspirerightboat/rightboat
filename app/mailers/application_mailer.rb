@@ -13,4 +13,8 @@ class ApplicationMailer < ActionMailer::Base
     file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)
     attachments[File.basename(file_path)] = File.read(file_path)
   end
+
+  def attach_boat_zip(file_path)
+    attachments[File.basename(file_path)] = File.read(file_path)
+  end
 end

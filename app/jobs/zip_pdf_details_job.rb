@@ -12,7 +12,6 @@ class ZipPdfDetailsJob
 
     enquiries.each do |enquiry|
       files << Rightboat::BoatPdfGenerator.ensure_pdf(enquiry.boat)
-      LeadsMailer.lead_created_notify_buyer(enquiry.id).deliver_now
       broker = enquiry.boat.user
         if %w(nick@popsells.com).include? broker.email
           LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
@@ -28,6 +27,8 @@ class ZipPdfDetailsJob
       uploader = ZipBoatsPdfUploader.new
       uploader.store!(File.new(zipfile_name))
       job.update(url: uploader.url, status: :ready)
+
+      LeadsMailer.leads_created_notify_buyer(enquiries, zipfile_name).deliver_now
     end
   end
 end

@@ -109,6 +109,7 @@ class EnquiriesController < ApplicationController
 
     if user.save
       sign_in(user)
+      follow_makers_models
       render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
                                                         locals: {form_name: 'enquiry_signup_form'})}
     else
@@ -120,11 +121,7 @@ class EnquiriesController < ApplicationController
   end
 
   def follow_maker_model
-    if params[:lead_id].present?
-      follow_single_lead(params[:lead_id])
-    elsif params[:enquiries_ids].present?
-      follow_multiple_leads(params[:enquiries_ids])
-    end
+    follow_makers_models
 
     head :ok
   end
@@ -199,8 +196,17 @@ class EnquiriesController < ApplicationController
     end
   end
 
+  def follow_makers_models
+    if params[:lead_id].present?
+      follow_single_lead(params[:lead_id])
+    elsif params[:enquiries_ids].present?
+      enquiries_ids = params[:enquiries_ids].split(',') unless params[:enquiries_ids].is_a? Array
+      follow_multiple_leads(enquiries_ids)
+    end
+  end
+
   def follow_single_lead(lead_id)
-    lead = Enquiry.find()
+    lead = Enquiry.find(lead_id)
     boat = lead.boat
 
     SavedSearch.create_and_run(current_user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])

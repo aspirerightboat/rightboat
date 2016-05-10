@@ -14,6 +14,16 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "Boat Enquiry ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
   end
 
+  def leads_created_notify_buyer(enquiries_ids, zip_file)
+    @enquiries = Enquiry.where(id: enquiries_ids)
+    @boats = @enquiries.map(&:boat)
+    @user_name = @enquiries.first.first_name
+    attach_boat_zip(zip_file)
+
+    to_email = STAGING_EMAIL || @enquiries.first.email
+    mail(to: to_email, subject: "Boats Enquiries for #{@boats.count} boats")
+  end
+
   def lead_created_tease_broker(enquiry_id)
     mail_params = lead_broker_params(enquiry_id)
     mail(mail_params)

@@ -113,6 +113,7 @@ $ ->
         $('#enquiries_result_popup #signup_first_name').val json.first_name
         $('#enquiries_result_popup #signup_last_name').val json.last_name
         $('#enquiries_result_popup #signup_phone').val json.full_phone_number
+        $('#enquiries_result_popup #signup_enquiries_ids').val json.enquiries_ids
         $('#enquiries_result_popup').displayPopup()
       else
         $('#enquiries_popup').modal('hide')

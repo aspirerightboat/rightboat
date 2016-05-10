@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
       inquiries@denisonyachtsales.com info@msp-yacht.de carolynemoody@ancasta.com
   )
   BOAT_YEAR_REQUESTERS = %w(inquiries@denisonyachtsales.com)
+  COMMENT_REQUESTERS = %w(inquiries@denisonyachtsales.com)
 
   serialize :broker_ids, Array
 
@@ -119,6 +120,10 @@ class User < ActiveRecord::Base
 
   def boat_year_requested?
     BOAT_YEAR_REQUESTERS.include?(email)
+  end
+
+  def comment_requested?
+    COMMENT_REQUESTERS.include?(email)
   end
 
   def send_email_confirmation

@@ -12,7 +12,7 @@ class LeadCreatedMailsJob
     LeadsMailer.lead_created_notify_buyer(@lead_id).deliver_now
 
     broker = boat.user
-    if %w(nick@popsells.com).include? broker.email
+    if %w(leads@popyachts.com).include? broker.email
       LeadsMailer.lead_created_notify_pop_yachts(@lead_id).deliver_later
     elsif broker.payment_method_present?
       LeadsMailer.lead_created_notify_broker(@lead_id).deliver_later

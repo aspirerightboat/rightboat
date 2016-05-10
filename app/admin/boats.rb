@@ -56,6 +56,18 @@ ActiveAdmin.register Boat do
     link_to image_tag(boat.primary_image.file.url(:thumb)), admin_boat_path(boat)
   end
 
+  show do |boat|
+    default_main_content
+    panel 'More specifications' do
+      table_for boat.boat_specifications.includes(:specification) do
+        column :name do |bs|
+          bs.specification.display_name
+        end
+        column :value
+      end
+    end
+  end
+
   form do |f|
     f.inputs do
       f.input :manufacturer, include_blank: false

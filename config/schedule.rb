@@ -9,13 +9,13 @@ set :output, File.join(Whenever.path, 'log', 'cron.log')
 require File.expand_path("#{File.dirname(__FILE__)}/environment")
 
 Import.active.each do |import|
-  every import.frequency_unit.to_sym, at: import.at_utc.strftime('%H:%M') do
+  every import.frequency_unit.to_sym, at: import.at_utc do
     runner "Import.find(#{import.id}).try_run_import!"
   end
 end
 
 if Rails.env.production?
-  every(1.day, at: Import.active.last.approx_end_time.strftime('%H:%M')) { runner 'SavedSearchNoticesJob.new.perform' }
+  every(1.day, at: Import.active.last.approx_end_time) { runner 'SavedSearchNoticesJob.new.perform' }
 end
 
 every(1.minute) { runner 'LeadsApproveJob.new.perform' }

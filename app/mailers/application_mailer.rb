@@ -14,6 +14,7 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def amazon_delivery
+    #return gmail_delivery if Rails.env.staging?
     mail.delivery_method.settings = Rails.application.secrets.amazon_smtp
   end
 

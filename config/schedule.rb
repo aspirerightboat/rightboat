@@ -14,7 +14,9 @@ Import.active.each do |import|
   end
 end
 
-every(1.day, at: Import.active.last.approx_end_time.strftime('%H:%M')) { runner 'SavedSearchNoticesJob.new.perform' }
+if ENV['RAILS_ENV'] == 'production'
+  every(1.day, at: Import.active.last.approx_end_time.strftime('%H:%M')) { runner 'SavedSearchNoticesJob.new.perform' }
+end
 
 every(1.minute) { runner 'LeadsApproveJob.new.perform' }
 every(1.day, at: '1:00') { rake 'import:currency' }

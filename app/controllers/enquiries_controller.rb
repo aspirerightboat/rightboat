@@ -58,7 +58,6 @@ class EnquiriesController < ApplicationController
       return
     end
 
-    google_conversions = ''
     saved_enquiries_errors = []
 
     enquiries = []
@@ -77,27 +76,12 @@ class EnquiriesController < ApplicationController
     end
 
     if saved_enquiries_errors.flatten.blank?
-      job = BatchUploadJob.create
-      ZipPdfDetailsJob.new(job: job, boats: boats, enquiries: enquiries).perform
-      json = job.as_json
-      json[:show_result_popup] = true if !current_user
-      json[:title] = enquiry_params[:title]
-      json[:first_name] = enquiry_params[:first_name]
-      json[:last_name] = enquiry_params[:surname]
-      json[:email] = enquiry_params[:email]
-      json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
-      json[:has_account] = User.find_by(email: params[:email]).present?
-      json[:enquiries_ids] = enquiries.map(&:id)
-      enquiries.each do |enquiry|
-        google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
-                                               locals: {lead_price: enquiry.lead_price})
-      end
-      json[:google_conversion] = google_conversions
-      render json: json
+      render json: batch_create_response_json(enquiries)
     else
       render json: saved_enquiries_errors.uniq, status: 422, root: false
     end
   end
+
 
   def show
     @boat = @enquiry.boat
@@ -229,6 +213,28 @@ class EnquiriesController < ApplicationController
     models = enquiries.map(&:boat).map(&:model_id).map(&:to_s)
 
     SavedSearch.create_and_run(current_user, manufacturers: manufactures, models: models)
+  end
+
+  def batch_create_response_json(enquiries)
+    google_conversions = ''
+
+    job = BatchUploadJob.create
+    ZipPdfDetailsJob.new(job: job, boats: boats, enquiries: enquiries).perform
+    json = job.as_json
+    json[:show_result_popup] = true if !current_user
+    json[:title] = enquiry_params[:title]
+    json[:first_name] = enquiry_params[:first_name]
+    json[:last_name] = enquiry_params[:surname]
+    json[:email] = enquiry_params[:email]
+    json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
+    json[:has_account] = User.find_by(email: params[:email]).present?
+    json[:enquiries_ids] = enquiries.map(&:id)
+    enquiries.each do |enquiry|
+      google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
+                                             locals: {lead_price: enquiry.lead_price})
+    end
+    json[:google_conversion] = google_conversions
+    json
   end
 
 end

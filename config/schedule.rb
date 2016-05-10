@@ -14,7 +14,7 @@ Import.active.each do |import|
   end
 end
 
-if ENV['RAILS_ENV'] == 'production'
+if Rails.env.production?
   every(1.day, at: Import.active.last.approx_end_time.strftime('%H:%M')) { runner 'SavedSearchNoticesJob.new.perform' }
 end
 

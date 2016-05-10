@@ -53,44 +53,33 @@ class EnquiriesController < ApplicationController
       return
     end
 
-    if params[:has_account] == 'true' && !current_user
-      user = User.find_by(email: params[:email])
-
-      if user && user.valid_password?(params[:password])
-        sign_in(user)
-        user.remember_me! if params[:remember_me]
-      else
-        render json: ['Invalid email or password'], root: false, status: 403 and return
-      end
+    if params[:has_account] == 'true' && !current_user && !resolve_user
+      render json: ['Invalid email or password'], root: false, status: 403
+      return
     end
 
-    boats_ids = params[:boats_ids]&.split(',') || []
     google_conversions = ''
     saved_enquiries_errors = []
 
-    @boats = Boat.where(id: boats_ids).includes(:user)
-    @enquiries = []
-    @boats.each do |boat|
+    enquiries = []
+    boats.each do |boat|
       enquiry = Enquiry.new(enquiry_params)
       enquiry.boat = boat
       enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
       enquiry.mark_if_suspicious(current_user, request.remote_ip, standalone: false)
-      google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
-                       locals: {lead_price: enquiry.lead_price})
       enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
 
       if enquiry.save
-        @enquiries << enquiry
+        enquiries << enquiry
+      else
+        saved_enquiries_errors << enquiry.errors.full_messages
       end
-
-      saved_enquiries_errors << enquiry.errors.full_messages
     end
 
     if saved_enquiries_errors.flatten.blank?
       job = BatchUploadJob.create
-      ZipPdfDetailsJob.new(job: job, boats: @boats, enquiries: @enquiries).perform
+      ZipPdfDetailsJob.new(job: job, boats: boats, enquiries: enquiries).perform
       json = job.as_json
-      json[:google_conversion] = @google_conversions
       json[:show_result_popup] = true if !current_user
       json[:title] = enquiry_params[:title]
       json[:first_name] = enquiry_params[:first_name]
@@ -98,7 +87,12 @@ class EnquiriesController < ApplicationController
       json[:email] = enquiry_params[:email]
       json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
       json[:has_account] = User.find_by(email: params[:email]).present?
-
+      json[:enquiries_ids] = enquiries.map(&:id)
+      enquiries.each do |enquiry|
+        google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
+                                               locals: {lead_price: enquiry.lead_price})
+      end
+      json[:google_conversion] = google_conversions
       render json: json
     else
       render json: saved_enquiries_errors.uniq, status: 422, root: false
@@ -142,28 +136,43 @@ class EnquiriesController < ApplicationController
   end
 
   def follow_maker_model
-    lead = Enquiry.find(params[:lead_id])
-    boat = lead.boat
-
-    SavedSearch.create_and_run(current_user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])
+    if params[:lead_id].present?
+      follow_single_lead(params[:lead_id])
+    elsif params[:enquiries_ids].present?
+      follow_multiple_leads(params[:enquiries_ids])
+    end
 
     head :ok
   end
 
   private
 
+  def resolve_user
+    user = User.find_by(email: params[:email])
+
+    if user && user.valid_password?(params[:password])
+      sign_in(user)
+      user.remember_me! if params[:remember_me]
+    end
+    user
+  end
+
+
   def enquiry_params
     @enquiry_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
-          .merge({
-                   user_id: current_user.try(:id),
-                   remote_ip: request.remote_ip,
-                   browser: request.env['HTTP_USER_AGENT'],
-                   saved_searches_alert_id: @saved_searches_alert_id&.id
-                 })
+      .merge(user_id: current_user.try(:id),
+             remote_ip: request.remote_ip,
+             browser: request.env['HTTP_USER_AGENT'],
+             saved_searches_alert_id: @saved_searches_alert_id&.id)
   end
 
   def load_enquiry
     @enquiry = Enquiry.find(params[:id])
+  end
+
+  def boats
+    boats_ids = params[:boats_ids]&.split(',') || []
+    Boat.where(id: boats_ids).includes(:user)
   end
 
   def require_broker
@@ -205,4 +214,21 @@ class EnquiriesController < ApplicationController
       @saved_searches_alert_id = SavedSearchesAlert.find_by(token: cookies[:tracking_token])
     end
   end
+
+  def follow_single_lead(lead_id)
+    lead = Enquiry.find()
+    boat = lead.boat
+
+    SavedSearch.create_and_run(current_user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])
+
+  end
+
+  def follow_multiple_leads(enquiries_ids)
+    enquiries = Enquiry.where(id: enquiries_ids).includes(:boat)
+    manufactures = enquiries.map(&:boat).map(&:manufacturer_id).map(&:to_s)
+    models = enquiries.map(&:boat).map(&:model_id).map(&:to_s)
+
+    SavedSearch.create_and_run(current_user, manufacturers: manufactures, models: models)
+  end
+
 end

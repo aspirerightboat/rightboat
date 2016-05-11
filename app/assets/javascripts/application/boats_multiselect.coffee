@@ -100,10 +100,6 @@ $ ->
     .on 'ajax:success', (e, data, status, xhr) ->
       Cookies.remove 'boats_multi_selected'
       json = xhr.responseJSON
-      $.ajax
-        method: 'POST'
-        url: '/follow-lead-maker-model'
-        data: {enquiries_ids: json.enquiries_ids }
       jobID = json.id
       jobStatus = json.status
       $(document.body).append(json.google_conversions) if json.google_conversions

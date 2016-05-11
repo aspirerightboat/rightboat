@@ -8,6 +8,7 @@ $ ->
       json = xhr.responseJSON
       $(document.body).append(json.google_conversion) if json.google_conversion
       if json.show_result_popup
+        $('#signup_enquiry_id').val json.enquiry_id
         $('#enquiry_result_popup').displayPopup()
 
     $('#enquiry_result_popup').on 'hidden.bs.modal', ->
@@ -39,8 +40,3 @@ $ ->
 
   $('.unhide-enquires').on 'ajax:success', (e, data, status, xhr) ->
     $('.boat-thumb-container').fadeIn()
-
-  $('#follow_lead_maker_model_popup').each ->
-    $popup = $(@).displayPopup()
-    $popup.on 'ajax:success', (e, data, status, xhr) ->
-      $popup.modal('hide')

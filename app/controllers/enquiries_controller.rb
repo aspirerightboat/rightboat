@@ -34,13 +34,14 @@ class EnquiriesController < ApplicationController
 
       enquiry.handle_lead_created_mails unless enquiry.suspicious?
 
-      session[:suggest_lead_alerts] = enquiry.id
-
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
                                                   locals: {lead_price: enquiry.lead_price,
                                                            redirect_to_enquiries: redirect_to_enquiries})
       json[:show_result_popup] = true if !current_user
+      json[:enquiry_id] = enquiry.id
+
+      follow_makers_models([enquiry.id]) if current_user
       render json: json
     else
       render json: enquiry.errors.full_messages, status: 422, root: false
@@ -76,12 +77,12 @@ class EnquiriesController < ApplicationController
     end
 
     if saved_enquiries_errors.flatten.blank?
+      follow_makers_models(enquiries.map(&:id)) if current_user
       render json: batch_create_response_json(enquiries)
     else
       render json: saved_enquiries_errors.uniq, status: 422, root: false
     end
   end
-
 
   def show
     @boat = @enquiry.boat
@@ -118,12 +119,6 @@ class EnquiriesController < ApplicationController
   end
 
   def define_payment_method
-  end
-
-  def follow_maker_model
-    follow_makers_models
-
-    head :ok
   end
 
   private
@@ -196,15 +191,12 @@ class EnquiriesController < ApplicationController
     end
   end
 
-  def follow_makers_models
-    if params[:lead_id].present?
-      follow_single_lead(params[:lead_id])
-    elsif params[:enquiries_ids].present?
-      enquiries_ids = if params[:enquiries_ids].is_a? Array
-        params[:enquiries_ids]
-      else
-        params[:enquiries_ids].split(',')
-      end
+  def follow_makers_models(enquiry_ids = [])
+    if params[:enquiry_id].present? || enquiry_ids.count == 1
+      enquiry_id = params[:enquiry_id] || enquiry_ids.first
+      follow_single_lead(enquiry_id)
+    elsif params[:enquiries_ids].present? || enquiry_ids.count > 1
+      enquiries_ids = params[:enquiries_ids]&.split(',') || enquiry_ids
       follow_multiple_leads(enquiries_ids)
     end
   end

@@ -200,7 +200,11 @@ class EnquiriesController < ApplicationController
     if params[:lead_id].present?
       follow_single_lead(params[:lead_id])
     elsif params[:enquiries_ids].present?
-      enquiries_ids = params[:enquiries_ids].split(',') unless params[:enquiries_ids].is_a? Array
+      enquiries_ids = if params[:enquiries_ids].is_a? Array
+        params[:enquiries_ids]
+      else
+        params[:enquiries_ids].split(',')
+      end
       follow_multiple_leads(enquiries_ids)
     end
   end

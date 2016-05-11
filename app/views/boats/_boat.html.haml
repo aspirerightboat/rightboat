@@ -1,5 +1,6 @@
 - boat_url = makemodel_boat_path(boat)
 - multiselectable = local_assigns[:multiselectable].present? ? 'multiselectable' : '1'
+- boat_message_required =  boat && boat.user.comment_requested?
 
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12
   .boat-thumb.thumbnail.boat-view{class: multiselectable,
@@ -7,7 +8,7 @@
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
 
-    .tick{ data: {boat_id: boat.id} }
+    .tick{data: {'boat-id' => boat.id, 'boat-message-required' => boat_message_required ? 'required' : ''}}
       %span.glyphicon.glyphicon-ok-circle
 
     .boat-img-thumb{class: boat.offer_status.dasherize}

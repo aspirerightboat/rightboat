@@ -36,7 +36,7 @@
                   = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email', id: 'enquiry_email'
               .col-sm-6.col-xs-12.ha-toggle.hidden
                 .form-group
-                  = password_field_tag :password, '', placeholder: 'Password', class: 'form-control' #, 'data-validetta' => 'required'
+                  = password_field_tag :password, '', placeholder: 'Password', class: 'form-control'
               .col-sm-6.col-xs-12.ha-toggle
                 .form-group
                   .rb-control-group
@@ -52,7 +52,7 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control', 'data-validetta' => 'required'
+                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
               %button.btn-flat.btn-black#message-send-button(type="submit")

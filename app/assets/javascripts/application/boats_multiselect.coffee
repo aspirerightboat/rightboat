@@ -63,6 +63,8 @@ $ ->
     $('.boat-thumb.thumbnail.multiselectable .tick').on 'click', (e) ->
       e.stopPropagation()
       e.preventDefault()
+      if $(@).data('boat-message-required')
+        $('#enquiries_popup #message').attr('data-validetta', 'required')
       $(@).parents('.boat-thumb.thumbnail.multiselectable').toggleClass('selected')
       sendSelectedBoatsToCookies()
       toggleBottomBar()
@@ -83,6 +85,7 @@ $ ->
       $('.multiselectable').removeClass('selected')
       toggleBottomBar()
       Cookies.remove 'boats_multi_selected'
+      $('#enquiries_popup #message').attr('data-validetta', '')
       clearInterval(intervalId)
       jobStatus = ''
       jobID = ''

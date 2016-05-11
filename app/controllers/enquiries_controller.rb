@@ -66,17 +66,23 @@ class EnquiriesController < ApplicationController
       enquiry = Enquiry.new(enquiry_params)
       enquiry.boat = boat
       enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
-      enquiry.mark_if_suspicious(current_user, request.remote_ip, standalone: false)
+      enquiry.mark_if_suspicious(current_user, request.remote_ip, single_lead: false)
       enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
 
-      if enquiry.save
+      if enquiry.valid?
         enquiries << enquiry
       else
-        saved_enquiries_errors << enquiry.errors.full_messages
+        saved_enquiries_errors.concat enquiry.errors.full_messages
       end
     end
 
     if saved_enquiries_errors.flatten.blank?
+      Enquiry.transaction do
+        enquiries.each(&:save!)
+      end
+    end
+
+    if saved_enquiries_errors.uniq.blank?
       follow_makers_models(enquiries.map(&:id)) if current_user
       render json: batch_create_response_json(enquiries)
     else

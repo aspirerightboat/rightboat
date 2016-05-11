@@ -90,7 +90,8 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     #   out
     # }
     column(:title)
-    column(:name)
+    column(:first_name)
+    column(:last_name) { |record| record.surname }
     column(:country_code)
     column(:phone)
     column(:email)

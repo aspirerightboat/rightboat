@@ -15,6 +15,11 @@ $ ->
           if $allOption.length and $allOption.text().match(/^all$/i)
             if $allOption.is(':selected')
               $sel.select2 'val', ''
+          # allow user to add custom model when selected custom manufacturer
+          if $sel.attr('id') == 'sell_boat_makers_select' && /^custom$/i.test($('#s2id_sell_boat_makers_select a > span').text())
+            $sel.closest('fieldset').addClass 'custom'
+          else
+            $sel.closest('fieldset').removeClass 'custom'
           if $sel.data('onchange-fill-models')
             maker_id = $sel.val()
             $modelsSelect = $($sel.data('onchange-fill-models'))

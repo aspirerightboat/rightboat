@@ -53,7 +53,7 @@ class Member::BoatsController < Member::BaseController
   end
 
   def load_boat
-    @boat = current_user.boats.find(params[:id])
+    @boat = current_user.boats.find(Boat.id_from_ref_no(params[:id]))
   end
 
   def build_specifications
@@ -66,7 +66,7 @@ class Member::BoatsController < Member::BaseController
 
   def boat_params
     params.require(:boat)
-      .permit(:manufacturer_id, :model_id, :price, :year_built, :length_m, :description, :owners_comment,
+      .permit(:manufacturer_id, :model_id, :price, :year_built, :length_m, :description, :owners_comment, :custom_model,
               :location, :tax_paid, :accept_toc, :agree_privacy_policy, :secure_payment, :currency_id,
               boat_specifications_attributes: [:id, :value, :specification_id],
               boat_images_attributes: [:id, :file, :file_cache, :_destroy]

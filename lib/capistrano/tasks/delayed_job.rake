@@ -21,7 +21,8 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :sudo, 'monit stop dj_rightboat'
+            execute :sudo, 'monit stop delayed_job_default'
+            execute :sudo, 'monit stop delayed_job_import_images'
           end
         end
       end
@@ -32,7 +33,8 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :sudo, 'monit start dj_rightboat'
+            execute :sudo, 'monit start delayed_job_default'
+            execute :sudo, 'monit start delayed_job_import_images'
           end
         end
       end
@@ -44,7 +46,8 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :sudo, 'monit restart dj_rightboat'
+            execute :sudo, 'monit restart delayed_job_default'
+            execute :sudo, 'monit restart delayed_job_import_images'
           end
         end
       end

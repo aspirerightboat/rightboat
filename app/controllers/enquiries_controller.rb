@@ -60,7 +60,6 @@ class EnquiriesController < ApplicationController
     end
 
     saved_enquiries_errors = []
-
     enquiries = []
     boats.each do |boat|
       enquiry = Enquiry.new(enquiry_params)

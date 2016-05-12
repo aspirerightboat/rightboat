@@ -1,7 +1,7 @@
 - paginate_options = local_assigns[:paginate_options] || {}
 .boats-view.row(data-layout-mode="#{current_layout_mode}")
   - boats.each do |b|
-    = render layout: 'boats/boat', locals: {boat: b} do
+    = render layout: 'boats/boat', locals: {boat: b, multiselectable: true} do
       -#
   .col-xs-12{class: ('remote-paginate' if paginate_options[:remote])}
     = paginate boats, local_assigns[:paginate_options]

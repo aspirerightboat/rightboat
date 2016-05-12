@@ -44,7 +44,7 @@ $ ->
     getStatus = () ->
       $.ajax
         type: "get",
-        url: 'batch_upload_jobs/' + jobID,
+        url: '/batch_upload_jobs/' + jobID,
       .done (response) ->
         $('#multiselected-request-for-details .processing').addClass('inline-loading').show()
         jobStatus = response.status

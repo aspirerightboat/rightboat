@@ -14,11 +14,14 @@
   = render 'shared/advanced_search'
   = render 'shared/navbar'
 
+= render 'shared/multiselect_bottom_bar'
+= render 'shared/enquiry_popup_batch'
+
 = render 'shared/search_bar'
 #main_content.container(data-prev-url="#{@prev_url}")
   - if @boats.length > 0
     #boats-list.row(data-layout-mode="#{current_layout_mode}")
-      = render @boats
+      = render @boats, multiselectable: true
     - if @boats.total_pages > 1
       .row
         = link_to '#search-results', class: 'scroll-top pull-right' do

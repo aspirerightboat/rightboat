@@ -14,9 +14,6 @@
   = render 'shared/advanced_search'
   = render 'shared/navbar'
 
-= render 'shared/multiselect_bottom_bar'
-= render 'shared/enquiry_popup_batch'
-
 = render 'shared/search_bar'
 #main_content.container(data-prev-url="#{@prev_url}")
   - if @boats.length > 0
@@ -32,3 +29,5 @@
   - else
     %p.lead.text-center No boats were found matching your search criteria. Please try again.
 
+= render 'shared/multiselect_bottom_bar'
+= render 'shared/enquiry_popup_batch'

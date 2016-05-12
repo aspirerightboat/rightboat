@@ -200,7 +200,7 @@ module Rightboat
                         case @tree[6]
                         when 'DraftMeasure' then @draft_measure = to_meters(chars, get_attr('unitCode'))
                         when 'BoatDraftCode'
-                          case @tree[7]
+                          case chars
                           when 'Max Draft' then @boat.draft_max = @draft_measure
                           when 'Drive Up' then @boat.drive_up = @draft_measure
                           end

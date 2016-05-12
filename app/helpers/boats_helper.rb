@@ -47,7 +47,7 @@ module BoatsHelper
   end
 
   def boat_specs(boat, full_spec = false)
-    spec_names = %w(beam_m draft_m draft_max draft_min engine_count berths_count cabins_count hull_material engine keel)
+    spec_names = %w(beam_m draft_m draft_max draft_min drive_up engine_count berths_count cabins_count hull_material engine keel keel_type)
     spec_value_by_name = boat.boat_specifications.custom_specs_hash(spec_names)
 
     ret = []
@@ -61,9 +61,13 @@ module BoatsHelper
     else
       ret[0] << ['Draft Max', converted_size(spec_value_by_name['draft_m'])]
     end
-    ret[0] << ['Draft Min', converted_size(spec_value_by_name['draft_min'])] if spec_value_by_name['draft_min']
-    ret[0] << ['Keel', spec_value_by_name['keel']]
-    #ret[0] << ['Hull Material', spec_value_by_name['hull_material']]
+    if spec_value_by_name['draft_min']
+      ret[0] << ['Draft Min', converted_size(spec_value_by_name['draft_min'])]
+    elsif spec_value_by_name['drive_up']
+      ret[0] << ['Draft Min', converted_size(spec_value_by_name['drive_up'])]
+    end
+    ret[0] << ['Keel', spec_value_by_name['keel'] || spec_value_by_name['keel_type']]
+    ret[0] << ['Hull Material', spec_value_by_name['hull_material']]
     ret[0] << ['Boat Type', boat.boat_type]
     ret[0] << ['RB Ref', boat.ref_no]
 

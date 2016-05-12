@@ -6,8 +6,13 @@ namespace :workers do
     desc 'Setup monitrc for delayed_job process'
     task :setup do
       on roles(:db) do
-        conf = template('dj.monitrc.haml', delayed_job_cmd: fetch(:delayed_job_cmd))
-        upload! StringIO.new(conf), "#{shared_path}/monit/dj.monitrc"
+        conf = template(
+            'delayed_job.monitrc.haml',
+            shared_path: shared_path,
+            delayed_job_default_cmd: fetch(:delayed_job_default_cmd),
+            delayed_job_import_images_cmd: fetch(:delayed_job_import_images_cmd)
+        )
+        upload! StringIO.new(conf), "#{shared_path}/monit/delayed_job.monitrc"
       end
     end
 
@@ -16,7 +21,8 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :sudo, 'monit stop dj_rightboat'
+            execute :sudo, 'monit stop delayed_job_default'
+            execute :sudo, 'monit stop delayed_job_import_images'
           end
         end
       end
@@ -27,7 +33,8 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :sudo, 'monit start dj_rightboat'
+            execute :sudo, 'monit start delayed_job_default'
+            execute :sudo, 'monit start delayed_job_import_images'
           end
         end
       end
@@ -39,7 +46,8 @@ namespace :workers do
       on roles(:db) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :sudo, 'monit restart dj_rightboat'
+            execute :sudo, 'monit restart delayed_job_default'
+            execute :sudo, 'monit restart delayed_job_import_images'
           end
         end
       end

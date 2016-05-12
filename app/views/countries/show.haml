@@ -5,9 +5,6 @@
 - content_for :meta_tags do
   %meta(name="robots" content="index, follow")
 
-= render 'shared/multiselect_bottom_bar'
-= render 'shared/enquiry_popup_batch'
-
 = render layout: 'shared/boats_for_sale' do
   %ul.breadcrumbs
     %li= link_to 'Home', root_path
@@ -19,3 +16,6 @@
     - @boats.each do |b|
       = render layout: 'boats/boat', locals: {boat: b, multiselectable: true} do
     = paginate @boats
+
+= render 'shared/multiselect_bottom_bar'
+= render 'shared/enquiry_popup_batch'

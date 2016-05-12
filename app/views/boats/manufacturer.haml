@@ -2,9 +2,6 @@
 - @page_description = "If you are looking to buy a new or used #{@manufacturer.name} we have an excellent selection for you covering UK, USA, Europe, Med, Caribbean, Asia and Worldwide"
 - @canonical_url = sale_manufacturer_url(@manufacturer)
 
-= render 'shared/multiselect_bottom_bar'
-= render 'shared/enquiry_popup_batch'
-
 - content_for :meta_tags do
   %meta(name="robots" content="index, follow")
 
@@ -19,3 +16,6 @@
     %li= @manufacturer.name
 
   = render partial: 'manufacturer_view'
+
+= render 'shared/multiselect_bottom_bar'
+= render 'shared/enquiry_popup_batch'

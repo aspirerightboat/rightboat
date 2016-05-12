@@ -14,7 +14,7 @@ $ ->
           bottom: '0px'
       else
         $('#multiselected-request-for-details').animate
-          bottom: '-55px'
+          bottom: '-90px'
 
     word_with_number = (word, number) ->
       if number == 1

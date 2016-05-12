@@ -36,7 +36,7 @@ body {
   display: block;
   position: fixed;
   font-size: 15px;
-  line-height: 30px;
+  height: 90px;
   width: 100%;
   bottom: -55px;
   left: 0;
@@ -45,17 +45,28 @@ body {
   box-shadow: 1px -1px 1px #aaaaaa;
   z-index: 9999;
 
-  #button-request-for-details-clear {
-    background-color: white;
-    color: @rb-color-dark;
+  .multiselect-clear-button {
+    font-size: 22px;
+    text-align: right;
+    a {
+      color: @rb-color-dark;
+    }
   }
 
-  .processing {
-    display: none;
-    text-transform: capitalize;
-    margin-left: 30px;
-    font-style: italic;
-    padding: 0 30px;
+  .selected-label {
+    line-height: 70px;
+    font-size: 26px;
+    img {
+      display: inline-block;
+      height: 50px;
+    }
+  }
+
+  .nice-button {
+    display: block;
+    width: 70%;
+    margin: 10px auto;
+    font-size: 26px;
     text-align: center;
   }
 }

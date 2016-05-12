@@ -12,7 +12,8 @@ set :passenger_roles, %w(app app1 app2)
 
 set :linked_files, fetch(:linked_files) + %w(config/xero/privatekey.pem)
 
-set :delayed_job_cmd, '/etc/init.d/delayed_job %{cmd}'
+set :delayed_job_default_cmd, '/etc/init.d/delayed_job_default %{cmd}'
+set :delayed_job_import_images_cmd, '/etc/init.d/delayed_job_import_images %{cmd}'
 set :solr_data_path, '/var/solr/data'
 #set :solr_pid, '/var/solr/solr-8983.pid'
 set :solr_cmd, '/etc/init.d/solr %{cmd}'

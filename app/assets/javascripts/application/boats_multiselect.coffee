@@ -9,6 +9,7 @@ $ ->
       if $('.boat-thumb.thumbnail.selected').length > 0
         if jobStatus.length == 0
           $('#multiselected-request-for-details .processing').text('').hide()
+          $('#multiselected-request-for-details #button-request-for-details').show()
         $('#multiselected-request-for-details #number-selected').text(word_with_number('boat', $('.multiselectable.selected').length) + ' selected')
         $('#multiselected-request-for-details').animate
           bottom: '0px'
@@ -52,6 +53,7 @@ $ ->
           .removeClass('inline-loading')
           .append("<span class='glyphicon glyphicon-download-alt'></span><a href='" + response.url + "'> Download File </a>")
           $('#download-iframe').prop('src', response.url)
+          $('#multiselected-request-for-details #button-request-for-details').hide()
           jobStatus = ''
 
     #

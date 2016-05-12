@@ -4,13 +4,16 @@ $ ->
     jobID = ''
     jobStatus = ''
     intervalId = null
+    readBoatsSelectedCookie = () ->
+      return (Cookies.get 'boats_multi_selected') && JSON.parse(Cookies.get 'boats_multi_selected').boats_ids || []
 
     toggleBottomBar = () ->
-      if $('.boat-thumb.thumbnail.selected').length > 0
+      selected = readBoatsSelectedCookie()
+      if selected.length > 0
         if jobStatus.length == 0
           $('#multiselected-request-for-details .processing').text('').hide()
           $('#multiselected-request-for-details #button-request-for-details').show()
-        $('#multiselected-request-for-details #number-selected').text(word_with_number('boat', $('.multiselectable.selected').length) + ' selected')
+        $('#multiselected-request-for-details #number-selected').text(word_with_number('boat', selected.length) + ' selected')
         $('#multiselected-request-for-details').animate
           bottom: '0px'
       else
@@ -23,17 +26,20 @@ $ ->
       else
         return(number + ' ' + word + 's')
 
-    sendSelectedBoatsToCookies = () ->
-      array = []
-      $.each $('.selected .tick[data-boat-id]'), (_, el) ->
-        array.push $(el).data('boat-id')
+    sendSelectedBoatsToCookies = (parent, boat_id) ->
+      array = readBoatsSelectedCookie()
+      if parent.hasClass('selected')
+        array.push boat_id
+      else
+        array = array.filter (el) ->
+          return el != boat_id
+
       Cookies.set 'boats_multi_selected', JSON.stringify({'boats_ids' : array})
 
     loadMultiSelected = () ->
       selectedBoats = []
 
-      if Cookies.get 'boats_multi_selected'
-        selectedBoats = JSON.parse(Cookies.get 'boats_multi_selected').boats_ids
+      selectedBoats = readBoatsSelectedCookie()
 
       $.each selectedBoats, (_, id) ->
         $('.tick[data-boat-id=' + id + ']').parents('.multiselectable').addClass('selected')
@@ -67,8 +73,9 @@ $ ->
       e.preventDefault()
       if $(@).data('boat-message-required')
         $('#enquiries_popup #message').attr('data-validetta', 'required')
-      $(@).parents('.boat-thumb.thumbnail.multiselectable').toggleClass('selected')
-      sendSelectedBoatsToCookies()
+      parent = $(@).parents('.boat-thumb.thumbnail.multiselectable')
+      parent.toggleClass('selected')
+      sendSelectedBoatsToCookies parent, $(@).data('boat-id')
       toggleBottomBar()
 
     $('.boat-thumb.thumbnail.multiselectable').on 'click', (e) ->
@@ -98,7 +105,7 @@ $ ->
 
     $('.enquiries-form').simpleAjaxForm()
     .on 'ajax:before', (e) ->
-      selectedBoats = JSON.parse(Cookies.get 'boats_multi_selected').boats_ids
+      selectedBoats = readBoatsSelectedCookie()
       $('#has_account').val $('.enquiries-form #password').is(':visible')
       $('#boats_ids').val selectedBoats
 

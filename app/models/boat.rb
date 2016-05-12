@@ -5,7 +5,7 @@ class Boat < ActiveRecord::Base
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)
 
-  attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy
+  attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy, :custom_model
 
   searchable do
     text :ref_no,               boost: 5
@@ -55,7 +55,7 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  before_validation :change_status
+  before_validation :change_status, :assign_custom_model
   before_destroy :remove_activities, :decrease_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
@@ -287,5 +287,12 @@ class Boat < ActiveRecord::Base
 
   def assign_slug
     update_column(:slug, ref_no.downcase)
+  end
+
+  def assign_custom_model
+    if manufacturer.name =~ /\Acustom\z/i && !custom_model.blank?
+      new_model = manufacturer.models.find_or_create_by(name: custom_model)
+      self.model_id = new_model.id
+    end
   end
 end

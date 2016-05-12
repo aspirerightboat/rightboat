@@ -16,7 +16,7 @@ ActiveAdmin.register RBConfig do
   end
 
   collection_action :reset_max_lead_price, method: :post do
-    BrokerInfo.where('lead_max_price > ?', RBConfig[:default_max_lead_price]).update_all lead_max_price: RBConfig[:default_max_lead_price]
+    BrokerInfo.update_all lead_max_price: RBConfig.find_by(key: 'default_max_lead_price').value.to_f
     redirect_to :back, notice: 'Max lead price reseted successfully.'
   end
 

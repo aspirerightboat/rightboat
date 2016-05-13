@@ -28,6 +28,9 @@ class SavedSearchNoticesJob
       end
     end
     [all_searches.size, all_searches_grouped.size, sent_mails]
+  rescue StandardError => e
+    Rightboat::CleverErrorsNotifier.try_notify(e, nil, nil, job: 'SavedSearchNoticesJob')
+    raise e
   end
 
   def wait_for_new_boat_images

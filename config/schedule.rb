@@ -18,7 +18,7 @@ if Rails.env.production?
   every(1.day, at: Import.active.last.approx_end_time) { runner 'SavedSearchNoticesJob.new.perform' }
 end
 
-every(1.minute) { runner 'LeadsApproveJob.new.perform' }
+every(2.minutes) { runner 'LeadsApproveJob.new.perform' }
 every(1.day, at: '1:00') { rake 'import:currency' }
 every(1.day, at: '1:10') { rake 'rb_sitemap:refresh' }
 every(12.hours, at: '6:20') { command 'sudo monit restart solr_rightboat' } if Rails.env.production? # sometimes we have stale search results

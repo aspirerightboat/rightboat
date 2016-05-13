@@ -1,5 +1,7 @@
 class SavedSearchNoticesJob
   def perform
+    wait_for_new_boat_images
+
     all_searches = SavedSearch.where(alert: true) #.order('saved_searches.id DESC')
                        .joins('JOIN user_alerts ON saved_searches.user_id = user_alerts.user_id')
                        .where(user_alerts: {saved_searches: true}).to_a
@@ -26,5 +28,13 @@ class SavedSearchNoticesJob
       end
     end
     [all_searches.size, all_searches_grouped.size, sent_mails]
+  end
+
+  def wait_for_new_boat_images
+    timeout = Time.current + 2.hours
+
+    while Delayed::Job.where(queue: 'import_images', priority: 0).exists? && Time.current < timeout
+      sleep 5.minutes
+    end
   end
 end

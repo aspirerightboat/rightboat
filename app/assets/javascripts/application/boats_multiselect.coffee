@@ -83,7 +83,8 @@ $ ->
       if $('.multiselectable.selected').length > 0 # in selected mode
         e.preventDefault()
         $(@).toggleClass('selected')
-        sendSelectedBoatsToCookies()
+        boat_id = $(@).children('.tick').data('boat-id')
+        sendSelectedBoatsToCookies($(@), boat_id)
         toggleBottomBar()
 
     $('.boat-thumb .caption').click ->

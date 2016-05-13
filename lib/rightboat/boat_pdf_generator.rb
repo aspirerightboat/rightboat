@@ -2,7 +2,9 @@ module Rightboat
   class BoatPdfGenerator
 
     def self.ensure_pdf(boat)
-      pdf_file_path = "#{Rails.root}/boat_pdfs/#{Time.current.strftime('%Y-%m-%d')}/#{boat.ref_no}.pdf"
+      name = "#{boat.ref_no}-#{boat.manufacturer}-#{boat.model}"
+      name = name.gsub(/[^\w .-]/, '').gsub(/\s/, '-').squeeze(' ').strip
+      pdf_file_path = "#{Rails.root}/boat_pdfs/#{Time.current.strftime('%Y-%m-%d')}/#{name}.pdf"
 
       if !File.exist?(pdf_file_path)
         FileUtils.mkdir_p(File.dirname(pdf_file_path))

@@ -146,8 +146,7 @@ module Rightboat
         return false unless valid?
 
         user_id = user.respond_to?(:id) ? user.id : user
-        self.target = Boat.where(user_id: user_id, source_id: source_id).first_or_initialize
-        target.import = import
+        self.target = Boat.where(user_id: user_id, source_id: source_id, import_id: import.id).first_or_initialize
 
         adjust_location(target)
 
@@ -228,11 +227,12 @@ module Rightboat
         new_specs_hash = SPEC_ATTRS.each_with_object({}.with_indifferent_access) do |spec_name, h|
           spec_name_str = spec_name.to_s
           value = send(spec_name).presence
-          value = nil if value.to_s =~ /^(?:[0.]+|false|no)$/i
-          if value && value.to_s =~ /^(?:true|1|yes)$/i
-            if value == '1' && spec_name_str.end_with?('_count')
-              # leave numerical value
-            else
+          if spec_name_str.end_with?('_count')
+            # leave numerical value
+          else
+            value = nil if value.to_s =~ /^(?:[0.]+|false|no)$/i
+
+            if value && value.to_s =~ /^(?:true|1|yes)$/i
               value = 'Yes'
             end
           end

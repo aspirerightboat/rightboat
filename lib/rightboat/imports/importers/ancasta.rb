@@ -52,6 +52,7 @@ module Rightboat::Imports
       boat.engine = boat_nodes['Engine'].text
       unless (engine_code = boat_nodes['EngineCode'].text).blank?
         boat.engine_type = ENGINE_TYPES[engine_code]
+        boat.engine_count = engine_code[/\d+/].to_i
       end
       if boat_nodes.to_s =~ /diesel/i
         boat.fuel_type = 'Diesel'

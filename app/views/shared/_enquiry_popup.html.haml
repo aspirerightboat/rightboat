@@ -51,7 +51,7 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Please leave a personal message for the broker.', class: 'form-control',  'data-validetta' => ('required' if @boat && @boat.user.comment_requested?)
+                = text_area_tag :message, '', placeholder: 'Please leave a personal message for the broker.', class: 'form-control', id: 'enquiry_message', 'data-validetta' => ('required' if @boat && @boat.user.comment_requested?)
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
               %button.btn-flat.btn-black(type="submit")
@@ -68,8 +68,7 @@
         .h Message Sent
       .modal-body
         %p
-          Thank you for your enquiry
-
+          Thank you for your enquiry. Your download will start shortly.
         %p
           To view the full specification and PDF in #{link_to 'My Rightboat', '#', class: 'bold-link open-features-popup'}
           simply enter a password:

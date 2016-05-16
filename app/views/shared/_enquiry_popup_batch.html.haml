@@ -52,7 +52,7 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
+                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control', id: 'enquiries_message'
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
               %button.btn-flat.btn-black#message-send-button(type="submit")

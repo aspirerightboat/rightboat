@@ -37,7 +37,7 @@ class EnquiriesController < ApplicationController
                                                   locals: {lead_price: enquiry.lead_price})
       json[:show_result_popup] = true if !current_user
       json[:enquiry_id] = enquiry.id
-      json[:boat_pdf_url] = 'http://import.rightboat.com/' + stream_enquired_pdf_path(enquiry.id)
+      json[:boat_pdf_url] = 'http://import.rightboat.com' + stream_enquired_pdf_path(enquiry.id)
 
       follow_makers_models([enquiry.id]) if current_user
       render json: json

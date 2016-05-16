@@ -1,5 +1,5 @@
 class EnquiriesController < ApplicationController
-  before_action :authenticate_user!, except: [:create, :create_batch, :signup_and_view_pdf]
+  before_action :authenticate_user!, except: [:create, :create_batch, :stream_boat_pdf, :signup_and_view_pdf]
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]

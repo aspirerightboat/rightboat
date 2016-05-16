@@ -24,25 +24,25 @@ class EnquiriesController < ApplicationController
       end
     end
 
-    enquiry = Enquiry.new(enquiry_params)
-    enquiry.boat = Boat.find_by(slug: params[:id])
-    enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
-    enquiry.mark_if_suspicious(current_user, request.remote_ip)
+    lead = Enquiry.new(enquiry_params)
+    lead.boat = Boat.find_by(slug: params[:id])
+    lead.boat_currency_rate = lead.boat.safe_currency.rate
+    lead.mark_if_suspicious(current_user, request.remote_ip)
 
-    if enquiry.save
-      enquiry.handle_lead_created_mails unless enquiry.suspicious?
+    if lead.save
+      lead.handle_lead_created_mails unless lead.suspicious?
 
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
-                                                  locals: {lead_price: enquiry.lead_price})
+                                                  locals: {lead_price: lead.lead_price})
       json[:show_result_popup] = true if !current_user
-      json[:enquiry_id] = enquiry.id
-      json[:boat_pdf_url] = stream_enquired_pdf_url(enquiry.id)
+      json[:enquiry_id] = lead.id
+      json[:boat_pdf_url] = stream_enquired_pdf_url(lead.id)
 
-      follow_makers_models([enquiry.id]) if current_user
+      follow_makemodel_of_boats([lead.boat]) if current_user
       render json: json
     else
-      render json: enquiry.errors.full_messages, status: 422, root: false
+      render json: lead.errors.full_messages, status: 422, root: false
     end
   end
 
@@ -57,33 +57,25 @@ class EnquiriesController < ApplicationController
       return
     end
 
-    saved_enquiries_errors = []
-    enquiries = []
-    boats.each do |boat|
-      enquiry = Enquiry.new(enquiry_params)
-      enquiry.boat = boat
-      enquiry.boat_currency_rate = boat.safe_currency.rate
-      enquiry.mark_if_suspicious(current_user, request.remote_ip, single_lead: false)
-      enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
-
-      if enquiry.valid?
-        enquiries << enquiry
-      else
-        saved_enquiries_errors.concat enquiry.errors.full_messages
-      end
+    boats = fetch_boats
+    leads = boats.map do |boat|
+      lead = Enquiry.new(enquiry_params)
+      lead.status = 'batched'
+      lead.boat = boat
+      lead.boat_currency_rate = boat.safe_currency.rate
+      lead.mark_if_suspicious(current_user, request.remote_ip)
+      lead
     end
 
-    if saved_enquiries_errors.flatten.blank?
+    if leads.all?(&:valid?)
       Enquiry.transaction do
-        enquiries.each(&:save!)
+        leads.each(&:save!)
       end
-    end
 
-    if saved_enquiries_errors.uniq.blank?
-      follow_makers_models(enquiries.map(&:id)) if current_user
-      render json: batch_create_response_json(enquiries)
+      follow_makemodel_of_boats(boats) if current_user
+      render json: batch_create_response_json(leads)
     else
-      render json: saved_enquiries_errors.uniq, status: 422, root: false
+      render json: leads.map { |lead| lead.errors.full_messages }.flatten.uniq, status: 422, root: false
     end
   end
 
@@ -113,7 +105,8 @@ class EnquiriesController < ApplicationController
 
     if user.save
       sign_in(user)
-      follow_makers_models
+      lead_ids = [params[:enquiry_id], params[:enquiries_ids]&.split(',')].flatten.compact
+      follow_makemodel_of_boats(Enquiry.where(id: lead_ids).boats)
       render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
                                                         locals: {form_name: 'enquiry_signup_form'})}
     else
@@ -157,7 +150,7 @@ class EnquiriesController < ApplicationController
     @enquiry = Enquiry.find(params[:id])
   end
 
-  def boats
+  def fetch_boats
     boats_ids = params[:boats_ids]&.split(',') || []
     Boat.where(id: boats_ids).includes(:user)
   end
@@ -202,37 +195,19 @@ class EnquiriesController < ApplicationController
     end
   end
 
-  def follow_makers_models(enquiry_ids = [])
-    if params[:enquiry_id].present? || enquiry_ids.count == 1
-      enquiry_id = params[:enquiry_id] || enquiry_ids.first
-      follow_single_lead(enquiry_id)
-    elsif params[:enquiries_ids].present? || enquiry_ids.count > 1
-      enquiries_ids = params[:enquiries_ids]&.split(',') || enquiry_ids
-      follow_multiple_leads(enquiries_ids)
-    end
+  def follow_makemodel_of_boats(boats)
+    boats.each { |boat| follow_makemodel(boat.manufacturer_id, boat.model_id) }
   end
 
-  def follow_single_lead(lead_id)
-    lead = Enquiry.find(lead_id)
-    boat = lead.boat
-
-    SavedSearch.create_and_run(current_user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])
-
-  end
-
-  def follow_multiple_leads(enquiries_ids)
-    enquiries = Enquiry.where(id: enquiries_ids).includes(:boat)
-    manufactures = enquiries.map(&:boat).map(&:manufacturer_id).map(&:to_s)
-    models = enquiries.map(&:boat).map(&:model_id).map(&:to_s)
-
-    SavedSearch.create_and_run(current_user, manufacturers: manufactures, models: models)
+  def follow_makemodel(manufacturer_id, model_id)
+    SavedSearch.create_and_run(current_user, manufacturers: [manufacturer_id.to_s], models: [model_id.to_s])
   end
 
   def batch_create_response_json(enquiries)
     google_conversions = ''
 
     job = BatchUploadJob.create
-    ZipPdfDetailsJob.new(job: job, boats: boats, enquiries: enquiries).perform
+    ZipPdfDetailsJob.new(job: job, boats: fetch_boats, enquiries: enquiries).perform
     json = job.as_json
     json[:show_result_popup] = true if !current_user
     json[:title] = enquiry_params[:title]

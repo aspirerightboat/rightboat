@@ -58,7 +58,7 @@ $ ->
           $('#multiselected-request-for-details .processing')
           .removeClass('inline-loading')
           .append("<span class='glyphicon glyphicon-download-alt'></span><a href='" + response.url + "'> Download File </a>")
-          $('#download-iframe').prop('src', response.url)
+          $('#download_iframe').attr('src', response.url)
           $('#multiselected-request-for-details #button-request-for-details').hide()
           jobStatus = ''
 

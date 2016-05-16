@@ -87,7 +87,7 @@ Rails.application.routes.draw do
   post 'boats/request-batched-details', to: 'enquiries#create_batch', as: :request_batched_details
   post 'boats/:id/request-details', to: 'enquiries#create', as: :request_details
   post 'signup-and-view-pdf', to: 'enquiries#signup_and_view_pdf', as: :signup_and_view_pdf
-  get 'boats/:id/get_pdf', to: 'enquiries#stream_boat_pdf', as: :stream_boat_pdf
+  get 'enquiries/:id/boats/:boat_id/get_pdf', to: 'enquiries#stream_boat_pdf', as: :stream_boat_pdf
 
   resource :home, controller: :home, path: '/' do
     collection do

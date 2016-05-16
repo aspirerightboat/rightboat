@@ -35,11 +35,11 @@ class LeadCreatedMailsJob
   def notify_broker(boat)
     broker = boat.user
     if %w(leads@popyachts.com).include? broker.email
-      LeadsMailer.lead_created_notify_pop_yachts(@lead_id).deliver_later
+      @leads.each { |lead_id| LeadsMailer.lead_created_notify_pop_yachts(lead_id).deliver_later }
     elsif broker.payment_method_present?
-      LeadsMailer.lead_created_notify_broker(@lead_id).deliver_later
+      @leads.each { |lead_id| LeadsMailer.lead_created_notify_broker(lead_id).deliver_later }
     else
-      LeadsMailer.lead_created_tease_broker(@lead_id).deliver_later
+      @leads.each { |lead_id| LeadsMailer.lead_created_tease_broker(lead_id).deliver_later }
     end
   end
 end

@@ -36,18 +36,14 @@ class ZipPdfDetailsJob
 
   def generate_filename
     # Rightboat-59 - Sunseeker 58 and Jeanneau GH78 and Azimuth 48 and other
-    prefix = "Rightboat-#{job.id}"
+    boats_count = boats.count
+    name = "Rightboat-#{job.id}"
 
-    name = case boats.count
-      when 0
-        "#{prefix}.zip"
-      when 1
-        "#{prefix} - #{boats.first.manufacturer} #{boats.first.model}.zip"
-      when 2
-        "#{prefix} - #{boats.first.manufacturer} #{boats.first.model} and #{boats.last.manufacturer} #{boats.last.model}.zip"
-      else
-        "#{prefix} - #{boats.first.manufacturer} #{boats.first.model} and #{boats.last.manufacturer} #{boats.last.model} and other.zip"
-    end
-    name.gsub(/[^\w .-]/, '').squeeze(' ').strip
+    name << "-#{boats.first.short_makemodel_fileslug}" if boats_count > 0
+    name << "-and-#{boats.second.short_makemodel_fileslug}" if boats_count > 1
+    name << '-and-other' if boats_count > 2
+
+    name << '.zip'
   end
+
 end

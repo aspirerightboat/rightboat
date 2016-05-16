@@ -132,6 +132,16 @@ class Boat < ActiveRecord::Base
     [manufacturer.to_s, model.to_s].reject(&:blank?).join(' ')
   end
 
+  def short_makemodel_fileslug(max_length = 25)
+    name = "#{manufacturer.name} #{model.name}"
+    name = manufacturer.name if name.size > max_length
+    name.gsub!(/[^\w-]/, '-')
+    name.squeeze!('-')
+    name.gsub!(/\A-/, '')
+    name.gsub!(/-\z/, '')
+    name
+  end
+
   def display_name
     name.blank? ? manufacturer_model : name
   end

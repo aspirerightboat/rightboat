@@ -1,5 +1,5 @@
 class EnquiriesController < ApplicationController
-  before_action :authenticate_user!, except: [:create, :create_batch, :stream_boat_pdf, :signup_and_view_pdf]
+  before_action :authenticate_user!, only: [:show, :approve, :quality_check, :define_payment_method]
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
@@ -37,7 +37,7 @@ class EnquiriesController < ApplicationController
                                                   locals: {lead_price: enquiry.lead_price})
       json[:show_result_popup] = true if !current_user
       json[:enquiry_id] = enquiry.id
-      json[:boat_pdf_url] = stream_boat_pdf_url(enquiry.id, enquiry.boat.id)
+      json[:boat_pdf_url] = stream_enquired_pdf_url(enquiry.id, enquiry.boat.id)
 
       follow_makers_models([enquiry.id]) if current_user
       render json: json
@@ -124,8 +124,9 @@ class EnquiriesController < ApplicationController
   def define_payment_method
   end
 
-  def stream_boat_pdf
-    boat = Boat.find(params[:id])
+  def stream_enquired_pdf
+    enquiry = Enquiry.find(params[:id])
+    boat = enquiry.boat
     pdf_path = Rightboat::BoatPdfGenerator.ensure_pdf(boat)
 
     send_file pdf_path

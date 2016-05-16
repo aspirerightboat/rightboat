@@ -8,6 +8,7 @@ $ ->
       json = xhr.responseJSON
       $(document.body).append(json.google_conversion)
       $('#download_iframe').attr('src', json.boat_pdf_url)
+      $('#enquiry_message').val('')
       if json.show_result_popup
         $('#signup_enquiry_id').val json.enquiry_id
         $('#enquiry_result_popup').displayPopup()

@@ -12,8 +12,8 @@ $ ->
       if selected.length > 0
         if jobStatus.length == 0
           $('#multiselected-request-for-details .processing').text('').hide()
-          $('#multiselected-request-for-details #button-request-for-details').show()
-        $('#multiselected-request-for-details #number-selected').text(word_with_number('boat', selected.length) + ' selected')
+          $('#button-request-for-details').show()
+        $('#number-selected').text(word_with_number('boat', selected.length) + ' selected')
         $('#multiselected-request-for-details').animate
           bottom: '0px'
       else
@@ -59,8 +59,17 @@ $ ->
           .removeClass('inline-loading')
           .append("<span class='glyphicon glyphicon-download-alt'></span><a href='" + response.url + "'> Download File </a>")
           $('#download_iframe').attr('src', response.url)
-          $('#multiselected-request-for-details #button-request-for-details').hide()
+          $('#button-request-for-details').hide()
           jobStatus = ''
+
+    clearMultiselect = () ->
+      $('.multiselectable').removeClass('selected')
+      toggleBottomBar()
+      Cookies.remove 'boats_multi_selected'
+      $('#enquiries_message').attr('data-validetta', '').val('')
+      clearInterval(intervalId)
+      jobStatus = ''
+      jobID = ''
 
     #
     # End of declaration
@@ -72,7 +81,7 @@ $ ->
       e.stopPropagation()
       e.preventDefault()
       if $(@).data('boat-message-required')
-        $('#enquiries_popup #message').attr('data-validetta', 'required')
+        $('#enquiries_message').attr('data-validetta', 'required')
       parent = $(@).parents('.boat-thumb.thumbnail.multiselectable')
       parent.toggleClass('selected')
       sendSelectedBoatsToCookies parent, $(@).data('boat-id')
@@ -92,13 +101,7 @@ $ ->
         window.location = $(@).data('url')
 
     $('#button-request-for-details-clear').click ->
-      $('.multiselectable').removeClass('selected')
-      toggleBottomBar()
-      Cookies.remove 'boats_multi_selected'
-      $('#enquiries_popup #message').attr('data-validetta', '')
-      clearInterval(intervalId)
-      jobStatus = ''
-      jobID = ''
+      clearMultiselect()
       false
 
     $('#button-request-for-details').on 'click', (e) ->
@@ -111,18 +114,18 @@ $ ->
       $('#boats_ids').val selectedBoats
 
     .on 'ajax:success', (e, data, status, xhr) ->
-      Cookies.remove 'boats_multi_selected'
+      clearMultiselect()
       json = xhr.responseJSON
       jobID = json.id
       jobStatus = json.status
       $(document.body).append(json.google_conversions) if json.google_conversions
       if json.show_result_popup
-        $('#enquiries_result_popup #signup_email').val json.email
-        $('#enquiries_result_popup #signup_title').val json.title
-        $('#enquiries_result_popup #signup_first_name').val json.first_name
-        $('#enquiries_result_popup #signup_last_name').val json.last_name
-        $('#enquiries_result_popup #signup_phone').val json.full_phone_number
-        $('#enquiries_result_popup #signup_enquiries_ids').val json.enquiries_ids
+        $('#signup_email').val json.email
+        $('#signup_title').val json.title
+        $('#signup_first_name').val json.first_name
+        $('#signup_last_name').val json.last_name
+        $('#signup_phone').val json.full_phone_number
+        $('#signup_enquiries_ids').val json.enquiries_ids
         $('#enquiries_result_popup').displayPopup()
       else
         $('#enquiries_popup').modal('hide')

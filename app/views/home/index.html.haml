@@ -143,7 +143,6 @@
                 %p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
                 %p.text-center.small -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
 
-  = render 'shared/multiselect_bottom_bar'
   = render 'shared/enquiry_popup_batch'
 
   :javascript

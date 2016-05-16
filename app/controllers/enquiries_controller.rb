@@ -1,5 +1,5 @@
 class EnquiriesController < ApplicationController
-  before_action :authenticate_user!, except: [:create, :create_batch, :signup_and_view_pdf]
+  before_action :authenticate_user!, except: [:create, :create_batch, :stream_boat_pdf, :signup_and_view_pdf]
   before_action :load_enquiry, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
@@ -30,16 +30,14 @@ class EnquiriesController < ApplicationController
     enquiry.mark_if_suspicious(current_user, request.remote_ip)
 
     if enquiry.save
-      redirect_to_enquiries = current_user.present?
-
       enquiry.handle_lead_created_mails unless enquiry.suspicious?
 
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
-                                                  locals: {lead_price: enquiry.lead_price,
-                                                           redirect_to_enquiries: redirect_to_enquiries})
+                                                  locals: {lead_price: enquiry.lead_price})
       json[:show_result_popup] = true if !current_user
       json[:enquiry_id] = enquiry.id
+      json[:boat_pdf_url] = stream_boat_pdf_url(enquiry.id, enquiry.boat.id)
 
       follow_makers_models([enquiry.id]) if current_user
       render json: json
@@ -124,6 +122,13 @@ class EnquiriesController < ApplicationController
   end
 
   def define_payment_method
+  end
+
+  def stream_boat_pdf
+    boat = Boat.find(params[:id])
+    pdf_path = Rightboat::BoatPdfGenerator.ensure_pdf(boat)
+
+    send_file pdf_path
   end
 
   private

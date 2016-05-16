@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 class ZipBoatsPdfUploader < CarrierWave::Uploader::Base
   storage(Rails.env.production? ? :fog : :file)
 

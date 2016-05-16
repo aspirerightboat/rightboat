@@ -6,22 +6,15 @@ $ ->
       $('#has_account').val $('.enquiry-form #password').is(':visible')
     .on 'ajax:success', (e, data, status, xhr) ->
       json = xhr.responseJSON
-      $(document.body).append(json.google_conversion) if json.google_conversion
+      $(document.body).append(json.google_conversion)
+      $('#download_iframe').attr('src', json.boat_pdf_url)
+      $('#enquiry_message').val('')
       if json.show_result_popup
         $('#signup_enquiry_id').val json.enquiry_id
         $('#enquiry_result_popup').displayPopup()
-
-    $('#enquiry_result_popup').on 'hidden.bs.modal', ->
-      window.location = location.href if $form.data('just-logged-in')
-
-    $('.open-features-popup').click ->
-      loggedIn = !$('.user-login').length || $form.data('just-logged-in')
-      if (!loggedIn)
-        $('#features_popup').modal('show')
-        false
-
-    $('.enquiry-without-phone').click ->
-      $('.enquiry-form').submit()
+      else
+        $('#enquiry_popup_downloading').displayPopup()
+        setTimeout (-> $('#enquiry_popup_downloading').modal('hide')), 2000
 
     $('#enquiry_signup_form')
     .on 'ajax:before', (e) ->
@@ -34,6 +27,10 @@ $ ->
     .on 'ajax:success', (e, data, status, xhr) ->
       json = xhr.responseJSON
       $(document.body).append(json.google_conversion) if json.google_conversion
+
+    $('.open-features-popup').click ->
+      $('#features_popup').modal('show')
+      false
 
   $('.hide-enquiry').on 'ajax:success', (e, data, status, xhr) ->
     $(@).closest('.boat-thumb-container').fadeOut()

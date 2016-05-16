@@ -52,7 +52,7 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control'
+                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control', id: 'enquiries_message'
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
               %button.btn-flat.btn-black#message-send-button(type="submit")
@@ -72,7 +72,7 @@
           Thank you for your enquiries
 
         %p
-          To view the full specifications and PDFs in #{link_to 'My Rightboat', member_enquiries_path, class: 'bold-link open-features-popup'}
+          To view the full specifications and PDFs in #{link_to 'My Rightboat', '#', class: 'bold-link open-features-popup'}
           simply enter a password:
 
         = form_tag signup_and_view_pdf_path, class: 'signup-for-pdfs-form simple-ajax-form p', remote: true, data: {format: :json} do
@@ -125,3 +125,5 @@
             %li Customised keyword searches
             %li Discounts off Boat Show tickets
             %li Personalise your experience
+
+= render 'shared/multiselect_bottom_bar'

@@ -37,7 +37,7 @@ class EnquiriesController < ApplicationController
                                                   locals: {lead_price: enquiry.lead_price})
       json[:show_result_popup] = true if !current_user
       json[:enquiry_id] = enquiry.id
-      json[:boat_pdf_url] = stream_enquired_pdf_url(enquiry.id, enquiry.boat.id)
+      json[:boat_pdf_url] = 'http://import.rightboat.com/' + stream_enquired_pdf_path(enquiry.id)
 
       follow_makers_models([enquiry.id]) if current_user
       render json: json
@@ -62,7 +62,7 @@ class EnquiriesController < ApplicationController
     boats.each do |boat|
       enquiry = Enquiry.new(enquiry_params)
       enquiry.boat = boat
-      enquiry.boat_currency_rate = enquiry.boat.safe_currency.rate
+      enquiry.boat_currency_rate = boat.safe_currency.rate
       enquiry.mark_if_suspicious(current_user, request.remote_ip, single_lead: false)
       enquiry.status = enquiry.suspicious? ? 'suspicious' : 'batched'
 

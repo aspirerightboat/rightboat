@@ -42,6 +42,7 @@ class EnquiriesController < ApplicationController
       json[:enquiry_id] = enquiry.id
 
       follow_makers_models([enquiry.id]) if current_user
+      flash.notice = 'Your download will start shortly'
       render json: json
     else
       render json: enquiry.errors.full_messages, status: 422, root: false
@@ -242,6 +243,13 @@ class EnquiriesController < ApplicationController
     end
     json[:google_conversion] = google_conversions
     json
+  end
+
+  def stream_boat_pdf
+    boat = Boat.find(params[:id])
+    pdf_path = Rightboat::BoatPdfGenerator.ensure_pdf(boat)
+
+    send_file pdf_path
   end
 
 end

@@ -21,10 +21,10 @@
           - unless current_user
             = hidden_field_tag :has_account
             .row.ha-toggle
-              .col-sm-2.col-xs-12
+              .col-sm-2.col-xs-3
                 .form-group
                   = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title', id: 'enquiry_title'
-              .col-sm-4.col-xs-12
+              .col-sm-4.col-xs-9
                 .form-group
                   = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required', id: 'enquiry_first_name'
               .col-sm-6.col-xs-12

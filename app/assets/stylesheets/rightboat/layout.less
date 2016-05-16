@@ -41,7 +41,7 @@ body {
   bottom: -95px;
   left: 0;
   padding: 10px 30px;
-  background-color: @rb-color-mint-light;
+  background-color: @rb-color-mint-dark;
   box-shadow: 1px -1px 1px #aaaaaa;
   z-index: 9999;
 
@@ -67,6 +67,10 @@ body {
     width: 70%;
     font-size: 22px;
     margin: 23px auto;
+    color: @rb-color-mint-light;
+    a {
+      color: lighten(@rb-color-mint-light, 20%);
+    }
   }
 
   .nice-button {
@@ -75,6 +79,40 @@ body {
     margin: 10px auto;
     font-size: 22px;
     text-align: center;
+  }
+  @media (max-width: @screen-sm-min) {
+    & {
+      padding: 0 10px;
+
+      .processing, .multiselect-clear-button, .selected-label, .nice-button {
+        font-size: 15px;
+      }
+      .processing {
+        padding: 5px 0;
+        display: block;
+        text-align: center;
+        margin: 0;
+      }
+      .selected-label {
+        text-align: center;
+        img {
+          height: 22px;
+        }
+      }
+      .nice-button {
+        margin: 0;
+        width: 100%;
+      }
+      .multiselect-clear-button {
+        padding: 5px 0;
+        display: block;
+        text-align: center;
+      }
+      .col-xs-12 {
+        height: 45px;
+        line-height: 45px;
+      }
+    }
   }
 }
 

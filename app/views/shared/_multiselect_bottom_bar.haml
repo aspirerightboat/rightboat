@@ -4,9 +4,9 @@
       = image_tag('logo-mini.png')
       Multiselect:
       %span#number-selected
-    .col-xs-12.col-md-4.center
+    .col-xs-6.col-md-4.center
       .processing
       = link_to 'Request details', '#', remote: true, class: 'btn-sm nice-button', id: 'button-request-for-details'
-    .col-xs-12.col-md-4.multiselect-clear-button
+    .col-xs-6.col-md-4.multiselect-clear-button
       = link_to 'Deselect All and Close X', '#', class: '', id: 'button-request-for-details-clear'
 %iframe{width: '1', height: '1', frameborder: '0', id: 'download-iframe'}

@@ -59,7 +59,7 @@ ActiveAdmin.register Boat do
   show do |boat|
     default_main_content
     panel 'More specifications' do
-      table_for boat.boat_specifications.includes(:specification) do
+      table_for boat.boat_specifications.not_deleted.includes(:specification) do
         column :name do |bs|
           bs.specification.display_name
         end

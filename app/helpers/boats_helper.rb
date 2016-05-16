@@ -48,7 +48,7 @@ module BoatsHelper
 
   def boat_specs(boat, full_spec = false)
     spec_names = %w(beam_m draft_m draft_max draft_min drive_up engine_count berths_count cabins_count hull_material engine keel keel_type)
-    spec_value_by_name = boat.boat_specifications.custom_specs_hash(spec_names)
+    spec_value_by_name = boat.boat_specifications.not_deleted.custom_specs_hash(spec_names)
 
     ret = []
     ret[0] = []

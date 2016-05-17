@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe EnquiriesController do
+RSpec.describe LeadsController do
   include Devise::TestHelpers
   let!(:broker) { create :user}
   let!(:broker_info) { create :broker_info, user: broker }
@@ -42,15 +42,15 @@ RSpec.describe EnquiriesController do
       allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
       allow_any_instance_of(BrokerInfo).to receive(:lead_max_price).and_return(300)
       allow_any_instance_of(BrokerInfo).to receive(:lead_min_price).and_return(5)
-      allow_any_instance_of(Enquiry).to receive(:handle_lead_created_mails)
+      allow_any_instance_of(Lead).to receive(:handle_lead_created_mails)
 
-      expect(Enquiry.count).to eq(0)
+      expect(Lead.count).to eq(0)
 
       xhr :post, :create, {id: boat.slug}.merge(utm_params)
       expect(response).to be_success
       expect(response.cookies['tracking_token']).to eq(saved_search_alert.token)
-      expect(Enquiry.count).to eq(1)
-      expect(Enquiry.last.saved_searches_alert_id).to eq(saved_search_alert.id)
+      expect(Lead.count).to eq(1)
+      expect(Lead.last.saved_searches_alert_id).to eq(saved_search_alert.id)
 
     end
 
@@ -60,15 +60,15 @@ RSpec.describe EnquiriesController do
       allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
       allow_any_instance_of(BrokerInfo).to receive(:lead_max_price).and_return(300)
       allow_any_instance_of(BrokerInfo).to receive(:lead_min_price).and_return(5)
-      allow_any_instance_of(Enquiry).to receive(:handle_lead_created_mails)
+      allow_any_instance_of(Lead).to receive(:handle_lead_created_mails)
 
-      expect(Enquiry.count).to eq(0)
+      expect(Lead.count).to eq(0)
 
       xhr :post, :create, {id: boat.slug}
       expect(response).to be_success
       expect(response.cookies['tracking_token']).to be_nil
-      expect(Enquiry.count).to eq(1)
-      expect(Enquiry.last.saved_searches_alert_id).to be_nil
+      expect(Lead.count).to eq(1)
+      expect(Lead.last.saved_searches_alert_id).to be_nil
 
     end
   end
@@ -79,15 +79,15 @@ RSpec.describe EnquiriesController do
     let!(:boat1) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
     let!(:boat2) { create :boat, country: country, model: model, manufacturer: manufacturer, user: broker }
 
-    it 'fills user phone at registration if we know it from previous enquiries' do
+    it 'fills user phone at registration if we know it from previous leads' do
       allow(RBConfig).to receive(:[]).with(:lead_price_coef_bound).and_return(500_000)
       allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
       allow(RBConfig).to receive(:[]).with(:lead_gap_minutes).and_return(0)
       allow_any_instance_of(BrokerInfo).to receive(:lead_max_price).and_return(300)
       allow_any_instance_of(BrokerInfo).to receive(:lead_min_price).and_return(5)
-      allow_any_instance_of(Enquiry).to receive(:handle_lead_created_mails)
+      allow_any_instance_of(Lead).to receive(:handle_lead_created_mails)
 
-      expect(Enquiry.count).to eq(0)
+      expect(Lead.count).to eq(0)
 
       xhr :post, :create, {id: boat1.slug,
                            utf8: '✓',
@@ -101,7 +101,7 @@ RSpec.describe EnquiriesController do
                            phone: '8765432',
                            message: ''}
       expect(response).to be_success
-      expect(Enquiry.count).to eq(1)
+      expect(Lead.count).to eq(1)
 
       xhr :post, :create, {id: boat2.slug,
                            utf8: '✓',
@@ -115,7 +115,7 @@ RSpec.describe EnquiriesController do
                            phone: '',
                            message: ''}
       expect(response).to be_success
-      expect(Enquiry.count).to eq(2)
+      expect(Lead.count).to eq(2)
 
       post :signup_and_view_pdf, {utf8: '✓',
                                   email: 'test-email@gmail.com',
@@ -146,7 +146,7 @@ RSpec.describe EnquiriesController do
           phone: '',
           message: 'asdasd',
           boats_ids: boats.map(&:id),
-          enquiry: {
+          lead: {
               title: '',
               first_name: 'first name',
               surname: 'last name',
@@ -163,13 +163,13 @@ RSpec.describe EnquiriesController do
         allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
         allow(RBConfig).to receive(:[]).with(:lead_gap_minutes).and_return(3)
 
-        allow_any_instance_of(Enquiry).to receive(:update_lead_price).and_return(22)
+        allow_any_instance_of(Lead).to receive(:update_lead_price).and_return(22)
         xhr :post, :create_batch, params_1
 
         expect(response).to be_success
         expect(response.body).to include_json(id: 1, status: 'processing', url: '')
         expect(BatchUploadJob.count).to eq 1
-        expect(Enquiry.batched.count).to eq 3
+        expect(Lead.batched.count).to eq 3
       end
     end
   end

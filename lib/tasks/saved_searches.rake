@@ -3,7 +3,7 @@ namespace :saved_searches do
   task create_from_leads: :environment do
     searches_created = 0
 
-    Enquiry.where.not(user: nil).where(status: %w(pending rejected invoiced batched)).find_each do |lead|
+    Lead.where.not(user: nil).where(status: %w(pending rejected invoiced batched)).find_each do |lead|
       boat = lead.boat
       user = lead.user
       res = SavedSearch.create_and_run(user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])

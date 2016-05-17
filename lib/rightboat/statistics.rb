@@ -93,7 +93,7 @@ module Rightboat
 
     def self.get_monthly_questions(boat)
       questions = {}
-      Enquiry.where(boat_id:boat.id).group("YEAR(created_at), MONTH(created_at)").select("count(boat_id) as questions, concat(YEAR(created_at), '-', LPAD(MONTH(created_at), 2, '0')) as asked_at").each do |row|
+      Lead.where(boat_id:boat.id).group("YEAR(created_at), MONTH(created_at)").select("count(boat_id) as questions, concat(YEAR(created_at), '-', LPAD(MONTH(created_at), 2, '0')) as asked_at").each do |row|
         questions[row.asked_at] = row.questions
       end
       questions

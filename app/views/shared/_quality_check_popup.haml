@@ -6,11 +6,11 @@
           %span(aria-hidden="true") &times;
         .h Reason for Quality Check Request
       .modal-body
-        = form_for @enquiry, url: quality_check_path(@enquiry), method: :post do |f|
+        = form_for @lead, url: quality_check_path(@lead), method: :post do |f|
           .row
             .form-group
               = f.label :bad_quality_reason, 'Please select a reason:'
-              = f.select :bad_quality_reason, Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, {prompt: 'Please select...'}, class: 'select-white select-sm cool-select', id: 'bad_quality_select'
+              = f.select :bad_quality_reason, Lead::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, {prompt: 'Please select...'}, class: 'select-white select-sm cool-select', id: 'bad_quality_select'
           .row
             .form-group.hidden#bad_quality_comment
               = f.label :bad_quality_comment, 'To help us assess the quality of this lead, please give us as much information as possible...'

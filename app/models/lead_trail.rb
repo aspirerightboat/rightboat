@@ -1,5 +1,5 @@
 class LeadTrail < ActiveRecord::Base
-  belongs_to :lead, class_name: 'Enquiry'
+  belongs_to :lead
   belongs_to :user
 
   scope :pending, -> { where(new_status: 'pending') }

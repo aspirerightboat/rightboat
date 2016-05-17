@@ -33,8 +33,8 @@ class User < ActiveRecord::Base
 
   has_one :address, as: :addressible, dependent: :destroy
   has_many :offices, inverse_of: :user, dependent: :destroy
-  has_many :enquiries, inverse_of: :user, dependent: :nullify
-  has_many :broker_leads, through: :boats, source: :enquiries
+  has_many :leads, inverse_of: :user, dependent: :nullify
+  has_many :broker_leads, through: :boats, source: :leads
   has_many :imports, inverse_of: :user, dependent: :destroy
   has_many :boats, inverse_of: :user, dependent: :destroy
   has_many :favourites, dependent: :delete_all
@@ -69,7 +69,7 @@ class User < ActiveRecord::Base
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
   after_create :send_new_email, if: :private?
-  after_create :personalize_enquiries
+  after_create :personalize_leads
   attr_accessor :updated_by_admin, :current_password
 
   delegate :country, to: :address
@@ -144,13 +144,13 @@ class User < ActiveRecord::Base
 
   def assign_phone_from_leads
     if phone.blank?
-      lead = Enquiry.where(email: email).where("phone IS NOT NULL AND phone <> ''").first
+      lead = Lead.where(email: email).where("phone IS NOT NULL AND phone <> ''").first
       self.phone = [lead.country_code.presence, lead.phone.gsub(/\D/, '')].compact.join('-') if lead
     end
   end
 
-  def personalize_enquiries
-    Enquiry.where(email: email, user_id: nil).update_all(user_id: self.id)
+  def personalize_leads
+    Lead.where(email: email, user_id: nil).update_all(user_id: self.id)
   end
 
   private

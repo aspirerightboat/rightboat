@@ -1,6 +1,6 @@
-- enquiry ||= nil
+- lead ||= nil
 
-.boat-thumb-container.col-xs-12(style="#{'display: none;' if enquiry && enquiry.hidden}" )
+.boat-thumb-container.col-xs-12(style="#{'display: none;' if lead && lead.hidden}" )
   .boat-thumb.thumbnail.boat-view{'data-boat-ref' => boat.slug,
                                   'data-length' => boat.length_m.to_f,
                                   'data-price' => boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}
@@ -12,13 +12,13 @@
           .no-image
     .caption(href="#{makemodel_boat_path(boat)}")
       .boat-links.text-right.pull-right
-        - if controller_name == 'enquiries'
+        - if controller_name == 'leads'
           .clearfix
             - if boat.user.broker_info.logo? || boat.user.avatar?
               .broker-logo.pull-left
                 = image_tag boat.user.broker_info.logo? ? boat.user.broker_info.logo_url(:thumb) : boat.user.avatar_url(:thumb), alt: boat.user.name, class: 'img-responsive'
             .pull-right
-              = link_to 'Hide', member_enquiry_path(enquiry), method: :delete, remote: true, class: 'hide-enquiry btn-flat btn-white'
+              = link_to 'Hide', member_lead_path(lead), method: :delete, remote: true, class: 'hide-lead btn-flat btn-white'
               .broker-detail
                 = boat.user.full_name
                 %br
@@ -26,8 +26,8 @@
                   = phone_number
                   %br
                 = boat.user.email
-          .enquiry-stamp
-            Request sent: #{enquiry.created_at.strftime('%d %b %Y')}
+          %div
+            Request sent: #{lead.created_at.strftime('%d %b %Y')}
         - else
           = favourite_link_to boat
           = render 'shared/social_share', boat: boat

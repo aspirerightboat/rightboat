@@ -17,7 +17,7 @@ ActiveAdmin.register Invoice do
     column :total
     column :leads do |invoice|
       r = ''.html_safe
-      invoice.enquiries.map { |lead| r << link_to(lead.id, admin_lead_path(lead)).html_safe; r << ' ' }
+      invoice.leads.map { |lead| r << link_to(lead.id, admin_lead_path(lead)).html_safe; r << ' ' }
       r
     end
     actions
@@ -47,7 +47,7 @@ ActiveAdmin.register Invoice do
 
   controller do
     def scoped_collection
-      Invoice.includes(:user, :enquiries)
+      Invoice.includes(:user, :leads)
     end
   end
 

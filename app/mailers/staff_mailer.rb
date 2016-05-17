@@ -37,7 +37,7 @@ class StaffMailer < ApplicationMailer
   end
 
   def suspicious_lead(lead_id, title)
-    @lead = Enquiry.find_by(id: lead_id)
+    @lead = Lead.find_by(id: lead_id)
     if @lead
       @boat = @lead.boat
       mail(subject: "#{title} - Rightboat")
@@ -46,9 +46,9 @@ class StaffMailer < ApplicationMailer
     end
   end
 
-  def lead_quality_check(enquiry_id)
-    @enquiry = Enquiry.find(enquiry_id)
+  def lead_quality_check(lead_id)
+    @lead = Lead.find(lead_id)
     to_email = RBConfig[:lead_quality_check_email]
-    mail(to: to_email, subject: "#{@enquiry.boat.user.name} wants to review lead ##{@enquiry.id}")
+    mail(to: to_email, subject: "#{@lead.boat.user.name} wants to review lead ##{@lead.id}")
   end
 end

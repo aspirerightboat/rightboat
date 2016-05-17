@@ -7,8 +7,8 @@
         = link_to 'About Me', member_about_me_path
       %li{class: ('active' if controller_name == 'favourites')}
         = link_to 'My Favourites', member_favourites_path
-      %li{class: nav_class_for('member/dashboard#enquiries')}
-        = link_to 'My Enquiries', member_enquiries_path
+      %li{class: nav_class_for('member/dashboard#leads')}
+        = link_to 'My Enquiries', member_leads_path
       %li{class: ('active' if controller_name == 'notifications')}
         = link_to 'My Notifications', member_user_notifications_path
       - if current_user && current_user.company?

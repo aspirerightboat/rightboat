@@ -84,10 +84,10 @@ Rails.application.routes.draw do
 
   resources :batch_upload_jobs, only: [:show]
   get 'search', to: 'search#results'
-  post 'boats/request-batched-details', to: 'enquiries#create_batch', as: :request_batched_details
-  post 'boats/:id/request-details', to: 'enquiries#create', as: :request_details
-  post 'signup-and-view-pdf', to: 'enquiries#signup_and_view_pdf', as: :signup_and_view_pdf
-  get 'enquiries/:id/stream_pdf', to: 'enquiries#stream_enquired_pdf', as: :stream_enquired_pdf
+  post 'boats/request-batched-details', to: 'leads#create_batch', as: :request_batched_details
+  post 'boats/:id/request-details', to: 'leads#create', as: :request_details
+  post 'signup-and-view-pdf', to: 'leads#signup_and_view_pdf', as: :signup_and_view_pdf
+  get 'leads/:id/stream_pdf', to: 'leads#stream_enquired_pdf', as: :stream_enquired_pdf
 
   resource :home, controller: :home, path: '/' do
     collection do
@@ -124,9 +124,9 @@ Rails.application.routes.draw do
   get 'location', to: redirect('/boats-for-sale')
   get 'location/:id', to: redirect('/boats-for-sale-in/%{id}')
 
-  get 'leads/:id', to: 'enquiries#show', as: :lead
-  post 'leads/:id/approve', to: 'enquiries#approve', as: :lead_approve
-  post 'leads/:id/quality_check', to: 'enquiries#quality_check', as: :quality_check
+  get 'leads/:id', to: 'leads#show', as: :lead
+  post 'leads/:id/approve', to: 'leads#approve', as: :lead_approve
+  post 'leads/:id/quality_check', to: 'leads#quality_check', as: :quality_check
 
   resource :testing, controller: :testing, only: [], path: '' do
     get :test_gmail
@@ -166,7 +166,7 @@ Rails.application.routes.draw do
     resources :user_notifications, only: [:index]
     resources :saved_searches, path: 'saved-searches', only: [:edit, :update, :create, :destroy]
     resources :boats, except: [:show]
-    resources :enquiries, only: [:index, :destroy] do
+    resources :leads, only: [:index, :destroy] do
       post :unhide, on: :collection
     end
     controller :dashboard do

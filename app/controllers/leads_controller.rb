@@ -1,6 +1,6 @@
-class EnquiriesController < ApplicationController
+class LeadsController < ApplicationController
   before_action :authenticate_user!, only: [:show, :approve, :quality_check, :define_payment_method]
-  before_action :load_enquiry, only: [:show, :approve, :quality_check]
+  before_action :load_lead, only: [:show, :approve, :quality_check]
   before_action :require_broker, only: [:approve, :quality_check]
   before_action :require_buyer_or_broker, only: [:show]
   before_action :require_broker_payment_method, only: [:show]
@@ -24,7 +24,7 @@ class EnquiriesController < ApplicationController
       end
     end
 
-    lead = Enquiry.new(enquiry_params)
+    lead = Lead.new(lead_params)
     lead.boat = Boat.find_by(slug: params[:id])
     lead.boat_currency_rate = lead.boat.safe_currency.rate
     lead.mark_if_suspicious(current_user, request.remote_ip)
@@ -36,7 +36,7 @@ class EnquiriesController < ApplicationController
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
                                                   locals: {lead_price: lead.lead_price})
       json[:show_result_popup] = true if !current_user
-      json[:enquiry_id] = lead.id
+      json[:lead_id] = lead.id
       json[:boat_pdf_url] = stream_enquired_pdf_url(lead.id)
 
       follow_makemodel_of_boats([lead.boat]) if current_user
@@ -59,7 +59,7 @@ class EnquiriesController < ApplicationController
 
     boats = fetch_boats
     leads = boats.map do |boat|
-      lead = Enquiry.new(enquiry_params)
+      lead = Lead.new(lead_params)
       lead.status = 'batched'
       lead.boat = boat
       lead.boat_currency_rate = boat.safe_currency.rate
@@ -68,7 +68,7 @@ class EnquiriesController < ApplicationController
     end
 
     if leads.all?(&:valid?)
-      Enquiry.transaction do
+      Lead.transaction do
         leads.each(&:save!)
       end
 
@@ -80,20 +80,20 @@ class EnquiriesController < ApplicationController
   end
 
   def show
-    @boat = @enquiry.boat
-    @lead_trails = @enquiry.lead_trails.includes(:user).order('id DESC')
+    @boat = @lead.boat
+    @lead_trails = @lead.lead_trails.includes(:user).order('id DESC')
   end
 
   def approve
-    @enquiry.status = 'approved'
-    @enquiry.save!
+    @lead.status = 'approved'
+    @lead.save!
     redirect_to({action: :show}, {notice: 'Lead approved'})
   end
 
   def quality_check
-    @enquiry.status = 'quality_check'
-    @enquiry.assign_attributes(params.require(:enquiry).permit(:bad_quality_reason, :bad_quality_comment))
-    @enquiry.save! # email should be sent on after_save callback
+    @lead.status = 'quality_check'
+    @lead.assign_attributes(params.require(:lead).permit(:bad_quality_reason, :bad_quality_comment))
+    @lead.save! # email should be sent on after_save callback
     redirect_to({action: :show}, {notice: 'Lead will be reviewed by Rightboat staff'})
   end
 
@@ -105,10 +105,10 @@ class EnquiriesController < ApplicationController
 
     if user.save
       sign_in(user)
-      lead_ids = [params[:enquiry_id], params[:enquiries_ids]&.split(',')].flatten.compact
-      follow_makemodel_of_boats(Enquiry.where(id: lead_ids).boats)
+      lead_ids = [params[:lead_id], params[:lead_ids]&.split(',')].flatten.compact
+      follow_makemodel_of_boats(Lead.where(id: lead_ids).boats)
       render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
-                                                        locals: {form_name: 'enquiry_signup_form'})}
+                                                        locals: {form_name: 'lead_signup_form'})}
     else
       render json: user.errors.full_messages, root: false, status: 422
     end
@@ -118,8 +118,8 @@ class EnquiriesController < ApplicationController
   end
 
   def stream_enquired_pdf
-    enquiry = Enquiry.find(params[:id])
-    boat = enquiry.boat
+    lead = Lead.find(params[:id])
+    boat = lead.boat
     pdf_path = Rightboat::BoatPdfGenerator.ensure_pdf(boat)
 
     send_file pdf_path
@@ -138,16 +138,16 @@ class EnquiriesController < ApplicationController
   end
 
 
-  def enquiry_params
-    @enquiry_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
+  def lead_params
+    @lead_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
       .merge(user_id: current_user.try(:id),
              remote_ip: request.remote_ip,
              browser: request.env['HTTP_USER_AGENT'],
              saved_searches_alert_id: @saved_searches_alert_id&.id)
   end
 
-  def load_enquiry
-    @enquiry = Enquiry.find(params[:id])
+  def load_lead
+    @lead = Lead.find(params[:id])
   end
 
   def fetch_boats
@@ -174,18 +174,18 @@ class EnquiriesController < ApplicationController
   end
 
   def can_view_as_broker(broker_user)
-    current_user.admin? || (broker_user && broker_user.company? && @enquiry.boat.user == broker_user)
+    current_user.admin? || (broker_user && broker_user.company? && @lead.boat.user == broker_user)
   end
 
   def can_view_as_buyer(user)
-    @enquiry.user == user
+    @lead.user == user
   end
 
   def remember_when_broker_accessed
-    if !@enquiry.broker_accessed_at && current_user.company?
-      @enquiry.broker_accessed_at = Time.current
-      @enquiry.accessed_by_broker = current_user
-      @enquiry.save!
+    if !@lead.broker_accessed_at && current_user.company?
+      @lead.broker_accessed_at = Time.current
+      @lead.accessed_by_broker = current_user
+      @lead.save!
     end
   end
 
@@ -203,23 +203,23 @@ class EnquiriesController < ApplicationController
     SavedSearch.create_and_run(current_user, manufacturers: [manufacturer_id.to_s], models: [model_id.to_s])
   end
 
-  def batch_create_response_json(enquiries)
+  def batch_create_response_json(leads)
     google_conversions = ''
 
     job = BatchUploadJob.create
-    ZipPdfDetailsJob.new(job: job, boats: fetch_boats, enquiries: enquiries).perform
+    ZipPdfDetailsJob.new(job: job, boats: fetch_boats, leads: leads).perform
     json = job.as_json
     json[:show_result_popup] = true if !current_user
-    json[:title] = enquiry_params[:title]
-    json[:first_name] = enquiry_params[:first_name]
-    json[:last_name] = enquiry_params[:surname]
-    json[:email] = enquiry_params[:email]
-    json[:full_phone_number] = enquiry_params[:country_code].to_s + enquiry_params[:phone].to_s
+    json[:title] = lead_params[:title]
+    json[:first_name] = lead_params[:first_name]
+    json[:last_name] = lead_params[:surname]
+    json[:email] = lead_params[:email]
+    json[:full_phone_number] = lead_params[:country_code].to_s + lead_params[:phone].to_s
     json[:has_account] = User.find_by(email: params[:email]).present?
-    json[:enquiries_ids] = enquiries.map(&:id)
-    enquiries.each do |enquiry|
+    json[:lead_ids] = leads.map(&:id)
+    leads.each do |lead|
       google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
-                                             locals: {lead_price: enquiry.lead_price})
+                                             locals: {lead_price: lead.lead_price})
     end
     json[:google_conversion] = google_conversions
     json

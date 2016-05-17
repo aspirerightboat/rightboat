@@ -1,4 +1,4 @@
-class Enquiry < ActiveRecord::Base
+class Lead < ActiveRecord::Base
 
   STATUSES = %w(pending quality_check approved rejected invoiced suspicious batched deleted)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
@@ -61,7 +61,7 @@ class Enquiry < ActiveRecord::Base
       end
     end
     if status != 'batched'
-      last_lead = Enquiry.where(user ? {user: user} : {remote_ip: remote_ip}).last
+      last_lead = Lead.where(user ? {user: user} : {remote_ip: remote_ip}).last
       if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
         mark_suspicious('Multiple leads received – review required')
       end

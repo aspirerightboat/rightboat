@@ -1,7 +1,7 @@
 - boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
 - mail = @office.try(:email) || @boat.user.email
 
-%p Dear #{@enquiry.first_name},
+%p Dear #{@lead.first_name},
 %p We have pleasure in enclosing the full specification of the following boat you requested:
 %ul
   %li <b>Make:</b> #{@boat.manufacturer}

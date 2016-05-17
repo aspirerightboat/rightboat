@@ -10,7 +10,7 @@
     %tr
       %td= invoice.id
       %td
-        - invoice.enquiries.each do |lead|
+        - invoice.leads.each do |lead|
           = link_to lead.id.to_s, admin_lead_url(lead)
       %td= link_to invoice.user.name_with_title, admin_user_url(invoice.user)
       %td.text-right £#{format_pence invoice.total_ex_vat}

@@ -66,7 +66,7 @@ $ ->
       $('.multiselectable').removeClass('selected')
       toggleBottomBar()
       Cookies.remove 'boats_multi_selected'
-      $('#enquiries_message').attr('data-validetta', '').val('')
+      $('#leads_message').attr('data-validetta', '').val('')
       clearInterval(intervalId)
       jobStatus = ''
       jobID = ''
@@ -90,7 +90,7 @@ $ ->
       e.stopPropagation()
       e.preventDefault()
       if $(@).data('boat-message-required')
-        $('#enquiries_message').attr('data-validetta', 'required')
+        $('#leads_message').attr('data-validetta', 'required')
       parent = $(@).parents('.boat-thumb.thumbnail.multiselectable')
       parent.toggleClass('selected')
       sendSelectedBoatsToCookies parent, $(@).data('boat-id')
@@ -114,12 +114,12 @@ $ ->
       false
 
     $('#button-request-for-details').on 'click', (e) ->
-      $('#enquiries_popup').displayPopup()
+      $('#leads_popup').displayPopup()
 
-    $('.enquiries-form').simpleAjaxForm()
+    $('.leads-form').simpleAjaxForm()
     .on 'ajax:before', (e) ->
       selectedBoats = readBoatsSelectedCookie()
-      $('#has_account').val $('.enquiries-form #password').is(':visible')
+      $('#has_account').val $('.leads-form #password').is(':visible')
       $('#boats_ids').val selectedBoats
 
     .on 'ajax:success', (e, data, status, xhr) ->
@@ -134,10 +134,10 @@ $ ->
         $('#signup_first_name').val json.first_name
         $('#signup_last_name').val json.last_name
         $('#signup_phone').val json.full_phone_number
-        $('#signup_enquiries_ids').val json.enquiries_ids
-        $('#enquiries_result_popup').displayPopup()
+        $('#signup_lead_ids').val json.lead_ids
+        $('#leads_result_popup').displayPopup()
       else
-        $('#enquiries_popup').modal('hide')
+        $('#leads_popup').modal('hide')
 
       intervalId = setInterval ( ->
         getStatus()
@@ -147,4 +147,4 @@ $ ->
 
     $('.signup-for-pdfs-form').simpleAjaxForm()
     .on 'ajax:success', (e, data, status, xhr) ->
-      $('#enquiry_successfully_logged_popup').displayPopup()
+      $('#lead_successfully_logged_popup').displayPopup()

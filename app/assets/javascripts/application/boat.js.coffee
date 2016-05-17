@@ -3,8 +3,8 @@ window.initBoatView = (el) ->
 
   $('.request-details', el).click (e) ->
     url = '/boats/' + boat_id + '/request-details'
-    $('.enquiry-form').attr('action', url).find('.alert').remove()
-    $('#enquiry_popup').displayPopup()
+    $('.lead-form').attr('action', url).find('.alert').remove()
+    $('#lead_popup').displayPopup()
     false
 
   $('.fav-link', el).click (e) ->

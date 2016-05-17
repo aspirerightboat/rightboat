@@ -63,7 +63,7 @@ class Boat < ActiveRecord::Base
   after_create :assign_slug
 
   has_many :favourites, dependent: :delete_all
-  has_many :enquiries
+  has_many :leads
   has_many :boat_specifications
   has_many :boat_images, -> { order(:position, :id) }, dependent: :destroy
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
@@ -247,7 +247,7 @@ class Boat < ActiveRecord::Base
 
   def update_leads_price
     if poa_changed? || price_changed? || length_m_changed?
-      enquiries.not_deleted.not_invoiced.each do |lead|
+      leads.not_deleted.not_invoiced.each do |lead|
         lead.update_lead_price
       end
     end
@@ -259,7 +259,7 @@ class Boat < ActiveRecord::Base
   end
 
   def notifiable_enquiry_users
-    enquiries.not_deleted.joins('INNER JOIN user_alerts ON enquiries.user_id = user_alerts.user_id')
+    leads.not_deleted.joins('INNER JOIN user_alerts ON leads.user_id = user_alerts.user_id')
         .where(user_alerts: {enquiry: true}).pluck(:user_id)
   end
 

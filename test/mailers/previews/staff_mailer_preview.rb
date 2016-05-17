@@ -25,10 +25,10 @@ class StaffMailerPreview < ActionMailer::Preview
   end
 
   def suspicious_lead
-    StaffMailer.suspicious_lead(Enquiry.last.id, 'Multiple leads received – review required')
+    StaffMailer.suspicious_lead(Lead.last.id, 'Multiple leads received – review required')
   end
 
   def lead_quality_check
-    StaffMailer.lead_quality_check(Enquiry.last.id)
+    StaffMailer.lead_quality_check(Lead.last.id)
   end
 end

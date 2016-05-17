@@ -12,7 +12,7 @@
       - if alert
         .alert.alert-warning= alert
 
-      %h1 Lead ##{@enquiry.id} for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
+      %h1 Lead ##{@lead.id} for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
 
   .row
     .col-sm-6.col-xs-12
@@ -26,22 +26,22 @@
           #{link_to 'Boat details', makemodel_boat_path(@boat)}
           (#{link_to 'PDF', makemodel_boat_pdf_path(@boat)})
 
-      %h2 Enquiry Details
+      %h2 Lead Details
       %ul
-        %li Name: <b>#{@enquiry.title} #{@enquiry.first_name} #{@enquiry.surname}</b>
-        %li Email: <b>#{@enquiry.email}</b>
-        - if @enquiry.phone.present?
-          %li Tel: <b>#{@enquiry.country_code} #{@enquiry.phone}</b>
-        - if @enquiry.message.present?
-          %li Message: <b>#{@enquiry.message}</b>
+        %li Name: <b>#{@lead.title} #{@lead.first_name} #{@lead.surname}</b>
+        %li Email: <b>#{@lead.email}</b>
+        - if @lead.phone.present?
+          %li Tel: <b>#{@lead.country_code} #{@lead.phone}</b>
+        - if @lead.message.present?
+          %li Message: <b>#{@lead.message}</b>
 
       %h2 Timing
       %ul
-        %li Requested At: <b>#{l @enquiry.created_at, format: :short} (#{distance_of_time_in_words(@enquiry.created_at, Time.current)} ago)</b>
-        %li Accessed at: <b>#{@enquiry.broker_accessed_at ? "#{l(@enquiry.broker_accessed_at, format: :short)} (#{distance_of_time_in_words(@enquiry.broker_accessed_at, Time.current)} ago)" : '-'}</b>
-        %li Accessed by: <b>#{@enquiry.broker_accessed_at ? @enquiry.accessed_by_broker.name : '-'}</b>
-        - if @enquiry.status == 'quality_check'
-          %li Current status: #{lead_status_label @enquiry.status}
+        %li Requested At: <b>#{l @lead.created_at, format: :short} (#{distance_of_time_in_words(@lead.created_at, Time.current)} ago)</b>
+        %li Accessed at: <b>#{@lead.broker_accessed_at ? "#{l(@lead.broker_accessed_at, format: :short)} (#{distance_of_time_in_words(@lead.broker_accessed_at, Time.current)} ago)" : '-'}</b>
+        %li Accessed by: <b>#{@lead.broker_accessed_at ? @lead.accessed_by_broker.name : '-'}</b>
+        - if @lead.status == 'quality_check'
+          %li Current status: #{lead_status_label @lead.status}
     .col-sm-6.col-xs-12
       = link_to makemodel_boat_path(@boat), style: 'display: block; margin-top: 22px;' do
         - if @boat.primary_image
@@ -53,7 +53,7 @@
       %p(style="margin: 1.5em 0")
         = link_to 'View all leads', my_leads_broker_area_path
 
-      - if @enquiry.status == 'pending' && current_user && (current_user.company? || current_user.admin?)
+      - if @lead.status == 'pending' && current_user && (current_user.company? || current_user.admin?)
         %p.nice-buttons(style="margin-top: 1em")
           %a#request_qc_button.transparent-button(href="#") Request Quality Check
 

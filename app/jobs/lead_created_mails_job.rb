@@ -14,7 +14,7 @@ class LeadCreatedMailsJob
   private
 
   def perform_one
-    lead = Enquiry.find(@lead_ids.first)
+    lead = Lead.find(@lead_ids.first)
     Rightboat::BoatPdfGenerator.ensure_pdf(lead.boat)
 
     LeadsMailer.lead_created_notify_buyer(lead.id).deliver_now
@@ -23,7 +23,7 @@ class LeadCreatedMailsJob
   end
 
   def perform_many
-    leads = Enquiry.includes(boat: :user).find(@lead_ids)
+    leads = Lead.includes(boat: :user).find(@lead_ids)
 
     leads.each do |lead|
       notify_broker(lead)

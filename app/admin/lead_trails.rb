@@ -26,7 +26,7 @@ ActiveAdmin.register LeadTrail do
 
   form do |f|
     f.inputs do
-      f.input :new_status, as: :select, collection: Enquiry::STATUSES.map { |s| [s.titleize, s] }, include_blank: false
+      f.input :new_status, as: :select, collection: Lead::STATUSES.map { |s| [s.titleize, s] }, include_blank: false
     end
 
     f.actions

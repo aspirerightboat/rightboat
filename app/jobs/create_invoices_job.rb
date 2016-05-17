@@ -55,7 +55,7 @@ class CreateInvoicesJob
         i.total = i.total_ex_vat + i.vat
         i.user = broker
         i.save!
-        Enquiry.where(id: leads.map(&:id)).update_all(invoice_id: i.id, status: 'invoiced', updated_at: Time.current)
+        Lead.where(id: leads.map(&:id)).update_all(invoice_id: i.id, status: 'invoiced', updated_at: Time.current)
 
         xi.sub_total = i.subtotal
         xi.total_tax = i.vat
@@ -95,8 +95,8 @@ class CreateInvoicesJob
   end
 
   def fetch_leads(only_broker_id)
-    rel = Enquiry.approved.not_deleted.where(invoice_id: nil)
-              .where('enquiries.created_at < ?', Time.current.beginning_of_day)
+    rel = Lead.approved.not_deleted.where(invoice_id: nil)
+              .where('leads.created_at < ?', Time.current.beginning_of_day)
               .includes(boat: {user: :broker_info})
     if only_broker_id
       rel = rel.references(:boat).where(boats: {user_id: only_broker_id})

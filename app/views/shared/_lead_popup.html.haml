@@ -1,7 +1,7 @@
 - content_for :head_scripts do
   %script(type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8")
 
-#enquiries_popup.modal.fade
+#lead_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
@@ -13,37 +13,36 @@
       .modal-body
         %p
           %b
-            The full boats specifications and broker details will be available for immediate viewing and your enquiries will be forwarded to the selling brokers.
+            The full boat specifications and broker details will be available for immediate viewing and your enquiry will be forwarded to the selling broker.
             This request is free and you are under no obligation.
 
-        = form_tag request_batched_details_path, class: 'enquiries-form', remote: true do
-          = hidden_field_tag :boats_ids
+        = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'lead-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
           - unless current_user
             = hidden_field_tag :has_account
             .row.ha-toggle
               .col-sm-2.col-xs-3
                 .form-group
-                  = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title', id: 'enquiry_title'
+                  = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title', id: 'lead_title'
               .col-sm-4.col-xs-9
                 .form-group
-                  = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required', id: 'enquiry_first_name'
+                  = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required', id: 'lead_first_name'
               .col-sm-6.col-xs-12
                 .form-group
-                  = text_field_tag :surname, current_user.try(:last_name), placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required', id: 'enquiry_last_name'
+                  = text_field_tag :surname, current_user.try(:last_name), placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required', id: 'lead_last_name'
             .row
               .col-sm-6.col-xs-12
                 .form-group
-                  = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email', id: 'enquiry_email'
+                  = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email', id: 'lead_email'
               .col-sm-6.col-xs-12.ha-toggle.hidden
                 .form-group
-                  = password_field_tag :password, '', placeholder: 'Password', class: 'form-control'
+                  = password_field_tag :password, '', placeholder: 'Password', class: 'form-control' #, 'data-validetta' => 'required'
               .col-sm-6.col-xs-12.ha-toggle
                 .form-group
                   .rb-control-group
                     .rb-control-group-addon
-                      = select_tag :country_code, options_for_country_code, prompt: 'Country Code', class: 'select-white select-sm country-code-select', id: 'enquiry_country_code'
+                      = select_tag :country_code, options_for_country_code, prompt: 'Country Code', class: 'select-white select-sm country-code-select', id: 'lead_country_code'
                     .rb-control
-                      = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), placeholder: 'Phone', class: 'form-control', id: 'enquiry_phone'
+                      = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), placeholder: 'Phone', class: 'form-control', id: 'lead_phone'
             .row.ha-toggle.hidden
               .col-xs-12
                 .form-group
@@ -52,15 +51,15 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Type here if you have any specific questions.', class: 'form-control', id: 'enquiries_message'
+                = text_area_tag :message, '', placeholder: 'Please leave a personal message for the broker.', class: 'form-control', id: 'lead_message', 'data-validetta' => ('required' if @boat && @boat.user.comment_requested?)
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
-              %button.btn-flat.btn-black#message-send-button(type="submit")
+              %button.btn-flat.btn-black(type="submit")
                 %span.ha-toggle Send
                 - unless current_user
                   %span.ha-toggle.hidden Login & Send
 
-#enquiries_result_popup.modal.fade
+#lead_result_popup.modal.fade
   .modal-dialog
     .modal-content
       .modal-header
@@ -69,20 +68,19 @@
         .h Message Sent
       .modal-body
         %p
-          Thank you for your enquiries
-
+          Thank you for your enquiry. Your download will start shortly.
         %p
-          To view the full specifications and PDFs in #{link_to 'My Rightboat', '#', class: 'bold-link open-features-popup'}
+          To view the full specification and PDF in #{link_to 'My Rightboat', '#', class: 'bold-link open-features-popup'}
           simply enter a password:
 
-        = form_tag signup_and_view_pdf_path, class: 'signup-for-pdfs-form simple-ajax-form p', remote: true, data: {format: :json} do
+        = form_tag signup_and_view_pdf_path, class: 'simple-ajax-form p', id: 'lead_signup_form', remote: true, data: {format: :json} do
           = hidden_field_tag :email, nil, id: 'signup_email'
           = hidden_field_tag :title, nil, id: 'signup_title'
           = hidden_field_tag :first_name, nil, id: 'signup_first_name'
           = hidden_field_tag :last_name, nil, id: 'signup_last_name'
           = hidden_field_tag :phone, nil, id: 'signup_phone'
-          = hidden_field_tag :has_account, nil, id: 'signup_has_account'
-          = hidden_field_tag :enquiries_ids, nil, id: 'signup_enquiries_ids'
+          = hidden_field_tag :boat_id, nil, id: 'signup_boat'
+          = hidden_field_tag :lead_id, nil, id: 'signup_lead_id'
           .row
             .col-sm-6.col-xs-12
               .form-group
@@ -98,16 +96,6 @@
           Membership to My Rightboat is completely <abbr class="open-features-popup open-popup-text">FREE</abbr> — we will never charge you.
         %p
           = link_to 'Privacy policy', privacy_policy_home_path, target: '_blank'
-
-#enquiry_successfully_logged_popup.modal.fade
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close(aria-label="Close" data-dismiss="modal" type="button")
-          %span(aria-hidden="true") &times;
-      .modal-body
-        %p
-          Thank you for joining us
 
 - unless current_user
   #features_popup.modal.fade.secondary-popup
@@ -126,4 +114,12 @@
             %li Discounts off Boat Show tickets
             %li Personalise your experience
 
-= render 'shared/multiselect_bottom_bar'
+%iframe(width="1" height="1" frameborder="0" id="download_iframe")
+
+#lead_popup_downloading.modal.fade(data-backdrop="false")
+  .modal-dialog
+    .modal-content
+      .modal-body
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
+        Your download will start shortly, a copy has also been emailed to you.

@@ -32,7 +32,7 @@ class BrokerInfo < ActiveRecord::Base
 
   def change_lead_price
     if lead_length_rate_changed? || lead_min_price_changed? || lead_max_price_changed?
-      user.enquiries.not_deleted.not_invoiced.each do |lead|
+      user.leads.not_deleted.not_invoiced.each do |lead|
         lead.update_lead_price
       end
     end

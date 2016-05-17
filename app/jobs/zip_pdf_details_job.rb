@@ -1,24 +1,24 @@
 class ZipPdfDetailsJob
-  attr_accessor :boats, :job, :enquiries, :files
+  attr_accessor :boats, :job, :leads, :files
 
-  def initialize(job:, enquiries: ,boats:)
+  def initialize(job:, leads: ,boats:)
     @job = job
     @boats = boats
-    @enquiries = enquiries
+    @leads = leads
   end
 
   def perform
     files = []
 
-    enquiries.each do |enquiry|
-      files << Rightboat::BoatPdfGenerator.ensure_pdf(enquiry.boat)
-      broker = enquiry.boat.user
+    leads.each do |lead|
+      files << Rightboat::BoatPdfGenerator.ensure_pdf(lead.boat)
+      broker = lead.boat.user
         if %w(nick@popsells.com).include? broker.email
-          LeadsMailer.lead_created_notify_pop_yachts(enquiry.id).deliver_later
+          LeadsMailer.lead_created_notify_pop_yachts(lead.id).deliver_later
         elsif broker.payment_method_present?
-          LeadsMailer.lead_created_notify_broker(enquiry.id).deliver_later
+          LeadsMailer.lead_created_notify_broker(lead.id).deliver_later
         else
-          LeadsMailer.lead_created_tease_broker(enquiry.id).deliver_later
+          LeadsMailer.lead_created_tease_broker(lead.id).deliver_later
         end
     end
 
@@ -28,7 +28,7 @@ class ZipPdfDetailsJob
       uploader.store!(File.new(zipfile_name))
       job.update(url: uploader.url, status: :ready)
 
-      LeadsMailer.leads_created_notify_buyer(enquiries, zipfile_name).deliver_now
+      LeadsMailer.leads_created_notify_buyer(leads, zipfile_name).deliver_now
     end
   end
 

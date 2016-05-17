@@ -5,13 +5,13 @@
 
 %p The client details are as follows:
 %ul
-  %li <b>Lead Id</b>: #{link_to @enquiry.id, lead_url(@enquiry)}
-  %li <b>Name:</b> #{@enquiry.name}
-  %li <b>Email:</b> #{@enquiry.email}
-  - unless @enquiry.phone.blank?
-    %li <b>Phone:</b> #{@enquiry.country_code} #{@enquiry.phone}
-  - unless @enquiry.message.blank?
-    %li <b>Comment:</b> #{@enquiry.message}
+  %li <b>Lead Id</b>: #{link_to @lead.id, lead_url(@lead)}
+  %li <b>Name:</b> #{@lead.name}
+  %li <b>Email:</b> #{@lead.email}
+  - unless @lead.phone.blank?
+    %li <b>Phone:</b> #{@lead.country_code} #{@lead.phone}
+  - unless @lead.message.blank?
+    %li <b>Comment:</b> #{@lead.message}
 
 %p Boat details:
 %ul
@@ -23,9 +23,9 @@
   %li <b>RB Ref:</b> #{@boat.ref_no}
   %li <b>Broker source ID:</b> #{@boat.source_id}
 
-%p #{@enquiry.created_at.strftime('%d %b %Y')}
+%p #{@lead.created_at.strftime('%d %b %Y')}
 
-%p If you would like to contact the customer directly, please select this #{mail_to @enquiry.email, 'link'}.
+%p If you would like to contact the customer directly, please select this #{mail_to @lead.email, 'link'}.
 
 %br
 %p

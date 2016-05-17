@@ -83,7 +83,7 @@ data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, C
                 = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
 
 
-= render 'shared/enquiry_popup'
+= render 'shared/lead_popup'
 
 :javascript
   var gallery = null;

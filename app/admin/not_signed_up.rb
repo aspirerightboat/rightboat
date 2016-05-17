@@ -1,4 +1,4 @@
-ActiveAdmin.register Enquiry, as: 'Not Signed Up' do
+ActiveAdmin.register Lead, as: 'Not Signed Up' do
 	menu parent: 'Users'
   actions :index
 
@@ -12,21 +12,21 @@ ActiveAdmin.register Enquiry, as: 'Not Signed Up' do
 
   index do
     column :first_name
-    column :last_name, sortable: :surname do |enquiry|
-      enquiry.surname
+    column :last_name, sortable: :surname do |lead|
+      lead.surname
     end
     column :email
-    column :date_of_first_lead, sortable: :created_at do |enquiry|
-      enquiry.created_at
+    column :date_of_first_lead, sortable: :created_at do |lead|
+      lead.created_at
     end
-    column :telephone_number, sortable: :phone do |enquiry|
-      "#{enquiry.country_code} #{enquiry.phone}"
+    column :telephone_number, sortable: :phone do |lead|
+      "#{lead.country_code} #{lead.phone}"
     end
-    column :emailed, sortable: :email_sent do |enquiry|
-      if enquiry.email_sent
+    column :emailed, sortable: :email_sent do |lead|
+      if lead.email_sent
         'Yes'
       else
-        link_to 'Sent', admin_lead_path(enquiry, enquiry: {email_sent: true}), method: :put
+        link_to 'Sent', admin_lead_path(lead, lead: {email_sent: true}), method: :put
       end
     end
   end

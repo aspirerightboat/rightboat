@@ -1,4 +1,4 @@
-ActiveAdmin.register Enquiry, as: 'Lead' do
+ActiveAdmin.register Lead, as: 'Lead' do
   permit_params :user_id, :boat_id, :title, :first_name, :surname, :email, :phone, :bad_quality_reason, :bad_quality_comment,
                 :message, :remote_ip, :browse, :deleted_at, :created_at, :updated_at, :status, :email_sent
 
@@ -12,7 +12,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   filter :id
   filter :created_at, label: 'Date of Lead'
   filter :updated_at, label: 'Last Status Change'
-  filter :status, as: :select, collection: -> { Enquiry::STATUSES }
+  filter :status, as: :select, collection: -> { Lead::STATUSES }
   filter :saved_searches_alert_id, label: 'Mail ID'
 
   controller do
@@ -43,8 +43,8 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
         link_to(lead.saved_searches_alert_id, admin_saved_searches_alert_path(lead.saved_searches_alert_id))
       end
     end
-    actions do |enquiry|
-      item 'Delete', delete_admin_lead_path(enquiry), class: 'delete-lead'
+    actions do |lead|
+      item 'Delete', delete_admin_lead_path(lead), class: 'delete-lead'
     end
   end
 
@@ -52,7 +52,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
     f.inputs do
       f.input :user, as: :select, collection: User.where(id: f.object.user_id).map { |u| ["#{u.first_name}, #{u.last_name}", u.id] }
       f.input :boat, as: :select, collection: Boat.where(id: f.object.boat_id).map { |b| ["#{b.manufacturer.name}, #{b.name}", b.id] }
-      f.input :status, as: :select, collection: Enquiry::STATUSES.map { |s| [s.titleize, s] }, include_blank: false
+      f.input :status, as: :select, collection: Lead::STATUSES.map { |s| [s.titleize, s] }, include_blank: false
       f.input :title, as: :select, collection: User::TITLES.map { |t| [t, t] }
       f.input :first_name
       f.input :surname
@@ -60,7 +60,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
       f.input :phone
       f.input :remote_ip
       f.input :browser
-      f.input :bad_quality_reason, as: :select, collection: Enquiry::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, prompt: 'Please select...'
+      f.input :bad_quality_reason, as: :select, collection: Lead::BAD_QUALITY_REASONS.map { |r| [r.titleize, r] }, prompt: 'Please select...'
       f.input :bad_quality_comment
     end
     actions
@@ -117,7 +117,7 @@ ActiveAdmin.register Enquiry, as: 'Lead' do
   end
 
   member_action :delete, method: :post do
-    @lead = Enquiry.find(params[:id])
+    @lead = Lead.find(params[:id])
     @lead.update status: 'deleted', bad_quality_comment: params[:reason]
     redirect_to :back, notice: 'Lead deleted successfully'
   end

@@ -5,18 +5,18 @@ Make: #{@boat.manufacturer}
 Model: #{@boat.model}
 Details page: #{sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)}
 Pop yachts boat ID: #{@boat.source_id}
-Customer Name: #{@enquiry.name}
-Customer Email: #{@enquiry.email}
-- unless @enquiry.phone.blank?
- Customer Tel: #{@enquiry.country_code} #{@enquiry.phone}
-- unless @enquiry.message.blank?
- Customer message: #{@enquiry.message}
+Customer Name: #{@lead.name}
+Customer Email: #{@lead.email}
+- unless @lead.phone.blank?
+ Customer Tel: #{@lead.country_code} #{@lead.phone}
+- unless @lead.message.blank?
+ Customer message: #{@lead.message}
 RB Id: #{@boat.ref_no}
 
-#{@enquiry.created_at.strftime('%d %b %Y')}
+#{@lead.created_at.strftime('%d %b %Y')}
 
-#{lead_url(@enquiry)}
-If you would like to contact the customer directly, please send email to #{@enquiry.email}.
+#{lead_url(@lead)}
+If you would like to contact the customer directly, please send email to #{@lead.email}.
 
 Kind regards
 The Rightboat Team

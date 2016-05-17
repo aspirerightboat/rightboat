@@ -10,10 +10,10 @@ ActiveAdmin.register_page 'Dashboard' do
     beginning_of_month= now.beginning_of_month
     beginning_of_last_week = 1.week.ago.beginning_of_week
     beginning_of_last_month= 1.month.ago.beginning_of_month
-    total_leads_last_week = Enquiry.created_between('pending', beginning_of_last_week, beginning_of_week).count
-    total_approved_leads_last_week = Enquiry.created_between('approved', beginning_of_last_week, beginning_of_week).count
-    total_leads_last_month = Enquiry.created_between('pending', beginning_of_last_month, beginning_of_month).count
-    total_approved_leads_last_month = Enquiry.created_between('approved', beginning_of_last_month, beginning_of_month).count
+    total_leads_last_week = Lead.created_between('pending', beginning_of_last_week, beginning_of_week).count
+    total_approved_leads_last_week = Lead.created_between('approved', beginning_of_last_week, beginning_of_week).count
+    total_leads_last_month = Lead.created_between('pending', beginning_of_last_month, beginning_of_month).count
+    total_approved_leads_last_month = Lead.created_between('approved', beginning_of_last_month, beginning_of_month).count
 
     columns do
       column do
@@ -80,7 +80,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Leads today:'
               end
               td do
-                text_node Enquiry.where('created_at > ?', beginning_of_day).count
+                text_node Lead.where('created_at > ?', beginning_of_day).count
               end
             end
             tr do
@@ -89,7 +89,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_from(status, beginning_of_day).count
+                  text_node Lead.created_from(status, beginning_of_day).count
                   text_node '/' if i < 2
                 end
               end
@@ -100,7 +100,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td class: 'text-green' do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_from(status, beginning_of_week).count
+                  text_node Lead.created_from(status, beginning_of_week).count
                   text_node '/' if i < 2
                 end
               end
@@ -111,7 +111,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td class: 'text-green' do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_from(status, beginning_of_month).count
+                  text_node Lead.created_from(status, beginning_of_month).count
                   text_node '/' if i < 2
                 end
               end
@@ -126,7 +126,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_between(status, beginning_of_last_week, beginning_of_week).sum(:lead_price)
+                  text_node Lead.created_between(status, beginning_of_last_week, beginning_of_week).sum(:lead_price)
                   text_node '/' if i < 2
                 end
               end
@@ -137,7 +137,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_between(status, beginning_of_last_month, beginning_of_month).sum(:lead_price)
+                  text_node Lead.created_between(status, beginning_of_last_month, beginning_of_month).sum(:lead_price)
                   text_node '/' if i < 2
                 end
               end
@@ -267,7 +267,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td class: 'text-green' do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_between(status, beginning_of_last_week, beginning_of_week).count
+                  text_node Lead.created_between(status, beginning_of_last_week, beginning_of_week).count
                   text_node '/' if i < 2
                 end
               end
@@ -277,7 +277,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Rejected Leads last week (Mon-Sun):'
               end
               td class: 'text-red' do
-                text_node Enquiry.rejected.where(created_at: beginning_of_last_week..beginning_of_week).count
+                text_node Lead.rejected.where(created_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -306,7 +306,7 @@ ActiveAdmin.register_page 'Dashboard' do
               end
               td class: 'text-green' do
                 %w(pending approved invoiced).each_with_index do |status, i|
-                  text_node Enquiry.created_between(status, beginning_of_last_month, beginning_of_month).count
+                  text_node Lead.created_between(status, beginning_of_last_month, beginning_of_month).count
                   text_node '/' if i < 2
                 end
               end
@@ -316,7 +316,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total Rejected Leads last month:'
               end
               td class: 'text-red' do
-                text_node Enquiry.rejected.where(created_at: beginning_of_last_month..beginning_of_month).count
+                text_node Lead.rejected.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
             tr do

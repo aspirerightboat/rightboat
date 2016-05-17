@@ -18,7 +18,7 @@ $ ->
           bottom: '0px'
       else
         $('#multiselected-request-for-details').animate
-          bottom: '-90px'
+          bottom: '-95px'
 
     word_with_number = (word, number) ->
       if number == 1
@@ -76,6 +76,15 @@ $ ->
     #
 
     loadMultiSelected()
+
+    $('.boat-thumb.thumbnail.multiselectable .tick').hover (e) ->
+      if $('.multiselectable.selected').length == 0 # in selected mode
+        $('#multiselected_explanation').animate
+          bottom: '0px'
+    , (e) ->
+      $('#multiselected_explanation').animate
+        bottom: '-50px'
+
 
     $('.boat-thumb.thumbnail.multiselectable .tick').on 'click', (e) ->
       e.stopPropagation()

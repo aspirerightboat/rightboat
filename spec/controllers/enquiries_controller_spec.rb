@@ -172,9 +172,5 @@ RSpec.describe EnquiriesController do
         expect(Enquiry.batched.count).to eq 3
       end
     end
-
-    context "user logged in" do
-
-    end
   end
 end

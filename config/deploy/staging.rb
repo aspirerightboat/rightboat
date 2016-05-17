@@ -14,4 +14,4 @@ set :solr_data_path, "#{shared_path}/solr/data"
 set :solr_cmd, "/home/ubuntu/.rvm/bin/rvm-shell -c 'cd #{current_path} && RAILS_ENV=staging bundle exec sunspot-solr %{cmd} --port=8983 --solr-home=#{current_path}/solr --data-directory=#{shared_path}/solr/data --pid-dir=#{shared_path}/pids'"
 
 set :linked_dirs, fetch(:linked_dirs) + %w(public/boat_images public/broker_logos public/user
-                                           public/buyer_guide public/article_images)
+                                           public/buyer_guide public/article_images public/zipped_pdfs)

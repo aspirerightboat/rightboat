@@ -28,3 +28,4 @@ every(1.day, at: '8:00') { rake 'export:run_all' } if Rails.env.production?
 every(1.day, at: '23:00') { rake 'import:rearrange_imports' } if Rails.env.production?
 every(1.day, at: '23:10') { rake 'error_events:remove_old' }
 every(1.day, at: '23:15') { rake 'boat_pdfs:cleanup' }
+every(1.day, at: '23:20') { rake 'boats_zips:cleanup' }

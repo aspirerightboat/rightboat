@@ -14,7 +14,7 @@ $ ->
         $('#enquiry_result_popup').displayPopup()
       else
         $('#enquiry_popup_downloading').displayPopup()
-        setTimeout (-> $('#enquiry_popup_downloading').modal('hide')), 2000
+        setTimeout (-> $('#enquiry_popup_downloading').modal('hide')), 4000
 
     $('#enquiry_signup_form')
     .on 'ajax:before', (e) ->

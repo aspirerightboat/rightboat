@@ -116,8 +116,10 @@
 
 %iframe(width="1" height="1" frameborder="0" id="download_iframe")
 
-#enquiry_popup_downloading.modal.fade
+#enquiry_popup_downloading.modal.fade(data-backdrop="false")
   .modal-dialog
     .modal-content
       .modal-body
+        %button.close(aria-label="Close" data-dismiss="modal" type="button")
+          %span(aria-hidden="true") &times;
         Your download will start shortly, a copy has also been emailed to you.

@@ -24,7 +24,7 @@
 
 # uploaded files
 /public/uploads
-/public/zip_pdfs
+/public/zipped_pdfs
 /public/boat_images
 /public/broker_logos
 /public/buyer_guide

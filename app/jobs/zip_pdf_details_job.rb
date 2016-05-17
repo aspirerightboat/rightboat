@@ -23,13 +23,18 @@ class ZipPdfDetailsJob
     end
 
     zipfile_name = "#{Rails.root}/boat_pdfs/#{Time.current.strftime('%Y-%m-%d')}/#{generate_filename}"
-    if system("zip -j '#{zipfile_name}' #{files.join(' ')}")
+    res = system("zip -j '#{zipfile_name}' #{files.join(' ')}")
+    raise StandardError.new('Failed to create zip') unless res
+    if res
       uploader = ZipBoatsPdfUploader.new
       uploader.store!(File.new(zipfile_name))
       job.update(url: uploader.url, status: :ready)
-
       LeadsMailer.leads_created_notify_buyer(leads, zipfile_name).deliver_now
     end
+  rescue StandardError => e
+    Rightboat::CleverErrorsNotifier.try_notify(e, nil, nil, job: 'ZipPdfDetailsJob')
+    job.update(status: :fail)
+    raise e
   end
 
   private

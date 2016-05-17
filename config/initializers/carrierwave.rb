@@ -12,7 +12,12 @@ if Rails.env.production?
     config.asset_host = 'https://d2qh54gyqi6t5f.cloudfront.net'
 
     config.fog_directory  = 'rightboat'
-    # config.fog_public     = true
     config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}
     end
+end
+
+CarrierWave.configure do |config|
+  config.ignore_integrity_errors = false
+  config.ignore_processing_errors = false
+  config.ignore_download_errors = false
 end

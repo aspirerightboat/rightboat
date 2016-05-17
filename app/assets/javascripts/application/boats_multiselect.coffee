@@ -13,6 +13,7 @@ $ ->
         if jobStatus.length == 0
           $('#multiselected-request-for-details .processing').text('').hide()
           $('#button-request-for-details').show()
+        $('.selected-label').removeClass('unvisible')
         $('#number-selected').text(word_with_number('boat', selected.length) + ' selected')
         $('#multiselected-request-for-details').animate
           bottom: '0px'
@@ -54,13 +55,19 @@ $ ->
       .done (response) ->
         $('#multiselected-request-for-details .processing').addClass('inline-loading').show()
         jobStatus = response.status
-        if jobStatus != 'processing' && jobStatus == 'ready'
+        if jobStatus != 'processing'
           $('#multiselected-request-for-details .processing')
           .removeClass('inline-loading')
-          .append("<span class='glyphicon glyphicon-download-alt'></span><a href='" + response.url + "'> Download File </a>")
-          $('#download_iframe').attr('src', response.url)
           $('#button-request-for-details').hide()
-          jobStatus = ''
+          $('.selected-label').addClass('unvisible')
+          if jobStatus == 'ready'
+            $('#multiselected-request-for-details .processing')
+            .append("<span class='glyphicon glyphicon-download-alt'></span><a href='" + response.url + "'> Download File </a>")
+            $('#download_iframe').attr('src', response.url)
+          else
+            $('#multiselected-request-for-details .processing')
+            .append("<span class='glyphicon glyphicon-remove'></span> Something went wrong")
+
 
     clearMultiselect = () ->
       $('.multiselectable').removeClass('selected')

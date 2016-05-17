@@ -1,45 +1,43 @@
 class LeadCreatedMailsJob
   def initialize(lead_ids)
-    @leads = lead_ids
+    @lead_ids = lead_ids
   end
 
   def perform
-    if @leads.count > 1
-      perform_multiple
+    if @lead_ids.one?
+      perform_one
     else
-      perform_single
+      perform_many
     end
   end
 
   private
 
-  def perform_single
-    lead = Enquiry.where(id: @leads).first
-    boat = lead.boat
-
-    Rightboat::BoatPdfGenerator.ensure_pdf(boat)
+  def perform_one
+    lead = Enquiry.find(@lead_ids.first)
+    Rightboat::BoatPdfGenerator.ensure_pdf(lead.boat)
 
     LeadsMailer.lead_created_notify_buyer(lead.id).deliver_now
 
-    notify_broker(boat)
+    notify_broker(lead)
   end
 
-  def perform_multiple
-    boats = Enquiry.where(@leads).map(&:boat)
+  def perform_many
+    leads = Enquiry.includes(boat: :user).find(@lead_ids)
 
-    boats.each do |boat|
-      notify_broker(boat)
+    leads.each do |lead|
+      notify_broker(lead)
     end
   end
 
-  def notify_broker(boat)
-    broker = boat.user
+  def notify_broker(lead)
+    broker = lead.boat.user
     if %w(leads@popyachts.com).include? broker.email
-      LeadsMailer.lead_created_notify_pop_yachts(@lead_id).deliver_later
+      LeadsMailer.lead_created_notify_pop_yachts(lead.id).deliver_later
     elsif broker.payment_method_present?
-      LeadsMailer.lead_created_notify_broker(@lead_id).deliver_later
+      LeadsMailer.lead_created_notify_broker(lead.id).deliver_later
     else
-      LeadsMailer.lead_created_tease_broker(@lead_id).deliver_later
+      LeadsMailer.lead_created_tease_broker(lead.id).deliver_later
     end
   end
 end

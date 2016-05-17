@@ -255,9 +255,8 @@ module Rightboat
                     when 'VehicleRemarketingEngineLineItem'
                       case @tree[5]
                       when 'VehicleRemarketingEngine' # could be 0..4 VehicleRemarketingEngine items for one boat
-                        @engines_count += 1
                         case @tree[6]
-                        when 'MakeString' then @boat.engine_manufacturer = chars
+                        when 'MakeString' then @boat.engine_manufacturer = chars; @engines_count += 1
                         when 'Model' then @boat.engine_model = chars
                         when 'BoatEngineTypeCode' then @boat.engine_type = chars # Inboard | Outboard | Outboard 4 Stroke | Inboard/Outboard | Outboard 2 Stroke | Electric | V Drive | Other
                         when 'FuelTypeCode' then @boat.fuel_type = chars # diesel | unleaded | Other | electric

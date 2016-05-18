@@ -241,7 +241,10 @@ module Rightboat
 
         # ensure spec records exists
         importer.jobs_mutex.synchronize do
-          @@spec_id_by_name ||= (Misspelling.where(source_type: 'Specification').pluck(:alias_string, :source_id).to_h.merge Specification.pluck(:name, :id).to_h)
+          @@spec_id_by_name ||= begin
+            misspellings_hash = Misspelling.where(source_type: 'Specification').pluck(:alias_string, :source_id).to_h
+            misspellings_hash.merge!(Specification.pluck(:name, :id).to_h)
+          end
           new_specs_hash.each_key do |name|
             @@spec_id_by_name[name] ||= Specification.create(name: name, display_name: name.titleize).id
           end
@@ -249,18 +252,30 @@ module Rightboat
 
         # crud boat specs
         if target.new_record?
-          new_specs_hash.each { |name, value| target.boat_specifications.build(specification_id: @@spec_id_by_name[name], value: value) }
+          new_specs_hash.each do |name, value|
+            target.boat_specifications.build(specification_id: @@spec_id_by_name[name], value: value)
+          end
         else
-          existing_specs = target.boat_specifications.specs_hash
+          existing_boat_specs = target.boat_specifications.includes(:specification).to_a
+          existing_spec_names = existing_boat_specs.map { |bs| bs.specification.name }
 
-          create_specs = new_specs_hash.except(*existing_specs.keys)
-          create_specs.each { |name, value| target.boat_specifications.create(specification_id: @@spec_id_by_name[name], value: value) }
-          delete_spec_names = existing_specs.keys - new_specs_hash.keys
-          target.boat_specifications.where(specification_id: delete_spec_names.map { |name| @@spec_id_by_name[name] }).delete_all if delete_spec_names.any?
+          create_specs = new_specs_hash.except(*existing_spec_names)
+          create_specs.each do |name, value|
+            target.boat_specifications.create(specification_id: @@spec_id_by_name[name], value: value)
+          end
+
+          delete_spec_names = existing_spec_names - new_specs_hash.keys
+          delete_spec_names.each do |name|
+            bs = existing_boat_specs.find { |bs| bs.specification.name == name }
+            bs.destroy(:force)
+          end
+
           update_specs = new_specs_hash.except(*create_specs.keys)
           update_specs.each do |name, value|
-            target.boat_specifications.where(specification_id: @@spec_id_by_name[name]).update_all(value: value) if existing_specs[name] != value
-            target.boat_specifications.where(specification_id: @@spec_id_by_name[name]).deleted.update_all(deleted_at: nil)
+            bs = existing_boat_specs.find { |bs| bs.specification.name == name }
+            bs.value = value
+            bs.deleted_at = nil
+            bs.save! if bs.changed?
           end
         end
       end

@@ -258,7 +258,10 @@ module Rightboat
           delete_spec_names = existing_specs.keys - new_specs_hash.keys
           target.boat_specifications.where(specification_id: delete_spec_names.map { |name| @@spec_id_by_name[name] }).delete_all if delete_spec_names.any?
           update_specs = new_specs_hash.except(*create_specs.keys)
-          update_specs.each { |name, value| target.boat_specifications.where(specification_id: @@spec_id_by_name[name]).update_all(value: value) if existing_specs[name] != value }
+          update_specs.each do |name, value|
+            target.boat_specifications.where(specification_id: @@spec_id_by_name[name]).update_all(value: value) if existing_specs[name] != value
+            target.boat_specifications.where(specification_id: @@spec_id_by_name[name]).deleted.update_all(deleted_at: nil)
+          end
         end
       end
 

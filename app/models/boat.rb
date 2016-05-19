@@ -61,11 +61,12 @@ class Boat < ActiveRecord::Base
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
   after_create :assign_slug
+  after_destroy :destroy_slave_images
 
   has_many :favourites, dependent: :delete_all
   has_many :leads
   has_many :boat_specifications
-  has_many :boat_images, -> { order(:position, :id) }, dependent: :destroy
+  has_many :boat_images, -> { order(:position, :id) }
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
   belongs_to :user
@@ -304,5 +305,9 @@ class Boat < ActiveRecord::Base
       new_model = manufacturer.models.find_or_create_by(name: custom_model)
       self.model_id = new_model.id
     end
+  end
+
+  def destroy_slave_images
+    slave_images.each { |i| i.destroy(:force) }
   end
 end

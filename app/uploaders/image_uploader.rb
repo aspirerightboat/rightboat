@@ -8,6 +8,6 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   def extension_white_list
-    %w(jpg jpeg gif png bmp)
+    %w(jpg jpeg gif png bmp tif tiff psd)
   end
 end

@@ -22,16 +22,3 @@ $(document).ready ->
 
   $('.preview-wrap').bind 'cocoon:after-insert', (e, insertedItem) ->
     loadPreview(insertedItem)
-
-  $('.save-search').on 'ajax:success', (e, data, status, xhr) ->
-    json = xhr.responseJSON
-    $(document.body).append(json.google_conversion) if json.google_conversion
-    $(@).find('.result-popup').fadeIn()
-
-  $(window).click ->
-    $('.result-popup').fadeOut()
-
-  $('.member-area .boat-thumb .caption').click (e) ->
-    $target = $(e.target)
-    unless $target.is('i') || $target.is('a')
-      window.location = $(this).attr('href')

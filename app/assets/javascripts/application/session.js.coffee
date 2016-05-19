@@ -45,7 +45,7 @@ $ ->
       method: 'POST'
       dataType: 'JSON'
       url: url
-      data: { user: $this.serializeObject() }
+      data: $this.serializeObject()
     .success (response)->
       # TODO: update page using ajax result instead of page refresh
       return_to = response.return_to

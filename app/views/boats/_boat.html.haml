@@ -17,7 +17,7 @@
           = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
         - else
           .no-image
-    .caption{data: {url: boat_url }, href: boat_url}
+    .caption{data: {url: boat_url}}
       %h4.text-uppercase= boat.manufacturer
       %h5= boat.model
       .boat-detail-item.boat-price.pull-right.text-right

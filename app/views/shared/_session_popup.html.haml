@@ -10,16 +10,16 @@
           .col-sm-6
             %h2.text-center Sign In
             %p If you already have an account, please enter your details:
-            = form_tag user_session_path, class: 'session-form' do
+            = form_for :user, url: user_session_path, html: { class: 'session-form' } do |f|
               .form-group
-                = label_tag :email, 'Account'
-                = text_field_tag :email, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Email'
+                = f.label :email, 'Account'
+                = f.text_field :email, class: 'form-control', 'data-validetta' => 'required', placeholder: 'Email'
               .form-group
-                = label_tag :password
-                = password_field_tag :password, '', class: 'form-control', 'data-validetta' => 'required', placeholder: 'Password'
+                = f.label :password
+                = f.password_field :password, class: 'form-control', 'data-validetta' => 'required', placeholder: 'Password'
               .form-group
-                = check_box_tag :remember_me
-                = label_tag :remember_me
+                = f.check_box :remember_me
+                = f.label :remember_me
               .form-group
                 = button_tag 'Login', type: 'submit', class: 'btn-flat btn-block'
               .form-group

@@ -1,3 +1,6 @@
+%h1 My Recent Views
+%hr
+
 - if @viewed_boats.length > 0
   #boats-list.row(data-layout-mode="#{current_layout_mode}")
     = render partial: 'boats/boat', collection: @viewed_boats, locals: {multiselectable: true}
@@ -6,3 +9,5 @@
       = paginate @viewed_boats
 - else
   %p.lead.text-center No boats history.
+
+= render 'shared/lead_popup_batch'

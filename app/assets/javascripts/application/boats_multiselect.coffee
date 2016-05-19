@@ -71,8 +71,8 @@ $ ->
 
     clearMultiselect = () ->
       $('.multiselectable').removeClass('selected')
-      toggleBottomBar()
       Cookies.remove 'boats_multi_selected'
+#      toggleBottomBar()
       $('#leads_message').attr('data-validetta', '').val('')
       clearInterval(intervalId)
       jobStatus = ''
@@ -114,6 +114,7 @@ $ ->
 
     $('#button-request-for-details-clear').click ->
       clearMultiselect()
+      toggleBottomBar()
       false
 
     $('#button-request-for-details').on 'click', (e) ->

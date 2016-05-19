@@ -18,7 +18,11 @@
 
   - if @recent_boats.present?
     #recent-boats
-      %h3.toolbar-title My Recent Views
+      %h3.toolbar-title
+        - if current_user
+          = link_to 'My Recent Views', member_recent_views_path
+        - else
+          My Recent Views
       .container
         .row
           = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat

@@ -96,7 +96,7 @@ class BoatsController < ApplicationController
       redirect_to({action: :index}, alert: I18n.t('messages.boat_not_exist')) and return
     end
 
-    UserActivity.create_boat_visit(boat_id: @boat.id, user_id:  current_user&.id, user_email:  current_user&.email)
+    UserActivity.create_boat_visit(boat_id: @boat.id, user: current_user)
     store_recent
   end
 

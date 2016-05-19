@@ -71,8 +71,8 @@ $ ->
 
     clearMultiselect = () ->
       $('.multiselectable').removeClass('selected')
-      toggleBottomBar()
       Cookies.remove 'boats_multi_selected'
+#      toggleBottomBar()
       $('#leads_message').attr('data-validetta', '').val('')
       clearInterval(intervalId)
       jobStatus = ''
@@ -96,6 +96,8 @@ $ ->
     $('.boat-thumb.thumbnail.multiselectable .tick').on 'click', (e) ->
       e.stopPropagation()
       e.preventDefault()
+      isSold = $(@).siblings('.sold').length > 0
+      return false if isSold
       if $(@).data('boat-message-required')
         $('#leads_message').attr('data-validetta', 'required')
       parent = $(@).parents('.boat-thumb.thumbnail.multiselectable')
@@ -105,19 +107,19 @@ $ ->
 
     $('.boat-thumb.thumbnail.multiselectable').on 'click', (e) ->
       return if $(e.target).hasClass('view-summary') # obey view summary button in anyt case
+
       if $('.multiselectable.selected').length > 0 # in selected mode
         e.preventDefault()
+        isSold = $(@).children('.sold').length > 0
+        return false if isSold
         $(@).toggleClass('selected')
         boat_id = $(@).children('.tick').data('boat-id')
         sendSelectedBoatsToCookies($(@), boat_id)
         toggleBottomBar()
 
-    $('.boat-thumb .caption').click ->
-      if $('.multiselectable.selected').length == 0
-        window.location = $(@).data('url')
-
     $('#button-request-for-details-clear').click ->
       clearMultiselect()
+      toggleBottomBar()
       false
 
     $('#button-request-for-details').on 'click', (e) ->

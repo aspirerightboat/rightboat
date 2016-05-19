@@ -112,10 +112,6 @@ $ ->
         sendSelectedBoatsToCookies($(@), boat_id)
         toggleBottomBar()
 
-    $('.boat-thumb .caption').click ->
-      if $('.multiselectable.selected').length == 0
-        window.location = $(@).data('url')
-
     $('#button-request-for-details-clear').click ->
       clearMultiselect()
       false

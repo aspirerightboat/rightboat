@@ -10,7 +10,7 @@
           = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
         - else
           .no-image
-    .caption(href="#{makemodel_boat_path(boat)}")
+    .caption{data: {url: makemodel_boat_path(boat)}}
       .boat-links.text-right.pull-right
         - if controller_name == 'leads'
           .clearfix

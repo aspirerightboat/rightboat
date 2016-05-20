@@ -17,7 +17,7 @@ class LeadsMailer < ApplicationMailer
   end
 
   def leads_created_notify_buyer(lead_ids, zip_file)
-    @leads = Lead.where(id: lead_ids)
+    @leads = Lead.where(id: lead_ids).includes(boat: [:manufacturer, :model])
     @boats = @leads.map(&:boat)
     @user_name = @leads.first.first_name
     attach_boat_zip(zip_file)

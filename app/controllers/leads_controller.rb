@@ -106,7 +106,9 @@ class LeadsController < ApplicationController
     if user.save
       sign_in(user)
       lead_ids = [params[:lead_id], params[:lead_ids]&.split(',')].flatten.compact
-      follow_makemodel_of_boats(Lead.where(id: lead_ids).boats)
+      boat_ids = Lead.where(id: lead_ids).pluck(:boat_id)
+      boats = Boat.where(id: boat_ids).to_a
+      follow_makemodel_of_boats(boats)
       render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
                                                         locals: {form_name: 'lead_signup_form'})}
     else
@@ -152,7 +154,8 @@ class LeadsController < ApplicationController
 
   def fetch_boats
     boats_ids = params[:boats_ids]&.split(',') || []
-    Boat.where(id: boats_ids).includes(:user)
+    Boat.where(id: boats_ids).includes(:currency, :manufacturer, :model, :country, :vat_rate, :primary_image,
+                                       user: [:broker_info, address: :country], office: :address)
   end
 
   def require_broker

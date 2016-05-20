@@ -98,6 +98,13 @@ class Boat < ActiveRecord::Base
   scope :featured, -> { where(featured: true) }
   scope :reduced, -> { where(recently_reduced: true) }
   scope :recently_reduced, -> { reduced.limit(3) }
+  scope :recently_viewed, -> (user) do
+    include_models = [:manufacturer, :model, :user, :vat_rate, :country, :currency, :primary_image]
+    joins(:user_activities)
+    .where(user_activities: {kind: :boat_view})
+    .where(user_activities: {user_id: user.id})
+    .order('user_activities.id DESC').uniq.includes(*include_models)
+  end
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 

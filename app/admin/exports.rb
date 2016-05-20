@@ -38,6 +38,15 @@ ActiveAdmin.register Export do
     end
   end
 
+  form do |f|
+    f.inputs do
+      f.input :user, as: :select, collection: User.general.order(:first_name, :last_name), label_method: :name, value_method: :id, include_blank: false
+      f.input :export_type, as: :select, collection: Export::EXPORT_TYPES, include_blank: false
+    end
+
+    f.actions
+  end
+
   sidebar 'Tools', only: [:index, :last_log] do
     para { link_to 'Run All', [:run_all, :admin, :exports], method: :post, class: 'button', data: {disable_with: 'Working...'} }
   end

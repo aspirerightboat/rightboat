@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
         ActionController::RoutingError,
         ActionController::UnknownFormat
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
-    when Rightboat::SolrIsDownError
+    when SolrIsDownError
       render file: "#{Rails.root}/public/503.html", layout: false, status: :service_unavailable
     else
       Rightboat::CleverErrorsNotifier.try_notify(exception, request, current_user)

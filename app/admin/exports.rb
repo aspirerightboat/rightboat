@@ -1,6 +1,8 @@
 ActiveAdmin.register Export do
   menu priority: 4
 
+  permit_params :user_id, :export_type
+
   filter :id, as: :numeric
   filter :user, collection: -> { User.companies }
   filter :active

@@ -94,9 +94,10 @@ $ ->
 
     $('.boat-thumb.thumbnail.multiselectable .tick').on 'click', (e) ->
       e.stopPropagation()
-      e.preventDefault()
       isSold = $(@).siblings('.sold').length > 0
-      return false if isSold
+      if isSold
+        $(@).hide()
+        return false
       if $(@).data('boat-message-required')
         $('#leads_message').attr('data-validetta', 'required')
       parent = $(@).parents('.boat-thumb.thumbnail.multiselectable')

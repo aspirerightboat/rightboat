@@ -6,7 +6,8 @@ class UserActivity < ActiveRecord::Base
   scope :recent_views, -> { where(kind: :boat_view).order(id: :desc) }
   scope :created_leads, -> { where(kind: :lead).order(id: :desc) }
   scope :searches, -> { where(kind: :search).order(id: :desc) }
-  scope :recent, -> (limit = 100) {order(id: :desc).limit(limit)}
+  scope :recent, ->(limit = nil) { order(id: :desc).limit(limit) }
+
   def self.create_boat_visit(boat_id:, user: nil)
     create(
       kind: :boat_view,

@@ -1,8 +1,7 @@
 class LeadsController < ApplicationController
   before_action :authenticate_user!, only: [:show, :approve, :quality_check, :define_payment_method]
   before_action :load_lead, only: [:show, :approve, :quality_check]
-  before_action :require_broker, only: [:approve, :quality_check]
-  before_action :require_buyer_or_broker, only: [:show]
+  before_action :require_broker, only: [:approve, :quality_check, :show]
   before_action :require_broker_payment_method, only: [:show]
   before_action :remember_when_broker_accessed, only: [:show]
   before_action :add_saved_searches_alert_id, only: [:create]
@@ -174,12 +173,6 @@ class LeadsController < ApplicationController
 
   def require_broker
     if !can_view_as_broker(current_user)
-      redirect_to root_path, alert: I18n.t('messages.not_authorized')
-    end
-  end
-
-  def require_buyer_or_broker
-    if !can_view_as_broker(current_user) && !can_view_as_buyer(current_user)
       redirect_to root_path, alert: I18n.t('messages.not_authorized')
     end
   end

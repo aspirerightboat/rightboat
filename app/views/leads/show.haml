@@ -29,7 +29,11 @@
       %h2 Lead Details
       %ul
         %li Name: <b>#{@lead.title} #{@lead.first_name} #{@lead.surname}</b>
-        %li Email: <b>#{@lead.email}</b>
+        %li
+          Email: <b>#{@lead.email}</b>
+          = mail_to(@lead.email,
+            'Reply to Customer',
+            subject: "#{@boat.manufacturer}; #{@boat.model}; #{@boat.ref_no}; #{@boat.source_id || @boat.source_url}")
         - if @lead.phone.present?
           %li Tel: <b>#{@lead.country_code} #{@lead.phone}</b>
         - if @lead.message.present?

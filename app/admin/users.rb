@@ -157,7 +157,7 @@ ActiveAdmin.register User do
         end
       end
     end
-    activities = user.user_activities.recent
+    activities = user.user_activities.recent(20)
                      .includes([
                                  {boat: [:manufacturer, :model]},
                                  {lead: :boat}
@@ -165,6 +165,18 @@ ActiveAdmin.register User do
                      .group_by { |c| c.created_at.to_date }
 
     render partial: 'stats', locals: {user_activities: activities}
+
+    para {link_to 'Load history', activity_history_admin_user_path(user), class: 'button'}
+  end
+
+  member_action :activity_history, method: :get do
+    user = User.find_by(slug: params[:id])
+    @activities = user.user_activities.recent
+        .includes([
+                      {boat: [:manufacturer, :model]},
+                      {lead: :boat}
+                  ])
+        .group_by { |c| c.created_at.to_date }
   end
 
   sidebar 'User Boats', only: [:show, :edit] do

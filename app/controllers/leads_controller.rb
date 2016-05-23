@@ -40,6 +40,8 @@ class LeadsController < ApplicationController
       json[:boat_pdf_url] = stream_enquired_pdf_url(lead.id)
 
       follow_makemodel_of_boats([lead.boat]) if current_user
+      UserActivity.create_lead_record(lead_id: lead.id, user: current_user) if current_user
+
       render json: json
     else
       render json: lead.errors.full_messages, status: 422, root: false
@@ -72,7 +74,13 @@ class LeadsController < ApplicationController
         leads.each(&:save!)
       end
 
-      follow_makemodel_of_boats(boats) if current_user
+      if current_user
+        follow_makemodel_of_boats(boats)
+        leads.each do |lead|
+          UserActivity.create_lead_record(lead_id: lead.id, user: current_user)
+        end
+      end
+
       render json: batch_create_response_json(leads)
     else
       render json: leads.map { |lead| lead.errors.full_messages }.flatten.uniq, status: 422, root: false

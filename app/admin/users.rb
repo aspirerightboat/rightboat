@@ -157,6 +157,14 @@ ActiveAdmin.register User do
         end
       end
     end
+    activities = user.user_activities.recent
+                     .includes([
+                                 {boat: [:manufacturer, :model]},
+                                 {lead: :boat}
+                               ])
+                     .group_by { |c| c.created_at.to_date }
+
+    render partial: 'stats', locals: {user_activities: activities}
   end
 
   sidebar 'User Boats', only: [:show, :edit] do

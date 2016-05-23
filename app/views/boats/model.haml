@@ -17,7 +17,6 @@
       %h1 #{@page_title}
   .row(data-layout-mode="#{current_layout_mode}")
     - @boats.each do |b|
-      = render layout: 'boats/boat', locals: {boat: b} do
-        -#
+      = render partial: 'boats/boat', locals: {boat: b}
     .col-xs-12
       = paginate @boats

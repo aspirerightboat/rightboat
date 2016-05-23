@@ -35,7 +35,13 @@ class LeadsController < ApplicationController
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
                                                   locals: {lead_price: lead.lead_price})
-      json[:show_result_popup] = true if !current_user
+      if current_user
+        json[:downloading_popup] = render_to_string(partial: 'shared/lead_downloading_popup',
+                                                    locals: {boat: lead.boat})
+      else
+        json[:signup_popup] = render_to_string(partial: 'shared/lead_signup_popup',
+                                               locals: {boat: lead.boat})
+      end
       json[:lead_id] = lead.id
       json[:boat_pdf_url] = stream_enquired_pdf_url(lead.id)
 
@@ -220,7 +226,9 @@ class LeadsController < ApplicationController
     job = BatchUploadJob.create
     ZipPdfDetailsJob.new(job: job, boats: fetch_boats, leads: leads).perform
     json = job.as_json
-    json[:show_result_popup] = true if !current_user
+    if !current_user
+      json[:signup_popup] = render_to_string(partial: 'shared/leads_signup_popup')
+    end
     json[:title] = lead_params[:title]
     json[:first_name] = lead_params[:first_name]
     json[:last_name] = lead_params[:surname]

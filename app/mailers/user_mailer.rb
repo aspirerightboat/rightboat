@@ -50,8 +50,8 @@ class UserMailer < ApplicationMailer
     @reason = reason
     @alert_reason = alert_reason
     if @reason == 'deleted'
-      @other_boats = Rightboat::BoatSearch.new.do_search(manufacturer_id: @boat.manufacturer_id, model_id: @boat.model_id, exclude_ref_no: @boat.ref_no, includes: [:user, :currency, :manufacturer, :model, :primary_image, :vat_rate, :country]).results
-      @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options, includes: [:user, :currency, :manufacturer, :model, :primary_image, :vat_rate, :country]).results
+      @other_boats = Rightboat::BoatSearch.new.do_search(@boat.other_options).results
+      @similar_boats = Rightboat::BoatSearch.new.do_search(@boat.similar_options).results
     end
 
     to_email = STAGING_EMAIL || @user.email

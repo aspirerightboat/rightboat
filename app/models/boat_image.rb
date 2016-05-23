@@ -34,11 +34,11 @@ class BoatImage < ActiveRecord::Base
           log_error_proc&.call("Invalid image file. url=#{url}")
           return
         end
-        self.file = ActionDispatch::Http::UploadedFile.new(
-            tempfile: f,
-            filename: File.basename(uri.path)
-        )
-        self.content_type = mime_type_by_file_content(f.path)
+        file_content_type = mime_type_by_file_content(f.path)
+        filename = File.basename(uri.path)
+        filename = fix_file_ext(filename, file_content_type)
+        self.file = ActionDispatch::Http::UploadedFile.new(tempfile: f, filename: filename)
+        self.content_type = file_content_type
         self.http_last_modified = Time.parse(f.meta['last-modified']) if f.meta['last-modified']
         self.http_etag = f.meta['etag'] if f.meta['etag']
         self.downloaded_at = Time.current
@@ -51,6 +51,13 @@ class BoatImage < ActiveRecord::Base
         sleep 3.seconds
         retry
       end
+    # rescue CarrierWave::IntegrityError => e
+    #   if e.message =~ /\AYou are not allowed to upload "(.*)" files/ # when uploading not allowed image types
+    #     remove_file!
+    #     destroy(:force) if persisted?
+    #   else
+    #     raise e
+    #   end
     rescue OpenURI::HTTPError => e
       case e.message[0,3]
       when '404'
@@ -75,7 +82,29 @@ class BoatImage < ActiveRecord::Base
     file.file.present?
   end
 
+  private
+
   def mime_type_by_file_content(file_path)
     FileMagic.new(FileMagic::MAGIC_MIME).file(file_path).split(';').first
   end
+
+  def fix_file_ext(filename, file_content_type)
+    extension = File.extname(filename)
+    ext_by_file_content = case file_content_type
+                          when 'image/jpeg' then '.jpg'
+                          when 'image/png' then '.png'
+                          when 'image/gif' then '.gif'
+                          when 'image/bmp' then '.bmp'
+                          when 'image/tiff' then '.tif'
+                          when 'image/vnd.adobe.photoshop' then '.psd'
+                          end
+
+    if ext_by_file_content.present? && ext_by_file_content != extension
+      filename.gsub!(/\.\w*\z/, '')
+      filename << ext_by_file_content
+    end
+
+    filename
+  end
+
 end

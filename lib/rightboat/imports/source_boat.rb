@@ -216,8 +216,12 @@ module Rightboat
 
         if saved && images.present?
           images_job = ImportBoatImagesJob.new(importer.import_trail.id, target.id, images, importer.images_proxy_url)
-          priority = new_record ? 0 : 10 # 0 has higher priority
-          Delayed::Job.enqueue images_job, queue: 'import_images', priority: priority
+          if ENV['INLINE_IMPORT_IMAGES']
+            images_job.perform
+          else
+            priority = new_record ? 0 : 10 # 0 has higher priority
+            Delayed::Job.enqueue images_job, queue: 'import_images', priority: priority
+          end
         end
 
         saved

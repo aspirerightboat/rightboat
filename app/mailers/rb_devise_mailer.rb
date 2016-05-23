@@ -7,4 +7,8 @@ class RBDeviseMailer < Devise::Mailer
 
   after_action :amazon_delivery
 
+  def amazon_delivery
+    mail.delivery_method.settings = Rails.application.secrets.amazon_smtp
+  end
+
 end

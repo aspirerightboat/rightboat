@@ -299,7 +299,7 @@ module Rightboat
 
         if target.new_record?
           class_groups.each do |x|
-            target.boat_class_groups.build(class_code_id: @@class_codes[x[:class_code]], primary: x[:primary])
+            target.class_groups.build(class_code_id: @@class_codes[x[:class_code]], primary: x[:primary])
           end
         else
           existing_class_groups = target.class_groups.includes(:class_code).to_a

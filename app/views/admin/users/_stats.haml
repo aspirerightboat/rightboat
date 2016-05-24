@@ -1,0 +1,11 @@
+- if user_activities.present?
+  .panel
+    %h3 Timeline
+
+    .panel_contents.user_activities
+      - user_activities.each do |day, activities|
+        %p
+          %div.centered
+            = day
+          - activities.each do |activity|
+            = user_activity_to_sentence(activity)

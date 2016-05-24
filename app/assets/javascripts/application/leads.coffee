@@ -9,28 +9,33 @@ $ ->
       $(document.body).append(json.google_conversion)
       $('#download_iframe').attr('src', json.boat_pdf_url)
       $('#lead_message').val('')
-      if json.show_result_popup
+      if json.signup_popup
+        $('#lead_signup_popup').remove()
+        $(document.body).append(json.signup_popup)
         $('#signup_lead_id').val json.lead_id
-        $('#lead_result_popup').displayPopup()
-      else
-        $('#lead_popup_downloading').displayPopup()
-        setTimeout (-> $('#lead_popup_downloading').modal('hide')), 4000
+        $('#lead_signup_form').leadSignupForm()
+        $('#lead_signup_popup').displayPopup()
+      if json.downloading_popup
+        $('#lead_downloading_popup').remove()
+        $(document.body).append(json.downloading_popup)
+        $('#lead_downloading_popup').displayPopup()
 
-    $('#lead_signup_form')
-    .on 'ajax:before', (e) ->
-      $('#signup_email').val($('#lead_email').val())
-      $('#signup_title').val($('#lead_title').val())
-      $('#signup_first_name').val($('#lead_first_name').val())
-      $('#signup_last_name').val($('#lead_last_name').val())
-      $('#signup_phone').val($('#lead_country_code').val() + ' ' + $('#lead_phone').val())
-      $('#signup_boat').val($form.data('boat-slug'))
-    .on 'ajax:success', (e, data, status, xhr) ->
-      json = xhr.responseJSON
-      $(document.body).append(json.google_conversion) if json.google_conversion
+    $.fn.leadSignupForm = ->
+      $form = @
+      $form.on 'ajax:before', (e) ->
+        $('#signup_email').val($('#lead_email').val())
+        $('#signup_title').val($('#lead_title').val())
+        $('#signup_first_name').val($('#lead_first_name').val())
+        $('#signup_last_name').val($('#lead_last_name').val())
+        $('#signup_phone').val($('#lead_country_code').val() + ' ' + $('#lead_phone').val())
+        $('#signup_boat').val($form.data('boat-slug'))
+      .on 'ajax:success', (e, data, status, xhr) ->
+        json = xhr.responseJSON
+        $(document.body).append(json.google_conversion) if json.google_conversion
 
-    $('.open-features-popup').click ->
-      $('#features_popup').modal('show')
-      false
+      $('.open-features-popup').click ->
+        $('#features_popup').modal('show')
+        false
 
   $('.hide-lead').on 'ajax:success', (e, data, status, xhr) ->
     $(@).closest('.boat-thumb-container').fadeOut()

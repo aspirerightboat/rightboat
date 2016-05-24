@@ -1,8 +1,7 @@
 class LeadsController < ApplicationController
   before_action :authenticate_user!, only: [:show, :approve, :quality_check, :define_payment_method]
   before_action :load_lead, only: [:show, :approve, :quality_check]
-  before_action :require_broker, only: [:approve, :quality_check]
-  before_action :require_buyer_or_broker, only: [:show]
+  before_action :require_broker, only: [:approve, :quality_check, :show]
   before_action :require_broker_payment_method, only: [:show]
   before_action :remember_when_broker_accessed, only: [:show]
   before_action :add_saved_searches_alert_id, only: [:create]
@@ -35,11 +34,19 @@ class LeadsController < ApplicationController
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
                                                   locals: {lead_price: lead.lead_price})
-      json[:show_result_popup] = true if !current_user
+      if current_user
+        json[:downloading_popup] = render_to_string(partial: 'shared/lead_downloading_popup',
+                                                    locals: {boat: lead.boat})
+      else
+        json[:signup_popup] = render_to_string(partial: 'shared/lead_signup_popup',
+                                               locals: {boat: lead.boat})
+      end
       json[:lead_id] = lead.id
       json[:boat_pdf_url] = stream_enquired_pdf_url(lead.id)
 
       follow_makemodel_of_boats([lead.boat]) if current_user
+      UserActivity.create_lead_record(lead_id: lead.id, user: current_user) if current_user
+
       render json: json
     else
       render json: lead.errors.full_messages, status: 422, root: false
@@ -72,7 +79,13 @@ class LeadsController < ApplicationController
         leads.each(&:save!)
       end
 
-      follow_makemodel_of_boats(boats) if current_user
+      if current_user
+        follow_makemodel_of_boats(boats)
+        leads.each do |lead|
+          UserActivity.create_lead_record(lead_id: lead.id, user: current_user)
+        end
+      end
+
       render json: batch_create_response_json(leads)
     else
       render json: leads.map { |lead| lead.errors.full_messages }.flatten.uniq, status: 422, root: false
@@ -164,12 +177,6 @@ class LeadsController < ApplicationController
     end
   end
 
-  def require_buyer_or_broker
-    if !can_view_as_broker(current_user) && !can_view_as_buyer(current_user)
-      redirect_to root_path, alert: I18n.t('messages.not_authorized')
-    end
-  end
-
   def require_broker_payment_method
     if current_user.company? && !current_user.payment_method_present?
       render action: :define_payment_method
@@ -212,7 +219,9 @@ class LeadsController < ApplicationController
     job = BatchUploadJob.create
     ZipPdfDetailsJob.new(job: job, boats: fetch_boats, leads: leads).perform
     json = job.as_json
-    json[:show_result_popup] = true if !current_user
+    if !current_user
+      json[:signup_popup] = render_to_string(partial: 'shared/leads_signup_popup')
+    end
     json[:title] = lead_params[:title]
     json[:first_name] = lead_params[:first_name]
     json[:last_name] = lead_params[:surname]

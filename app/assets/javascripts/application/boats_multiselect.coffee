@@ -137,14 +137,23 @@ $ ->
       jobID = json.id
       jobStatus = json.status
       $(document.body).append(json.google_conversions) if json.google_conversions
-      if json.show_result_popup
+      debugger
+      if json.signup_popup
+        $('#leads_signup_popup').remove()
+        $(document.body).append(json.signup_popup)
         $('#signup_email').val json.email
         $('#signup_title').val json.title
         $('#signup_first_name').val json.first_name
         $('#signup_last_name').val json.last_name
         $('#signup_phone').val json.full_phone_number
         $('#signup_lead_ids').val json.lead_ids
-        $('#leads_result_popup').displayPopup()
+        $('#leads_signup_popup').displayPopup()
+        $('#leads_signup_form').simpleAjaxForm()
+        .on 'ajax:success', (e, data, status, xhr) ->
+          debugger
+          json = xhr.responseJSON
+          $(document.body).append(json.google_conversion) if json.google_conversion
+          $('#lead_successfully_logged_popup').displayPopup()
       else
         $('#leads_popup').modal('hide')
 
@@ -154,6 +163,3 @@ $ ->
           clearInterval(intervalId)
       ), 1000
 
-    $('.signup-for-pdfs-form').simpleAjaxForm()
-    .on 'ajax:success', (e, data, status, xhr) ->
-      $('#lead_successfully_logged_popup').displayPopup()

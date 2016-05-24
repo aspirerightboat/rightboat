@@ -136,6 +136,10 @@ class Boat < ActiveRecord::Base
     options
   end
 
+  def other_options
+    {manufacturer_id: manufacturer_id, model_id: model_id, exclude_ref_no: ref_no}
+  end
+
   def manufacturer_model
     return manufacturer.to_s if !model || model.name == 'Unknown'
     [manufacturer.to_s, model.to_s].reject(&:blank?).join(' ')

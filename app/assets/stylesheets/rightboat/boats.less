@@ -53,6 +53,23 @@
     .boat-thumb-container:nth-child(2n+1) { clear: both; }
   }
 }
+.modal {
+  [data-layout-mode="thumbnail"] {
+    @media(min-width: @screen-md-min) {
+      .boat-thumb-container {
+        width: 33%;
+
+        &:nth-child(3n+1) {
+          clear: both;
+        }
+      }
+    }
+    @media(min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
+      .boat-thumb-container:nth-child(2n+1) { clear: both; }
+    }
+  }
+}
+
 *[data-layout-mode="list"] {
   .boat-thumb-container {
     width: 100% !important;

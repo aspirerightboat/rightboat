@@ -9,7 +9,7 @@
         - other_boats = Rightboat::BoatSearch.new.do_search(boat.other_options, per_page: 3).results
         - if other_boats.any?
           %p
-            There are other #{@boat.manufacturer_model} for sale:
+            There are other #{boat.manufacturer_model} for sale:
           .content
             .row(data-layout-mode="thumbnail")
               - other_boats.each do |b|

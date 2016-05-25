@@ -1,0 +1,28 @@
+- content_for :header_text do
+  .navbar-h My Rightboat
+
+#main_content.container(style="max-width: 600px")
+  - @custom_flashes = true
+  - if notice
+    .alert.alert-info= notice
+  - if alert
+    .alert.alert-warning= alert
+
+  h1 Forgot your password?
+
+  = form_for resource, as: resource_name, url: password_path(resource_name), remote: true, data: {format: :json}, html: {method: :post, class: 'reset-password-form', multipart: true} do |f|
+    .form-group
+      = f.label :email
+      = f.email_field :email, autofocus: true, class: 'form-control', 'data-validetta' => 'required,email'
+    .nice-buttons(style="text-align: center")
+      button.nice-button(type="submit") Send me reset password instructions
+
+#reset-password-result-popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(aria-label="Close" data-dismiss="modal" type="button")
+          span(aria-hidden="true") &times;
+      .modal-body
+        h4.text-center
+          | Please check your email account for the forgotten password email which will allow you to reset your password. This should arrive within a few minutes. If it has not, please check your spam folder.

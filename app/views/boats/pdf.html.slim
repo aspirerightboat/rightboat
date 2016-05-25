@@ -1,0 +1,80 @@
+- broker = @boat.user
+- broker_info = broker.broker_info
+- office = @boat.office
+
+.broker-info-block
+  - if broker_info.logo? || broker.avatar?
+    .broker-logo
+      = wicked_pdf_image_tag broker_info.logo? ? broker_info.logo_url(:thumb) : broker.avatar_url
+  .broker-info
+    div <strong>#{broker.name}</strong>
+    = render partial: 'shared/address', locals: {address: office.try(:address) || broker.address}
+    - if office.try(:daytime_phone).present?
+      div <b>Tel:</b> #{office.daytime_phone}
+    - elsif broker.phone.present?
+      div <b>Tel:</b> #{broker.phone}
+    - if office.try(:mobile).present?
+      div <b>Mobile:</b> #{office.mobile}
+    - elsif broker.mobile.present?
+      div <b>Mobile:</b> #{broker.mobile}
+    - if office.try(:fax).present?
+      div <b>Fax:</b> #{office.fax}
+    - elsif broker.fax.present?
+      div <b>Fax:</b> #{broker.fax}
+    div <b>Email:</b> #{mail_to office.try(:email) || broker.email}
+    - if office.try(:website).present?
+      div #{link_to office.website, office.website}
+    - elsif broker.broker_info && broker.broker_info.website.present?
+      div #{link_to broker.broker_info.website, broker.broker_info.website}
+
+- if @boat.primary_image
+  .boat-main-image
+    = wicked_pdf_image_tag @boat.primary_image.file_url
+
+.boat-title-block
+  h1 <b>#{@boat.manufacturer}</b>
+  - if @boat.model && @boat.model.name != 'Unknown'
+    h2 #{@boat.model}
+  h3 #{boat_price(@boat, @boat.safe_currency)} &nbsp;&nbsp;&nbsp;&nbsp;#{@boat.tax_status}
+  h3 #{@boat.year_built} year
+  h3 #{[@boat.location, @boat.country.to_s].reject(&:blank?).join(', ')}
+  h3 #{@boat.ref_no}
+  h3 #{@boat.source_id}
+  .qr-code-block
+    / boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
+    / use ref_no instead of url fore regular size of qrcode
+    = render partial: 'shared/qr_code', locals: {url: @boat.ref_no}
+    .qr-code-hint Scan to view boat online
+
+.page-break
+
+h3.heading Description
+.boat-description
+  = sanitize(@boat.description)
+
+.hr
+
+table.spec-table
+  - @boat.boat_specifications.includes(:specification).not_url.not_blank.each_slice(2).each do |spec1, spec2|
+    tr
+      th(width="25%")
+        = spec1.specification.to_s
+      td(width="25%")
+        = spec1.value
+      - if spec2
+        th(width="25%")
+          = spec2.specification.to_s
+        td(width="25%")
+          = spec2.value
+
+.page-break
+
+h3.heading
+  | Images
+  - if @boat.slave_images.count > 24
+    small (More available online)
+.boat-thumbs
+  - @boat.slave_images.limit(24).each_slice(2) do |slice|
+    .thumbs-row
+      - slice.each do |img|
+        .thumb= wicked_pdf_image_tag img.file_url(:thumb)

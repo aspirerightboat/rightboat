@@ -54,8 +54,8 @@ end
 require 'haml'
 
 def template(file, locals = {})
-  haml = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
+  content = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
   b = binding
   locals.each { |k, v| b.local_variable_set(k, v) }
-  Haml::Engine.new(haml).render(b)
+  Slim::Template.new(content).render(b)
 end

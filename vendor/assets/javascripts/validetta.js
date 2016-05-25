@@ -69,7 +69,7 @@
     /**
      * Validator
      * {count} which used below is the specified maximum or minimum value
-     * e.g if method is minLength and  rule is 2 ( minLength[2] )
+     * e.g if method is minLength and rule is 2 ( minLength[2] )
      * Output error windows text will be : 'Please select minimum 2 options.'
      *
      * @namespace
@@ -183,7 +183,7 @@
    */
   Validetta = function( form, options ) {
     /**
-     *  Public  Properties
+     *  Public Properties
      *  @property {mixed} handler It is used to stop or resume submit event handler
      *  @property {object} options Property is stored in plugin options
      *  @property {object} xhr Stores xhr requests

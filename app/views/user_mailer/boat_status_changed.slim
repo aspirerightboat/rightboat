@@ -1,0 +1,41 @@
+p
+  | Dear #{@user.name_with_title},
+
+- case @reason
+  - when 'deleted'
+    p
+      | Unfortunately the boat #{@boat.manufacturer_model} which you
+      | #{@alert_reason == 'favourite' ? 'had in your favourites' : 'have enquired about'} has now been sold.
+
+    - if @other_boats.count > 0
+      p However, there are other #{@boat.manufacturer_model} for sale.
+      table
+        - @other_boats.each_with_index do |boat, i|
+          tr
+            td= render 'boats/mail_thumb', boat: boat, visible: i < 5
+      - if @other_boats.count > 5
+        .clear
+          = link_to 'View More >', search_url(q: @boat.manufacturer_model, exclude_ref_no: @boat.ref_no), id: 'view-more'
+      br
+    - if @similar_boats.count > 0
+      p There are other similar listings which may be of interest to you.
+      table
+        - @similar_boats.each_with_index do |boat, i|
+          tr
+            td= render 'boats/mail_thumb', boat: boat, visible: i < 5
+      - if @similar_boats.count > 5
+        .clear
+          = link_to 'View More >', search_url(@boat.similar_options(@boat.currency)), id: 'view-more'
+
+  - when 'price_changed'
+    p
+      |
+        #{@alert_reason == 'favourite' ? 'Your favourite boat' : 'The boat you have enquired about'}
+        #{link_to @boat.manufacturer_model, sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)} has changed price.
+        New price is #{number_to_currency(@boat.price, unit: @boat.safe_currency.symbol, precision: 2)}.
+
+br
+p
+  | Kind regards,
+  br
+  | The Team at #{link_to 'Rightboat', root_url}

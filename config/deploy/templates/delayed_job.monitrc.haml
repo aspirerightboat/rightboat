@@ -1,9 +1,0 @@
-check process delayed_job_default with pidfile #{shared_path}/tmp/pids/delayed_job_default/delayed_job.0.pid
-start program = "#{delayed_job_default_cmd % {cmd: 'start'}}"
-stop  program = "#{delayed_job_default_cmd % {cmd: 'stop'}}"
-if 5 restarts within 5 cycles then timeout
-
-check process delayed_job_import_images with pidfile #{shared_path}/tmp/pids/delayed_job_import_images/delayed_job.0.pid
-start program = "#{delayed_job_import_images_cmd % {cmd: 'start'}}"
-stop  program = "#{delayed_job_import_images_cmd % {cmd: 'stop'}}"
-if 5 restarts within 5 cycles then timeout

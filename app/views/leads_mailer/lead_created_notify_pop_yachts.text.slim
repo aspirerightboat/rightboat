@@ -1,0 +1,24 @@
+|
+  Dear #{@broker.broker_name},
+  We are pleased to inform you that you have an enquiry from Rightboat.
+
+  Make: #{@boat.manufacturer}
+  Model: #{@boat.model}
+  Details page: #{sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)}
+  Pop yachts boat ID: #{@boat.source_id}
+  Customer Name: #{@lead.name}
+  Customer Email: #{@lead.email}
+- if @lead.phone.present?
+ | Customer Tel: #{@lead.country_code} #{@lead.phone}
+- if @lead.message.present?
+ | Customer message: #{@lead.message}
+|
+  RB Id: #{@boat.ref_no}
+
+  #{@lead.created_at.strftime('%d %b %Y')}
+
+  #{lead_url(@lead)}
+  If you would like to contact the customer directly, please send email to #{@lead.email}.
+
+  Kind regards
+  The Rightboat Team

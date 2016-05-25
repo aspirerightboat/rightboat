@@ -1,0 +1,13 @@
+.panel
+  h3
+    | "Date of Issue"
+  .panel_contents
+    = form_tag [:admin, :mails], method: :get, class: 'filter_form' do
+      .date_range.input.optional.stringish.filter_form_field.filter_date_range#q_created_at_input
+        = text_field_tag 'q[created_at_gteq]', params.dig(:q, :created_at_gteq), id: 'q_created_at_gteq', class: 'datepicker', style: 'width: 150px', value: created_at_gteq
+        span.seperator
+        = text_field_tag 'q[created_at_lteq]', params.dig(:q, :created_at_lteq), id: 'q_created_at_lteq', class: 'datepicker', style: 'width: 150px', value: created_at_lteq
+
+      .buttons
+        = submit_tag 'Filter'
+        = link_to 'Clear Filters', [:admin, :mails], class: 'clear_filters_btn'

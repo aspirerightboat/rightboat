@@ -1,9 +1,0 @@
-.panel.panel-info.panel-zcard
-  .panel-heading
-    = link_to buyer_guide.title, buyer_guide_path(buyer_guide.slug)
-  .panel-body
-    .row
-      .col-md-3.col-xs-12
-        = image_tag buyer_guide.thumbnail_url(:thumb), alt: buyer_guide.title, class: 'thumbnail'
-      .col-md-9.col-xs-12
-        %p= buyer_guide.zcard_desc

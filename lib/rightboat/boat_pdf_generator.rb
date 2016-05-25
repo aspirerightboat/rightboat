@@ -19,16 +19,16 @@ module Rightboat
         pdf = view.render(
             pdf: 'pdf',
             locals: {:@boat => boat},
-            template: 'boats/pdf.html.haml',
-            layout: 'layouts/pdf.html.haml'
+            template: 'boats/pdf.html.slim',
+            layout: 'layouts/pdf.html.slim'
         )
 
         pdf = WickedPdf.new.pdf_from_string(pdf,
             margin: { bottom: 20 },
             footer: {
               content: view.render({
-                template:  'shared/_pdf_footer.html.haml',
-                layout:    'layouts/pdf.html.haml'
+                template:  'shared/_pdf_footer.html.slim',
+                layout:    'layouts/pdf.html.slim'
               })
             }
         )

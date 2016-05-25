@@ -1,0 +1,13 @@
+p
+  | Export #{link_to "#{@export.import_type} ##{@export.id}", admin_export_url(@export)} was finished with errors:
+  b= link_to 'View log', admin_export_last_log_url(@export)
+
+p
+  b Trail info:
+  |
+    <br>log_path: <b>#{@export.log_path}</b>
+    <br>error_msg: <b>#{@export.error_msg}</b>
+    <br>started_at: <b>#{@export.started_at}</b>
+
+p
+  = link_to 'Rightboat Admin', admin_root_url

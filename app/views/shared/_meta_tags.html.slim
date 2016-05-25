@@ -1,0 +1,9 @@
+meta(name="title" property="og:title" content="#{@page_title || 'Boats for sale on Rightboat.com'}")
+meta(property="og:description" name="description" content="#{@page_description || 'Boats for Sale in UK, Europe, USA and around the world - Sailing Yachts, Motor Boats, Power Boats, Luxury Yachts Fishing Boats for sale'}")
+- if @canonical_url
+  meta(property="og:url" rel="canonical" content="#{@canonical_url}")
+meta(property="og:image" content="#{@image_url || asset_url('logo.png')}")
+meta(property="og:site_name" content="Rightboat")
+
+- if content_for :meta_tags
+  = yield :meta_tags

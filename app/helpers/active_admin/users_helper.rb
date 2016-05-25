@@ -20,7 +20,7 @@ module ActiveAdmin::UsersHelper
       content_tag :p, class: activity.kind do
         concat content_tag(:span, activity.created_at.to_s(:time), class: 'status_tag')
         concat " User has saved a search: "
-        concat query_to_readable_string(activity)
+        concat content_tag(:i, query_to_readable_string(activity))
       end
     end
   end
@@ -30,8 +30,9 @@ module ActiveAdmin::UsersHelper
   def query_to_readable_string(activity)
     models = activity.meta_data[:models] && Model.where(id: activity.meta_data[:models])
     manufacturers = activity.meta_data[:manufacturers] && Manufacturer.where(id: activity.meta_data[:manufacturers])
-    activity.meta_data[:models] = models.pluck(:name)
-    activity.meta_data[:manufacturers] = manufacturers.pluck(:name)
+    activity.meta_data[:models] = models&.pluck(:name)
+    activity.meta_data[:manufacturers] = manufacturers&.pluck(:name)
+    activity.meta_data.delete_if { |_,v| v.nil? }
     activity.meta_data.to_s.gsub('=>', ': ')
   end
 end

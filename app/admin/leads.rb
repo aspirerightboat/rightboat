@@ -35,7 +35,12 @@ ActiveAdmin.register Lead, as: 'Lead' do
     column(:boat, sortable: :boat_id) { |lead| boat_link(lead.boat) }
     column('Boat length', sortable: 'boats.length_m') { |lead| boat_length_with_hint(lead.boat) }
     column('Boat price') { |lead| boat_admin_price(lead.boat) }
-    column :status
+    column :status do |lead|
+      div { lead.status }
+      if lead.status == 'suspicious'
+        div { link_to 'Release', release_admin_lead_path(lead), method: :post }
+      end
+    end
     column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
     column('Lead Price £') { |lead| b { lead.lead_price } }
     column('Mail ID', sortable: :saved_searches_alert_id) do |lead|
@@ -120,5 +125,11 @@ ActiveAdmin.register Lead, as: 'Lead' do
     @lead = Lead.find(params[:id])
     @lead.update status: 'deleted', bad_quality_comment: params[:reason]
     redirect_to :back, notice: 'Lead deleted successfully'
+  end
+
+  member_action :release, method: :post do
+    @lead = Lead.find(params[:id])
+    @lead.update status: 'pending'
+    redirect_to :back, notice: 'Lead released successfully'
   end
 end

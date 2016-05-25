@@ -227,7 +227,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active Power Boats:'
               end
               td do
-                text_node Boat.not_deleted.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('LOWER(boat_types.name) LIKE "%power%" OR LOWER(boat_types.name) LIKE "%motor%" OR LOWER(boat_types.name) LIKE "%cruiser%"').count
+                text_node Boat.not_deleted.power.count
               end
             end
             tr do
@@ -235,7 +235,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active Sail Boats:'
               end
               td do
-                text_node Boat.not_deleted.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('LOWER(boat_types.name) LIKE "%sail%"').count
+                text_node Boat.not_deleted.sail.count
               end
             end
             tr do
@@ -243,7 +243,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active, not Power or Sail'
               end
               td do
-                text_node Boat.not_deleted.joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id').where('boats.boat_type_id IS NULL OR LOWER(boat_types.name) NOT LIKE "%power%" AND LOWER(boat_types.name) NOT LIKE "%motor%" AND LOWER(boat_types.name) NOT LIKE "%cruiser%" AND LOWER(boat_types.name) NOT LIKE "%sail%"').count
+                text_node Boat.not_deleted.not_power_or_sail.count
               end
             end
           end

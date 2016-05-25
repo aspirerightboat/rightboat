@@ -9,6 +9,7 @@ class Member::SavedSearchesController < Member::BaseController
     permitted_params = permit_saved_search_params(params.require(:saved_search))
 
     if @saved_search.update(permitted_params)
+      UserActivity.create_search_record(hash: @saved_search.to_succinct_search_hash, user: current_user)
       redirect_to member_user_notifications_path, notice: 'Your search was saved'
     else
       redirect_to member_user_notifications_path, alert: 'Something went wrong'
@@ -16,8 +17,8 @@ class Member::SavedSearchesController < Member::BaseController
   end
 
   def create
-    SavedSearch.create_and_run(current_user, permit_saved_search_params(params))
-
+    saved_search = SavedSearch.create_and_run(current_user, permit_saved_search_params(params))
+    saved_search && UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
     render json: {google_conversion: render_to_string(partial: 'shared/google_saved_search_conversion')}
   end
 

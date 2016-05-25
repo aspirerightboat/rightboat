@@ -3,6 +3,8 @@ class UserActivity < ActiveRecord::Base
   belongs_to :boat
   belongs_to :lead
 
+  serialize :meta_data, Hash
+
   scope :recent_views, -> { where(kind: :boat_view).order(id: :desc) }
   scope :created_leads, -> { where(kind: :lead).order(id: :desc) }
   scope :searches, -> { where(kind: :search).order(id: :desc) }
@@ -26,13 +28,12 @@ class UserActivity < ActiveRecord::Base
     )
   end
 
-  def self.create_search_record(query:, user: nil)
+  def self.create_search_record(hash:, user: nil)
     create(
       kind: :search,
-      query: query,
-      user_id:  user&.id,
-      user_email:  user&.email
+      meta_data: hash,
+      user_id: user&.id,
+      user_email: user&.email
     )
   end
-
 end

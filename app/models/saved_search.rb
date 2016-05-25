@@ -46,6 +46,10 @@ class SavedSearch < ActiveRecord::Base
     attributes.except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at').symbolize_keys
   end
 
+  def to_succinct_search_hash
+    to_search_params.select{|_,value| value.present?}
+  end
+
   def self.create_and_run(user, params)
     fixed_params = {
         year_min: params[:year_min].presence,
@@ -77,6 +81,7 @@ class SavedSearch < ActiveRecord::Base
       ss = user.saved_searches.new(fixed_params)
       ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)
       ss.save!
+      ss
     end
   end
 end

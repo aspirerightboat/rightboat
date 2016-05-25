@@ -17,6 +17,7 @@
     %li <b>RB Ref:</b> #{@boat.ref_no}
     %li <b>Broker source ID:</b> #{@boat.source_id}
 
+  %p Please check #{link_to 'here', admin_leads_url(q: { status_eq: 'suspicious' })}
   %p #{@lead.created_at.strftime('%d %b %Y')}
 
   %br

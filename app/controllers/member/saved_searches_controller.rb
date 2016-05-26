@@ -18,7 +18,9 @@ class Member::SavedSearchesController < Member::BaseController
 
   def create
     saved_search = SavedSearch.create_and_run(current_user, permit_saved_search_params(params))
-    saved_search && UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
+    if saved_search
+      UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
+    end
     render json: {google_conversion: render_to_string(partial: 'shared/google_saved_search_conversion')}
   end
 

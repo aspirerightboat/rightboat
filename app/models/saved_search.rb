@@ -47,7 +47,7 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def to_succinct_search_hash
-    to_search_params.select{|_,value| value.present?}
+    to_search_params.select { |_, value| value.present? }
   end
 
   def self.create_and_run(user, params)

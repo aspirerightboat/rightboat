@@ -11,7 +11,7 @@ class ImportDataToUserActivities < ActiveRecord::Migration
     end
 
     # import leads into table
-    ActiveRecord::Base.connection.execute("INSERT INTO temp_user_activities (user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at )\
+    ActiveRecord::Base.connection.execute("INSERT INTO temp_user_activities (user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at) \
       SELECT user_id, NULL, 'lead', NULL, id, NULL, created_at, updated_at FROM leads WHERE user_id IS NOT NULL")
 
     # import searches into temp user_activities
@@ -23,13 +23,13 @@ class ImportDataToUserActivities < ActiveRecord::Migration
     end
 
     # import user_activities into temp table
-    ActiveRecord::Base.connection.execute("INSERT INTO temp_user_activities (user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at )\
+    ActiveRecord::Base.connection.execute("INSERT INTO temp_user_activities (user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at) \
       SELECT user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at FROM user_activities WHERE kind IN ('boat_view', 'search')")
 
     UserActivity.delete_all
 
     # Compile all data, sort it and place back to user_activities
-    ActiveRecord::Base.connection.execute("INSERT INTO user_activities (user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at )\
+    ActiveRecord::Base.connection.execute("INSERT INTO user_activities (user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at) \
       SELECT user_id, user_email, kind, boat_id, lead_id, meta_data, created_at, updated_at FROM temp_user_activities ORDER BY created_at ASC")
 
     drop_table :temp_user_activities

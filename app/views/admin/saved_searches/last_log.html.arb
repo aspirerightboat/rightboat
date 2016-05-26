@@ -1,0 +1,8 @@
+panel 'Last Saved Search Alerts Job Log' do
+  file_path = `ls -t log/saved_search_notifications/* | head -n1`.strip.presence
+  if file_path && File.exists?(file_path)
+    File.open(file_path, 'r').each_line do |line|
+      div { line }
+    end
+  end
+end

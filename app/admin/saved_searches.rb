@@ -47,13 +47,16 @@ ActiveAdmin.register SavedSearch do
     column :updated_at
   end
 
-  sidebar 'Tools', only: [:index] do
-    link_to('Send SavedSearch notifications', {action: :run_saved_search_job}, method: :post, class: 'button')
+  sidebar 'Tools', only: [:index, :last_log] do
+    para { link_to 'Send SavedSearch notifications', {action: :run_saved_search_job}, method: :post, class: 'button' }
+    para { link_to 'Last Log', {action: :last_log} }
   end
 
   collection_action :run_saved_search_job, method: :post do
     total_count, users_count, mails_sent = SavedSearchNoticesJob.new.perform
     redirect_to({action: :index}, notice: "#{total_count} searches processed for #{users_count} users and #{mails_sent} mails was sent")
   end
+
+  collection_action :last_log
 
 end

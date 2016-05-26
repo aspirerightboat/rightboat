@@ -1,5 +1,5 @@
 namespace :saved_searches do
-  desc 'create saved searched for all users based on their leads'
+  desc 'create saved searches for all users based on their leads'
   task create_from_leads: :environment do
     searches_created = 0
 

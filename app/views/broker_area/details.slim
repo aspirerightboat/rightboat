@@ -98,16 +98,16 @@
               = label_tag :daytime_phone, 'Daytime Phone'
               .rb-control-group
                 .rb-control-group-addon
-                  = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country Code',
-                               | class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                  = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country Code', \
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :daytime_phone, '', class: 'form-control'
             .col-sm-6.col-xs-12
               = label_tag :evening_phone, 'Evening Phone'
               .rb-control-group
                 .rb-control-group-addon
-                  = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country Code',
-                               | class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                  = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country Code', \
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :evening_phone, '', class: 'form-control'
           .row
@@ -115,8 +115,8 @@
               = label_tag :mobile, 'Mobile'
               .rb-control-group
                 .rb-control-group-addon
-                  = select_tag :mobile_code, options_for_country_code, prompt: 'Country Code',
-                               | class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                  = select_tag :mobile_code, options_for_country_code, prompt: 'Country Code', \
+                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :mobile, '', class: 'form-control'
             .col-sm-6.col-xs-12

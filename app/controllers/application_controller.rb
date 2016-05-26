@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   before_action :global_current_user
   before_action :clear_old_session
+  before_action :set_country_specific_units
 
   serialization_scope :view_context
 
@@ -36,6 +37,25 @@ class ApplicationController < ActionController::Base
 
   def global_current_user
     $current_user = current_user # or store it like this: Thread.current[:current_user] = current_user
+  end
+
+  def set_country_specific_units
+    if !cookies[:currency] || !cookies[:length_unit]
+      country_code = nil
+      begin
+        Timeout::timeout(1) do
+          country_code = Rightboat::DbIpApi.country(request.remote_ip)
+        end
+      rescue Timeout::Error
+        country_code = nil
+      end
+
+      country_code ||= 'GB'
+      country = Country.find_by(iso: country_code)
+
+      set_current_currency(country.currency.name) unless cookies[:currency]
+      set_current_length_unit(country.length_unit) unless cookies[:length_unit]
+    end
   end
 
   def require_confirmed_email

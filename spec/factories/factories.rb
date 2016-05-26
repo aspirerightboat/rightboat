@@ -121,6 +121,22 @@ FactoryGirl.define do
   factory :saved_search do
     user
     alert true
+    year_min 2008
+    year_max 2016
+    length_min 1
+    length_max 10
+    length_unit 'm'
+    price_min 100
+    price_max 200
+    currency 'GBP'
+    order 'price_asc'
+    models ['2']
+    manufacturers ['1']
+    q 'query'
+    ref_no 'RB12312'
+    first_found_boat_id 1
+    boat_type 'Power'
+    countries ['90']
   end
 
   factory :user_alert do

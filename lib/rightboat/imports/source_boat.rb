@@ -183,7 +183,7 @@ module Rightboat
             elsif attr_name == :currency
               value = 'USD' if value == '$' # there are other currencies with $ symbol: AUD, CAD, HKD, NZD, SGD but USD is by default
               val = Currency.where('name = ? OR symbol = ?', value, value).first
-              log_error 'Unknown Currency', "#{value}" if !val
+              importer.log_error 'Unknown Currency', "#{value}" if !val
               value = val
             else
               # if attr_name == :manufacturer || attr_name == :model

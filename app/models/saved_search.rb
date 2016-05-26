@@ -47,7 +47,10 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def to_succinct_search_hash
-    to_search_params.select { |_, value| value.present? }
+    result = to_search_params.select { |_, value| value.present? }
+    result.delete(:currency) if result[:price_min].nil? && result[:price_max].nil?
+    result.delete(:length_unit) if result[:length_min].nil? && result[:length_max].nil?
+    result
   end
 
   def self.create_and_run(user, params)

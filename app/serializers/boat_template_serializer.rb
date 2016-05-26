@@ -4,6 +4,6 @@ class BoatTemplateSerializer < ActiveModel::Serializer
   attributes :template
 
   def template
-    render file: 'boats/_boat.html.haml', locals: { boat: object }
+    render file: 'boats/_boat.html.slim', locals: { boat: object }
   end
 end

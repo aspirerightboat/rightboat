@@ -1,8 +1,0 @@
-.nested-fields.row
-  .col-md-3.col-xs-3
-    = image_tag (f.object.file ? f.object.file_url(:mini) : ''), alt: '', class: 'img-responsive'
-  .col-md-6.col-xs-6
-    = f.file_field :file, class: 'form-control'
-    = f.hidden_field :file_cache
-  .col-md-3.col-xs-3
-    = link_to_remove_association 'Delete', f

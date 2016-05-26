@@ -118,6 +118,8 @@ module Rightboat
                           @boat.office = {address_attributes: {}}
                           @boat.images = []
                           @engines_count = 0
+                          @class_group = {}
+                          @boat.class_groups = []
                         else
                           @boat = nil
                         end
@@ -209,7 +211,14 @@ module Rightboat
                       when 'WaterTankCapacityMeasure' then @boat.water_tanks_capacity = to_liters(chars, get_attr('unitCode'))
                       when 'DisplacementMeasure' then @boat.displacement_kgs = to_kilograms(chars, get_attr('unitCode'))
                       when 'BoatCategoryCode' then @boat.boat_type = chars # Power | Sail
-                      # when 'BoatClassGroup' # Ketch true | Cruisers false | ...
+                      when 'BoatClassGroup' # Cruisers | Racers and Cruisers | ...
+                        case @tree[6]
+                        when 'BoatClassCode' then @class_group[:class_code] = chars
+                        when 'PrimaryBoatClassIndicator' then @class_group[:primary] = chars
+                        when nil
+                          @boat.class_groups << @class_group
+                          @class_group = {}
+                        end
                       when 'BoatKeelCode' then @boat.keel_type = chars # Full Keel | Fin Keel | Lifting Keel | Winged Keel | Other | Twin Keel | Bulb Keel | Canting Keel
                       when 'CruisingSpeedMeasure' then @boat.cruising_speed = to_knots(chars, get_attr('unitCode'))
                       when 'TotalEnginePowerQuantity' then @boat.engine_horse_power = chars # eg. 900.0

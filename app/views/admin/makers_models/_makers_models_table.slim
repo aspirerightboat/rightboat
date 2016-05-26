@@ -1,0 +1,52 @@
+table.index_table.misspell-fixable-area
+  tr
+    th Manufacturer
+    th Models
+  - @maker_infos.each do |maker_id, maker_name, boats_count|
+    tr(class="#{cycle 'odd', 'even'}")
+      td
+        span.misspell-fixable(data-type="Manufacturer" data-id="#{maker_id}")
+          ins #{maker_name}
+          |
+            <br><small>(#{boats_count}&nbsp;active&nbsp;boats)</small>
+            <br><small><a href="/admin/misspellings?q[source_type_eq]=Manufacturer&q[source_id_eq]=#{maker_id}">Misspellings</a></small>
+            <br><small><a href="#" class="show-split-popup">Split name</a></small>
+      td
+        ul.pipe-list
+          - @model_infos_by_maker[maker_id].each do |model_id, model_name, _maker_id, boats_cnt|
+            li.misspell-fixable(data-type="Model" data-id="#{model_id}")
+              ins #{model_name}
+              sup #{boats_cnt}
+        ul.pipe-list
+          li <small><a href="/admin/misspellings?q[source_type_eq]=Model&maker_id=#{maker_id}">Models misspellings</a></small>
+
+.panel.misspell-fixable-popup.fixing-popup(style="display:none")
+  h3 Fix name
+  .esc ×
+  .panel_content
+    input.value-input(type="text")
+    .controls-row
+      label
+        input.create-misspell-input(type="checkbox" checked)
+        | Create misspelling if needed
+    .controls-row
+      button.save-btn Save
+      .titleize-btn.secondary-btn Titleize
+      a.view-boats-btn(href="#" target="_blank") Boats
+
+#split_popup.panel.fixing-popup(style="display:none")
+  h3 Split name
+  .esc ×
+  .panel_content
+    label(for="maker1_input") Manufacturer Name
+    input#maker1_input(type="text")
+    span#word_right_btn.secondary-btn ▶
+    br
+    label(for="maker2_input") Prepend model names
+    input#maker2_input(type="text")
+    .controls-row
+      button#split_btn Split
+
+#misspell_fixable_result(style="display:none")
+
+= prev_next_links(@maker_infos.size == 30)

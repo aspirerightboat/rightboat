@@ -1,0 +1,64 @@
+#search-wrapper.container
+  #search-hub.container
+    = link_to root_path do
+      = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
+    #search-hub-form
+      h2
+        - if controller_name == 'home'
+          | The <strong>global choice</strong><br> of boats for sale
+        - else
+          | My Rightboat
+
+      = form_tag search_path, method: :get do
+        = hidden_field_tag :price_min, params[:price_min]
+        = hidden_field_tag :price_max, params[:price_max]
+        = hidden_field_tag :length_min, params[:length_min]
+        = hidden_field_tag :length_max, params[:length_max]
+
+        .top-border-wrapper
+          .top-border
+        .bordered-wrapper
+          .left-border-wrapper
+            .left-border
+          .bottom-border-wrapper
+          #boat-types.form-group.pull-right
+            = radio_button_tag :boat_type, '', params[:boat_type].blank?, id: 'boat_type_all'
+            = label_tag :boat_type_all, 'All', for: 'boat_type_all'
+            = radio_button_tag :boat_type, 'Power', params[:boat_type] == 'Power', id: 'boat_type_power'
+            = label_tag :boat_type_power, 'Power', for: 'boat_type_power'
+            = radio_button_tag :boat_type, 'Sail', params[:boat_type] == 'Sail', id: 'boat_type_sail'
+            = label_tag :boat_type_sail, 'Sail', for: 'boat_type_sail'
+
+          .clearfix
+          .form-group.row
+            .col-xs-12= text_field_tag :q, '', placeholder: 'Search', class: 'form-control', id: 'search-input'
+
+          .range-slider-wrapper.row
+            .col-xs-2= label_tag :price
+            .col-xs-10
+              .rb-control-group
+                .rb-control
+                  = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
+                .rb-control-group-addon
+                  = currency_tag :currency, current_currency, class: 'select-sm select-currency'
+          .range-slider-wrapper.row
+            .col-xs-2= label_tag :length
+            .col-xs-10
+              .rb-control-group.length-input-group
+                .rb-control
+                  = slider_tag(:length, unit: current_length_unit)
+                .rb-control-group-addon
+                  = select_tag :length_unit, options_for_select(%w(ft m), current_length_unit), class: 'select-sm select-general'
+          .row
+            .col-xs-12.nice-buttons.last-row-pad
+              button.nice-button(type="submit") Search
+
+        .form-group.last
+          .nice-buttons(style="margin: 10px 0")
+            button.transparent-button.toggle-adv-search Advanced Search
+          h4
+            - if controller_name == 'home'
+              | Find your<br><strong>Rightboat</strong>
+            - else
+              = link_to root_path do
+                i.icon.icon-home

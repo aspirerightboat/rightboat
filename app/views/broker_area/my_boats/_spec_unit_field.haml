@@ -1,8 +1,0 @@
-.form-group.unit-field
-  %input(type="hidden" name="#{name}" value="#{value}")
-  %label
-    = label_text
-    %input.amount-input(type="number" step="1" value="#{amount}")
-  %select.unit-select(type="number" step="1")
-    - units.each do |unit|
-      %option(value="#{unit}"){selected: (true if unit == selected_unit)}= unit

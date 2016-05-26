@@ -1,0 +1,65 @@
+- content_for :header_text do
+  .navbar-h Broker Area
+
+= render 'shared/search_bar'
+
+#main_content.container
+  .row
+    .col-sm-12
+      - @custom_flashes = true
+      - if notice
+        .alert.alert-info= notice
+      - if alert
+        .alert.alert-warning= alert
+
+      h1 Lead ##{@lead.id} for <strong>#{@boat.manufacturer} #{@boat.model}</strong>
+
+  .row
+    .col-sm-6.col-xs-12
+      h2 Boat info
+      ul
+        li Manufacturer</b>: <b>#{@boat.manufacturer}</b>
+        li Model: <b>#{@boat.model}</b>
+        li Boat Ref No: <b>#{@boat.ref_no}</b>
+        li Source ID: <b>#{@boat.source_id || @boat.source_url}</b>
+        li
+          |
+            #{link_to 'Boat details', makemodel_boat_path(@boat)}
+            (#{link_to 'PDF', makemodel_boat_pdf_path(@boat)})
+
+      h2 Lead Details
+      ul
+        li Name: <b>#{@lead.title} #{@lead.first_name} #{@lead.surname}</b>
+        li
+          | Email: <b>#{@lead.email}</b>
+          = mail_to(@lead.email, \
+                    'Reply to Customer', \
+                    subject: "#{@boat.manufacturer}; #{@boat.model}; #{@boat.ref_no}; #{@boat.source_id || @boat.source_url}")
+        - if @lead.phone.present?
+          li Tel: <b>#{@lead.country_code} #{@lead.phone}</b>
+        - if @lead.message.present?
+          li Message: <b>#{@lead.message}</b>
+
+      h2 Timing
+      ul
+        li Requested At: <b>#{l @lead.created_at, format: :short} (#{distance_of_time_in_words(@lead.created_at, Time.current)} ago)</b>
+        li Accessed at: <b>#{@lead.broker_accessed_at ? "#{l(@lead.broker_accessed_at, format: :short)} (#{distance_of_time_in_words(@lead.broker_accessed_at, Time.current)} ago)" : '-'}</b>
+        li Accessed by: <b>#{@lead.broker_accessed_at ? @lead.accessed_by_broker.name : '-'}</b>
+        - if @lead.status == 'quality_check'
+          li Current status: #{lead_status_label @lead.status}
+    .col-sm-6.col-xs-12
+      = link_to makemodel_boat_path(@boat), style: 'display: block; margin-top: 22px;' do
+        - if @boat.primary_image
+          = image_tag @boat.primary_image.file.url(:thumb)
+        - else
+          .no-image
+  .row
+    .col-sm-12
+      p(style="margin: 1.5em 0")
+        = link_to 'View all leads', my_leads_broker_area_path
+
+      - if @lead.status == 'pending' && current_user && (current_user.company? || current_user.admin?)
+        p.nice-buttons(style="margin-top: 1em")
+          a#request_qc_button.transparent-button(href="#") Request Quality Check
+
+= render 'shared/quality_check_popup'

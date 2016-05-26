@@ -1,0 +1,6 @@
+.flash-messages
+  .container
+    - flash.each do |type, message|
+      .flash-message(class="flash-#{type}")
+        button.close.hide-parent(data-hide-parent=".flash-message") ×
+        = message

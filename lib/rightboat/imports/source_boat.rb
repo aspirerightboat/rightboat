@@ -103,7 +103,7 @@ module Rightboat
 
       DYNAMIC_ATTRIBUTES = [
         :import, :error_msg, :user, :images, :pending_images_count, :new_record, :tax_status, :update_country, :country, :location,
-        :office, :office_id, :target, :importer
+        :office, :office_id, :target, :importer, :class_groups
       ]
 
       attr_reader :missing_spec_attrs
@@ -168,6 +168,7 @@ module Rightboat
         # target.revive(true) if target.deleted?
 
         handle_specs
+        handle_class_groups
 
         if @missing_spec_attrs.present?
           importer.log_warning 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
@@ -280,6 +281,51 @@ module Rightboat
             bs.value = value
             bs.deleted_at = nil
             bs.save! if bs.changed?
+          end
+        end
+      end
+
+      def handle_class_groups
+        return if class_groups.blank?
+
+        class_groups_hash = {}
+        class_groups.each do |x|
+          class_groups_hash[x[:class_code]] = x[:primary]
+        end
+
+        importer.jobs_mutex.synchronize do
+          @@class_codes ||= BoatClassCode.pluck(:name, :id).to_h
+          class_groups.each do |x|
+            name = x[:class_code]
+            @@class_codes[name] ||= BoatClassCode.create(name: name).id
+          end
+        end
+
+        if target.new_record?
+          class_groups.each do |x|
+            target.class_groups.build(class_code_id: @@class_codes[x[:class_code]], primary: x[:primary])
+          end
+        else
+          existing_class_groups = target.class_groups.includes(:class_code).to_a
+          existing_code_names = existing_class_groups.map { |x| x.class_code.name }
+
+          create_groups = class_groups_hash.except(*existing_code_names)
+          create_groups.each do |name, value|
+            target.class_groups.create(class_code_id: @@class_codes[name], primary: value)
+          end
+
+          delete_code_names = existing_code_names - class_groups_hash.keys
+          delete_code_names.each do |name|
+            x = existing_class_groups.find { |x| x.class_code.name == name }
+            x.destroy(:force)
+          end
+
+          update_class_groups = class_groups_hash.except(*create_groups.keys)
+          update_class_groups.each do |name, value|
+            x = existing_class_groups.find { |x| x.class_code.name == name }
+            x.primary = value
+            x.deleted_at = nil
+            x.save! if x.changed?
           end
         end
       end

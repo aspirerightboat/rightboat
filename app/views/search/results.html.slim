@@ -1,0 +1,31 @@
+- content_for :meta_tags do
+  meta(name="robots" content="noindex, follow")
+
+- content_for :header_text do
+  h1
+    span.hidden-sm Find your <strong>Rightboat</strong>
+  h3
+    | Search Results:
+    strong= @boats.total_count >= 10000 ? '10,000 plus' : @boats.total_count
+    span.hidden-sm boats for sale
+
+- content_for :header do
+  = render 'shared/advanced_search'
+  = render 'shared/navbar'
+
+= render 'shared/search_bar'
+#main_content.container(data-prev-url="#{@prev_url}")
+  - if @boats.length > 0
+    #boats-list.row(data-layout-mode="#{current_layout_mode}")
+      = render @boats, multiselectable: true
+    - if @boats.total_pages > 1
+      .row
+        = link_to '#search-results', class: 'scroll-top pull-right' do
+          i.icon.icon-up-bold
+        = link_to '#', class: 'view-more-link' do
+          span VIEW MORE
+          i.icon.icon-down-open
+  - else
+    p.lead.text-center No boats were found matching your search criteria. Please try again.
+
+= render 'shared/lead_popup_batch'

@@ -1,0 +1,9 @@
+.save-search
+  = link_to 'Save Search', member_saved_searches_path(params.except(:controller, :action)), \
+                          method: :post, remote: true, class: "require-login simple-ajax-link#{' nav-link' if nav_link}#{' btn-flat' if btn_flat}", \
+                          data: {'login-title' => 'Please sign in or join as a member to save your search.'}
+  .saved-search-hint
+    |
+      Your search has been saved.
+      You will receive an email each time a boat is listed that meets this criteria.
+      Manage and amend this alert #{link_to 'here', member_user_notifications_path}.

@@ -1,0 +1,8 @@
+.panel
+  h3 Key Information
+  .panel_contents
+    table(cellspacing="0" cellpadding="0" border="0")
+      - @key_info.each do |key, value|
+        tr.row
+          th= key
+          th= value

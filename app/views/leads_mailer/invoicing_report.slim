@@ -1,0 +1,22 @@
+p There were created #{@invoices.size} invoices
+table.rb-table(style="max-width: 600px")
+  tr
+    th(width="80") Invoice ID
+    th Leads
+    th Broker
+    th.text-right Total ex. VAT
+  - @invoices.each do |invoice|
+    tr
+      td= invoice.id
+      td
+        - invoice.leads.each do |lead|
+          = link_to lead.id.to_s, admin_lead_url(lead)
+      td= link_to invoice.user.name_with_title, admin_user_url(invoice.user)
+      td.text-right £#{format_pence invoice.total_ex_vat}
+  tr
+    td(colspan="4" style="border-bottom: 1px solid lightgray; height: 1em")
+  tr
+    th.text-right(colspan="4") Grand Total ex. VAT
+  tr
+    td.text-right(colspan="4") £#{format_pence @grand_total}
+

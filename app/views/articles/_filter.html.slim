@@ -1,0 +1,8 @@
+- if @categories.present?
+  h2 Filter our news
+  ul.article-categories
+    - @categories.each do |category|
+      li(class="#{'active' if @category == category}")
+        = link_to articles_path(category_id: category) do
+          span.article-category= category.name
+          span= "(#{category.articles_count})"

@@ -1,0 +1,54 @@
+= track_email_open_saved_searches(@saved_searches_alert)
+
+p
+  | Dear #{@user.name_with_title},
+
+p
+  | New listings have been posted to Rightboat that match your following Saved #{t('search_plural', count: @searches.size)}:
+
+- @searches.each do |saved_search, new_boats|
+  p Search for #{saved_search.search_title}:
+  table.boats-list
+    tr
+      td
+        table
+          - new_boats.each_with_index do |boat, i|
+            tr
+              td= render 'boats/mail_thumb', boat: boat, visible: i < 3
+        .clear(style="margin: 0.5em 0 1.5em")
+          - if new_boats.count > 3
+            p
+              | Please find above links to the '<b>First</b> 5 Boats' of your Saved Search on Rightboat. If you wish to view the remaining new boats of your Saved Search, please click #{link_to 'here', search_url(saved_search.to_search_params), onclick: "event.preventDefault(); var parent = this.closest('.boats-list'); var boats = parent.getElementsByClassName('boat'); for (var i = 0; i < boats.length; i++) { boats[i].style.display = ''; }; return false;"}...
+
+            p
+              |
+                To see a complete list of all the boats that match your search click here...
+                #{link_to 'View All', search_url(saved_search.to_search_params.merge(track_email_click_params(utm_params: @utm_params, user_id: @user.id, saved_searches_alert: @saved_searches_alert))), class: 'btn'}
+          - else
+            p
+              | Please find above links for new boats that match your Saved Search on Rightboat.
+
+          - manufacturers_links = saved_search_manufacturer_links(saved_search)
+          - if manufacturers_links.present?
+            p.manufacturers
+              - page_plural = t('page_plural', count: saved_search.manufacturers.size)
+              | Also visit #{manufacturers_links} manufacturer #{page_plural}.
+
+          - models_links = saved_search_model_links(saved_search)
+          - if models_links.present?
+            p.models
+              - page_plural = t('page_plural', count: saved_search.models.size)
+              | Also visit #{models_links} model #{page_plural}.
+
+p
+  |
+    You can manage your alerts and email settings from the #{link_to 'My Notifications', member_user_notifications_url}
+    page within #{link_to 'My Rightboat', member_root_url}.
+
+p We will keep you up to date with new listings, price changes and great discounts and offers from Rightboat.
+
+br
+p
+  | Kind regards,
+  br
+  | The Team at #{link_to 'Rightboat', root_url}

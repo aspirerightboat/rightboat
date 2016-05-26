@@ -66,6 +66,18 @@ ActiveAdmin.register Boat do
         column :value
       end
     end
+    if boat.class_groups.any?
+      panel 'Boat Class Groups' do
+        table_for boat.class_groups.not_deleted.includes(:class_code) do
+          column :class_code do |cg|
+            cg.class_code.name
+          end
+          column :primary do |cg|
+            cg.primary
+          end
+        end
+      end
+    end
   end
 
   form do |f|
@@ -105,6 +117,8 @@ ActiveAdmin.register Boat do
     column :name
     column :manufacturer
     column :model
+    column :boat_type
+    column :category
     column :price
     column :currency do |boat|
       boat.currency.try(:name)
@@ -114,9 +128,11 @@ ActiveAdmin.register Boat do
     column :office do |boat|
       boat.office.try(:name)
     end
+    column :country do |boat|
+      boat.country.name if boat.country
+    end
     column :location do |boat|
       res = []
-      res << boat.country.name if boat.country
       res << boat.location if boat.location.present?
       res.join(', ') + "(#{'Not ' if !boat.geocoded?}Geocoded)"
     end

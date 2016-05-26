@@ -1,0 +1,45 @@
+h2 #{@error_title}
+
+- if @exception
+  p
+    pre= @error_message
+
+- if @request
+  p #{@method} #{link_to @url, @url}
+
+- if @exception
+  p
+    b Full Backtrace
+    pre= human_backtrace(@backtrace)
+
+- if @request
+  p
+    b Session
+    pre= output_debug_hash(@session)
+  p
+    b Params
+    pre= output_debug_hash(@params)
+  p
+    b ENV
+    pre= output_debug_hash(@env)
+
+- if @user
+  p
+    b Current User
+    pre
+      | id: #{@user.id}
+      | <br>name: #{link_to(@user.name, admin_user_url(@user))}
+
+- if @context
+  p
+    b Context
+    pre= output_debug_hash(@context)
+  - if @context[:error_location] == 'Delayed Job Worker'
+    p
+      = link_to 'Delayed Job Admin', 'http://import.rightboat.com/delayed_job'
+
+p
+  b Time happened
+  pre= Time.current
+p
+  = link_to 'Errors Admin', 'http://import.rightboat.com/admin/error_events'

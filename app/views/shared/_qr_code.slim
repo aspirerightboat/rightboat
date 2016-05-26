@@ -1,0 +1,9 @@
+- qr = safe_qr_code(url)
+table.qr-code
+  - qr.modules.each_index do |x|
+    tr
+      - qr.modules.each_index do |y|
+        - if qr.dark?(x, y)
+          th
+        - else
+          td

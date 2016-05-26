@@ -1,0 +1,46 @@
+= form_for MarineEnquiry.new(first_name: current_user.try(:first_name), \
+        last_name: current_user.try(:last_name), email: current_user.try(:email)), remote: true, \
+        data: {format: :json, message: 'Thank you, your request have been sent to us.'}, \
+        html: { class: 'simple-ajax-form', multipart: true } do |f|
+
+  .form-group.row
+    .col-md-3= f.label :title, 'Title:'
+    .col-md-8= f.select :title, options_for_select(User::TITLES), {prompt: 'Please select...'}, {class: 'form-control'}
+
+  .form-group.row
+    .col-md-3= f.label :first_name, 'First name *:'
+    .col-md-8= f.text_field :first_name, class: 'form-control', 'data-validetta' => 'required'
+
+  .form-group.row
+    .col-md-3= f.label :last_name, 'Last name *:'
+    .col-md-8= f.text_field :last_name, class: 'form-control', 'data-validetta' => 'required'
+
+  .form-group.row
+    .col-md-3= f.label :email, 'Email *:'
+    .col-md-8= f.text_field :email, class: 'form-control', 'data-validetta' => 'required,email'
+
+  .form-group.row
+    .col-md-3= f.label :country_code, 'Country code:'
+    .col-md-8= f.select :country_code, options_for_country_code, {prompt: 'Please select...'}, {class: 'form-control'}
+
+  .form-group.row
+    .col-md-3= f.label :phone, 'Phone:'
+    .col-md-8= f.text_field :phone, class: 'form-control'
+
+  .form-group.row
+    .col-md-3= f.label :comments, 'Comments *:'
+    .col-md-8= f.text_area :comments, class: 'form-control', 'data-validetta' => 'required'
+
+  .form-group.row
+    .col-md-12= f.label :enquiry_type, 'Enquiry type *:'
+    .col-md-12
+      ul.enquiry_types.row
+        - MarineEnquiry::ENQUIRY_TYPES.each do |x|
+          li.col-lg-3.col-sm-6.col-xs-12
+            = f.radio_button :enquiry_type, x
+            = label_tag "marine_enquiry_enquiry_type_#{x.underscore.gsub(/\d+/, '_')}", x
+
+  .form-group.row
+    .col-md-3
+    .col-md-8
+      = f.submit 'Send Request', class: 'btn btn-primary btn-flat'

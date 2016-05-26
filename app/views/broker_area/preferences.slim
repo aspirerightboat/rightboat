@@ -1,0 +1,36 @@
+= render layout: 'broker_area/common/broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
+  h1 Preferences
+
+  h2 Change Password
+  = form_tag change_password_broker_area_path, style: 'position: relative' do
+    .row
+      .col-sm-6.col-xs-12
+        .form-group
+          = label_tag :old_password, 'Old Password'
+          = password_field_tag :old_password, nil, class: 'form-control'
+        .form-group
+          = label_tag :password
+          = password_field_tag :password, nil, class: 'form-control'
+        .form-group
+          = label_tag :password_confirmation, 'Repeat Password'
+          = password_field_tag :password_confirmation, nil, class: 'form-control'
+    .row
+      .col-sm-6.col-xs-12.form-actions
+        button.btn-flat.btn-block(type="submit") Change
+
+  h2 Other
+  = form_tag update_preferences_broker_area_path, style: 'position: relative' do
+    .row
+      .col-sm-6.col-xs-12
+        .form-group
+          = check_box_tag :member_bmf, nil, false, class: 'form-control'
+          = label_tag :member_bmf, 'I am a member of BMF - show this logo on my boat details'
+        .form-group
+          = check_box_tag :member_abya, nil, false, class: 'form-control'
+          = label_tag :member_abya, 'I am a member of ABYA - show this logo on my boat details'
+        .form-group
+          = check_box_tag :member_myba, nil, false, class: 'form-control'
+          = label_tag :member_myba, 'I am a member of MYBA - show this logo on my boat details'
+    .row
+      .col-sm-6.col-xs-12.form-actions
+        button.btn-flat.btn-block(type="submit") Save Changes

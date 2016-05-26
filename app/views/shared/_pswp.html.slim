@@ -1,0 +1,54 @@
+svg#pswp-icons.icons
+  symbol#icon_grid_off(viewbox="0 0 46 36")
+    title icon_grid_off
+    g#icon_grid_off-icons
+      g
+        g
+          path(d="M21,16H0V0h21V16z M2,14h17V2H2V14z")
+        g
+          path(d="M46,16H25V0h21V16z M27,14h17V2H27V14z")
+        g
+          path(d="M21,36H0V20h21V36z M2,34h17V22H2V34z")
+        g
+          path(d="M46,36H25V20h21V36z M27,34h17V22H27V34z")
+  symbol#icon_grid_on(viewbox="0 0 46 36")
+    title icon_grid_on
+    g#icon_grid_on-bg
+      g
+        rect(height="16" width="21")
+        rect(height="16" width="21" x="25")
+        rect(height="16" width="21" y="20")
+        rect(height="16" width="21" x="25" y="20")
+
+.pswp(aria-hidden="true" role="dialog" tabindex="-1")
+  .pswp__bg
+  .pswp__scroll-wrap
+    .pswp__container
+      .pswp__item
+      .pswp__item
+      .pswp__item
+    .pswp__ui.pswp__ui--hidden
+      .pswp__top-bar
+        .pswp__counter
+        button.pswp__button.pswp__button--close(title="Close (Esc)")
+        /!%button.pswp__button.pswp__button--share{title: "Share"}
+        button.pswp__button.pswp__button--grid-off(style="display: none;" title="View Thumbnails")
+          svg.icon.pswp__button--grid-off__icon(viewbox="0 0 46 36")
+            use*{'xlink:href' => '#icon_grid_off', 'xmlns:xlink' => 'http://www.w3.org/1999/xlink'}
+        button.pswp__button.pswp__button--grid-on(title="Hide Thumbnails")
+          svg.icon.pswp__button--grid-on__icon(viewbox="0 0 46 36")
+            use*{'xlink:href' => '#icon_grid_on', 'xmlns:xlink' => 'http://www.w3.org/1999/xlink'}
+        button.pswp__button.pswp__button--fs(title="Toggle fullscreen")
+        button.pswp__button.pswp__button--zoom(title="Zoom in/out")
+        .pswp__preloader
+          .pswp__preloader__icn
+            .pswp__preloader__cut
+              .pswp__preloader__donut
+      /!.pswp__share-modal.pswp__share-modal--hidden.pswp__single-tap
+      /!  .pswp__share-tooltip
+      button.pswp__button.pswp__button--arrow--left(title="Previous (arrow left)")
+      button.pswp__button.pswp__button--arrow--right(title="Next (arrow right)")
+      .pswp__caption
+        .pswp__caption__center
+  .pswp__thumbnail-wrap
+    .pswp__thumbnail-viewer__container

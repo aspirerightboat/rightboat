@@ -1,0 +1,8 @@
+- cache 'featured_boats', expires_in: 1.hour do
+  - boats = Boat.includes(:user, :currency, :manufacturer, :model, :country, :primary_image, :vat_rate).featured.not_deleted.order('RAND()').to_a
+  - if boats.any?
+    #featured-boats.nabvar-tools
+      h3.toolbar-title Featured Boats
+    #featured-wrap.container
+      .row(data-layout-mode="gallery")
+        = render boats, multiselectable: true

@@ -165,7 +165,7 @@
         slidesToShow: 1,
         arrows: true
       });
-      if (#{params[:popup_login].to_json}) {
+      if (#{raw params[:popup_login].to_json}) {
         $('#login_popup').modal('show');
       }
       $('.slick-nav').slick({

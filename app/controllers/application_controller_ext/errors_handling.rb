@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
 
-  rescue_from StandardError, with: :handle_exception if Rails.env.production?
+  rescue_from Exception, with: :handle_exception if Rails.env.production?
 
   private
 
@@ -13,12 +13,16 @@ class ApplicationController < ActionController::Base
     when SolrIsDownError
       render file: "#{Rails.root}/public/503.html", layout: false, status: :service_unavailable
     else
-      Rightboat::CleverErrorsNotifier.try_notify(exception, request, current_user)
-      if Rails.env.production?
-        render file: "#{Rails.root}/public/500.html", layout: false, status: :internal_server_error
-      else
-        raise exception
+      if exception.is_a?(StandardError) || exception.is_a?(ScriptError)
+        Rightboat::CleverErrorsNotifier.try_notify(exception, request, current_user)
+
+        if Rails.env.production?
+          render file: "#{Rails.root}/public/500.html", layout: false, status: :internal_server_error
+          return
+        end
       end
+
+      raise exception
     end
   end
 

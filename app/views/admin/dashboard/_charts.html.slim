@@ -1,2 +1,2 @@
 javascript:
-  window.leads = #{Lead.all.to_json}
+  window.leads = #{raw Lead.all.to_json}

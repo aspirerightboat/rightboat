@@ -24,12 +24,10 @@
 /    window.current_params = $.parseJSON($('#import_params_data').data('current_params'));
 /  }
 javascript:
-  $(function() {
-    window.imports_params = #{j_params.to_json};
-    window.current_params = #{resource.param.to_json};
-  });
-/ splitted to two declarations to fix rubymine highlighting
-javascript:
+  window.imports_params = #{raw j_params.to_json};
+  window.current_params = #{raw resource.param.to_json};
+
+  // splitted to two declarations to fix rubymine highlighting
   $(function() {
     $('#import_import_type').change(function() {
       var $ol = $('#import_params ol').empty();

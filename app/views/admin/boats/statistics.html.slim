@@ -19,7 +19,7 @@ javascript:
         x: -20 //center
       },
       xAxis: {
-        categories: #{@monthly.map{|k,v| v[:label]}.to_json}
+        categories: #{raw @monthly.map{|k,v| v[:label]}.to_json}
       },
       yAxis: {
         title: {
@@ -50,15 +50,15 @@ javascript:
       series: [
         {
           name: 'Views',
-          data: #{@monthly.map{|k,v| v[:views]}.to_json}
+          data: #{raw @monthly.map{|k,v| v[:views]}.to_json}
         },
         {
           name: 'Contact Details',
-          data: #{@monthly.map{|k,v| v[:contacts]}.to_json}
+          data: #{raw @monthly.map{|k,v| v[:contacts]}.to_json}
         },
         {
           name: 'Questions',
-          data: #{@monthly.map{|k,v| v[:questions]}.to_json}
+          data: #{raw @monthly.map{|k,v| v[:questions]}.to_json}
         }
       ]
     });

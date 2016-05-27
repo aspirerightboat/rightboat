@@ -35,7 +35,7 @@ RSpec.describe "saved search alert feature" do
     it 'updates first_found_boat_id for saved search, sends email notification, email includes tracking image for opening mail' do
       allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
 
-      SavedSearchNoticesJob.new.perform
+      Rightboat::SavedSearchNotifier.new.send_mails
 
       expect(updated_save_search.first_found_boat_id).to eq(new_boat.id)
       expect(last_email).to have_body_text image_tag_for_open_email
@@ -44,7 +44,7 @@ RSpec.describe "saved search alert feature" do
     it "user's email contains link with correct utm parameters" do
       allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
 
-      SavedSearchNoticesJob.new.perform
+      Rightboat::SavedSearchNotifier.new.send_mails
       document = Nokogiri::HTML(last_email.html_part.body.decoded)
 
       boat_summary_link = document.xpath("//a[text()='Boat Summary']/@href").text.split('?').last
@@ -67,7 +67,7 @@ RSpec.describe "saved search alert feature" do
         it "user's email contains link to manufactures page and to models page" do
           allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
 
-          SavedSearchNoticesJob.new.perform
+          Rightboat::SavedSearchNotifier.new.send_mails
           document = Nokogiri::HTML(last_email.html_part.body.decoded)
 
           boat_manufactures_links = document.css("p.manufacturers a").text
@@ -91,7 +91,7 @@ RSpec.describe "saved search alert feature" do
         it "user's email contains link to models page and doesn't contain links to manufactures" do
           allow_any_instance_of(Rightboat::BoatSearch).to receive(:results).and_return([new_boat, boat]) #stub solr
 
-          SavedSearchNoticesJob.new.perform
+          Rightboat::SavedSearchNotifier.new.send_mails
           document = Nokogiri::HTML(last_email.html_part.body.decoded)
 
           boat_manufactures_links = document.css("p.manufacturers a").text

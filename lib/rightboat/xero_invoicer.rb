@@ -1,7 +1,7 @@
-class CreateInvoicesJob
+class Rightboat::XeroInvoicer
   attr_reader :inv_logger
 
-  def perform(only_broker_id = nil)
+  def process_invoices(only_broker_id = nil)
     init_logger
     inv_logger.info('Fetch leads')
     all_leads = fetch_leads(only_broker_id)
@@ -84,9 +84,12 @@ class CreateInvoicesJob
     inv_logger.info('Finished')
     true
   rescue StandardError => e
-    inv_logger.error("#{e.class.name}: #{e.message}\n#{e.backtrace.join("\n")}")
+    inv_logger&.error("#{e.class.name}: #{e.message}\n#{e.backtrace.join("\n")}")
+    Rightboat::CleverErrorsNotifier.try_notify(e, nil, nil, where: self.class.name)
     false
   end
+
+  private
 
   def init_logger
     log_dir = Rails.root + 'log/invoices'

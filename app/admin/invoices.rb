@@ -52,12 +52,12 @@ ActiveAdmin.register Invoice do
   end
 
   collection_action :generate_invoices, method: :post do
-    res = CreateInvoicesJob.new.perform
+    res = Rightboat::XeroInvoicer.new.process_invoices
     redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
   end
 
   collection_action :generate_test_invoices, method: :post do
-    res = CreateInvoicesJob.new.perform(315)
+    res = Rightboat::XeroInvoicer.new.process_invoices(315)
     redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
   end
 

@@ -53,7 +53,7 @@ ActiveAdmin.register SavedSearch do
   end
 
   collection_action :run_saved_search_job, method: :post do
-    total_count, users_count, mails_sent = SavedSearchNoticesJob.new.perform
+    total_count, users_count, mails_sent = Rightboat::SavedSearchNotifier.new.send_mails
     redirect_to({action: :index}, notice: "#{total_count} searches processed for #{users_count} users and #{mails_sent} mails was sent")
   end
 

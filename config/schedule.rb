@@ -11,14 +11,14 @@ require File.expand_path("#{File.dirname(__FILE__)}/environment")
 if Rails.env.production?
   Import.active.each do |import|
     every import.frequency_unit.to_sym, at: import.at_utc do
-      runner "Import.find(#{import.id}).try_run_import!"
+      rake "import:run[#{import.id}]"
     end
   end
 
-  every(1.day, at: Import.active.last.approx_end_time) { runner 'SavedSearchNoticesJob.new.perform' }
+  every(1.day, at: Import.active.last.approx_end_time) { rake 'saved_search_notifier:send_mails' }
 end
 
-every(2.minutes) { runner 'LeadsApproveJob.new.perform' }
+every(2.minutes) { rake 'leads_approver:approve_recent' }
 every(1.day, at: '1:00') { rake 'import:currency' }
 every(1.day, at: '1:10') { rake 'rb_sitemap:refresh' }
 every(12.hours, at: '6:20') { command 'sudo monit restart solr_rightboat' } if Rails.env.production? # sometimes we have stale search results

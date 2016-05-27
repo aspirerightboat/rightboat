@@ -117,7 +117,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
   end
 
   collection_action :approve_old_leads, method: :post do
-    res = LeadsApproveJob.new.perform
+    res = Rightboat::LeadsApprover.approve_recent
     redirect_to({action: :index}, notice: "#{res} leads was approved")
   end
 

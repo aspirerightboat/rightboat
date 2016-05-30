@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
 
   before_action :global_current_user
   before_action :clear_old_session
-  before_action :set_country_specific_units
+  before_action :set_country_specific_units_for_non_user
+  before_action :update_user_specific_settings
 
   serialization_scope :view_context
 
@@ -39,8 +40,12 @@ class ApplicationController < ActionController::Base
     $current_user = current_user # or store it like this: Thread.current[:current_user] = current_user
   end
 
+  def set_country_specific_units_for_non_user
+    set_country_specific_units unless current_user
+  end
+
   def set_country_specific_units
-    if !cookies[:currency] || !cookies[:length_unit]
+    if session[:country].blank?
       country_code = nil
       begin
         Timeout::timeout(1) do
@@ -51,11 +56,40 @@ class ApplicationController < ActionController::Base
       end
 
       country_code ||= 'GB'
+      session[:country] = country_code
       country = Country.find_by(iso: country_code)
 
-      set_current_currency(country.currency.name) unless cookies[:currency]
-      set_current_length_unit(country.length_unit) unless cookies[:length_unit]
+      currency = current_user&.user_setting&.currency || country.currency.name
+      length_unit = current_user&.user_setting&.length_unit || country.length_unit
+
+      set_current_currency(currency)
+      set_current_length_unit(length_unit)
     end
+  end
+
+  def update_user_specific_settings
+    return if !current_user || session[:user_settings].present?
+    user_setting = UserSetting.find_or_create_by(user_id: current_user.id)
+    set_country_specific_units
+
+    if !cookies[:boat_type]
+      user_setting.boat_type = UserActivity.favourite_boat_types_for(current_user)
+      cookies[:boat_type] = user_setting.boat_type
+    end
+
+    if session[:update_user_settings]
+      user_setting.country_iso = session[:country]
+      user_setting.length_unit = cookies[:length_unit]
+      user_setting.currency = cookies[:currency]
+      session.delete :update_user_settings
+    end
+
+    set_current_currency(user_setting.currency) if user_setting.currency
+    set_current_length_unit(user_setting.length_unit) if user_setting.length_unit
+
+    session[:user_settings] = true
+
+    user_setting.save
   end
 
   def require_confirmed_email

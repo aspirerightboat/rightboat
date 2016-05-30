@@ -7,6 +7,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     @user = User.new(params.permit(:title, :first_name, :last_name, :email, :username, :password, :password_confirmation))
+    session[:update_user_settings] = true
+
     @user.role = 'PRIVATE'
     @user.assign_phone_from_leads
 

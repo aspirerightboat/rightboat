@@ -36,4 +36,13 @@ class UserActivity < ActiveRecord::Base
       user_email: user&.email
     )
   end
+
+  def self.favourite_boat_types_for(user)
+    boat_ids = recent_views.where(user_id: user.id).pluck(:boat_id)
+    types = Boat.where(id: boat_ids).includes(:boat_type).map(&:boat_type).map(&:name_stripped)
+
+    group_amount = {}
+    types.group_by{ |type| type }.each{ |type, elements| group_amount[type] = elements.size }
+    group_amount.max_by{|_, amount| amount }&.first
+  end
 end

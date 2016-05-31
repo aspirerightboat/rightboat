@@ -86,13 +86,13 @@ class ApplicationController < ActionController::Base
     if user_setting.currency
       set_current_currency(user_setting.currency)
     else
-      user_setting.currency = cookies[:currency]
+      user_setting.currency = session[:currency]
     end
 
     if user_setting.length_unit
       set_current_length_unit(user_setting.length_unit)
     else
-      user_setting.length_unit = cookies[:length_unit]
+      user_setting.length_unit = session[:length_unit]
     end
 
     session[:user_settings_were_set] = true

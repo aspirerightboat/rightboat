@@ -57,8 +57,7 @@ class SearchController < ApplicationController
     set_current_currency params[:currency]
     set_current_length_unit(params[:length_unit])
     set_current_search_order(params[:order])
-    session.delete :user_settings
-    session[:update_user_settings] = true if current_user
+    update_user_settings
   end
 
   def log_search_terms

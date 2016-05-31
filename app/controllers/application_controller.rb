@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :global_current_user
   before_action :clear_old_session
   before_action :set_country_specific_units_for_non_user
-  before_action :update_user_specific_settings
+  before_action :set_user_specific_settings
 
   serialization_scope :view_context
 
@@ -67,8 +67,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def update_user_specific_settings
-    return if !current_user || session[:user_settings].present?
+  def set_user_specific_settings
+    return if !current_user || session[:user_settings_were_set].present?
     user_setting = UserSetting.find_or_create_by(user_id: current_user.id)
     set_country_specific_units
 
@@ -77,17 +77,25 @@ class ApplicationController < ActionController::Base
       session[:boat_type] = user_setting.boat_type
     end
 
-    if session[:update_user_settings]
-      user_setting.country_iso = session[:country]
-      user_setting.length_unit = cookies[:length_unit]
-      user_setting.currency = cookies[:currency]
-      session.delete :update_user_settings
+    if user_setting.country_iso
+      session[:country] = user_setting.country_iso
+    else
+      user_setting.currency = session[:country]
     end
 
-    set_current_currency(user_setting.currency) if user_setting.currency
-    set_current_length_unit(user_setting.length_unit) if user_setting.length_unit
+    if user_setting.currency
+      set_current_currency(user_setting.currency)
+    else
+      user_setting.currency = cookies[:currency]
+    end
 
-    session[:user_settings] = true
+    if user_setting.length_unit
+      set_current_length_unit(user_setting.length_unit)
+    else
+      user_setting.length_unit = cookies[:length_unit]
+    end
+
+    session[:user_settings_were_set] = true
 
     user_setting.save
   end

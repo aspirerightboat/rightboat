@@ -38,6 +38,13 @@ class ApplicationController < ActionController::Base
   #   end
   # end
 
+  def update_user_settings
+    return unless current_user
+    user_setting = current_user.user_setting
+    user_setting.country_iso = session[:country]
+    user_setting.length_unit = cookies[:length_unit]
+    user_setting.currency = cookies[:currency]
+  end
 
   def current_search_order
     @current_search_order ||= cookies[:search_order] || 'price_desc'

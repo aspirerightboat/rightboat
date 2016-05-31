@@ -72,9 +72,9 @@ class ApplicationController < ActionController::Base
     user_setting = UserSetting.find_or_create_by(user_id: current_user.id)
     set_country_specific_units
 
-    if !cookies[:boat_type]
+    if !session[:boat_type]
       user_setting.boat_type = UserActivity.favourite_boat_types_for(current_user)
-      cookies[:boat_type] = user_setting.boat_type
+      session[:boat_type] = user_setting.boat_type
     end
 
     if session[:update_user_settings]

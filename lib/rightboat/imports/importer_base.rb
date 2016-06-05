@@ -104,7 +104,7 @@ module Rightboat
 
         boats_count = @user.boats.not_deleted.count
         @user.update boats_count: boats_count
-        log "Broker's boats count updated: #{boats_count}"
+        log "Broker's active boats count: #{boats_count}"
       end
 
       def safe_threads_count

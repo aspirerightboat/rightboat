@@ -13,7 +13,7 @@ window.syncModel = (maker_id, $modelSelect) ->
       $('<option>').attr('value', '').text('Any').appendTo($modelSelect)
       $.each options, ->
         $opt = $('<option>').attr('value', this[0]).text(this[1]).appendTo($modelSelect)
-        $opt.prop('selected', true) if this[0] == value
+        $opt.prop('selected', true) if this[0].toString() == value
       if $modelSelect.hasClass('select-general')
         $modelSelect.generalSelect()
     .always ->

@@ -44,6 +44,16 @@ class HomeController < ApplicationController
     render layout: false
   end
 
+  def welcome_broker
+    country_code = request.location.try(:country_code)
+    if country_code && country_code == 'US'
+      redirect_to welcome_broker_us_path and return
+    end
+  end
+
+  def welcome_broker_us
+  end
+
   private
 
   def register_statistics

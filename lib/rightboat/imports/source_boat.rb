@@ -165,7 +165,6 @@ module Rightboat
             target.send("#{attr_name}=", value) if value.present?
           end
         end
-        # target.revive(true) if target.deleted?
 
         handle_specs
         handle_class_groups
@@ -210,6 +209,7 @@ module Rightboat
         handle_office
 
         target.poa ||= price.blank? || price.to_i <= 0
+        target.deleted_at = nil if target.deleted?
         self.new_record = target.new_record?
         self.pending_images_count = images.size
 

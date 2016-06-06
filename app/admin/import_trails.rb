@@ -5,6 +5,7 @@ ActiveAdmin.register ImportTrail do
   filter :import_user_id, as: :select, collection: User.companies.order(:company_name)
   filter :import_id, as: :numeric
   filter :error_msg
+  filter :warning_msg
   filter :created_at
 
   controller do

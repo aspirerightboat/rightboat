@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   def current_currency
     @current_currency ||= begin
-      Currency.cached_by_name(cookies[:currency]) ||
+      Currency.cached_by_name(session[:currency]) ||
       (location = safe_geocoder_location) && Country.find_by(iso: location.country_code).try(:currency) ||
       Currency.default
     end
@@ -14,17 +14,17 @@ class ApplicationController < ActionController::Base
 
   def set_current_currency(currency_name)
     if currency_name.present? && (cur = Currency.cached_by_name(currency_name))
-      cookies[:currency] = cur.name
+      session[:currency] = cur.name
     end
   end
 
   def current_length_unit
-    @current_length_unit ||= cookies[:length_unit] || 'ft'
+    @current_length_unit ||= session[:length_unit] || 'ft'
   end
 
   def set_current_length_unit(unit)
     if unit.present? && LENGTH_UNITS.include?(unit)
-      cookies[:length_unit] = unit
+      session[:length_unit] = unit
     end
   end
 
@@ -38,6 +38,14 @@ class ApplicationController < ActionController::Base
   #   end
   # end
 
+  def update_user_settings
+    return unless current_user
+    user_setting = current_user.user_setting
+    user_setting.country_iso = session[:country]
+    user_setting.length_unit = session[:length_unit]
+    user_setting.currency = session[:currency]
+    user_setting.save
+  end
 
   def current_search_order
     @current_search_order ||= cookies[:search_order] || 'price_desc'

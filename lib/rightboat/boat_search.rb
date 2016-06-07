@@ -23,7 +23,11 @@ module Rightboat
       @per_page = opts[:per_page] || PER_PAGE
 
       @search = Boat.retryable_solr_search!(include: includes) do
-        fulltext q if q
+        if q
+          fulltext q do
+            minimum_match 1
+          end
+        end
         with :live, true
         with :ref_no, ref_no if ref_no
         without :ref_no, exclude_ref_no if exclude_ref_no

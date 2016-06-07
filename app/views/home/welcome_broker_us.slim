@@ -2,7 +2,27 @@
   h1
     strong Rightboat for Yacht Brokers
 
+#rb-advantages
+  .rb-advantage.bg-cover(style='background: #60bbff;')
+    .caption
+      | 60 Day FREE TRIAL
+  .rb-advantage.bg-cover(style='background: white;')
+    .caption
+      | Only pay for quality leads
+  .rb-advantage.bg-cover(style='background: #60bbff;')
+    .caption
+      | Sign up today for your 60 Day FREE Trial
+  .rb-advantage.bg-cover(style='background: white;')
+    .caption
+      | Pay / Lead only
+  .rb-advantage.bg-cover(style='background: #60bbff;')
+    .caption
+      | Free Global Advertising
+
 #main_content.container
+  .row
+    .col-xs-12
+
   .row
     .col-xs-12.col-sm-6
       h3 ● Register for FREE and list all your boats for FREE.
@@ -75,3 +95,14 @@
 
         p.nice-buttons
           button.nice-button(type="button" aria-label="Close" data-dismiss="modal" style="min-width: 100px;") Ok
+
+javascript:
+  $('#rb-advantages').slick({
+    autoplay: true,
+    autoplaySpeed: 3000,
+    dots: true,
+    infinite: true,
+    speed: 500,
+    fade: true,
+    cssEase: 'linear'
+  });

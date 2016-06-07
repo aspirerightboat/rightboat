@@ -6,31 +6,27 @@
   .row
     .col-xs-12.col-sm-6
       h2
-        | Welcome to the World’s first, FREE to list, boat sales website.
-      h5
-        | Some of the reasons why we are the fastest growing boat for sales site:
+        | The World’s first, FREE to list, boat sales website.
+      h2
+        | Now available in the USA to all Brokers & Dealers
 
-      h3 ● Register and list all your boats for free!
-      p
-        | No ongoing monthly advertising charges
+      h3 ● Register for FREE and list all your boats for FREE.
+      ul.list-disc
+        li
+          | Your entire boat inventory will be advertised for free on our site for as long as you want it there. Your boat inventory data can be automatically imported with daily updates into our site.
 
-      h3 ● Reach ‘000s of serious boat buyers
-      p
-        | Rightboat makes it easy for buyers - clean data, no adverts, easy browsing and searching, custom alerts for when new boats are listed
+      h3 ● Free GOOGLE marketing of your entire inventory.
+      ul.list-disc
+        li
+          | Rightboat will fund direct Google Adword campaigns for all of your inventory.
+        li
+          | Boat buyers search via Google today and with our automated Google Adword Campaigns we ensure your inventory will be the first to be seen on a Google search.
 
-      h3 ● Free online digital marketing
-      p
-        | Rightboat uses state of the art digital marketing to find serious buyers for your boats
+      h3 ● You only Pay when we send you a qualified lead.
+      ul.list-disc
+        li
+          | We only get paid on results – That’s the quality leads generated and sent directly to you.
 
-      h3 ● Pay by results only
-      p
-        | Rightboat only charges brokers for good quality leads.
-
-      blockquote
-        p
-          | “A £9 lead from Rightboat sold a £45,000 boat! And we had 100% of the broker fee! More leads please Rightboat!!!”
-          br
-          | – <em>Richard Stead, Southampton Waters Ltd, UK</em>
     .col-xs-12.col-sm-6.em-section
       h2 Broker Registration
       = form_tag register_broker_path, class: 'simple-ajax-form', id: 'register_broker_form', remote: true, data: {type: :json} do

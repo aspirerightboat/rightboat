@@ -1,5 +1,5 @@
-class BoatImageUploader < ImageUploader
+class HomeImageUploader < ImageUploader
   def store_dir
-    "home_images"
+    "home_images/#{model.id}"
   end
 end

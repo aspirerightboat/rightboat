@@ -101,7 +101,7 @@ module ApplicationHelper
   def home_image_url(current_user = nil)
     media_url = asset_url('home-bg.jpg')
 
-    return media_url unless current_user
+    return media_url # unless current_user
 
     if session[:boat_type].present?
       media_url = HomeSetting.find_by(boat_type: session[:boat_type])&.attached_media || media_url

@@ -97,4 +97,16 @@ module ApplicationHelper
   def general_facets
     @general_facets ||= Rightboat::BoatSearch.general_facets_cached
   end
+
+  def home_image_url(current_user = nil)
+    media_url = asset_url('home-bg.jpg')
+
+    return media_url unless current_user
+
+    if session[:boat_type].present?
+      media_url = HomeSetting.find_by(boat_type: session[:boat_type])&.attached_media || media_url
+    end
+
+    asset_url(media_url)
+  end
 end

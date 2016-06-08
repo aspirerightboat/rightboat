@@ -90,16 +90,6 @@ $ ->
 
   $('.cool-select').select2()
 
-  $.fn.resetForm = ->
-    $('form', @).reset()
-    $('select', @).select2 'val', ''
-    $('.selectize-input input', @).val('').attr('placeholder', 'Title').css
-      left: 0
-      opacity: 1
-      position: 'relative'
-      width: 'auto'
-    $('.selectize-input > div', @).html('')
-
 $.fn.initTitleSelect = ->
   @.selectize(create: true, createOnBlur: true)
 $ ->

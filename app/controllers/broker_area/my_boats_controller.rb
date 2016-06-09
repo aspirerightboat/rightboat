@@ -10,8 +10,13 @@ module BrokerArea
     def new
       manufacturer = Manufacturer.find_or_create_by(name: 'Unknown')
       model = Model.find_or_create_by(name: 'Unknown', manufacturer: manufacturer)
-
-      @boat = Boat.create(user: current_broker, manufacturer: manufacturer, model: model, price: 123, currency: Currency.default)
+      @boat = Boat.where(user: current_broker, manufacturer: manufacturer, model: model).first
+      @boat ||= Boat.create(user: current_broker,
+                            manufacturer: manufacturer,
+                            model: model,
+                            price: 123,
+                            currency: Currency.default,
+                            published: false)
       @specs_hash = @boat.boat_specifications.specs_hash
     end
 

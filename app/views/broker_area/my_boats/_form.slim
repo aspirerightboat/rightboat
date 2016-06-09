@@ -1,72 +1,87 @@
-= form_tag [:broker_area, method: :upload_image], multipart: true do
-  .row
-    .col-xs-12
-      .fallback
-        input(type="file" multiple)
-        button Upload
-= form_for @boat, html: {class: 'edit-boat-form'} do |f|
-  .row
-    .col-xs-12.col-sm-4
-      .form-group
-        = f.label :office, 'Listing office'
-        = f.select :office, options_from_collection_for_select(current_broker.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
-      .form-group
-        = label_tag :new_or_used
-        = select_tag :new_or_used, options_for_select(%w(new used), f.object.new_boat? ? 'new' : 'used')
-      .form-group
-        b Vessel Lying
-        br
-        = f.label :country
-        = f.select :country, options_for_select(Country.pluck(:name, :id), f.object.country_id), prompt: 'Please select ...'
-        br
-        = f.label :location
-        = f.text_field :location, placeholder: 'London'
-      .form-group
-        span.boat-price-wrap
-          = f.label :price, 'Asking price'
-          = f.number_field :price, style: 'width: 120px'
-          = f.select :currency, options_for_select(Currency.order(:position).pluck(:name, :id), f.object.currency_id), prompt: 'Please select ...'
-        | - Or -
-        = f.check_box :poa, id: 'boat_poa'
-        = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
-        = check_box_tag :vat_included, @boat && @boat.vat_rate.try(:name) == 'Inc VAT'
-        = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
-      .form-group
-        = f.label :description, 'Marketing description (EN)'
-        = f.text_area :description
-      .form-group
+/= form_tag [:broker_area, method: :upload_image], multipart: true do
+/  .row
+/    .col-xs-12
+/      .fallback
+/        input(type="file" multiple)
+/        button Upload
+
+/ul.wizard-breadcrumbs
+/  li Makemodel
+/  li Images
+/  li Main Details
+/  li Secondary Details
+/  li Business Details
+
+= form_for @boat, url: [:broker_area, :my_boats], html: {class: 'edit-boat-form'} do |f|
+  h3 Manufacturer & Model
+  .form-group
+    .row
+      .col-sm-6
         = label_tag :manufacturer
         = text_field_tag :manufacturer
-        br
+      .col-sm-6
         = label_tag :model
         = text_field_tag :model
-      .form-group
-        = f.label :name, 'Boat name'
-        = f.text_field :name
-      .form-group
-        = f.label :owners_comment
-        = f.text_area :owners_comment
-      .form-group
-        = label_tag :known_defects
-        = text_area_tag :known_defects
-    .col-xs-12.col-sm-8
-      h3 Dimensions
-      .row
-        .col-xs-12.col-sm-4
-          = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll')
-          = spec_m_ft_field 'beam_m', 'Beam'
-          = spec_m_ft_field 'draft_m', 'Draft'
-          = spec_m_ft_field 'air_draft_m', 'Air Draft'
-        .col-xs-12.col-sm-4
-          = spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
-          = spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
-          = spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
+    .row
+      .col-xs-12
+        .div templa
 
-      h3 Engines
-      .row
-        .col-xs-12.col-sm-4
-          label
-            | Engines Count
-            input
-            = select_tag 'boat_specs[engine_count]', options_for_select((1..6), @specs_hash['engine_count']), prompt: 'Please select...'
-        .col-xs-12.col-sm-4
+  /.row
+  /  .col-xs-12.col-sm-4
+  /    .form-group
+  /      = f.label :office, 'Listing office'
+  /      = f.select :office, options_from_collection_for_select(current_broker.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
+  /    .form-group
+  /      = label_tag :new_or_used
+  /      = select_tag :new_or_used, options_for_select(%w(new used), f.object.new_boat? ? 'new' : 'used')
+  /    .form-group
+  /      b Vessel Lying
+  /      br
+  /      = f.label :country
+  /      = f.select :country, options_for_select(Country.pluck(:name, :id), f.object.country_id), prompt: 'Please select ...'
+  /      br
+  /      = f.label :location
+  /      = f.text_field :location, placeholder: 'London'
+  /    .form-group
+  /      span.boat-price-wrap
+  /        = f.label :price, 'Asking price'
+  /        = f.number_field :price, style: 'width: 120px'
+  /        = f.select :currency, options_for_select(Currency.order(:position).pluck(:name, :id), f.object.currency_id), prompt: 'Please select ...'
+  /      | - Or -
+  /      = f.check_box :poa, id: 'boat_poa'
+  /      = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
+  /      = check_box_tag :vat_included, @boat && @boat.vat_rate.try(:name) == 'Inc VAT'
+  /      = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
+  /    .form-group
+  /      = f.label :description, 'Marketing description (EN)'
+  /      = f.text_area :description
+  /    .form-group
+  /      = f.label :name, 'Boat name'
+  /      = f.text_field :name
+  /    .form-group
+  /      = f.label :owners_comment
+  /      = f.text_area :owners_comment
+  /    .form-group
+  /      = label_tag :known_defects
+  /      = text_area_tag :known_defects
+  /  .col-xs-12.col-sm-8
+  /    h3 Dimensions
+  /    .row
+  /      .col-xs-12.col-sm-4
+  /        = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll')
+  /        = spec_m_ft_field 'beam_m', 'Beam'
+  /        = spec_m_ft_field 'draft_m', 'Draft'
+  /        = spec_m_ft_field 'air_draft_m', 'Air Draft'
+  /      .col-xs-12.col-sm-4
+  /        = spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
+  /        = spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
+  /        = spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
+  /
+  /    h3 Engines
+  /    .row
+  /      .col-xs-12.col-sm-4
+  /        label
+  /          | Engines Count
+  /          input
+  /          = select_tag 'boat_specs[engine_count]', options_for_select((1..6), @specs_hash['engine_count']), prompt: 'Please select...'
+  /      .col-xs-12.col-sm-4

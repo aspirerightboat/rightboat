@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
       session[:country] = country_code
       country = Country.find_by(iso: country_code)
 
-      currency = current_user&.user_setting&.currency || country.currency.name
+      currency = current_user&.user_setting&.currency || (country.currency || Currency.default).name
       length_unit = current_user&.user_setting&.length_unit || country.length_unit
 
       set_current_currency(currency)

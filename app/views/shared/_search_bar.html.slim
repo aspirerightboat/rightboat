@@ -20,10 +20,8 @@ nav.navbar.navbar-default.nabvar-tools
         li
           .navbar-text
             span Sort by
-            = ' '
-            = select_tag :sort, search_order_options, class: 'rb-select2-md select-general', id: 'search_order'
+            = select_tag :sort, search_order_options, class: 'select-dark select-general boat-sorting-select', id: 'search_order'
         li
           .navbar-text
             span View
-            = ' '
-            = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'notranslate', translate: 'no'
+            = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'select-dark notranslate layout-mode-select'

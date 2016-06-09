@@ -20,7 +20,7 @@ class Country < ActiveRecord::Base
     name
   end
 
-  def self.by_priority
+  def self.by_priority # TODO: make priority column
     ret = self.where(iso: %w(GB US))
     ret += self.where(iso: %w(AU CA HR DK FR DE GR IE IT NL NZ PL ES SE CH TR)).order(:name)
     ret += self.where('id NOT IN (?)', ret.map(&:id)).order(:name)
@@ -28,14 +28,10 @@ class Country < ActiveRecord::Base
   end
 
   def self.country_options
-    @countries = Rails.cache.fetch "rb.countries", expires_in: 1.day do
-      self.by_priority.map { |x| [x.name, x.id]}
-    end
+    @country_options ||= by_priority.map { |x| [x.name, x.id] }
   end
 
   def self.country_code_options
-    @country_codes = Rails.cache.fetch "rb.country_codes", expires_in: 1.day do
-      self.by_priority.map { |x| [[x.iso.downcase, x.name, x.country_code].join(','), x.country_code]}
-    end
+    @country_code_options ||= by_priority.map { |x| [x.name, x.iso.downcase, x.country_code] }
   end
 end

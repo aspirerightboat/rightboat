@@ -1,132 +1,111 @@
 $ ->
   $.fn.generalSelect = ->
+    @.selectize()
     @.each ->
       $sel = $(@)
-      options = minimumResultsForSearch: Infinity
-      if $sel.hasClass('select-white')
-        options.dropdownCssClass = 'select-white'
-
-      $sel.select2(options)
-
-      if !$sel.initialized
+      if $sel.data('onchange-fill-models') && !$sel.initialized
         $sel.initialized = true
         $sel.on 'change', ->
-          $allOption = $(@).find('option[value=""]')
-          if $allOption.length and $allOption.text().match(/^all$/i)
-            if $allOption.is(':selected')
-              $sel.select2 'val', ''
-          # allow user to add custom model when selected custom manufacturer
-          if $sel.attr('id') == 'sell_boat_makers_select' && /^custom$/i.test($('#s2id_sell_boat_makers_select a > span').text())
-            $sel.closest('fieldset').addClass 'custom'
-          else
-            $sel.closest('fieldset').removeClass 'custom'
-          if $sel.data('onchange-fill-models')
-            maker_id = $sel.val()
-            $modelsSelect = $($sel.data('onchange-fill-models'))
-            window.syncModel(maker_id, $modelsSelect)
-
+          $($sel.data('onchange-fill-models')).syncModelSelect($sel.val())
   $('.select-general').generalSelect()
 
+  $.fn.initTitleSelect = ->
+    @.selectize(create: true, createOnBlur: true)
+  $('.select-title').initTitleSelect()
 
   $.fn.currencySelect = ->
-    @.select2
-      minimumResultsForSearch: Infinity
-      dropdownAutoWidth: true
-      formatSelection: (viewMode, container, escapeMarkup) ->
-        viewMode.text
-      formatResult: (viewMode, container, escapeMarkup) ->
-        ret = '<span'
-        ret += ' class="priority-last"' if viewMode.id is 'USD'
-        ret += '>' + viewMode.text + ' <small>' + viewMode.id + '</small></span>'
-
+    @.selectize
+      render:
+        option: (item, escape) ->
+          ret = '<div'
+          ret += ' class="priority-last"' if item.value == 'USD'
+          ret += '>' + item.text + ' <small>' + item.value + '</small></div>'
   $('.select-currency').currencySelect()
-
 
   $.fn.makemodelPickers = ->
     @.each ->
       $sel = $(@)
       collection = $sel.data('collection')
       url = '/search/' + collection
-      $sel.select2
-        tags: true
-        minimumInputLength: 0
-        separator: '-'
-        tokenSeparators: [',']
-        initSelection: (el, callback) ->
-          tags = $(el).data('initial-tags') || []
-          data = $.map(tags, (arr) -> {id: arr[0], text: arr[1]})
-          callback data
-          return
-        ajax:
-          url: url
-          dataType: 'JSON'
-          delay: 150
-          data: (term, page) ->
-            h = {q: term}
-            h.manufacturer_ids = $sel.closest('form').find('input.manufacturers-picker').val() if collection == 'models'
-            h
-          results: (data, page) ->
-            {results: $.map(data.search, (item) -> {id: item[0], text: item[1]})}
-          cache: true
-
+      $sel.selectize
+        valueField: 'id',
+        labelField: 'name',
+        searchField: 'name',
+        openOnFocus: true,
+        closeAfterSelect: true,
+        preload: 'focus',
+        delimiter: '-',
+        options: $sel.data('initial-options') || [],
+        load: (query, callback) ->
+          data = {q: query}
+          data.manufacturer_ids = $sel.closest('form').find('input.manufacturers-picker').val() if collection == 'models'
+          $.getJSON url, data, (res) ->
+            callback(res[collection])
+          .fail ->
+            callback()
   $('.manufacturers-picker, .models-picker').makemodelPickers()
-  
-  
-  $('select#layout_mode').select2
-    minimumResultsForSearch: Infinity
-    formatSelection: (viewMode, container, escapeMarkup) ->
-      $('<img>').attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png').addClass 'view-mode-icon'
-    formatResult: (viewMode, container, escapeMarkup) ->
-      $icon = $('<img>').attr('src', '/icons/' + viewMode.text.toLowerCase() + '-view.png').addClass('view-mode-icon')
-      #return $('<div>').append(viewMode.text + ' ').append($icon)
-      $('<div>').append $icon
-    dropdownCssClass: 'view-mode-dropdown'
+
+  $('.layout-mode-select')
+  .selectize
+    render:
+      item: (data, escape) ->
+        '<div><img class="view-mode-icon" src="/icons/' + data.text + '-view.png"></div>'
+      option: (data, escape) ->
+        '<div><img class="view-mode-icon" src="/icons/' + data.text + '-view.png"></div>'
+  .change ->
+    $('[data-layout-mode]').attr('data-layout-mode', @value)
+    Cookies.set('layout_mode', @value)
+
 
   $('.multiple-country-select').each ->
     $sel = $(@)
-    filtered_data = $sel.data('filtered-data')
-    if !$.isEmptyObject(filtered_data)
+    $sel.selectize
+      render:
+        item: (data, escape) ->
+          '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>'
+    foundCountries = $sel.data('found-countries')
+    if !$.isEmptyObject(foundCountries)
+      selectize = $sel.data('selectize')
+      $sel.data('init-options', selectize.options)
+      selectize.clear()
+      selectize.clearOptions()
+      $.each foundCountries, ->
+        id = @[0]
+        name = @[1]
+        count = @[2]
+        text = name + ' (' + count + ')'
+        selectize.addOption(value: id, text: text)
+      selectize.refreshOptions()
       selected_ids = $sel.data('selected-ids') || []
-      window.countries_options = $sel.html()
-      $sel.empty()
-      $.each filtered_data, (i, arr) ->
-        id = arr[0]
-        name = arr[1]
-        count = arr[2]
-        count = '1000+' if parseInt(count) > 1000
-        opt = $('<option>').text(name+' ('+count+')').attr('value', id)
-        opt.prop('selected', true) if $.inArray(''+id, selected_ids) >= 0
-        $sel.append(opt)
-    $sel.select2()
+      $.each selected_ids, ->
+        selectize.addItem(this, true)
 
   $.fn.countrySelect = ->
-    $(@).select2
-      minimumResultsForSearch: Infinity
-      dropdownAutoWidth: true
-      formatSelection: (viewMode, container, escapeMarkup) ->
-        viewMode.text
-      formatResult: (viewMode, container, escapeMarkup) ->
-        ret = '<span'
-        ret += ' class="priority-last"' if /Turkey/.test viewMode.text
-        ret += '>' + viewMode.text + '</span>'
+    @.selectize
+      render:
+        option: (data, escape) ->
+          ret = '<div'
+          ret += ' class="priority-last"' if data.value == 'Turkey'
+          ret += '>' + escape(data.text) + '</div>'
   $('.country-select').countrySelect();
 
-  $('select.country-code-select').each ->
-    $(this).select2
-      minimumResultsForSearch: Infinity
-      dropdownAutoWidth: true
-      formatSelection: (viewMode, container, escapeMarkup) ->
-        splitted = viewMode.text.split(',')
-        if splitted.length > 1
-          $('<span>').html('<img class="flag" src="/flags/' + splitted[0] + '.png' + '"/> ' + splitted[2])
-        else
-          viewMode.text
-      formatResult: (viewMode, container, escapeMarkup) ->
-        splitted = viewMode.text.split(',')
-        ret = '<span'
-        if splitted.length > 1
-          ret += ' class="priority-last"' if /Turkey/.test viewMode.text
-          ret += '>' + splitted[1] + ' (' + splitted[2] + ')</span>'
-        else
-          ret += '>' + viewMode.text + '</span>'
-        ret
+  $('.country-code-select').each ->
+    $sel = $(@)
+    $sel.selectize
+      options: $sel.find('option').map(-> {value: $(@).attr('value'), iso: $(@).data('iso'), text: $(@).text()}),
+      allowEmptyOption: true,
+      render:
+        item: (data, escape) ->
+          if data.iso
+            '<div><img class="flat" src="/flags/' + data.iso + '.png"> ' + data.value + '</div>'
+          else
+            data.text
+        option: (data, escape) ->
+          if data.iso
+            ret = '<div'
+            ret += ' class="priority-last"' if /^Turkey/.test(data.text)
+            ret += '>' + escape(data.text) + '</div>'
+          else
+            data.text
+    if !$sel.val()
+      $sel.val('')

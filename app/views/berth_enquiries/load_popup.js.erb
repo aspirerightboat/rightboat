@@ -50,6 +50,7 @@
     var $popup = $('#berths_popup').simpleAjaxForm();
 
     window.initSlider($('.slider', $popup));
+    $('.slider-length-select', $popup).sliderLengthSelect();
 
     $popup.on('shown.bs.modal', function() {
       initMap();

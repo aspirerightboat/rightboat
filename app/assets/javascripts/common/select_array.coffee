@@ -1,9 +1,9 @@
 $ ->
-
-  initSelect = ->
-    $('.select-array').select2
-      tags: true
-      tokenSeparators: [',', ' ']
-
-  $(document).on 'click', 'a.button.has_many_add', initSelect
-  $(document).on 'ready page:load', initSelect
+  console.log('init .select-array')
+  $('.select-array').selectize
+    delimiter: ',',
+    persist: false,
+    create: (input) ->
+      console.log('create')
+      value: input,
+      text: input

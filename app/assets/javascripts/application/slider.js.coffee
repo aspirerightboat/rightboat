@@ -123,32 +123,33 @@ $ ->
   $( '.slider' ).each ->
     initSlider($(this))
 
-  $('select[name="length_unit"]').change (e)=>
-    $target = $(e.currentTarget)
-    oldUnit = e.removed.id
-    unit = $target.val()
-    $('select[name="length_unit"]').select2('val', unit)
-    $('[data-input="length"]').each ->
-      reinitSlider($(this), oldUnit, unit)
-    $('[data-attr-name="loa"]').each (_, el)=>
-      $boat = $(el).closest('[data-boat-ref]')
-      if length = $boat.data('length')
-        l = convertLength(Number(length), oldUnit, unit)
-        $boat.find('[data-attr-name="loa"]').html('' + l + ' ' + unit)
+  $.fn.sliderLengthSelect = ->
+    @.generalSelect().change ->
+      unit = @value
+      oldUnit = null
+      $(@).closest('.range-slider-wrapper').find('.slider').each ->
+        $slider = $(@)
+        oldUnit = $slider.data('unit')
+        reinitSlider($slider, oldUnit, unit)
+      $('.boat-view').each ->
+        if length = $(@).data('length')
+          l = convertLength(Number(length), oldUnit, unit)
+          $('[data-attr-name=loa]', @).text('' + l + ' ' + unit)
 
-  $('select[name="currency"]').change (e)=>
-    $target = $(e.currentTarget)
-    currency = $target.find('option:selected').text()
-    oldUnit = e.removed.id
-    unit = e.added.id
-    $('select[name="currency"]').select2('val', $target.val())
-    $('[data-input="price"]').each ->
-      reinitSlider($(this), oldUnit, unit)
-    $('[data-attr-name="price"]').each (_, el)=>
-      $boat = $(el).closest('[data-boat-ref]')
-      if price = $boat.data('price')
+  $('.slider-length-select').sliderLengthSelect();
+
+  $('.slider-currency-select').currencySelect().change ->
+    currency_symbol = $('option:selected', @).text()
+    unit = @value
+    oldUnit = null
+    $(@).closest('.range-slider-wrapper').find('.slider').each ->
+      $slider = $(@)
+      oldUnit = $slider.data('unit')
+      reinitSlider($slider, oldUnit, unit)
+    $('.boat-view').each ->
+      if price = $(@).data('price')
         p = convertPrice(Number(price), oldUnit, unit)
-        $boat.find('[data-attr-name="price"]').html(currency + ' ' + $.numberWithCommas(p))
+        $('[data-attr-name=price]', @).text(currency_symbol + ' ' + $.numberWithCommas(p))
 
   $('.toggle-adv-search').click (e)->
     e.preventDefault()
@@ -167,10 +168,6 @@ $ ->
       complete: ->
         $('#search-hub-form, #top-navbar').slideDown
           duration: 200
-
-  $('#layout_mode').change ->
-    $('*[data-layout-mode]').attr('data-layout-mode', @value)
-    Cookies.set('layout_mode', @value)
 
   $('#search_order').change ->
     params = $.queryParams()

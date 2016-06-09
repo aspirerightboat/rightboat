@@ -99,7 +99,7 @@
               .rb-control-group
                 .rb-control-group-addon
                   = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country Code', \
-                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                               class: 'select-general', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :daytime_phone, '', class: 'form-control'
             .col-sm-6.col-xs-12
@@ -107,7 +107,7 @@
               .rb-control-group
                 .rb-control-group-addon
                   = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country Code', \
-                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                               class: 'select-general', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :evening_phone, '', class: 'form-control'
           .row
@@ -116,7 +116,7 @@
               .rb-control-group
                 .rb-control-group-addon
                   = select_tag :mobile_code, options_for_country_code, prompt: 'Country Code', \
-                               class: 'select-white select-sm cool-select', style: 'margin-right: 10px'
+                               class: 'select-general', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :mobile, '', class: 'form-control'
             .col-sm-6.col-xs-12
@@ -144,7 +144,7 @@
                 = text_field_tag :county, '', placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
                 = text_field_tag :zip, '', placeholder: 'Post Code/Zip', class: 'form-control'
               .form-group
-                = country_tag(:country_id, nil, class: 'select-white select-sm country-select')
+                = country_tag(:country_id, nil, class: 'country-select')
           .row
             .col-xs-12
               button.btn-flat.upd-office-btn(type="button") Add/Edit Office

@@ -13,19 +13,21 @@
           .form-group.row
             .col-md-5.col-xs-12 1. Manufacturer
             .col-md-5.col-xs-12
-              = f.select :manufacturer_id, Manufacturer.order(:name).pluck(:id, :name).map { |id, name| [name, id] }, {prompt: 'Please select'}, class: 'select-general select-white', data: {'onchange-fill-models' => '#finances_models_select'}, id: 'finances_makers_select'
+              = f.select :manufacturer_id, Manufacturer.order(:name).pluck(:id, :name).map { |id, name| [name, id] }, \
+                      {prompt: 'Please select'}, class: 'select-general', \
+                      data: {'onchange-fill-models' => '#finances_models_select'}, id: 'finances_makers_select'
           .form-group.row
             .col-md-5.col-xs-12 2. Model
             .col-md-5.col-xs-12
-              = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general select-white', id: 'finances_models_select'
+              = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general', id: 'finances_models_select'
           .form-group.row
             .col-md-5.col-xs-12 3. Age of Vessel
             .col-md-5.col-xs-12
-              = f.select :age_of_vessel, ((current_year - 30)..current_year).to_a.reverse, {prompt: 'Please select'}, class: 'select-general select-white'
+              = f.select :age_of_vessel, ((current_year - 30)..current_year).to_a.reverse, {prompt: 'Please select'}, class: 'select-general'
           .form-group.row
             .col-md-5.col-xs-12 4. Location
             .col-md-5.col-xs-12
-              = country_tag('finance[country_id]', nil, prompt: 'Please select', class: 'select-white country-select')
+              = country_tag('finance[country_id]', nil, prompt: 'Please select', class: 'country-select')
           .form-group.row
             .col-md-5.col-xs-12 5. Price
             .col-md-5.col-xs-12
@@ -33,7 +35,7 @@
                 .rb-control
                   = f.text_field :price, class: 'form-control', 'data-validetta' => 'number'
                 .rb-control-group-addon
-                  = currency_tag 'finance[price_currency]', current_currency, class: 'select-white select-sm select-currency'
+                  = currency_tag 'finance[price_currency]', current_currency, class: 'select-azure select-currency'
           .form-group.row
             .col-md-5.col-xs-12 6. Loan Amount Required
             .col-md-5.col-xs-12
@@ -41,7 +43,7 @@
                 .rb-control
                   = f.text_field :loan_amount, class: 'form-control', 'data-validetta' => 'number'
                 .rb-control-group-addon
-                  = currency_tag 'finance[loan_amount_currency]', current_currency, class: 'select-white select-sm select-currency'
+                  = currency_tag 'finance[loan_amount_currency]', current_currency, class: 'select-azure select-currency'
           .form-group.row
             .col-md-3.col-xs-12
               = f.submit 'Submit a Request', class: 'btn-flat'

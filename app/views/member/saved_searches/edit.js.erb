@@ -10,14 +10,13 @@ $(function() {
 
   $('.saved-multiple-country-select').each(function() {
     var $sel = $(this);
-    var selected_ids = $sel.data('selected-ids') || [];
-    $.each($sel.children('option'), function(i, option) {
-      var id = $(option).val();
-      if ($.inArray(id, selected_ids) >= 0) {
-        $(option).prop('selected', true);
-      }
+    $sel.selectize({
+      render: {item: function(data, escape) {
+        return '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>';
+      }}
     });
-    return $sel.select2();
+    var selected_ids = $sel.data('selected-ids') || [];
+    $.each(selected_ids, function() { $sel[0].selectize.addItem(this, true) });
   });
 
 });

@@ -40,14 +40,14 @@
               = f.label :short_term_true, 'Y'
               = f.radio_button :short_term, 'false'
               = f.label :short_term_false, 'N'
-          .form-group.row
+          .form-group.range-slider-wrapper
             .col-md-6.col-xs-12 5. The size of the berth I am look for is:
             .col-md-6.col-xs-12
               .rb-control-group.length-input-group
                 .rb-control
                   = slider_tag(:length, min: 0, max: 300, unit: 'm')
                 .rb-control-group-addon
-                  = select_tag :length_unit, options_for_select(%w(ft m), 'm'), class: 'select-sm select-general select-white'
+                  = select_tag :length_unit, options_for_select(%w(ft m), 'm'), class: 'select-azure slider-length-select'
           .form-group.row
             .col-md-6.col-xs-12
               | 6. I am looking for a berth here:

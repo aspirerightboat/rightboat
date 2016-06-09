@@ -67,7 +67,7 @@ class Model < ActiveRecord::Base
       order_by :name, :asc
     end
 
-    search.hits.map { |h| [h.primary_key, h.stored(:name)] }
+    search.hits.map { |h| {id: h.primary_key, name: h.stored(:name)} }
   end
 
   def prepend_name!(prepend_part)

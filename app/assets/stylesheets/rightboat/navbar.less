@@ -105,38 +105,38 @@ a.navbar-brand {
     form, .nav.navbar-nav:first-child {margin-top: 10px;}
   }
 
-  .select2-container .select2-choice,
-  .select2-dropdown-open .select2-choice {
-    background: #FFF;
-  }
   label {
     line-height: @line-height-base;
     font-weight: normal;
     vertical-align: middle;
-    &.select2-label { line-height: 26px; }
   }
 
   .navbar-text {
     margin-right: 0;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 6px;
+    margin-bottom: 6px;
 
     span {
       color: @rb-color-dark;
       vertical-align: middle;
+      margin-right: 1ex;
     }
   }
-  .rb-select2-md {
+
+  .selectize-control {
+    min-width: 62px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: 3px;
+  }
+  .select-dark .selectize-input {
+    padding: 2px 8px;
+    background-color: #fff !important;
+  }
+
+  .boat-sorting-select {
     min-width: 150px;
-  }
-  .select2-container {
-    vertical-align: top;
-  }
-  .select2-container .select2-choice {
-    line-height: 20px;
-  }
-  .select2-container .select2-choice > .select2-chosen {
-    padding: 2px;
   }
 }
 

@@ -30,8 +30,7 @@
 #= require jquery-ui/slider
 #= require jquery.datetimepicker.full.min
 #= require jquery.ui.touch-punch
-#= require select2
-#= require selectize.min
+#= require selectize
 #= require js-cookie
 #= require slick.min
 #= require photoswipe.min

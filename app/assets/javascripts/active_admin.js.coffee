@@ -5,6 +5,6 @@
 #= require autocomplete-rails
 #= require highcharts
 #= require underscore
-#= require select2
+#= require selectize
 #= require_tree ./common
 #= require_tree ./admin

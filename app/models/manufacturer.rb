@@ -43,7 +43,7 @@ class Manufacturer < ActiveRecord::Base
       order_by :name, :asc
     end
 
-    search.hits.map { |h| [h.primary_key, h.stored(:name)] }
+    search.hits.map { |h| {id: h.primary_key, name: h.stored(:name)} }
   end
 
   def merge_and_destroy!(other_manufacturer)

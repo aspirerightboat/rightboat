@@ -41,9 +41,11 @@
                 .form-group
                   .rb-control-group
                     .rb-control-group-addon
-                      = select_tag :country_code, options_for_country_code, prompt: 'Country Code', class: 'select-white select-sm country-code-select', id: 'lead_country_code'
+                      = select_tag :country_code, options_for_country_code, prompt: 'Country Code', placeholder: 'Country Code', \
+                              class: 'select-azure country-code-select', id: 'lead_country_code'
                     .rb-control
-                      = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), placeholder: 'Phone', class: 'form-control', id: 'lead_phone'
+                      = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), \
+                              placeholder: 'Phone', class: 'form-control', id: 'lead_phone'
             .row.ha-toggle.hidden
               .col-xs-12
                 .form-group

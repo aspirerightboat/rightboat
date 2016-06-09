@@ -54,7 +54,7 @@
                   .row
                     .col-xs-5.col-sm-4
                       = f.label :price
-                      = currency_tag 'saved_search[currency]', @saved_search.currency, class: 'select-white select-sm select-currency'
+                      = currency_tag 'saved_search[currency]', @saved_search.currency, class: 'select-azure select-currency'
                     .col-xs-7.col-sm-8
                       .row
                         .col-xs-6
@@ -70,7 +70,7 @@
                   .row
                     .col-xs-5.col-sm-4
                       = f.label :length_unit, 'Length'
-                      = f.select :length_unit, length_unit_options, {}, { class: 'select-white select-sm select-general' }
+                      = f.select :length_unit, length_unit_options, {}, { class: 'select-azure select-general' }
                     .col-xs-7.col-sm-8
                       .row
                         .col-xs-6
@@ -85,7 +85,7 @@
                       = f.label :country, 'Countries'
                       - general_options = general_facets[:countries_data].map { |id, name, count| [count ? "#{name} (#{count})" : name, id] }
                       - selected_ids = @saved_search.countries.to_json
-                      = f.select :countries, options_for_select(general_options), {}, {class: 'select-black select-full saved-multiple-country-select', multiple: true, data: {selected_ids: selected_ids}}
+                      = f.select :countries, options_for_select(general_options), {}, {class: 'select-black saved-multiple-country-select', multiple: true, data: {selected_ids: selected_ids}}
 
 
               .form-group.row

@@ -21,7 +21,6 @@ gem 'devise'
 gem 'cancan'
 gem 'active_model_serializers'
 gem 'open_uri_redirections'
-gem 'select2-rails'
 gem 'kaminari'
 gem 'friendly_id'
 # rmagick requires dependencies:

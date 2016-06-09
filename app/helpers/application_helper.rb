@@ -62,8 +62,10 @@ module ApplicationHelper
     options_for_select(opts, current_layout_mode)
   end
 
-  def options_for_country_code
-    options_for_select(Country.country_code_options)
+  def options_for_country_code(selected_code = nil)
+    Country.country_code_options.each_with_object(String.new) do |(name, iso, code), s|
+      s << content_tag(:option, "#{name} (#{code})", value: code, data: ({iso: iso} if iso), selected: (true if selected_code == code))
+    end.html_safe
   end
 
   def length_unit_options

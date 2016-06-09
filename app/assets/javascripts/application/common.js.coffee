@@ -1,13 +1,8 @@
-window.Rightboat = {}
-
 $.fn.rbValidetta = (opts = {}) ->
   default_opts =
     display: 'inline'
-    custom :
-      username :
-        pattern : /^[a-zA-Z][\w@.-]+$/,
-        errorMessage : "Only include a-z, A-Z, digits and underline."
-  @.validetta($.extend(opts, default_opts))
+  opts = $.extend(opts, default_opts)
+  @.validetta(opts)
 
 window.requireLogin = (e, disable_history)->
   $loginBtn = $('.login-top')
@@ -46,22 +41,26 @@ $ ->
       $(this).find('.icon').removeClass('icon-left-open').addClass('icon-right-open')
 
   $('.reset-adv-search').click ->
-    $form = $(@).closest('#advanced-search').find('form')
-    if window.countries_options
-      $('.multiple-country-select').select2("destroy").html(window.countries_options)
-      $('.multiple-country-select').select2()
+    $advSearch = $(@).closest('#advanced-search')
+    $advSearch.find('h2').text('Advanced Search')
+    $advSearch.find('.result-info').remove()
+    $form = $advSearch.find('form')
     $('input[type=text]', $form).val('')
     $('input[type=checkbox]', $form).prop('checked', false)
-    $('input[name=manufacturer], select', $form).select2('data', null)
-    $('input[name=model], select', $form).select2('data', null)
+    $('#manufacturers_picker, #models_picker', $form).each -> @selectize.clear()
+    $('#countries_picker', $form).each ->
+      selectize = @selectize
+      selectize.clear()
+      if (initOpts = $(@).data('init-options'))
+        selectize.clearOptions()
+        $.each initOpts, (k, v) ->
+          selectize.addOption(value: k, text: v.text)
+        selectize.refreshOptions(false)
+
     $('.year-slider, .length-slider, .price-slider', $form).each ->
       $(@).data('value0', '')
       $(@).data('value1', '')
       reinitSlider($(@))
-    $($form[0].length_unit).select2 'val', 'ft'
-    $($form[0].currency).select2 'val', 'GBP'
-    $(@).closest('#advanced-search').find('h2').text('Advanced Search')
-    $('.result-info').remove()
     false
 
   if sessionStorage.getItem('saveSearch') == 'true'
@@ -88,20 +87,11 @@ $ ->
       scrollToTarget($target)
       false
 
-  $('.cool-select').select2()
-
-$.fn.initTitleSelect = ->
-  @.selectize(create: true, createOnBlur: true)
-$ ->
-  $('.select-title').initTitleSelect()
-
-$ ->
   curPopup = null
   $.fn.displayPopup = ->
     curPopup.modal('hide') if curPopup
     curPopup = @.modal('show')
 
-$ ->
   $('.hide-parent').click ->
     $(@).closest($(@).data('hide-parent')).hide(200)
 

@@ -1,32 +1,36 @@
-window.syncModel = (maker_id, $modelSelect) ->
-  value = $modelSelect.val()
-  $modelSelect.attr('disabled', 'disabled')
-  if maker_id
-    $.ajax
-      type: "GET"
-      url: '/api/manufacturers/' + maker_id + "/models"
-      dataType: "JSON"
-      data:
-        manufacturer: maker_id
-    .success (options) ->
-      $modelSelect.empty()
-      $('<option>').attr('value', '').text('Any').appendTo($modelSelect)
-      $.each options, ->
-        $opt = $('<option>').attr('value', this[0]).text(this[1]).appendTo($modelSelect)
-        $opt.prop('selected', true) if this[0].toString() == value
-      if $modelSelect.hasClass('select-general')
-        $modelSelect.generalSelect()
-    .always ->
-      $modelSelect.removeAttr('disabled')
-
-$.fn.loadModelsOfManufacturer = (selector) ->
-  onChange = ->
-    syncModel(@value, $(selector))
-  @.change(onChange).change()
-
 $ ->
-  $('#boat_manufacturer_id').loadModelsOfManufacturer('#boat_model_id')
+  $.fn.syncModelSelect = (maker_id) ->
+    $modelSelect = @
+    selectize = $modelSelect.data('selectize')
+    value = $modelSelect.val()
+
+    if selectize
+      selectize.disable()
+    else
+      $modelSelect.prop('disabled', true)
+
+    if maker_id && /^\d+$/.test(maker_id)
+      url = '/api/manufacturers/' + maker_id + '/models'
+      data = {manufacturer: maker_id}
+      $.getJSON url, data, (res) ->
+        if selectize
+          selectize.clearOptions()
+          options = $.map res, (arr) -> {value: arr[0], text: arr[1]}
+          selectize.addOption(options)
+        else
+          $modelSelect.empty()
+          $('<option>').attr('value', '').text('Any').appendTo($modelSelect)
+          $.each res, ->
+            $opt = $('<option>').attr('value', @[0]).text(@[1]).appendTo($modelSelect)
+            $opt.prop('selected', true) if @[0] == value
+      .always ->
+        if selectize
+          selectize.enable()
+        else
+          $modelSelect.prop('disabled', false)
+
+  $.fn.loadModelsOfManufacturer = (selector) ->
+    @.each ->
+      @.change(-> $(selector).syncModelSelect(@value))
+
   $('#q_manufacturer_id').loadModelsOfManufacturer('#q_model_id')
-  $('#buyer_guide_manufacturer_id').loadModelsOfManufacturer('#buyer_guide_model_id')
-  $('#finance_manufacturer_id').loadModelsOfManufacturer('#finance_model_id')
-  $('#insurance_manufacturer_id').loadModelsOfManufacturer('#insurance_model_id')

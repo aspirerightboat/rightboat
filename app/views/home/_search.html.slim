@@ -1,6 +1,6 @@
 #search-wrapper.container
   #search-hub.container
-    = link_to root_path do
+    a(href="/")
       = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
     #search-hub-form
       h2
@@ -40,7 +40,7 @@
                 .rb-control
                   = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
                 .rb-control-group-addon
-                  = currency_tag :currency, current_currency, class: 'select-sm select-currency'
+                  = currency_tag :currency, current_currency, class: 'select-dark slider-currency-select'
           .range-slider-wrapper.row
             .col-xs-2= label_tag :length
             .col-xs-10
@@ -48,7 +48,7 @@
                 .rb-control
                   = slider_tag(:length, unit: current_length_unit)
                 .rb-control-group-addon
-                  = select_tag :length_unit, options_for_select(%w(ft m), current_length_unit), class: 'select-sm select-general'
+                  = select_tag :length_unit, options_for_select(%w(ft m), current_length_unit), class: 'select-dark slider-length-select'
           .row
             .col-xs-12.nice-buttons.last-row-pad
               button.nice-button(type="submit") Search

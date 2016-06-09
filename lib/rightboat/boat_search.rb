@@ -132,7 +132,10 @@ module Rightboat
         countries_data = Country.where(id: filtered_country_ids).order(:name).pluck(:id, :name).map do |id, name|
           count = country_facet_rows.find { |x| x.value == id }.try(:count) || 0
           [id, name, count]
-        end.sort_by(&:third).reverse
+        end.sort_by(&:third).reverse.map do |id, name, count|
+          count = count <= 1000 ? count.to_s : '1000+'
+          [id, name, count]
+        end
       else
         countries_data = Country.order(:name).pluck(:id, :name).map { |id, name| [id, name, nil] }
       end

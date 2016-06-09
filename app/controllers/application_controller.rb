@@ -80,7 +80,7 @@ class ApplicationController < ActionController::Base
     if user_setting.country_iso
       session[:country] = user_setting.country_iso
     else
-      user_setting.currency = session[:country]
+      user_setting.country_iso = session[:country]
     end
 
     if user_setting.currency

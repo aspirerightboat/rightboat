@@ -5,7 +5,7 @@
 .broker-info-block
   - if broker_info.logo? || broker.avatar?
     .broker-logo
-      = wicked_pdf_image_tag broker_info.logo? ? broker_info.logo_url(:thumb) : broker.avatar_url
+      = wicked_pdf_image_tag broker_info.logo? ? broker_info.logo_url : broker.avatar_url
   .broker-info
     div <strong>#{broker.name}</strong>
     = render partial: 'shared/address', locals: {address: office.try(:address) || broker.address}

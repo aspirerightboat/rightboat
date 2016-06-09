@@ -31,7 +31,7 @@
       ul
         li Name: <b>#{@lead.title} #{@lead.first_name} #{@lead.surname}</b>
         li
-          | Email: <b>#{@lead.email}</b>
+          | Email: <b>#{@lead.email}</b>&nbsp;&nbsp;&nbsp;&nbsp;
           = mail_to(@lead.email, \
                     'Reply to Customer', \
                     subject: "#{@boat.manufacturer}; #{@boat.model}; #{@boat.ref_no}; #{@boat.source_id || @boat.source_url}")

@@ -50,6 +50,7 @@ class User < ActiveRecord::Base
   has_many :saved_searches, dependent: :delete_all
   has_many :exports, dependent: :delete_all
   has_many :mail_clicks
+  has_one :user_setting
 
   mount_uploader :avatar, AvatarUploader
 

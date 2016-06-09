@@ -1,5 +1,6 @@
 class SessionsController < Devise::SessionsController
   skip_before_action :require_confirmed_email, only: [:destroy]
+  after_filter :clean_up_settings_cookies, :only => :destroy
   clear_respond_to
   respond_to :json
 
@@ -24,5 +25,12 @@ class SessionsController < Devise::SessionsController
 
   def warden_options
     env['warden.options']
+  end
+
+  def clean_up_settings_cookies
+    cookies.delete :boat_type
+    cookies.delete :currency
+    cookies.delete :length_unit
+    cookies.delete :country
   end
 end

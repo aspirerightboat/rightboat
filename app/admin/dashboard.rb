@@ -54,6 +54,14 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
+                text_node 'Run, but no Feed:'
+              end
+              td class: 'text-red' do
+                link_to ImportTrail.where('created_at > ?', day_ago).where(warning_msg: ['Feed already imported']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago, warning_msg_in: ['Feed already imported']})
+              end
+            end
+            tr do
+              td do
                 text_node 'Ran, but with Errors:'
               end
               td class: 'text-orange' do

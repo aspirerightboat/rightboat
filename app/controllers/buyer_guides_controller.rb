@@ -13,7 +13,7 @@ class BuyerGuidesController < ApplicationController
 
   def show
     @guide = BuyerGuide.find_by(slug: params[:id])
-    redirect_to({action: :index}, notice: 'This guide does not exists anymore') && return if !@guide
+    redirect_to({action: :index}, notice: 'This guide does not exist anymore') && return if !@guide
     @page_title = @guide.title
   end
 

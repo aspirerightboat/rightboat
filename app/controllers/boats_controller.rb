@@ -112,6 +112,10 @@ class BoatsController < ApplicationController
 
     # UserMailer.boat_detail(current_user.id, @boat.id).deliver_now
 
+    if @boat.blank?
+      redirect_to({action: :index}, alert: I18n.t('messages.boat_not_exist')) and return
+    end
+
     file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)
 
     send_data File.read(file_path), filename: File.basename(file_path), type: 'application/pdf'

@@ -180,8 +180,8 @@ ActiveAdmin.register User do
   end
 
   sidebar 'User Boats', only: [:show, :edit] do
-    boats_count = user.boats.not_deleted.count
-    inactive_count = user.boats.deleted.count
+    boats_count = user.boats.active.count
+    inactive_count = user.boats.inactive.count
     s = "<p><b>#{boats_count} active</b>, <b>#{inactive_count} inactive</b></p>"
     if boats_count > 0 || inactive_count > 0
       s << '<p>'

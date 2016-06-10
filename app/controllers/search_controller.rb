@@ -12,13 +12,13 @@ class SearchController < ApplicationController
   end
 
   def results
-    if params[:q].present? && (boat = find_makemodel_boat(params[:q].titleize))
-      if boat.manufacturer.name.downcase == params[:q].strip.downcase
-        redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return
-      else
-        redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model_id) and return
-      end
-    end
+    # if params[:q].present? && (boat = find_makemodel_boat(params[:q].downcase))
+    #   if boat.manufacturer.name.downcase == params[:q].strip.downcase
+    #     redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return
+    #   else
+    #     redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model_id) and return
+    #   end
+    # end
 
     params.delete(:page) unless request.xhr?
     set_current_search_order(params[:q].present? ? 'score_desc' : 'price_desc') if params[:order].blank?
@@ -57,6 +57,7 @@ class SearchController < ApplicationController
     set_current_currency params[:currency]
     set_current_length_unit(params[:length_unit])
     set_current_search_order(params[:order])
+    update_user_settings
   end
 
   def log_search_terms

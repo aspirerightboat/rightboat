@@ -2,8 +2,8 @@
   h1 Boats Overview
 
   ul
-    li You have <b>#{current_broker.boats.not_deleted.count} boats live</b>
-    li You have <b>#{current_broker.boats.deleted.count} boats deleted</b>
+    li You have <b>#{current_broker.boats.active.count} boats live</b>
+    li You have <b>#{current_broker.boats.inactive.count} boats inactive</b>
 
   p
     | Last feed update timestamp: <b>#{@last_imported_at ? @last_imported_at.strftime('%Y/%m/%d %H:%M') : '-'}</b>

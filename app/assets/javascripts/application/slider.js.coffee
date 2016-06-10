@@ -173,7 +173,7 @@ $ ->
     params = $.queryParams()
     params.order = @value
     delete params.page
-    window.location.search = $.param(params)
+    window.location.search = $.param(params).replace('%2B', '+')
 
 
   if /\/search\?(.*)?&button=/.test location.href

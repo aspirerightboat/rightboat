@@ -464,7 +464,7 @@ module Rightboat
         # ensure location not include broker company name
         # eg. Burton Waters Marina Limited
         name_rcc = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
-        target.location = target.location.gsub(/(#{name_rcc})[\s,]+/i, '')
+        target.location = target.location.gsub(/(#{name_rcc})([\s,]+)?/i, '')
       end
 
       def do_import_substitutions!(value)

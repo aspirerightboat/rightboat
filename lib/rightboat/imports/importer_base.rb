@@ -38,6 +38,7 @@ module Rightboat
         init_logger
         @import_trail.update(log_path: @log_path)
         @prev_import_ran_at = @import.last_ran_at
+        @prev_import_feed_blank = @import.last_finished_trail.try(:warning_msg) == 'Feed already imported'
         @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
 
         @import.param.each { |key, value| instance_variable_set("@#{key}", value) }
@@ -249,6 +250,7 @@ module Rightboat
         return false if ENV['IGNORE_FEED_MTIME']
         return false if !@prev_import_ran_at
         return false if !imported_feed_path
+        return false if @prev_import_feed_blank
 
         feed_mtime = File.mtime(imported_feed_path)
 

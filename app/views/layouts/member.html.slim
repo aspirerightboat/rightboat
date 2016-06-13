@@ -13,6 +13,7 @@ html
 
     = javascript_include_tag 'application'
     = render 'shared/hotjar_tracking'
+    = render 'shared/gh_tracking'
   body.member-area(id="#{controller_name}-#{action_name}")
     = render 'shared/google_tag_manager'
     - if content_for? :header

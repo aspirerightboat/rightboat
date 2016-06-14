@@ -1,0 +1,5 @@
+check process solr_rightboat matching "<%= fetch(:solr_process_regexp) %>"
+group search
+start program = "<%= fetch(:solr_cmd) % {cmd: 'start'} %>"
+stop  program = "<%= fetch(:solr_cmd) % {cmd: 'stop'} %>"
+if 5 restarts within 5 cycles then timeout

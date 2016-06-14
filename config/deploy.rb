@@ -51,11 +51,8 @@ namespace :deploy do
   after :restart, 'solr:restart'
 end
 
-require 'haml'
-
-def template(file, locals = {})
-  content = File.read(File.expand_path("../deploy/templates/#{file}", __FILE__))
-  b = binding
-  locals.each { |k, v| b.local_variable_set(k, v) }
-  Slim::Template.new(content).render(b)
+def upload_template(template_name, upload_to)
+  content = File.read(File.expand_path("../deploy/templates/#{template_name}.erb", __FILE__))
+  res = ERB.new(content).result(binding)
+  upload! StringIO.new(res), upload_to
 end

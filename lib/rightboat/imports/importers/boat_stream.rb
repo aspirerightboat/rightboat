@@ -51,6 +51,7 @@ module Rightboat
             @attr_hash = nil
             if el == 'VehicleRemarketing' && @boat
               @boat.engine_count = @engines_count if @engines_count > 0
+              @boat.location = @location.values.reject(&:blank?).join(', ') if @location
               @importer.enqueue_job(@boat)
               @boat = nil
             end
@@ -118,6 +119,7 @@ module Rightboat
                           @boat.office = {address_attributes: {}}
                           @boat.images = []
                           @engines_count = 0
+                          @location = {}
                           @class_group = {}
                           @boat.class_groups = []
                         else
@@ -174,9 +176,9 @@ module Rightboat
                       case @tree[5]
                       when 'LocationAddress'
                         case @el
-                        when 'CityName' then @boat.location = chars if chars != 'Unknown' # eg. Chatham | Gwynedd, LL57 4HN | Unknown
+                        when 'CityName' then @location[:city_name] = chars if chars != 'Unknown' # eg. Chatham | Gwynedd, LL57 4HN | Unknown
                         when 'CountryID' then @boat.country = chars # eg. GB
-                        # when 'StateOrProvinceCountrySub-DivisionID'
+                        when 'StateOrProvinceCountrySub-DivisionID' then @location[:country_sub] = chars
                         # when 'Postcode'
                         end
                       end

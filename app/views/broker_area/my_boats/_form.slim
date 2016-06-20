@@ -12,19 +12,21 @@
 /  li Secondary Details
 /  li Business Details
 
-= form_for @boat, url: [:broker_area, :my_boats], html: {class: 'edit-boat-form'} do |f|
+= form_for @boat, url: [:broker_area, :my_boats], html: {class: 'boat-form'} do |f|
   h3 Manufacturer & Model
   .form-group
     .row
       .col-sm-6
         = label_tag :manufacturer
-        = text_field_tag :manufacturer
+        = text_field_tag :manufacturer, nil, id: 'manufacturer_picker', class: 'select-dark', \
+                data: {collection: 'manufacturers'}, placeholder: 'e.g. Beneteau'
       .col-sm-6
         = label_tag :model
-        = text_field_tag :model
-    .row
-      .col-xs-12
-        .div templa
+        = text_field_tag :model, nil, id: 'model_picker', class: 'select-dark', \
+                data: {collection: 'models'}, placeholder: 'e.g. Oceanis 34'
+    /.row
+    /  .col-xs-12
+    /    .div templa
 
   /.row
   /  .col-xs-12.col-sm-4

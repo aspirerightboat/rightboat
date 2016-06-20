@@ -3,7 +3,7 @@ ActiveAdmin.register SavedSearch do
 
   config.sort_order = 'id_desc'
   permit_params :user_id, :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                :length_unit, :manufacturer, :model, :currency, :ref_no, :alert
+                :length_unit, :manufacturer, :model, :currency, :ref_no, :alert, :q
 
   filter :user, collection: -> { User.not_companies.order(:first_name, :last_name) }
 

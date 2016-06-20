@@ -16,6 +16,7 @@ html
     - if content_for? :head_scripts
       = yield :head_scripts
     = render 'shared/hotjar_tracking'
+    = render 'shared/gh_tracking'
   body(id="#{controller_name}-#{action_name}")
     = yield :body_start
     = render 'shared/google_tag_manager'

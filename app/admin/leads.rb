@@ -78,9 +78,9 @@ ActiveAdmin.register Lead, as: 'Lead' do
     column('Member?') { |record| record.user ? 'Yes' : 'No' }
     column('Broker') { |record| record.boat.user.name }
     column('Boat') { |record| record.boat.try(&:manufacturer_model) }
-    column('Length(m)') { |record|
+    column('Length') { |record|
       l = record.boat.try(&:length_m)
-      "#{l}m" if l.present?
+      l if l.present?
     }
     # column('Length(ft in)') { |record|
     #   out = ""

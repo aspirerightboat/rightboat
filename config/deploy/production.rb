@@ -15,7 +15,7 @@ set :linked_files, fetch(:linked_files) + %w(config/xero/privatekey.pem)
 set :delayed_job_default_cmd, '/etc/init.d/delayed_job_default %{cmd}'
 set :delayed_job_import_images_cmd, '/etc/init.d/delayed_job_import_images %{cmd}'
 set :solr_data_path, '/var/solr/data'
-#set :solr_pid, '/var/solr/solr-8983.pid'
+set :solr_process_regexp, 'java -server .*solr.*'
 set :solr_cmd, '/etc/init.d/solr %{cmd}'
 
 # bundle exec cap production deploy #=> deploy all

@@ -12,8 +12,7 @@ namespace :solr do
   desc 'Setup monitrc for solr process'
   task :setup do
     on roles(:db) do
-      conf = template('solr.monitrc.haml', solr_cmd: fetch(:solr_cmd))
-      upload! StringIO.new(conf), "#{shared_path}/monit/solr.monitrc"
+      upload_template 'solr.monitrc', "#{shared_path}/monit/solr.monitrc"
     end
   end
 

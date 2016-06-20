@@ -37,7 +37,7 @@ module Rightboat
         @import_trail = ImportTrail.create(import: @import)
         init_logger
         @import_trail.update(log_path: @log_path)
-        @prev_import_ran_at = @import.last_ran_at
+        @prev_import_ran_at = @import.import_trails.where.not(finished_at: nil).where.not(warning_msg: ['Feed already imported']).order('id DESC').first.try(:created_at)
         @import.update(last_import_trail: @import_trail, pid: Process.pid, last_ran_at: Time.current)
 
         @import.param.each { |key, value| instance_variable_set("@#{key}", value) }

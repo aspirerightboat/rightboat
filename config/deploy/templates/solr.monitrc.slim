@@ -1,6 +1,0 @@
-|
-  check process solr_rightboat matching ".*solr.*"
-  group search
-  start program = "#{solr_cmd % {cmd: 'start'}}"
-  stop  program = "#{solr_cmd % {cmd: 'stop'}}"
-  if 5 restarts within 5 cycles then timeout

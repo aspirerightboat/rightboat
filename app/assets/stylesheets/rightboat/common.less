@@ -192,4 +192,12 @@ abbr {
   -o-background-size: cover;
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.flex-container {
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+    justify-content: space-between;
+  }
 }

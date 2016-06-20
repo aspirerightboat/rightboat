@@ -453,7 +453,6 @@ module Rightboat
             end
           end
 
-          target.location = location
           if target.country
             rcc = "#{Regexp.escape(target.country.iso)}|#{Regexp.escape(target.country.name)}"
             target.location = location.to_s.gsub(/[\s,]*(#{rcc})[^\w]*$/i, '')
@@ -461,6 +460,11 @@ module Rightboat
             target.location = location.to_s.gsub(/[\s,]+$/, '')
           end
         end
+
+        # ensure location not include broker company name
+        # eg. Burton Waters Marina Limited
+        name_rcc = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
+        target.location = target.location.gsub(/(#{name_rcc})([\s,]+)?/i, '')
       end
 
       def do_import_substitutions!(value)

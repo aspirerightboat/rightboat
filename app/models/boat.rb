@@ -69,7 +69,7 @@ class Boat < ActiveRecord::Base
   has_many :boat_images, -> { order(:position, :id) }
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
-  belongs_to :user
+  belongs_to :user, counter_cache: true
   has_many :user_activities
   belongs_to :import
   belongs_to :office

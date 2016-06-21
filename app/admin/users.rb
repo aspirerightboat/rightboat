@@ -35,6 +35,7 @@ ActiveAdmin.register User do
     column :current_sign_in_at
     column :sign_in_count
     column :saved_searches_count
+    column :boats_count
     column('created_at') { |user| time_ago_with_hint(user.created_at) }
     actions do |user|
       if user.company?

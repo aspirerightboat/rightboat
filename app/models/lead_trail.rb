@@ -2,6 +2,8 @@ class LeadTrail < ActiveRecord::Base
   belongs_to :lead
   belongs_to :user
 
+  delegate :bad_quality_reason, :bad_quality_comment, to: :lead
+
   scope :pending, -> { where(new_status: 'pending') }
   scope :approved, -> { where(new_status: 'approved') }
   scope :batched, -> { where(status: 'batched') }

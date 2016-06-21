@@ -131,6 +131,7 @@ ActiveAdmin.register User do
       user.broker_info.payment_method if user.company?
     end
     column :saved_searches_count
+    column :boats_count
   end
 
   show do

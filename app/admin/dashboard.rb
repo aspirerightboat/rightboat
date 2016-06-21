@@ -49,7 +49,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Run Fault:'
               end
               td class: 'text-red' do
-                link_to ImportTrail.where('created_at > ?', day_ago).where(error_msg: ['Unexpected Error']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago, error_msg_in: ['Unexpected Error']})
+                link_to ImportTrail.where('created_at > ?', day_ago).where('import_trails.error_msg IN (?) OR import_trails.warning_msg IN (?)', ['Unexpected Error'], ['Import Blank']).group(:import_id).count.length, admin_import_trails_path(q: {created_at_gteq: day_ago, error_msg_in: ['Unexpected Error']})
               end
             end
             tr do

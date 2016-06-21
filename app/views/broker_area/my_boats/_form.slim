@@ -7,8 +7,8 @@
 
 /ul.wizard-breadcrumbs
 /  li Makemodel
-/  li Images
 /  li Main Details
+/  li Images
 /  li Secondary Details
 /  li Business Details
 
@@ -24,10 +24,37 @@
         = label_tag :model
         = text_field_tag :model, nil, id: 'model_picker', class: 'select-dark', \
                 data: {collection: 'models'}, placeholder: 'e.g. Oceanis 34'
-    /.row
-    /  .col-xs-12
-    /    .div templa
-
+  h3 Main information
+  .form-group
+    .row
+      .col-sm-4
+        = f.label :boat_type
+        = f.select :boat_type, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), f.object.boat_type_id), \
+                {prompt: 'Please select...'}, id: 'boat_type', class: 'select-general select-dark inline-select'
+      .col-sm-4
+        = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'boat_length_m'
+      .col-sm-4
+        = spec_m_ft_field 'beam_m', 'Beam', 'spec_beam_m'
+      .col-sm-4
+        = spec_m_ft_field 'draft_max', 'Draft Max', 'spec_draft_max'
+      .col-sm-4
+        = spec_m_ft_field 'draft_min', 'Draft Min', 'spec_draft_min'
+      .col-sm-4
+        = label_tag :keel
+        - keels = BoatSpecification.where(specification: Specification.find_by(name: %w(keel keel_type))).pluck('DISTINCT value')
+        - keels.compact!
+        = select_tag 'boat_specs[keel]', options_for_select(keels), prompt: 'Please select...', \
+                id: 'spec_keel', class: 'creatable-select select-dark inline-select'
+      .col-sm-4
+        = f.label :price, 'Asking price'
+        = f.number_field :price, style: 'width: 120px', id: 'price_amount'
+        = f.select :currency, options_for_select(Currency.order(:position).pluck(:name, :id), f.object.currency_id), \
+                {prompt: 'Please select ...'}, id: 'price_currency'
+        | - Or -
+        = f.check_box :poa, id: 'boat_poa'
+        = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
+        = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
+        = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
   /.row
   /  .col-xs-12.col-sm-4
   /    .form-group
@@ -44,16 +71,6 @@
   /      br
   /      = f.label :location
   /      = f.text_field :location, placeholder: 'London'
-  /    .form-group
-  /      span.boat-price-wrap
-  /        = f.label :price, 'Asking price'
-  /        = f.number_field :price, style: 'width: 120px'
-  /        = f.select :currency, options_for_select(Currency.order(:position).pluck(:name, :id), f.object.currency_id), prompt: 'Please select ...'
-  /      | - Or -
-  /      = f.check_box :poa, id: 'boat_poa'
-  /      = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
-  /      = check_box_tag :vat_included, @boat && @boat.vat_rate.try(:name) == 'Inc VAT'
-  /      = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
   /    .form-group
   /      = f.label :description, 'Marketing description (EN)'
   /      = f.text_area :description

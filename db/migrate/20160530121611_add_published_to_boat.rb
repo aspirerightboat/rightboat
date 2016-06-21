@@ -5,6 +5,5 @@ class AddPublishedToBoat < ActiveRecord::Migration
   end
 
   def down
-    remove_column :boats, :rb_boat
   end
 end

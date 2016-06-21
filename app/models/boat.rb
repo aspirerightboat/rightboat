@@ -227,13 +227,13 @@ class Boat < ActiveRecord::Base
 
   def valid_manufacturer_model
     if (model_id_changed? || manufacturer_id_changed?) && model && model.manufacturer != manufacturer
-      errors.add :model_id, "[#{model}] should belongs to manufacturer[#{manufacturer}]"
+      errors.add :model_id, "model [#{model}] should belong to manufacturer [#{manufacturer}]"
     end
   end
 
   def valid_price
-    unless valid_price?
-      self.errors.add :price, 'can\'t be blank'
+    if published? && !valid_price?
+      self.errors.add :price, "can't be blank"
     end
   end
 
@@ -306,7 +306,7 @@ class Boat < ActiveRecord::Base
   end
 
   def change_status
-    if !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
+    if !deleted? && published? && manufacturer && model && valid_price? && manufacturer.regular?
       self.status = 'active'
     else
       self.status = 'inactive'

@@ -154,7 +154,12 @@ Rails.application.routes.draw do
     get :account_history
   end
   namespace :broker_area, path: 'broker-area' do
-    resources :my_boats, path: 'my-boats', only: [:index, :new, :create]
+    resources :my_boats, path: 'my-boats' do
+      collection do
+        get :find_template
+        get :upload_image
+      end
+    end
   end
 
   namespace :member, path: 'my-rightboat' do

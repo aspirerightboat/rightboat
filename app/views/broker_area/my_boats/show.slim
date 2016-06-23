@@ -23,6 +23,27 @@
         dl.dl-horizontal
           dt LOA
           dd #{@boat.length_m} m
+        dl.dl-horizontal
+          dt Year Built
+          dd #{@boat.year_built}
+        dl.dl-horizontal
+          dt Engine Make
+          dd #{@boat.engine_manufacturer&.name}
+        dl.dl-horizontal
+          dt Engine Model
+          dd #{@boat.engine_model&.name}
+        dl.dl-horizontal
+          dt Fuel Type
+          dd #{@boat.fuel_type&.name}
+        dl.dl-horizontal
+          dt Country
+          dd #{@boat.country&.name}
+        dl.dl-horizontal
+          dt Location
+          dd #{@boat.location}
+        dl.dl-horizontal
+          dt Description
+          dd #{simple_format @boat.description}
         - @boat_spec_by_name.each do |spec_name, boat_spec|
           dl.dl-horizontal
             dt= boat_spec.specification.display_name

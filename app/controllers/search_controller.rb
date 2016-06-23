@@ -43,7 +43,47 @@ class SearchController < ApplicationController
     end
   end
 
+  def engine_manufacturers
+    items = EngineManufacturer.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    render json: {items: items}
+  end
+
+  def engine_models
+    items = EngineModel.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    render json: {items: items}
+  end
+
+  def hull_materials
+    render json: {items: distinct_spec_values('hull_material', params[:q])}
+  end
+
+  def keel_types
+    render json: {items: distinct_spec_values(%w(keel keel_type), params[:q])}
+  end
+
+  def fuel_types
+    items = FuelType.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    render json: {items: items}
+  end
+
+  def countries
+    items = Country.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    render json: {items: items}
+  end
+
+  def locations
+    items = Boat.where('location LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck('DISTINCT location')
+                .map { |loc| {name: loc} }
+    render json: {items: items}
+  end
+
   private
+
+  def distinct_spec_values(spec_name, q)
+    spec = Specification.find_by(name: spec_name)
+    BoatSpecification.where(specification: spec).where('value LIKE ?', "#{q}%").order(:value).limit(30)
+        .pluck('DISTINCT value').map { |v| {name: v} }
+  end
 
   def find_makemodel_boat(q)
     search = Boat.retryable_solr_search! do

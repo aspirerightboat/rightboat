@@ -49,28 +49,37 @@ $ ->
         complete: -> $('#makemodel_wait').removeClass('loading')
         success: (data) ->
           return if $.isEmptyObject(data)
-          tryUpdateInputData('boat_type', data.boat_type_id)
-          tryUpdateInputData('boat_length_m', data.length_m)
-          tryUpdateInputData('spec_beam_m', data.specs.beam_m)
-          tryUpdateInputData('spec_draft_min', data.specs.draft_min)
-          tryUpdateInputData('spec_draft_max', data.specs.draft_max)
-          tryUpdateInputData('spec_keel', data.specs.keel)
+          tryUpdateInputData('boat_type', data.boat_type, true)
+          tryUpdateInputData('length_m', data.length_m)
+          tryUpdateInputData('beam_m', data.specs.beam_m)
+          tryUpdateInputData('draft_min', data.specs.draft_min)
+          tryUpdateInputData('draft_max', data.specs.draft_max)
+          tryUpdateInputData('keel_type', data.specs.keel_type, true)
+          tryUpdateInputData('hull_material', data.specs.hull_material, true)
+          tryUpdateInputData('engine_count', data.specs.engine_count)
+          tryUpdateInputData('cabins_count', data.specs.cabins_count)
+          tryUpdateInputData('berths_count', data.specs.berths_count)
           tryUpdateInputData('price_amount', parseInt(data.price))
+          tryUpdateInputData('year_built', data.year_built)
+          tryUpdateInputData('engine_make', data.engine_manufacturer, true)
+          tryUpdateInputData('engine_model', data.engine_model, true)
 
-    tryUpdateInputData = (id, data) ->
+    tryUpdateInputData = (id, data, addAndSelect = false) ->
       $input = $('#' + id)
       valueBlank = if $input.attr('type') == 'number' then !parseInt($input.val()) else !$input.val()
       if valueBlank && data
 #        console.log('tryUpdateInputData', id, data)
-        if $input.data('selectize')
-          $input.data('selectize').setValue(data)
+        if (sel = $input.data('selectize'))
+          if addAndSelect
+            sel.addOption(name: data)
+          sel.setValue(data)
         else
           $input.val(data).change()
 
-    $('.creatable-select').each ->
-      $(@).selectize
-        create: true,
-        sortField: 'text'
+#    $('.creatable-select').each ->
+#      $(@).selectize
+#        create: true,
+#        sortField: 'text'
 
     $('#boat_poa').each ->
       $poa = $(@)
@@ -120,3 +129,24 @@ $ ->
           res = amount + ' ' + unit
         $hidden.val(res)
       $amount_input.change()
+
+    $('.collection-select').each ->
+      $input = $(@)
+      collection = $input.data('collection')
+      url = '/search/' + collection
+      $input.selectize
+        valueField: 'name',
+        labelField: 'name',
+        searchField: 'name',
+        openOnFocus: true,
+        closeAfterSelect: true,
+        create: !!$input.data('create'),
+        createOnBlur: !!$input.data('create'),
+        preload: 'focus',
+        maxItems: 1,
+        options: if $input.val() then [{name: $input.val()}] else [],
+        load: (query, callback) ->
+          $.getJSON url, {q: query}, (data) ->
+            callback(data.items)
+          .fail ->
+            callback()

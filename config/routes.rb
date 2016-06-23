@@ -61,6 +61,13 @@ Rails.application.routes.draw do
   resource :search, controller: :search, only: [], constraints: {format: :json} do
     get :manufacturers
     get :models
+    get :engine_manufacturers
+    get :engine_models
+    get :hull_materials
+    get :keel_types
+    get :fuel_types
+    get :countries
+    get :locations
   end
 
   # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }

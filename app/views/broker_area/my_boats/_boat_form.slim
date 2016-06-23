@@ -12,9 +12,10 @@
 /  li Secondary Details
 /  li Business Details
 - new_boat = action_name == 'new'
-- method = new_boat ? 'create' : 'update'
+- url = new_boat ? broker_area_my_boats_path : broker_area_my_boat_path(@boat)
+- method = new_boat ? 'post' : 'patch'
 
-= form_for @boat, url: [:broker_area, :my_boats], html: {class: 'boat-form'}, method: method do |f|
+= form_for @boat, url: url, method: method, html: {class: 'boat-form big-form'} do |f|
   h3 Manufacturer & Model
   .form-group
     .row
@@ -29,28 +30,77 @@
         = text_field_tag :model, model_name, id: 'model_picker', class: 'select-dark', \
                 data: {collection: 'models'}, placeholder: 'e.g. Oceanis 34'
   #makemodel_wait
-    h3 Main information
+    h3 Main Boat Information
     .form-group
       .row
         .col-sm-4
-          = f.label :boat_type
-          = f.select :boat_type_id, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), f.object.boat_type_id), \
-                  {prompt: 'Please select...'}, id: 'boat_type', class: 'select-general select-dark inline-select'
+          div
+            = f.label :boat_type
+            = f.select :boat_type_id, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), @boat.boat_type_id), \
+                    {prompt: 'Please select...'}, id: 'boat_type', class: 'select-general select-dark inline-select'
+          div
+            = f.label :year_built
+            - year = Date.today.year
+            = f.select :year_built, options_for_select(year.downto(year - 40).to_a.reverse, @boat.year_built), \
+                              {prompt: 'Please select...'}, id: 'year_built', class: 'select-general select-dark inline-select'
+          div
+            = label_tag :engine_make
+            = text_field_tag :engine_make, @boat.engine_manufacturer&.name, placeholder: 'eg. Yanmar', id: 'engine_make', \
+                    class: 'collection-select select-dark inline-select', data: {collection: 'engine_manufacturers', create: true}, \
+                    style: 'width: 200px'
+          div
+            = label_tag :engine_model
+            = text_field_tag :engine_model, @boat.engine_model&.name, placeholder: 'eg. 40HP', id: 'engine_model', \
+                    class: 'collection-select select-dark inline-select', data: {collection: 'engine_models', create: true}, \
+                    style: 'width: 200px'
+            div
+            = label_tag :engine_count
+            = number_field_tag 'boat_specs[engine_count]', @specs_hash[:engine_count], step: '1', id: 'engine_count', \
+                    class: 'form-control', style: 'width: 120px; display: inline-block;'
         .col-sm-4
-          = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'boat_length_m'
+          div
+            = label_tag :country
+            = text_field_tag :country, @boat.country&.name, placeholder: 'eg. United Kingdom', id: 'country', \
+                    class: 'collection-select select-dark inline-select', data: {collection: 'countries', create: true}, \
+                    style: 'width: 200px'
+          div
+            = f.label :location
+            = f.text_field :location, placeholder: 'eg. North Palm Beach', id: 'location', \
+                    class: 'collection-select select-dark inline-select', data: {collection: 'locations', create: true}, \
+                    style: 'width: 200px'
+          div
+            = label_tag :hull_material
+            = text_field_tag 'boat_specs[hull_material]', @specs_hash[:hull_material], placeholder: 'eg. Carbon', id: 'hull_material', \
+                    class: 'collection-select select-dark inline-select', data: {collection: 'hull_materials', create: true}, \
+                    style: 'width: 200px'
+          div
+            = label_tag :fuel_type
+            = text_field_tag :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel', id: 'fuel_type', \
+                            class: 'collection-select select-dark inline-select', data: {collection: 'fuel_types', create: true}, \
+                            style: 'width: 200px'
+          div
+            = label_tag :keel
+            = text_field_tag 'boat_specs[keel_type]', @specs_hash[:keel_type], placeholder: 'eg. Multi-Hull', id: 'keel_type', \
+                    data: {collection: 'keel_types', create: true}, class: 'collection-select select-dark inline-select', \
+                    style: 'width: 200px'
         .col-sm-4
-          = spec_m_ft_field 'beam_m', 'Beam', 'spec_beam_m'
-        .col-sm-4
-          = spec_m_ft_field 'draft_max', 'Draft Max', 'spec_draft_max'
-        .col-sm-4
-          = spec_m_ft_field 'draft_min', 'Draft Min', 'spec_draft_min'
-        .col-sm-4
-          = label_tag :keel
-          - keels = BoatSpecification.where(specification: Specification.find_by(name: %w(keel keel_type))).pluck('DISTINCT value')
-          - keels.compact!
-          = select_tag 'boat_specs[keel_type]', options_for_select(keels, @specs_hash[:keel_type]), prompt: 'Please select...', \
-                  id: 'spec_keel', class: 'creatable-select select-dark inline-select'
-        .col-sm-4
+          div
+            = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m'
+          div
+            = spec_m_ft_field 'beam_m', 'Beam', 'beam_m'
+          div
+            = spec_m_ft_field 'draft_max', 'Draft Max', 'draft_max'
+          div
+            = spec_m_ft_field 'draft_min', 'Draft Min', 'draft_min'
+          div
+            = label_tag :cabins_count
+            = number_field_tag 'boat_specs[cabins_count]', @specs_hash[:cabins_count], step: '1', id: 'cabins_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+          div
+            = label_tag :berths_count
+            = number_field_tag 'boat_specs[berths_count]', @specs_hash[:berths_count], step: '1', id: 'berths_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+    .form-group
+      .row
+        .col-sm-12
           = f.label :price_amount, 'Asking price'
           = f.number_field :price, step: '100', style: 'width: 120px', id: 'price_amount'
           = currency_select 'price_currency', @boat.safe_currency, \
@@ -60,6 +110,27 @@
           = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
           = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
           = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
+    .form-group
+      .row
+        .col-sm-12
+          = f.label :boat_description, 'Description'
+          br
+          = f.text_area :description, id: 'boat_description', rows: 5, cols: 100
+    h3 Images
+    .form-group
+      .row
+        .col-sm-4
+          | upload images
+    h3 Additional Boat Information
+    .form-group
+      .row
+        .col-sm-4
+          | info
+    h3 Business Details
+    .form-group
+      .row
+        .col-sm-4
+          | details
   .nice-buttons.text-center
     button.nice-button(type="submit")= new_boat ? 'Create' : 'Save'
   /.row

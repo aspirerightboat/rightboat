@@ -52,7 +52,7 @@ module BrokerArea
 
       if @boat.save
         assign_specs
-        flash[:notice] = 'Boat created successfully.'
+        flash[:notice] = 'Boat updated successfully.'
         redirect_to({action: :show})
       else
         flash.now.alert = @boat.errors.full_messages.join(', ')
@@ -82,9 +82,9 @@ module BrokerArea
             length_m: t.length_m,
             boat_type_id: t.boat_type_id,
             drive_type_id: t.drive_type_id,
-            engine_manufacturer_id: t.engine_manufacturer_id,
-            engine_model_id: t.engine_model_id,
-            fuel_type_id: t.fuel_type_id,
+            engine_manufacturer: t.engine_manufacturer&.name,
+            engine_model: t.engine_model&.name,
+            fuel_type: t.fuel_type&.name,
             short_description: t.short_description,
             description: t.description,
             specs: t.specs,
@@ -97,8 +97,8 @@ module BrokerArea
 
     def boat_params
       params.require(:boat)
-          .permit(:year_built, :length_m, :price, :boat_type_id, :poa # :description, :owners_comment, # :manufacturer_id, :model_id,
-          # :location, :secure_payment, :boat_type_id,
+          .permit(:year_built, :length_m, :price, :boat_type_id, :poa, :location, :description #, :owners_comment, # :manufacturer_id, :model_id,
+          # :location, :secure_payment,
           #         boat_specifications_attributes: [:id, :value, :specification_id],
           #         boat_images_attributes: [:id, :file, :file_cache, :_destroy]
           )
@@ -107,17 +107,32 @@ module BrokerArea
     def assign_boat_data
       @boat.manufacturer = if params[:manufacturer]
                              Manufacturer.create_with(created_by_user: current_broker)
-                                 .find_or_create_by(name: params[:manufacturer])
+                                 .where(name: params[:manufacturer]).first_or_create
 
                            end
       @boat.model = if params[:model] && @boat.manufacturer
                       Model.create_with(created_by_user: current_broker)
-                          .find_or_create_by(name: params[:model], manufacturer: @boat.manufacturer)
+                          .where(name: params[:model], manufacturer: @boat.manufacturer).first_or_create
 
                     end
       @boat.assign_attributes(boat_params)
       @boat.currency = Currency.cached_by_name(params[:price_currency])
       @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
+      @boat.fuel_type = if params[:fuel_type]
+                          FuelType.create_with(created_by_user: current_broker)
+                              .where(name: params[:fuel_type]).first_or_create
+                        end
+      @boat.engine_manufacturer = if params[:engine_make]
+                                    EngineManufacturer.create_with(created_by_user: current_broker)
+                                        .where(name: params[:engine_make]).first_or_create
+                                  end
+      @boat.engine_model = if params[:engine_model] && @boat.engine_manufacturer
+                             EngineModel.create_with(created_by_user: current_broker)
+                                 .where(name: params[:engine_model], engine_manufacturer: @boat.engine_manufacturer).first_or_create
+                           end
+      @boat.country = if params[:country]
+                        Country.find_by(name: params[:country])
+                      end
     end
 
     def assign_specs
@@ -129,7 +144,7 @@ module BrokerArea
         boat_spec.save!
       end
       params_spec_names = params[:boat_specs].map(&:first)
-      @boat.boat_specifications.select { |bs| !bs.specification.name.in?(params_spec_names) }.each do
+      boat_specs.select { |bs| !bs.specification.name.in?(params_spec_names) }.each do
         bs.destroy!
       end
     end

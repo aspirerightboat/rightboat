@@ -1,5 +1,6 @@
 module BrokerArea
   class MyBoatsController < CommonController
+    protect_from_forgery except: :upload_image
 
     def index
       @boats = current_broker.boats.active.boat_view_includes.includes(:country).page(params[:page]).per(15)

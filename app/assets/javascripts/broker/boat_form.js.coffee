@@ -150,3 +150,23 @@ $ ->
             callback(data.items)
           .fail ->
             callback()
+
+    $('.images-dropzone').each ->
+      $dropzone = $(@)
+      $dropzone.dropzone
+        url: $dropzone.data('upload-url'),
+        maxFilesize: 5, # megabytes
+        addRemoveLinks: true,
+        removedfile: (a, b, c) -> console.log('removedfile', a, b, c)
+
+      if window.boatImages.length
+        $dropzone.addClass('dz-started')
+        t = $('#dropzone_template').html()
+        $.each window.boatImages, ->
+          cap = @caption || ''
+          $(t).appendTo($dropzone)
+            .find('[data-dz-thumbnail]').attr('alt', cap).attr('src', @url).end()
+            .find('[data-dz-size]').css(visibility: 'hidden').end()
+            .find('[data-dz-name]').each(-> if cap then $(@).text(cap) else $(@).css(visibility: 'hidden')).end()
+            .append($('<a/>').addClass('dz-remove').attr('href', 'javascript:undefined;').text('Remove file'))
+            .addClass('dz-complete')

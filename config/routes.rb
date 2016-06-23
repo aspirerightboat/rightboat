@@ -162,9 +162,11 @@ Rails.application.routes.draw do
   end
   namespace :broker_area, path: 'broker-area' do
     resources :my_boats, path: 'my-boats' do
+      member do
+        post :upload_image
+      end
       collection do
         get :find_template
-        get :upload_image
       end
     end
   end

@@ -5,6 +5,11 @@
     .row.boat-description
       .boat-specs.col-xs-12
         dl.dl-horizontal
+          dt Boat Images
+          dd
+            - @boat.boat_images.each do |bi|
+              = image_tag bi.file_url(:mini), alt: bi.caption, size: '127x85'
+        dl.dl-horizontal
           dt Boat Ref
           dd= @boat.ref_no
         dl.dl-horizontal

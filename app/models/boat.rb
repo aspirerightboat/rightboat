@@ -4,6 +4,7 @@ class Boat < ActiveRecord::Base
   OFFER_STATUSES = %w(available under_offer sold)
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)
+  SPEED_UNITS = %w(knots mph rpm)
 
   attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy, :custom_model
 

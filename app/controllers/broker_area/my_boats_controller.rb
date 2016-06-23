@@ -134,17 +134,22 @@ module BrokerArea
       @boat.country = if params[:country]
                         Country.find_by(name: params[:country])
                       end
+      @boat.drive_type = if params[:drive_type]
+                             DriveType.create_with(created_by_user: current_broker)
+                                 .where(name: params[:drive_type]).first_or_create
+                           end
     end
 
     def assign_specs
       boat_specs = @boat.boat_specifications.includes(:specification)
-      params[:boat_specs].each do |spec_name, spec_value|
+      params_boat_specs = params[:boat_specs].select { |_k, v| v.present? }
+      params_boat_specs.each do |spec_name, spec_value|
         boat_spec = boat_specs.find { |bs| bs.specification.name == spec_name } ||
             @boat.boat_specifications.new(specification: Specification.find_by(name: spec_name))
         boat_spec.value = spec_value
         boat_spec.save!
       end
-      params_spec_names = params[:boat_specs].map(&:first)
+      params_spec_names = params_boat_specs.map(&:first)
       boat_specs.select { |bs| !bs.specification.name.in?(params_spec_names) }.each do
         bs.destroy!
       end

@@ -77,6 +77,11 @@ class SearchController < ApplicationController
     render json: {items: items}
   end
 
+  def drive_types
+    items = DriveType.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    render json: {items: items}
+  end
+
   private
 
   def distinct_spec_values(spec_name, q)

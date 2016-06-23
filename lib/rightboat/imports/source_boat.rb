@@ -82,7 +82,7 @@ module Rightboat
         :sailing_equipment, :seawater_pump, :shore_inverter, :shore_power, :shore_power_inlet, :shower, :solar_panels, :solar_panels_year, :solent,
         :speed_instrument, :speed_log, :spinnaker, :spinnaker_material,
         :spinnaker_pole, :spinnaker_rigging, :spinnaker_rigging_count, :spinnaker_sock,
-        :spray_hood, :spray_hood, :starting_type, :state_rooms, :stay,
+        :spray_hood, :starting_type, :state_rooms, :stay,
         :steering_indicator, :steering_system, :steering_wheel, :steering_wheel_cover,
         :stern_sunbathing, :stern_thruster, :storm_jib, :storm_jib_material, :stormfox, :sub_category, :sun_cover,
         :super_structure_colour, :super_structure_construction, :support_sail, :surveyed, :swimming_ladder, :swimming_platform,

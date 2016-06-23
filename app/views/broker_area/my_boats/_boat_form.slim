@@ -74,11 +74,11 @@
           div
             = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m'
           div
-            = spec_m_ft_field 'beam_m', 'Beam', 'beam_m'
+            = spec_m_ft_field 'beam_m', 'Beam'
           div
-            = spec_m_ft_field 'draft_max', 'Draft Max', 'draft_max'
+            = spec_m_ft_field 'draft_max', 'Draft Max'
           div
-            = spec_m_ft_field 'draft_min', 'Draft Min', 'draft_min'
+            = spec_m_ft_field 'draft_min', 'Draft Min'
           div
             = label_tag :cabins_count
             = number_field_tag 'boat_specs[cabins_count]', @specs_hash[:cabins_count], step: '1', id: 'cabins_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
@@ -97,6 +97,12 @@
           = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
           = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
           = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
+    .form-group
+      .row
+        .col-sm-12
+          = f.label :short_description, 'Short description'
+          br
+          = f.text_area :short_description, id: 'short_description', rows: 3, cols: 100
     .form-group
       .row
         .col-sm-12
@@ -137,10 +143,134 @@
                       path(d="M32.6568542,29 L38.3106978,23.3461564 C39.8771021,21.7797521 39.8758057,19.2483887 38.3137085,17.6862915 C36.7547899,16.1273729 34.2176035,16.1255422 32.6538436,17.6893022 L27,23.3431458 L21.3461564,17.6893022 C19.7823965,16.1255422 17.2452101,16.1273729 15.6862915,17.6862915 C14.1241943,19.2483887 14.1228979,21.7797521 15.6893022,23.3461564 L21.3431458,29 L15.6893022,34.6538436 C14.1228979,36.2202479 14.1241943,38.7516113 15.6862915,40.3137085 C17.2452101,41.8726271 19.7823965,41.8744578 21.3461564,40.3106978 L27,34.6568542 L32.6538436,40.3106978 C34.2176035,41.8744578 36.7547899,41.8726271 38.3137085,40.3137085 C39.8758057,38.7516113 39.8771021,36.2202479 38.3106978,34.6538436 L32.6568542,29 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" sketch:type="MSShapeGroup")
           .images-dropzone.dropzone(data-upload-url="#{upload_image_broker_area_my_boat_path(@boat)}")
     h3 Additional Boat Information
+    b Dimensions
     .form-group
       .row
         .col-sm-4
-          | info
+          = spec_m_ft_field 'air_draft_m', 'Air Draught'
+        .col-sm-4
+          = spec_m_ft_field 'draft_m', 'Draft'
+        .col-sm-4
+          = spec_m_ft_field 'air_draft_m', 'Air Draft'
+        .col-sm-4
+          = spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
+        .col-sm-4
+          = spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
+        .col-sm-4
+          = spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
+    b Engines
+    .form-group
+      .row
+        .col-sm-4
+          = label_tag :engine_horse_power
+          = number_field_tag 'boat_specs[engine_horse_power]', @specs_hash[:engine_horse_power], id: 'engine_horse_power', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :max_speed_knots, 'Max speed (knots)'
+          = number_field_tag 'boat_specs[max_speed_knots]', @specs_hash[:max_speed_knots], id: 'max_speed_knots', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :gallons_per_hour, 'Fuel gallons per hour'
+          = number_field_tag 'boat_specs[gallons_per_hour]', @specs_hash[:gallons_per_hour], id: 'gallons_per_hour', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :engine_location
+          = text_field_tag 'boat_specs[engine_location]', @specs_hash[:engine_location], id: 'engine_location', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :gearbox
+          = text_field_tag 'boat_specs[gearbox]', @specs_hash[:gearbox], id: 'gearbox', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :propeller_type
+          = text_field_tag 'boat_specs[propeller_type]', @specs_hash[:propeller_type], id: 'propeller_type', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :starting_type
+          = text_field_tag 'boat_specs[starting_type]', @specs_hash[:starting_type], id: 'starting_type', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :engine_hours
+          = number_field_tag 'boat_specs[engine_hours]', @specs_hash[:engine_hours], id: 'engine_hours', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :cylinders_count
+          = number_field_tag 'boat_specs[cylinders_count]', @specs_hash[:cylinders_count], id: 'cylinders_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS
+        .col-sm-4
+          = spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS
+        .col-sm-4
+          = label_tag :litres_per_hour
+          = number_field_tag 'boat_specs[litres_per_hour]', @specs_hash[:litres_per_hour], id: 'litres_per_hour', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :range
+          = number_field_tag 'boat_specs[range]', @specs_hash[:range], id: 'range', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :drive_type
+          = text_field_tag :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor', id: 'drive_type', \
+                    class: 'collection-select select-dark inline-select', data: {collection: 'drive_types', create: true}, \
+                    style: 'width: 200px'
+        .col-sm-4= spec_checkable_field :cooling_system
+    b Navigation Equipment
+    .form-group
+      .row
+        .col-sm-4= spec_checkable_field :navigation_lights
+        .col-sm-4= spec_checkable_field :depth_instrument
+        .col-sm-4= spec_checkable_field :autopilot
+        .col-sm-4= spec_checkable_field :vhf
+        .col-sm-4= spec_checkable_field :speed_instrument
+        .col-sm-4= spec_checkable_field :compass
+        .col-sm-4= spec_checkable_field :wind_instrument
+        .col-sm-4= spec_checkable_field :gps
+        .col-sm-4= spec_checkable_field :plotter
+        .col-sm-4= spec_checkable_field :radar
+    b Electrical Equipment
+    .form-group
+      .row
+        .col-sm-4= spec_checkable_field :stern_thruster
+        .col-sm-4= spec_checkable_field :battery_charger
+        .col-sm-4= spec_checkable_field :inverter
+        .col-sm-4= spec_checkable_field :shore_power
+        .col-sm-4= spec_checkable_field :heating
+        .col-sm-4= spec_checkable_field :holding_tanks
+        .col-sm-4= spec_checkable_field :tv
+        .col-sm-4= spec_checkable_field :dvd_player
+        .col-sm-4= spec_checkable_field :bow_thruster
+        .col-sm-4= spec_checkable_field :battery
+        .col-sm-4= spec_checkable_field :generator
+        .col-sm-4= spec_checkable_field :bilge_pump
+        .col-sm-4= spec_checkable_field :air_conditioning
+        .col-sm-4= spec_checkable_field :cd_player
+    b General Equipment
+    .form-group
+      .row
+        .col-sm-4= spec_checkable_field :anchor
+        .col-sm-4= spec_checkable_field :spray_hood
+        .col-sm-4= spec_checkable_field :fire_extinguisher
+        .col-sm-4= spec_checkable_field :bimimi
+        .col-sm-4= spec_checkable_field :fenders
+    b Galley
+    .form-group
+      .row
+        .col-sm-4= spec_checkable_field :oven
+        .col-sm-4= spec_checkable_field :fridge
+        .col-sm-4= spec_checkable_field :microwave
+        .col-sm-4= spec_checkable_field :freezer
+        .col-sm-4= spec_checkable_field :dishwasher
+    b Accomodation
+    .form-group
+      .row
+        .col-sm-4
+          = label_tag :crew_cabins_count
+          = number_field_tag 'boat_specs[crew_cabins_count]', @specs_hash[:crew_cabins_count], id: 'crew_cabins_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4
+          = label_tag :crew_berths_count
+          = number_field_tag 'boat_specs[crew_berths_count]', @specs_hash[:crew_berths_count], id: 'crew_berths_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4= spec_checkable_field :toilet
+        .col-sm-4= spec_checkable_field :bath
+        .col-sm-4= spec_checkable_field :shower
+    b Rig/Sails
+    .form-group
+      .row
+        .col-sm-4= spec_checkable_field :genoa
+        .col-sm-4= spec_checkable_field :tri_sail
+        .col-sm-4= spec_checkable_field :mainsail
+        .col-sm-4= spec_checkable_field :spinnaker
+        .col-sm-4= spec_checkable_field :storm_jib
+        .col-sm-4= spec_checkable_field :winches_count
     h3 Business Details
     .form-group
       .row
@@ -176,18 +306,6 @@
   /    .form-group
   /      = label_tag :known_defects
   /      = text_area_tag :known_defects
-  /  .col-xs-12.col-sm-8
-  /    h3 Dimensions
-  /    .row
-  /      .col-xs-12.col-sm-4
-  /        = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll')
-  /        = spec_m_ft_field 'beam_m', 'Beam'
-  /        = spec_m_ft_field 'draft_m', 'Draft'
-  /        = spec_m_ft_field 'air_draft_m', 'Air Draft'
-  /      .col-xs-12.col-sm-4
-  /        = spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
-  /        = spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
-  /        = spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
   /
   /    h3 Engines
   /    .row

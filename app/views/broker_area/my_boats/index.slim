@@ -6,7 +6,11 @@
 
   - if @boats.any?
     #boats-list.row(data-layout-mode="#{current_layout_mode}")
-      = render partial: 'boats/boat', collection: @boats
+      - @boats.each do |boat|
+        = render layout: 'boats/boat', locals: {boat: boat} do
+          = link_to 'Edit', edit_broker_area_my_boat_path(boat)
+          = ' | '
+          = link_to 'Show', broker_area_my_boat_path(boat)
     = paginate @boats
   - else
     p.lead.text-center You have no boats to manage so far

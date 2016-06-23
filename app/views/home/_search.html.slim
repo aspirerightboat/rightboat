@@ -40,7 +40,7 @@
                 .rb-control
                   = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
                 .rb-control-group-addon
-                  = currency_tag :currency, current_currency, class: 'select-dark slider-currency-select'
+                  = currency_select :currency, current_currency, class: 'select-dark slider-currency-select'
           .range-slider-wrapper.row
             .col-xs-2= label_tag :length
             .col-xs-10

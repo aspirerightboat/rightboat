@@ -32,4 +32,14 @@ class Numeric
     self * 0.45359237
   end
 
+  def leave_significant(significant_amount)
+    num = round
+    digits_count = num.to_s.size
+    if digits_count > significant_amount
+      num.round(significant_amount - digits_count) # 12345.round(-3) #=> 12000
+    else
+      num
+    end
+  end
+
 end

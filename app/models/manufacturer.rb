@@ -11,6 +11,7 @@ class Manufacturer < ActiveRecord::Base
   has_many :buyer_guides, class_name: 'BuyerGuide', inverse_of: :manufacturer, dependent: :destroy
   has_many :finances
   has_many :insurances
+  belongs_to :created_by_user, class_name: 'User'
 
   mount_uploader :logo, AvatarUploader
 

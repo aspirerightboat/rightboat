@@ -35,7 +35,7 @@
                 .rb-control
                   = f.text_field :price, class: 'form-control', 'data-validetta' => 'number'
                 .rb-control-group-addon
-                  = currency_tag 'finance[price_currency]', current_currency, class: 'select-azure select-currency'
+                  = currency_select 'finance[price_currency]', current_currency, class: 'select-azure select-currency'
           .form-group.row
             .col-md-5.col-xs-12 6. Loan Amount Required
             .col-md-5.col-xs-12
@@ -43,7 +43,7 @@
                 .rb-control
                   = f.text_field :loan_amount, class: 'form-control', 'data-validetta' => 'number'
                 .rb-control-group-addon
-                  = currency_tag 'finance[loan_amount_currency]', current_currency, class: 'select-azure select-currency'
+                  = currency_select 'finance[loan_amount_currency]', current_currency, class: 'select-azure select-currency'
           .form-group.row
             .col-md-3.col-xs-12
               = f.submit 'Submit a Request', class: 'btn-flat'

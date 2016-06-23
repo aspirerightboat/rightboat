@@ -1,57 +1,71 @@
 $ ->
   if $('.boat-form').length
-    $('#manufacturer_picker, #model_picker').each ->
-      $sel = $(@)
-      collection = $sel.data('collection')
+    $makerInput = $('#manufacturer_picker')
+    $modelInput = $('#model_picker')
+    $makerInput.add($modelInput).each ->
+      $input = $(@)
+      collection = $input.data('collection')
       url = '/search/' + collection
-      $sel.selectize
-        valueField: 'id',
+      $input.selectize
+        valueField: 'name',
         labelField: 'name',
         searchField: 'name',
         openOnFocus: true,
         closeAfterSelect: true,
+        create: true,
         createOnBlur: true,
         preload: 'focus',
         maxItems: 1,
-#        options: $sel.data('initial-options') || [],
+        options: if $input.val() then [{name: $input.val()}] else [],
         load: (query, callback) ->
-          makerId = $('#manufacturer_picker').val()
-          if collection == 'models' && makerId && makerId.match(/^create:/)
-            callback()
+#          console.log('load', collection)
+          maker = $makerInput.val()
           data = {q: query}
-          data.manufacturer_ids = makerId if collection == 'models'
+          data.manufacturer = maker if collection == 'models'
           $.getJSON url, data, (res) ->
+#            console.log('getJSON', res)
             callback(res[collection])
           .fail ->
+#            console.log('fail')
             callback()
-        create: (input) ->
-          console.log('create', input)
-          name: input,
-          id: 'create:' + input
         onChange: (value) ->
-          makerId = $('#manufacturer_picker').val()
-          modelId = $('#model_picker').val()
-          if makerId && makerId.match(/^\d+$/) && modelId && modelId.match(/^\d+$/)
-            loadTemplate(makerId, modelId)
+          if collection == 'manufacturers'
+            sel = $modelInput.data('selectize')
+            sel.clearOptions()
+            sel.clear()
+            return
+          maker = $makerInput.val()
+          model = $modelInput.val()
+          if maker && model
+#            console.log('loadTemplate', maker, model)
+            loadTemplate(maker, model)
 
-    loadTemplate = (makerId, modelId) ->
-      $.getJSON '/broker-area/my-boats/find_template', manufacturer_id: makerId, model_id: modelId, (data) ->
-        tryUpdateInputData('boat_type', data.boat_type_id)
-        tryUpdateInputData('boat_length_m', data.length_m)
-        tryUpdateInputData('spec_beam_m', data.specs.beam_m)
-        tryUpdateInputData('spec_draft_min', data.specs.draft_min)
-        tryUpdateInputData('spec_draft_max', data.specs.draft_max)
-        tryUpdateInputData('spec_keel', data.specs.keel)
-        tryUpdateInputData('price_amount', parseInt(data.price))
+    loadTemplate = (maker, model) ->
+      $.ajax
+        dataType: "json"
+        url: '/broker-area/my-boats/find_template',
+        data: {manufacturer: maker, model: model},
+        beforeSend: -> $('#makemodel_wait').addClass('loading')
+        complete: -> $('#makemodel_wait').removeClass('loading')
+        success: (data) ->
+          return if $.isEmptyObject(data)
+          tryUpdateInputData('boat_type', data.boat_type_id)
+          tryUpdateInputData('boat_length_m', data.length_m)
+          tryUpdateInputData('spec_beam_m', data.specs.beam_m)
+          tryUpdateInputData('spec_draft_min', data.specs.draft_min)
+          tryUpdateInputData('spec_draft_max', data.specs.draft_max)
+          tryUpdateInputData('spec_keel', data.specs.keel)
+          tryUpdateInputData('price_amount', parseInt(data.price))
 
     tryUpdateInputData = (id, data) ->
-      $el = $('#' + id)
-      valueBlank = if $el.attr('type') == 'number' then !parseInt($el.val()) else !$el.val()
+      $input = $('#' + id)
+      valueBlank = if $input.attr('type') == 'number' then !parseInt($input.val()) else !$input.val()
       if valueBlank && data
-        if $el.data('selectize')
-          $el.data('selectize').setValue(data)
-        else if $el
-          $el.val(data).change()
+#        console.log('tryUpdateInputData', id, data)
+        if $input.data('selectize')
+          $input.data('selectize').setValue(data)
+        else
+          $input.val(data).change()
 
     $('.creatable-select').each ->
       $(@).selectize

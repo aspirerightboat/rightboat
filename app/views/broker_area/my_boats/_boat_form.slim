@@ -11,50 +11,57 @@
 /  li Images
 /  li Secondary Details
 /  li Business Details
+- new_boat = action_name == 'new'
+- method = new_boat ? 'create' : 'update'
 
-= form_for @boat, url: [:broker_area, :my_boats], html: {class: 'boat-form'} do |f|
+= form_for @boat, url: [:broker_area, :my_boats], html: {class: 'boat-form'}, method: method do |f|
   h3 Manufacturer & Model
   .form-group
     .row
       .col-sm-6
         = label_tag :manufacturer
-        = text_field_tag :manufacturer, nil, id: 'manufacturer_picker', class: 'select-dark', \
+        - manufacturer_name = (@boat.manufacturer.name if @boat.manufacturer.name != 'Unknown')
+        = text_field_tag :manufacturer, manufacturer_name, id: 'manufacturer_picker', class: 'select-dark', \
                 data: {collection: 'manufacturers'}, placeholder: 'e.g. Beneteau'
       .col-sm-6
         = label_tag :model
-        = text_field_tag :model, nil, id: 'model_picker', class: 'select-dark', \
+        - model_name = (@boat.model.name if @boat.model.name != 'Unknown')
+        = text_field_tag :model, model_name, id: 'model_picker', class: 'select-dark', \
                 data: {collection: 'models'}, placeholder: 'e.g. Oceanis 34'
-  h3 Main information
-  .form-group
-    .row
-      .col-sm-4
-        = f.label :boat_type
-        = f.select :boat_type, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), f.object.boat_type_id), \
-                {prompt: 'Please select...'}, id: 'boat_type', class: 'select-general select-dark inline-select'
-      .col-sm-4
-        = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'boat_length_m'
-      .col-sm-4
-        = spec_m_ft_field 'beam_m', 'Beam', 'spec_beam_m'
-      .col-sm-4
-        = spec_m_ft_field 'draft_max', 'Draft Max', 'spec_draft_max'
-      .col-sm-4
-        = spec_m_ft_field 'draft_min', 'Draft Min', 'spec_draft_min'
-      .col-sm-4
-        = label_tag :keel
-        - keels = BoatSpecification.where(specification: Specification.find_by(name: %w(keel keel_type))).pluck('DISTINCT value')
-        - keels.compact!
-        = select_tag 'boat_specs[keel]', options_for_select(keels), prompt: 'Please select...', \
-                id: 'spec_keel', class: 'creatable-select select-dark inline-select'
-      .col-sm-4
-        = f.label :price, 'Asking price'
-        = f.number_field :price, style: 'width: 120px', id: 'price_amount'
-        = f.select :currency, options_for_select(Currency.order(:position).pluck(:name, :id), f.object.currency_id), \
-                {prompt: 'Please select ...'}, id: 'price_currency'
-        | - Or -
-        = f.check_box :poa, id: 'boat_poa'
-        = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
-        = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
-        = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
+  #makemodel_wait
+    h3 Main information
+    .form-group
+      .row
+        .col-sm-4
+          = f.label :boat_type
+          = f.select :boat_type_id, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), f.object.boat_type_id), \
+                  {prompt: 'Please select...'}, id: 'boat_type', class: 'select-general select-dark inline-select'
+        .col-sm-4
+          = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'boat_length_m'
+        .col-sm-4
+          = spec_m_ft_field 'beam_m', 'Beam', 'spec_beam_m'
+        .col-sm-4
+          = spec_m_ft_field 'draft_max', 'Draft Max', 'spec_draft_max'
+        .col-sm-4
+          = spec_m_ft_field 'draft_min', 'Draft Min', 'spec_draft_min'
+        .col-sm-4
+          = label_tag :keel
+          - keels = BoatSpecification.where(specification: Specification.find_by(name: %w(keel keel_type))).pluck('DISTINCT value')
+          - keels.compact!
+          = select_tag 'boat_specs[keel_type]', options_for_select(keels, @specs_hash[:keel_type]), prompt: 'Please select...', \
+                  id: 'spec_keel', class: 'creatable-select select-dark inline-select'
+        .col-sm-4
+          = f.label :price_amount, 'Asking price'
+          = f.number_field :price, step: '100', style: 'width: 120px', id: 'price_amount'
+          = currency_select 'price_currency', @boat.safe_currency, \
+                  id: 'price_currency', class: ' select-currency select-dark inline-select'
+          | - Or -
+          = f.check_box :poa, id: 'boat_poa'
+          = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
+          = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
+          = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
+  .nice-buttons.text-center
+    button.nice-button(type="submit")= new_boat ? 'Create' : 'Save'
   /.row
   /  .col-xs-12.col-sm-4
   /    .form-group

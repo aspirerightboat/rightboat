@@ -10,18 +10,25 @@ class BoatTemplate < ActiveRecord::Base
   belongs_to :drive_type
   belongs_to :fuel_type
 
-  def self.find_or_try_create(manufacturer_id, model_id)
-    template = where(manufacturer_id: manufacturer_id, model_id: model_id).first
-    if !template
-      boats = Boat.where(manufacturer_id: manufacturer_id, model_id: model_id, published: true)
-                  .includes(:currency, boat_specifications: :specification).to_a
-      template = if boats.one?
-                   new(automatic: true).initialize_from_boat(boats.first)
-                 elsif boats.many?
-                   create_from_boats(boats)
-                 end
+  def self.find_or_try_create(manufacturer_name, model_name)
+    manufacturer = Manufacturer.find_by(name: manufacturer_name)
+    model = Model.find_by(name: model_name)
+
+    if manufacturer && model
+      template = where(manufacturer: manufacturer, model: model).first
+
+      if !template
+        boats = Boat.where(manufacturer: manufacturer, model: model, published: true)
+                    .includes(:currency, boat_specifications: :specification).to_a
+
+        template = if boats.one?
+                     new(auto_created: true).initialize_from_boat(boats.first)
+                   elsif boats.many?
+                     create_from_boats(boats)
+                   end
+      end
+      template
     end
-    template
   end
 
   def initialize_from_boat(boat)
@@ -50,10 +57,11 @@ class BoatTemplate < ActiveRecord::Base
     boat.boat_specifications.each do |boat_spec|
       self.specs[boat_spec.specification.name] ||= boat_spec.value
     end
+    self
   end
 
   def self.create_from_boats(boats)
-    t = new(automatic: true)
+    t = new(auto_created: true)
     boats.each { |boat| t.initialize_from_boat(boat) }
     t.save!
     t

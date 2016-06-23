@@ -22,15 +22,16 @@ module BrokerArea
     end
 
     def create
-      @boat = current_broker.boats.new(boat_params)
-      assign_makemodel
+      @boat = current_broker.boats.new
+      assign_boat_data
 
       if @boat.save
         assign_specs
         flash[:notice] = 'Boat created successfully.'
-        redirect_to({action: :show, id: @boat.id})
+        redirect_to({action: :show, id: @boat})
       else
-        flash.alert = @boat.errors.full_messages.join(', ')
+        flash.now.alert = @boat.errors.full_messages.join(', ')
+        @specs_hash = params[:boat_specs]
         render :new
       end
     end
@@ -41,19 +42,21 @@ module BrokerArea
     end
 
     def show
-
+      @boat = Boat.find_by(slug: params[:id])
+      @boat_spec_by_name = @boat.boat_specifications.includes(:specification).index_by { |bs| bs.specification.name }
     end
 
     def update
       @boat = Boat.find_by(slug: params[:id])
-      assign_makemodel
+      assign_boat_data
 
       if @boat.save
         assign_specs
         flash[:notice] = 'Boat created successfully.'
         redirect_to({action: :show})
       else
-        flash.alert = @boat.errors.full_messages.join(', ')
+        flash.now.alert = @boat.errors.full_messages.join(', ')
+        @specs_hash = params[:boat_specs]
         render :edit
       end
     end
@@ -70,50 +73,66 @@ module BrokerArea
     end
 
     def find_template
-      t = BoatTemplate.find_or_try_create(params[:manufacturer_id], params[:model_id])
+      t = BoatTemplate.find_or_try_create(params[:manufacturer], params[:model])
+      data = {}
       if t
-        render json: t.to_json
-      else
-        head :not_found
+        data.merge!(
+            year_built: t.year_built,
+            price: t.price.leave_significant(3),
+            length_m: t.length_m,
+            boat_type_id: t.boat_type_id,
+            drive_type_id: t.drive_type_id,
+            engine_manufacturer_id: t.engine_manufacturer_id,
+            engine_model_id: t.engine_model_id,
+            fuel_type_id: t.fuel_type_id,
+            short_description: t.short_description,
+            description: t.description,
+            specs: t.specs,
+        )
       end
+      render json: data
     end
 
     private
 
     def boat_params
       params.require(:boat)
-          .permit(:manufacturer_id, :model_id, :price, :year_built, :length_m, :description, :owners_comment,
-                  :location, :tax_paid, :accept_toc, :agree_privacy_policy, :secure_payment, :currency_id, :boat_type_id,
-                  boat_specifications_attributes: [:id, :value, :specification_id],
-                  boat_images_attributes: [:id, :file, :file_cache, :_destroy]
+          .permit(:year_built, :length_m, :price, :boat_type_id, :poa # :description, :owners_comment, # :manufacturer_id, :model_id,
+          # :location, :secure_payment, :boat_type_id,
+          #         boat_specifications_attributes: [:id, :value, :specification_id],
+          #         boat_images_attributes: [:id, :file, :file_cache, :_destroy]
           )
     end
-  end
 
-  def assign_makemodel
-    @boat.manufacturer = if params[:manufacturer].to_s.start_with?('create:')
-                           Manufacturer.find_or_create_by(name: params[:manufacturer].sub(/\Acreate:/, ''))
-                         else
-                           Manufacturer.find(params[:manufacturer])
-                         end
-    @boat.model = if params[:model].to_s.start_with?('create:')
-                    Model.find_or_create_by(name: params[:model].sub(/\Acreate:/, ''), manufacturer: @boat.manufacturer)
-                  else
-                    Model.find(params[:model])
-                  end
-  end
+    def assign_boat_data
+      @boat.manufacturer = if params[:manufacturer]
+                             Manufacturer.create_with(created_by_user: current_broker)
+                                 .find_or_create_by(name: params[:manufacturer])
 
-  def assign_specs
-    boat_specs = @boat.boat_specifications.includes(:specification)
-    params[:boat_specs].each do |spec_name, spec_value|
-      boat_spec = boat_specs.find { |bs| bs.specification.name == spec_name } ||
-          @boat.boat_specifications.new(specification: Specification.find_by(name: spec_name))
-      boat_spec.value = spec_value
-      boat_spec.save!
+                           end
+      @boat.model = if params[:model] && @boat.manufacturer
+                      Model.create_with(created_by_user: current_broker)
+                          .find_or_create_by(name: params[:model], manufacturer: @boat.manufacturer)
+
+                    end
+      @boat.assign_attributes(boat_params)
+      @boat.currency = Currency.cached_by_name(params[:price_currency])
+      @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
     end
-    params_spec_names = params[:boat_specs].map(&:first)
-    @boat.boat_specifications.select { |bs| !bs.specification.name.in?(params_spec_names) }.each do
-      bs.destroy!
+
+    def assign_specs
+      boat_specs = @boat.boat_specifications.includes(:specification)
+      params[:boat_specs].each do |spec_name, spec_value|
+        boat_spec = boat_specs.find { |bs| bs.specification.name == spec_name } ||
+            @boat.boat_specifications.new(specification: Specification.find_by(name: spec_name))
+        boat_spec.value = spec_value
+        boat_spec.save!
+      end
+      params_spec_names = params[:boat_specs].map(&:first)
+      @boat.boat_specifications.select { |bs| !bs.specification.name.in?(params_spec_names) }.each do
+        bs.destroy!
+      end
     end
+
   end
 end

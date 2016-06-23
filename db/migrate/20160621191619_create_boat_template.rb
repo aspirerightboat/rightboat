@@ -1,7 +1,7 @@
 class CreateBoatTemplate < ActiveRecord::Migration
   def change
     create_table :boat_templates do |t|
-      t.boolean :automatic, default: false
+      t.boolean :auto_created, default: false
       t.references :manufacturer, index: true
       t.references :model, index: true
       t.integer :year_built

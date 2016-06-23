@@ -7,8 +7,13 @@ class SearchController < ApplicationController
   end
 
   def models
-    manufacturer_ids = params[:manufacturer_ids].to_s.split(',')
-    render json: {models: Model.solr_suggest_by_term(params[:q], manufacturer_ids)}
+    manufacturer_ids = if params[:manufacturer]
+                         [Manufacturer.find_by(name: params[:manufacturer])&.id].compact
+                       elsif params[:manufacturer_ids]
+                         params[:manufacturer_ids].to_s.split(',')
+                       end
+    models = manufacturer_ids.any? ? Model.solr_suggest_by_term(params[:q], manufacturer_ids) : []
+    render json: {models: models}
   end
 
   def results

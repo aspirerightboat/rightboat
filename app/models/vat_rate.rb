@@ -19,6 +19,14 @@ class VatRate < ActiveRecord::Base
     end
   end
 
+  def self.tax_paid
+    @tax_paid ||= first
+  end
+
+  def self.tax_unpaid
+    @tax_not_paid ||= second
+  end
+
   def to_s
     name
   end

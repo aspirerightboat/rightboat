@@ -168,12 +168,15 @@
   &, & .caption {
     .transition(all .25s ease-out);
   }
-  &.thumbnail:hover {
+  &:hover {
     border: 1px solid @rb-color-primary;
     background: @rb-color-primary;
     .caption {
       color: #FFF;
       .fav-link, .share-link {
+        color: white;
+      }
+      > a {
         color: white;
       }
     }
@@ -413,37 +416,6 @@ a.pdf-link {
   #main_content {
     color: @rb-color-dark;
     h1 {font-size: 26px; font-weight: bold;}
-    .boat-description {
-      font-size: 20px;
-      margin-bottom: 28px;
-      h1 {font-size: 24px; font-weight: 300;}
-      h2 {font-size: 22px; font-weight: 300;}
-      h3 {font-size: 22px; font-weight: normal;}
-      dt, dd {font-size: 16px; padding: 4px 10px; }
-      dl.dl-horizontal {
-        margin-bottom: 0;
-        dt {
-          float: left;
-          text-align: left;
-          width: 140px;
-        }
-        dd {
-          margin-left: 140px;
-        }
-      }
-
-      @media(min-width: @screen-md-min) {
-        .boat-specs .row:nth-of-type(odd) {
-          background-color: rgb(232, 245, 255);
-        }
-      }
-
-      @media(max-width: @screen-sm-max) {
-        .boat-specs .row > div:nth-of-type(odd) {
-          background-color: rgb(232, 245, 255);
-        }
-      }
-    }
 
     .boat-header {
       background-color: @rb-color-primary;
@@ -462,6 +434,41 @@ a.pdf-link {
 
     .truncated-description {
       color: @rb-color-primary;
+    }
+  }
+}
+
+.boat-description {
+  font-size: 20px;
+  margin-bottom: 28px;
+  h1 {font-size: 24px; font-weight: 300;}
+  h2 {font-size: 22px; font-weight: 300;}
+  h3 {font-size: 22px; font-weight: normal;}
+  dt, dd {font-size: 16px; padding: 4px 10px; }
+  dl.dl-horizontal {
+    margin-bottom: 0;
+    dt {
+      float: left;
+      text-align: left;
+      width: 140px;
+    }
+    dd {
+      margin-left: 140px;
+    }
+  }
+  .boat-specs > dl:nth-of-type(odd) {
+    background-color: rgb(232, 245, 255);
+  }
+
+  @media(min-width: @screen-md-min) {
+    .boat-specs .row:nth-of-type(odd) {
+      background-color: rgb(232, 245, 255);
+    }
+  }
+
+  @media(max-width: @screen-sm-max) {
+    .boat-specs .row > div:nth-of-type(odd) {
+      background-color: rgb(232, 245, 255);
     }
   }
 }

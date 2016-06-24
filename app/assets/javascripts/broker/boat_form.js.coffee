@@ -127,6 +127,8 @@ $ ->
         if amount
           unit = $unit_select.val()
           res = amount + ' ' + unit
+        else
+          res = ''
         $hidden.val(res)
       $amount_input.change()
 

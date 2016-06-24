@@ -27,7 +27,9 @@
               | #{@boat.price} #{@boat.currency&.symbol} #{@boat.vat_rate&.name}
         dl.dl-horizontal
           dt LOA
-          dd #{@boat.length_m} m
+          dd
+            - if @boat.length_m.present?
+              | #{@boat.length_m} m
         dl.dl-horizontal
           dt Year Built
           dd #{@boat.year_built}

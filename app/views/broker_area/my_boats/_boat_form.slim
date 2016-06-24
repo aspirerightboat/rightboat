@@ -1,4 +1,4 @@
-- new_boat = action_name == 'new'
+- new_boat = false #action_name == 'new'
 - url = new_boat ? broker_area_my_boats_path : broker_area_my_boat_path(@boat)
 - method = new_boat ? 'post' : 'patch'
 
@@ -114,6 +114,7 @@
       .row
         .col-sm-12
           javascript:
+            console.log('boat_id=', #{@boat.id});
             window.boatImages = #{raw @boat.boat_images.not_deleted.map { |bi| {url: bi.file_url(:thumb), caption: bi.caption} }.to_json};
           script#dropzone_template(type="text/template")
             .dz-preview.dz-file-preview
@@ -277,7 +278,7 @@
         .col-sm-4
           | details
   .nice-buttons.text-center
-    button.nice-button(type="submit")= new_boat ? 'Create' : 'Save'
+    button.nice-button(type="submit") Save
   /.row
   /  .col-xs-12.col-sm-4
   /    .form-group

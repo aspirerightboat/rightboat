@@ -35,6 +35,9 @@ ActiveAdmin.register Boat do
     column :name
     column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
     column :model, :model, sortable: 'models.name'
+    column :price do |boat|
+      number_to_currency(boat.price, unit: boat.safe_currency.symbol, precision: 0)
+    end
     column :status
     column :user, :user, sortable: 'users.company_name'
     column :office, :office, sortable: 'offices.name'

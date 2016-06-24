@@ -24,6 +24,18 @@ ActiveAdmin.register LeadTrail do
     actions
   end
 
+  show do
+    attributes_table do
+      row :id
+      row :user
+      row :lead
+      row :new_status
+      row :comments
+      row :bad_quality_reason
+      row :bad_quality_comment
+    end
+  end
+
   form do |f|
     f.inputs do
       f.input :new_status, as: :select, collection: Lead::STATUSES.map { |s| [s.titleize, s] }, include_blank: false

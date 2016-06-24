@@ -102,7 +102,7 @@ module Rightboat
           remove_old_boats
         end
 
-        boats_count = @user.boats.not_deleted.count
+        boats_count = @user.boats.active.count
         @user.update boats_count: boats_count
         log "Broker's active boats count: #{boats_count}"
       end

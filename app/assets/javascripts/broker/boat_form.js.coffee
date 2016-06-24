@@ -18,26 +18,21 @@ $ ->
         maxItems: 1,
         options: if $input.val() then [{name: $input.val()}] else [],
         load: (query, callback) ->
-#          console.log('load', collection)
           maker = $makerInput.val()
           data = {q: query}
           data.manufacturer = maker if collection == 'models'
           $.getJSON url, data, (res) ->
-#            console.log('getJSON', res)
             callback(res[collection])
           .fail ->
-#            console.log('fail')
             callback()
         onChange: (value) ->
           if collection == 'manufacturers'
             sel = $modelInput.data('selectize')
             sel.clearOptions()
-            sel.clear()
             return
           maker = $makerInput.val()
           model = $modelInput.val()
           if maker && model
-#            console.log('loadTemplate', maker, model)
             loadTemplate(maker, model)
 
     loadTemplate = (maker, model) ->
@@ -51,35 +46,26 @@ $ ->
           return if $.isEmptyObject(data)
           tryUpdateInputData('boat_type', data.boat_type, true)
           tryUpdateInputData('length_m', data.length_m)
-          tryUpdateInputData('beam_m', data.specs.beam_m)
-          tryUpdateInputData('draft_min', data.specs.draft_min)
-          tryUpdateInputData('draft_max', data.specs.draft_max)
-          tryUpdateInputData('keel_type', data.specs.keel_type, true)
-          tryUpdateInputData('hull_material', data.specs.hull_material, true)
-          tryUpdateInputData('engine_count', data.specs.engine_count)
-          tryUpdateInputData('cabins_count', data.specs.cabins_count)
-          tryUpdateInputData('berths_count', data.specs.berths_count)
           tryUpdateInputData('price_amount', parseInt(data.price))
           tryUpdateInputData('year_built', data.year_built)
-          tryUpdateInputData('engine_make', data.engine_manufacturer, true)
+          tryUpdateInputData('engine_manufacturer', data.engine_manufacturer, true)
           tryUpdateInputData('engine_model', data.engine_model, true)
+          tryUpdateInputData('drive_type', data.drive_type, true)
+          $.each data.specs, (name, value) ->
+            addAndSelect = /^keel_type$|^hull_material$/.test(name)
+            tryUpdateInputData(name, value, addAndSelect)
 
     tryUpdateInputData = (id, data, addAndSelect = false) ->
-      $input = $('#' + id)
-      valueBlank = if $input.attr('type') == 'number' then !parseInt($input.val()) else !$input.val()
-      if valueBlank && data
-#        console.log('tryUpdateInputData', id, data)
-        if (sel = $input.data('selectize'))
-          if addAndSelect
-            sel.addOption(name: data)
-          sel.setValue(data)
-        else
-          $input.val(data).change()
-
-#    $('.creatable-select').each ->
-#      $(@).selectize
-#        create: true,
-#        sortField: 'text'
+      # console.log('tryUpdateInputData', id, data, addAndSelect)
+      if data
+        if ($input = $('#' + id)).length
+          if (valueBlank = if $input.attr('type') == 'number' then !parseInt($input.val()) else !$input.val())
+            if (sel = $input.data('selectize'))
+              if addAndSelect
+                sel.addOption(name: data)
+              sel.setValue(data)
+            else
+              $input.val(data).change()
 
     $('#boat_poa').each ->
       $poa = $(@)
@@ -148,10 +134,20 @@ $ ->
         maxItems: 1,
         options: if $input.val() then [{name: $input.val()}] else [],
         load: (query, callback) ->
-          $.getJSON url, {q: query}, (data) ->
+          params = {q: query}
+          if $input.data('include-param')
+            $el = $($input.data('include-param'))
+            params[$el.attr('id')] = $el.val()
+          $.getJSON url, params, (data) ->
             callback(data.items)
           .fail ->
             callback()
+
+      $input.change ->
+        if $input.data('onchange-clear') && ($dep = $($input.data('onchange-clear'))).length
+          sel = $dep.data('selectize')
+          sel.clearOptions()
+
 
     $('.images-dropzone').each ->
       $dropzone = $(@)

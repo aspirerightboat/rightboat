@@ -31,45 +31,28 @@
             = f.select :year_built, options_for_select(year.downto(year - 40).to_a.reverse, @boat.year_built), \
                               {prompt: 'Please select...'}, id: 'year_built', class: 'select-general select-dark inline-select'
           div
-            = label_tag :engine_make
-            = text_field_tag :engine_make, @boat.engine_manufacturer&.name, placeholder: 'eg. Yanmar', id: 'engine_make', \
-                    class: 'collection-select select-dark inline-select', data: {collection: 'engine_manufacturers', create: true}, \
-                    style: 'width: 200px'
+            = ajax_collection_field :engine_manufacturer, @boat.engine_manufacturer&.name, \
+                    placeholder: 'eg. Yanmar', data: {'onchange-clear' => '#engine_model'}
           div
-            = label_tag :engine_model
-            = text_field_tag :engine_model, @boat.engine_model&.name, placeholder: 'eg. 40HP', id: 'engine_model', \
-                    class: 'collection-select select-dark inline-select', data: {collection: 'engine_models', create: true}, \
-                    style: 'width: 200px'
-            div
+            = ajax_collection_field :engine_model, @boat.engine_model&.name, \
+                    placeholder: 'eg. 40HP', data: {'include-param' => '#engine_manufacturer'}
+          div
             = label_tag :engine_count
             = number_field_tag 'boat_specs[engine_count]', @specs_hash[:engine_count], step: '1', id: 'engine_count', \
                     class: 'form-control', style: 'width: 120px; display: inline-block;'
         .col-sm-4
           div
-            = label_tag :country
-            = text_field_tag :country, @boat.country&.name, placeholder: 'eg. United Kingdom', id: 'country', \
-                    class: 'collection-select select-dark inline-select', data: {collection: 'countries', create: true}, \
-                    style: 'width: 200px'
+            = ajax_collection_field :country, @boat.country&.name, placeholder: 'eg. United Kingdom', \
+                    data: {collection: 'countries', create: false, 'onchange-clear' => '#location'}
           div
-            = f.label :location
-            = f.text_field :location, placeholder: 'eg. North Palm Beach', id: 'location', \
-                    class: 'collection-select select-dark inline-select', data: {collection: 'locations', create: true}, \
-                    style: 'width: 200px'
+            = ajax_collection_field :location, @boat.location, placeholder: 'eg. North Palm Beach', name: 'boat[location]', \
+                    data: {'include-param' => '#country'}
           div
-            = label_tag :hull_material
-            = text_field_tag 'boat_specs[hull_material]', @specs_hash[:hull_material], placeholder: 'eg. Carbon', id: 'hull_material', \
-                    class: 'collection-select select-dark inline-select', data: {collection: 'hull_materials', create: true}, \
-                    style: 'width: 200px'
+            = ajax_collection_field :hull_material, @specs_hash[:hull_material], placeholder: 'eg. Carbon', name: 'boat_specs[hull_material]'
           div
-            = label_tag :fuel_type
-            = text_field_tag :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel', id: 'fuel_type', \
-                            class: 'collection-select select-dark inline-select', data: {collection: 'fuel_types', create: true}, \
-                            style: 'width: 200px'
+            = ajax_collection_field :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel'
           div
-            = label_tag :keel
-            = text_field_tag 'boat_specs[keel_type]', @specs_hash[:keel_type], placeholder: 'eg. Multi-Hull', id: 'keel_type', \
-                    data: {collection: 'keel_types', create: true}, class: 'collection-select select-dark inline-select', \
-                    style: 'width: 200px'
+            = ajax_collection_field :keel_type, @specs_hash[:keel_type], placeholder: 'eg. Multi-Hull', name: 'boat_specs[keel_type]'
         .col-sm-4
           div
             = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m'
@@ -114,7 +97,6 @@
       .row
         .col-sm-12
           javascript:
-            console.log('boat_id=', #{@boat.id});
             window.boatImages = #{raw @boat.boat_images.not_deleted.map { |bi| {url: bi.file_url(:thumb), caption: bi.caption} }.to_json};
           script#dropzone_template(type="text/template")
             .dz-preview.dz-file-preview

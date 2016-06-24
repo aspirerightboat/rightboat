@@ -49,7 +49,9 @@ class SearchController < ApplicationController
   end
 
   def engine_models
-    items = EngineModel.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    manufacturer = (EngineManufacturer.find_by(name: params[:engine_manufacturer]) if params[:engine_manufacturer])
+    items = EngineModel.where(engine_manufacturer: manufacturer).where('name LIKE ?', "#{params[:q]}%")
+                .order(:name).limit(30).pluck_h(:name)
     render json: {items: items}
   end
 
@@ -72,7 +74,9 @@ class SearchController < ApplicationController
   end
 
   def locations
-    items = Boat.where('location LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck('DISTINCT location')
+    country = (Country.where(name: params[:country]) if params[:country])
+    items = Boat.where(country: country).where('location LIKE ?', "#{params[:q]}%")
+                .order(:location).limit(30).pluck('DISTINCT location')
                 .map { |loc| {name: loc} }
     render json: {items: items}
   end

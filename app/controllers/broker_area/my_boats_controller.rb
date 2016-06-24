@@ -82,7 +82,7 @@ module BrokerArea
             price: t.price.leave_significant(3),
             length_m: t.length_m,
             boat_type_id: t.boat_type_id,
-            drive_type_id: t.drive_type_id,
+            drive_type: t.drive_type&.name,
             engine_manufacturer: t.engine_manufacturer&.name,
             engine_model: t.engine_model&.name,
             fuel_type: t.fuel_type&.name,
@@ -123,9 +123,9 @@ module BrokerArea
                           FuelType.create_with(created_by_user: current_broker)
                               .where(name: params[:fuel_type]).first_or_create
                         end
-      @boat.engine_manufacturer = if params[:engine_make]
+      @boat.engine_manufacturer = if params[:engine_manufacturer]
                                     EngineManufacturer.create_with(created_by_user: current_broker)
-                                        .where(name: params[:engine_make]).first_or_create
+                                        .where(name: params[:engine_manufacturer]).first_or_create
                                   end
       @boat.engine_model = if params[:engine_model] && @boat.engine_manufacturer
                              EngineModel.create_with(created_by_user: current_broker)

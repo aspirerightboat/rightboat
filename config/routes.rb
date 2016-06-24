@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     get :fuel_types
     get :countries
     get :locations
+    get :drive_types
   end
 
   # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }

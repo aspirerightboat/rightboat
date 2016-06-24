@@ -26,6 +26,17 @@ module MyBoatsHelper
     res << text_field_tag("boat_specs[#{spec_name}]", @specs_hash[spec_name], opts)
   end
 
+  def ajax_collection_field(id, value, options = {})
+    label = (options.delete(:label) || id.to_s).titleize
+    name = options.delete(:name) || id
+    opts = {placeholder: 'Please select...', id: id,
+            class: 'collection-select select-dark inline-select', data: {collection: "#{id}s", create: true},
+            style: 'width: 200px'}.deep_merge!(options)
+
+    res = label_tag(id, label)
+    res << text_field_tag(name, value, opts)
+  end
+
   def spec_select_field(spec_name, label, units)
     # value = @boat_spec_by_name[spec_name].value.to_s
     # amount, unit = value.split(' ', 2)

@@ -106,12 +106,12 @@ module BrokerArea
     end
 
     def assign_boat_data
-      @boat.manufacturer = if params[:manufacturer]
+      @boat.manufacturer = if params[:manufacturer].present?
                              Manufacturer.create_with(created_by_user: current_broker)
                                  .where(name: params[:manufacturer]).first_or_create
 
                            end
-      @boat.model = if params[:model] && @boat.manufacturer
+      @boat.model = if params[:model].present? && @boat.manufacturer
                       Model.create_with(created_by_user: current_broker)
                           .where(name: params[:model], manufacturer: @boat.manufacturer).first_or_create
 
@@ -119,22 +119,22 @@ module BrokerArea
       @boat.assign_attributes(boat_params)
       @boat.currency = Currency.cached_by_name(params[:price_currency])
       @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
-      @boat.fuel_type = if params[:fuel_type]
+      @boat.fuel_type = if params[:fuel_type].present?
                           FuelType.create_with(created_by_user: current_broker)
                               .where(name: params[:fuel_type]).first_or_create
                         end
-      @boat.engine_manufacturer = if params[:engine_manufacturer]
+      @boat.engine_manufacturer = if params[:engine_manufacturer].present?
                                     EngineManufacturer.create_with(created_by_user: current_broker)
                                         .where(name: params[:engine_manufacturer]).first_or_create
                                   end
-      @boat.engine_model = if params[:engine_model] && @boat.engine_manufacturer
+      @boat.engine_model = if params[:engine_model].present? && @boat.engine_manufacturer
                              EngineModel.create_with(created_by_user: current_broker)
                                  .where(name: params[:engine_model], engine_manufacturer: @boat.engine_manufacturer).first_or_create
                            end
-      @boat.country = if params[:country]
+      @boat.country = if params[:country].present?
                         Country.find_by(name: params[:country])
                       end
-      @boat.drive_type = if params[:drive_type]
+      @boat.drive_type = if params[:drive_type].present?
                              DriveType.create_with(created_by_user: current_broker)
                                  .where(name: params[:drive_type]).first_or_create
                            end

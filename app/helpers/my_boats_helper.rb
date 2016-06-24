@@ -4,11 +4,11 @@ module MyBoatsHelper
   end
 
   def spec_m_ft_field(spec_name, label)
-    m_ft_field("boat_specs[#{spec_name}]", @specs_hash[spec_name], label, spec_name)
+    m_ft_field("boat_specs[#{spec_name}]", @specs_hash.delete(spec_name), label, spec_name)
   end
 
   def spec_unit_field(spec_name, label, units)
-    value = @specs_hash[spec_name]
+    value = @specs_hash.delete(spec_name)
     amount, unit = (value.split(' ', 2) if value)
     render partial: 'broker_area/my_boats/spec_unit_field',
            locals: {name: "boat_specs[#{spec_name}]",
@@ -19,11 +19,12 @@ module MyBoatsHelper
 
   def spec_checkable_field(spec_name, label = nil, options = {})
     label ||= spec_name.to_s.titleize
+    value = @specs_hash.delete(spec_name)
     opts = {id: spec_name, class: 'form-control', style: 'width: 200px; display: inline-block;'}.merge!(options)
 
     res = '<input type="checkbox">'.html_safe
     res << label_tag(spec_name, label)
-    res << text_field_tag("boat_specs[#{spec_name}]", @specs_hash[spec_name], opts)
+    res << text_field_tag("boat_specs[#{spec_name}]", value, opts)
   end
 
   def ajax_collection_field(id, value, options = {})
@@ -37,13 +38,36 @@ module MyBoatsHelper
     res << text_field_tag(name, value, opts)
   end
 
-  def spec_select_field(spec_name, label, units)
-    # value = @boat_spec_by_name[spec_name].value.to_s
-    # amount, unit = value.split(' ', 2)
-    # render partial: 'broker_area/my_boats/spec_unit_field',
-    #        locals: {name: "boat_specs[#{spec_name}]",
-    #                 value: value, amount: amount, selected_unit: unit,
-    #                 label_text: label,
-    #                 units: units}
+  def spec_ajax_collection_field(id, options = {})
+    value = @specs_hash.delete(id)
+    options[:name] = "boat_specs[#{id}]"
+    ajax_collection_field(id, value, options)
+  end
+
+  def spec_number_field(spec_name, label = nil, options = {})
+    spec_common_field(spec_name, label, options.merge!(field_type: :number))
+  end
+
+  def spec_text_field(spec_name, label = nil, options = {})
+    spec_common_field(spec_name, label, options.merge!(field_type: :text))
+  end
+
+  def spec_textarea_field(spec_name, label = nil, options = {})
+    spec_common_field(spec_name, label, options.merge!(field_type: :textarea))
+  end
+
+  def spec_common_field(spec_name, label = nil, options = {})
+    label ||= spec_name.to_s.titleize
+    name = "boat_specs[#{spec_name}]"
+    value = @specs_hash.delete(spec_name)
+    field_method = case options.delete(:field_type)
+                   when :text then :text_field_tag
+                   when :number then :number_field_tag
+                   when :textarea then :text_area_tag
+                   end
+    opts = {id: spec_name, class: 'form-control', style: 'width: 120px; display: inline-block;'}.deep_merge!(options)
+
+    res = label_tag(spec_name, label)
+    res << send(field_method, name, value, opts)
   end
 end

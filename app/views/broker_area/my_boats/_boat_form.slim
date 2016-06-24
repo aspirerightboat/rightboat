@@ -37,9 +37,7 @@
             = ajax_collection_field :engine_model, @boat.engine_model&.name, \
                     placeholder: 'eg. 40HP', data: {'include-param' => '#engine_manufacturer'}
           div
-            = label_tag :engine_count
-            = number_field_tag 'boat_specs[engine_count]', @specs_hash[:engine_count], step: '1', id: 'engine_count', \
-                    class: 'form-control', style: 'width: 120px; display: inline-block;'
+            = spec_number_field :engine_count
         .col-sm-4
           div
             = ajax_collection_field :country, @boat.country&.name, placeholder: 'eg. United Kingdom', \
@@ -48,26 +46,18 @@
             = ajax_collection_field :location, @boat.location, placeholder: 'eg. North Palm Beach', name: 'boat[location]', \
                     data: {'include-param' => '#country'}
           div
-            = ajax_collection_field :hull_material, @specs_hash[:hull_material], placeholder: 'eg. Carbon', name: 'boat_specs[hull_material]'
+            = spec_ajax_collection_field :hull_material, placeholder: 'eg. Carbon'
           div
             = ajax_collection_field :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel'
           div
-            = ajax_collection_field :keel_type, @specs_hash[:keel_type], placeholder: 'eg. Multi-Hull', name: 'boat_specs[keel_type]'
+            = spec_ajax_collection_field :keel_type, placeholder: 'eg. Multi-Hull'
         .col-sm-4
-          div
-            = m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m'
-          div
-            = spec_m_ft_field 'beam_m', 'Beam'
-          div
-            = spec_m_ft_field 'draft_max', 'Draft Max'
-          div
-            = spec_m_ft_field 'draft_min', 'Draft Min'
-          div
-            = label_tag :cabins_count
-            = number_field_tag 'boat_specs[cabins_count]', @specs_hash[:cabins_count], step: '1', id: 'cabins_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
-          div
-            = label_tag :berths_count
-            = number_field_tag 'boat_specs[berths_count]', @specs_hash[:berths_count], step: '1', id: 'berths_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+          div= m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m'
+          div= spec_m_ft_field 'beam_m', 'Beam'
+          div= spec_m_ft_field 'draft_max', 'Draft Max'
+          div= spec_m_ft_field 'draft_min', 'Draft Min'
+          div= spec_number_field :cabins_count
+          div= spec_number_field :berths_count
     .form-group
       .row
         .col-sm-12
@@ -129,63 +119,29 @@
     b Dimensions
     .form-group
       .row
-        .col-sm-4
-          = spec_m_ft_field 'air_draft_m', 'Air Draught'
-        .col-sm-4
-          = spec_m_ft_field 'draft_m', 'Draft'
-        .col-sm-4
-          = spec_m_ft_field 'air_draft_m', 'Air Draft'
-        .col-sm-4
-          = spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
-        .col-sm-4
-          = spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
-        .col-sm-4
-          = spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
+        .col-sm-4= spec_m_ft_field 'air_draft_m', 'Air Draught'
+        .col-sm-4= spec_m_ft_field 'draft_m', 'Draft'
+        .col-sm-4= spec_m_ft_field 'air_draft_m', 'Air Draft'
+        .col-sm-4= spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
+        .col-sm-4= spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
+        .col-sm-4= spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
     b Engines
     .form-group
       .row
-        .col-sm-4
-          = label_tag :engine_horse_power
-          = number_field_tag 'boat_specs[engine_horse_power]', @specs_hash[:engine_horse_power], id: 'engine_horse_power', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :max_speed_knots, 'Max speed (knots)'
-          = number_field_tag 'boat_specs[max_speed_knots]', @specs_hash[:max_speed_knots], id: 'max_speed_knots', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :gallons_per_hour, 'Fuel gallons per hour'
-          = number_field_tag 'boat_specs[gallons_per_hour]', @specs_hash[:gallons_per_hour], id: 'gallons_per_hour', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :engine_location
-          = text_field_tag 'boat_specs[engine_location]', @specs_hash[:engine_location], id: 'engine_location', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :gearbox
-          = text_field_tag 'boat_specs[gearbox]', @specs_hash[:gearbox], id: 'gearbox', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :propeller_type
-          = text_field_tag 'boat_specs[propeller_type]', @specs_hash[:propeller_type], id: 'propeller_type', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :starting_type
-          = text_field_tag 'boat_specs[starting_type]', @specs_hash[:starting_type], id: 'starting_type', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :engine_hours
-          = number_field_tag 'boat_specs[engine_hours]', @specs_hash[:engine_hours], id: 'engine_hours', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :cylinders_count
-          = number_field_tag 'boat_specs[cylinders_count]', @specs_hash[:cylinders_count], id: 'cylinders_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS
-        .col-sm-4
-          = spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS
-        .col-sm-4
-          = label_tag :litres_per_hour
-          = number_field_tag 'boat_specs[litres_per_hour]', @specs_hash[:litres_per_hour], id: 'litres_per_hour', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :range
-          = number_field_tag 'boat_specs[range]', @specs_hash[:range], id: 'range', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :drive_type
-          = text_field_tag :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor', id: 'drive_type', \
-                    class: 'collection-select select-dark inline-select', data: {collection: 'drive_types', create: true}, \
-                    style: 'width: 200px'
+        .col-sm-4= spec_number_field :engine_horse_power
+        .col-sm-4= spec_number_field :max_speed_knots, 'Max speed (knots)'
+        .col-sm-4= spec_number_field :gallons_per_hour, 'Fuel gallons per hour'
+        .col-sm-4= spec_text_field :engine_location
+        .col-sm-4= spec_text_field :gearbox
+        .col-sm-4= spec_text_field :propeller_type
+        .col-sm-4= spec_text_field :starting_type
+        .col-sm-4= spec_number_field :engine_hours
+        .col-sm-4= spec_number_field :cylinders_count
+        .col-sm-4= spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS
+        .col-sm-4= spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS
+        .col-sm-4= spec_number_field :litres_per_hour
+        .col-sm-4= spec_number_field :range
+        .col-sm-4= ajax_collection_field :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor'
         .col-sm-4= spec_checkable_field :cooling_system
     b Navigation Equipment
     .form-group
@@ -236,12 +192,8 @@
     b Accomodation
     .form-group
       .row
-        .col-sm-4
-          = label_tag :crew_cabins_count
-          = number_field_tag 'boat_specs[crew_cabins_count]', @specs_hash[:crew_cabins_count], id: 'crew_cabins_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
-        .col-sm-4
-          = label_tag :crew_berths_count
-          = number_field_tag 'boat_specs[crew_berths_count]', @specs_hash[:crew_berths_count], id: 'crew_berths_count', class: 'form-control', style: 'width: 120px; display: inline-block;'
+        .col-sm-4= spec_number_field :crew_cabins_count
+        .col-sm-4= spec_number_field :crew_berths_count
         .col-sm-4= spec_checkable_field :toilet
         .col-sm-4= spec_checkable_field :bath
         .col-sm-4= spec_checkable_field :shower
@@ -258,43 +210,58 @@
     .form-group
       .row
         .col-sm-4
-          | details
+          = f.label :office, 'Listing office'
+          = f.select :office, options_from_collection_for_select(current_broker.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
+        .col-sm-4
+          = label_tag :new_or_used
+          = select_tag :new_or_used, options_for_select(%w(new used), f.object.new_boat? ? 'new' : 'used')
+        .col-sm-4
+          = f.label :name, 'Boat name'
+          = f.text_field :name
+        .col-sm-4
+          = f.label :owners_comment
+          = f.text_area :owners_comment, rows: 2, cols: 50
+        .col-sm-4
+          = label_tag :known_defects
+          = text_area_tag :known_defects, nil, rows: 2, cols: 50
+        .col-sm-4
+          = f.label :source_id, 'Internal Reference'
+          = f.text_field :source_id
+        .col-sm-4
+          = f.label :offer_status, 'Marketing status'
+          = f.select :offer_status, Boat::OFFER_STATUSES, class: 'select-general select-dark inline-select'
+        .col-sm-4
+          = spec_number_field :passengers_count, 'Passenger capacity'
+        .col-sm-4
+          = spec_text_field :designer, 'Passenger capacity'
+        .col-sm-4
+          = spec_text_field :hull_color
+        .col-sm-4
+          = spec_text_field :hull_construction
+        .col-sm-4
+          = spec_text_field :hull_type
+        .col-sm-4
+          = spec_text_field :ballast_kgs, 'Ballast (kgs)'
+        .col-sm-4
+          = spec_text_field :super_structure_colour, 'Super Structure Color'
+        .col-sm-4
+          = spec_text_field :super_structure_construction
+        .col-sm-4
+          = spec_text_field :deck_colour, 'Deck Color'
+        .col-sm-4
+          = spec_text_field :deck_construction
+        .col-sm-4
+          = spec_text_field :cockpit_type
+        .col-sm-4
+          = spec_text_field :control_type
+        .col-sm-4
+          = spec_textarea_field :disclaimer, nil, rows: 3, cols: 80, style: ''
+    - if @specs_hash.any?
+      h3 Other Specifications
+      .form-group
+        .row
+          - @specs_hash.each do |name, value|
+            .col-sm-4
+              = spec_text_field name
   .nice-buttons.text-center
     button.nice-button(type="submit") Save
-  /.row
-  /  .col-xs-12.col-sm-4
-  /    .form-group
-  /      = f.label :office, 'Listing office'
-  /      = f.select :office, options_from_collection_for_select(current_broker.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
-  /    .form-group
-  /      = label_tag :new_or_used
-  /      = select_tag :new_or_used, options_for_select(%w(new used), f.object.new_boat? ? 'new' : 'used')
-  /    .form-group
-  /      b Vessel Lying
-  /      br
-  /      = f.label :country
-  /      = f.select :country, options_for_select(Country.pluck(:name, :id), f.object.country_id), prompt: 'Please select ...'
-  /      br
-  /      = f.label :location
-  /      = f.text_field :location, placeholder: 'London'
-  /    .form-group
-  /      = f.label :description, 'Marketing description (EN)'
-  /      = f.text_area :description
-  /    .form-group
-  /      = f.label :name, 'Boat name'
-  /      = f.text_field :name
-  /    .form-group
-  /      = f.label :owners_comment
-  /      = f.text_area :owners_comment
-  /    .form-group
-  /      = label_tag :known_defects
-  /      = text_area_tag :known_defects
-  /
-  /    h3 Engines
-  /    .row
-  /      .col-xs-12.col-sm-4
-  /        label
-  /          | Engines Count
-  /          input
-  /          = select_tag 'boat_specs[engine_count]', options_for_select((1..6), @specs_hash['engine_count']), prompt: 'Please select...'
-  /      .col-xs-12.col-sm-4

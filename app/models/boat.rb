@@ -9,10 +9,10 @@ class Boat < ActiveRecord::Base
 
   searchable do
     text :ref_no,               boost: 5
-    text :name,                 boost: 4
-    text :manufacturer_model,   boost: 3
-    text :manufacturer,         boost: 3
+    text :manufacturer,         boost: 4
+    text :manufacturer_model,   boost: 3.5
     text :model,                boost: 3
+    text :name,                 boost: 2.5
     text :country,              boost: 2
     text :fuel_type,            boost: 2
     text :boat_type,            boost: 2

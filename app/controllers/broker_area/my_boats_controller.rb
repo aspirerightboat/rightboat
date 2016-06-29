@@ -22,21 +22,6 @@ module BrokerArea
       @specs_hash = {}
     end
 
-    # def create
-    #   @boat = current_broker.boats.new
-    #   assign_boat_data
-    #
-    #   if @boat.save
-    #     assign_specs
-    #     flash[:notice] = 'Boat created successfully.'
-    #     redirect_to({action: :show, id: @boat})
-    #   else
-    #     flash.now.alert = @boat.errors.full_messages.join(', ')
-    #     @specs_hash = params[:boat_specs]
-    #     render :new
-    #   end
-    # end
-
     def edit
       @boat = Boat.find_by(slug: params[:id])
       @specs_hash = @boat.boat_specifications.specs_hash
@@ -97,12 +82,8 @@ module BrokerArea
     private
 
     def boat_params
-      params.require(:boat)
-          .permit(:year_built, :length_m, :price, :boat_type_id, :poa, :location, :short_description, :description #, :owners_comment, # :manufacturer_id, :model_id,
-          # :location, :secure_payment,
-          #         boat_specifications_attributes: [:id, :value, :specification_id],
-          #         boat_images_attributes: [:id, :file, :file_cache, :_destroy]
-          )
+      params.require(:boat).permit(:year_built, :length_m, :price, :boat_type_id, :poa,
+                                   :location, :short_description, :description)
     end
 
     def assign_boat_data

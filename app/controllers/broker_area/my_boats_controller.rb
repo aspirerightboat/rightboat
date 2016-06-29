@@ -150,8 +150,8 @@ module BrokerArea
         boat_spec.save!
       end
       params_spec_names = params_boat_specs.map(&:first)
-      boat_specs.select { |bs| !bs.specification.name.in?(params_spec_names) }.each do
-        bs.destroy!
+      boat_specs.each do |bs|
+        bs.destroy! if !bs.specification.name.in?(params_spec_names)
       end
     end
 

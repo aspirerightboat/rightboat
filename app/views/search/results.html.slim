@@ -5,8 +5,8 @@
   h1
     span.hidden-sm Find your <strong>Rightboat</strong>
   h3
-    | Search Results:
-    strong= @boats.total_count >= 10000 ? '10,000 plus' : @boats.total_count
+    | Search Results:&nbsp;
+    strong= implicit_boats_count(@boats.total_count)
     span.hidden-sm &nbsp;boats for sale
 
 - content_for :header do

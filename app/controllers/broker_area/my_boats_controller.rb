@@ -4,7 +4,13 @@ module BrokerArea
 
     def index
       @boats = current_broker.boats.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
+      @boats = @boats.where(id: Boat.id_from_ref_no(params[:ref_no])) if params[:ref_no].present?
+      @boats = @boats.where(source_id: params[:source_id]) if params[:source_id].present?
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
+      @boats = @boats.joins(:manufacturer).where('manufacturers.name LIKE ?', "%#{params[:manufacturer_q]}%") if params[:manufacturer_q].present?
+      @boats = @boats.joins(:model).where('models.name LIKE ?', "%#{params[:model_q]}%") if params[:model_q].present?
+      @boats = @boats.where(offer_status: params[:offer_status]) if params[:offer_status].present?
+      @boats = @boats.where(published: case params[:published] when '1' then true when '0' then false end) if params[:published].present?
       @offices = current_broker.offices.order(:name)
     end
 

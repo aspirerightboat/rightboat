@@ -1,11 +1,25 @@
 - content_for :sidebar do
-  = form_tag broker_area_my_boats_path, method: :get do
-    h5 Offices
+  = form_tag broker_area_my_boats_path, method: :get, style: 'margin-top: 3em' do
+    h5 RB Ref
+    = text_field_tag :ref_no, params[:ref_no], class: 'form-control'
+    h5 Source ID
+    = text_field_tag :source_id, params[:source_id], class: 'form-control'
+    h5 Office
     = select_tag :office_id, options_from_collection_for_select(@offices, :id, :name, params[:office_id]), \
-                prompt: 'All', placeholder: 'All', class: 'select-dark select-general'
-    .nice-buttons.text-center
+                prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    h5 Manufacturer name contains
+    = text_field_tag :manufacturer_q, params[:manufacturer_q], class: 'form-control'
+    h5 Model name contains
+    = text_field_tag :model_q, params[:model_q], class: 'form-control'
+    h5 Marketing Status
+    = select_tag :offer_status, options_for_select(Boat::OFFER_STATUSES.map { |s| [s.humanize, s] }, params[:offer_status]), \
+                prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    h5 Published to Rightboat
+    = select_tag :published, options_for_select([%w(Published 1), %w(Unpublished 0)], params[:offer_status]), \
+                prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    .nice-buttons.text-center(style="margin-top: 1em")
       button.nice-button(type="submit") Filter
-
+      button.transparent-button.clear-filters(type="button") Clear Filters
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   h1
     | My Boats
@@ -40,20 +54,21 @@
               abbr(title="Price on Application") POA
             - else
               | #{boat.price&.to_i}&nbsp;<abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr> #{boat.vat_rate&.name}
-          td #{boat.offer_status.capitalize}
-          td #{boat.status.capitalize}
+          td #{boat.offer_status.humanize}
+          td #{boat.published ? 'Published' : 'Not Published'} (#{boat.status.capitalize})
           td #{boat.office&.name}
           td #{boat.country&.name} #{boat.location}
           td
-            = link_to broker_area_my_boat_path(boat) do
-              i.glyphicon.glyphicon-eye-open
-            = link_to edit_broker_area_my_boat_path(boat), style: 'margin-left: 1ex' do
-              i.glyphicon.glyphicon-pencil
-            = link_to broker_area_my_boat_path(boat), method: 'delete', style: 'margin-left: 1ex', \
-                    data: {confirm: 'Are you sure you want delete this boat?'} do
-              i.glyphicon.glyphicon-remove
+            div(style="whitespace: nowrap")
+              = link_to broker_area_my_boat_path(boat) do
+                i.glyphicon.glyphicon-eye-open
+              = link_to edit_broker_area_my_boat_path(boat), style: 'margin-left: 1ex' do
+                i.glyphicon.glyphicon-pencil
+              = link_to broker_area_my_boat_path(boat), method: 'delete', style: 'margin-left: 1ex', \
+                      data: {confirm: 'Are you sure you want delete this boat?'} do
+                i.glyphicon.glyphicon-remove
             - if boat.published
-              = link_to 'RB View', sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex'
+              = link_to 'RB&nbsp;View'.html_safe, sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex'
     = paginate @boats
   - else
     p.text-center You have no boats to manage so far

@@ -6,7 +6,7 @@ ActiveAdmin.register Office do
                 :fax, :mobile, :website,
                 address_attributes: [:line1, :line2, :town_city, :county, :country_id, :zip, :addressible_id, :addressible_type]
 
-  filter :user, as: :select, collection: -> { User.order(:company_name, :first_name) }
+  filter :user, collection: -> { User.companies }
   filter :email
 
   index do

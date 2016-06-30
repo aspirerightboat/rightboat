@@ -3,7 +3,7 @@ module BrokerArea
     protect_from_forgery except: :upload_image
 
     def index
-      @boats = current_broker.boats.boat_view_includes.includes(:country).page(params[:page]).per(15)
+      @boats = current_broker.boats.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
       @offices = current_broker.offices.order(:name)
     end

@@ -1,17 +1,59 @@
+- content_for :sidebar do
+  = form_tag broker_area_my_boats_path, method: :get do
+    h5 Offices
+    = select_tag :office_id, options_from_collection_for_select(@offices, :id, :name, params[:office_id]), \
+                prompt: 'All', placeholder: 'All', class: 'select-dark select-general'
+    .nice-buttons.text-center
+      button.nice-button(type="submit") Filter
+
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   h1
     | My Boats
     - if !Rails.env.production?
       small.pull-right= link_to 'New Boat', new_broker_area_my_boat_path
 
-  - if @boats.any?
-    #boats-list.row(data-layout-mode="#{current_layout_mode}")
+  - if @boats.present?
+    table.rb-table
+      tr
+        th Ref
+        th Source ID
+        th Image
+        th Name
+        th Makemodel
+        th Price
+        th Marketing Status
+        th Righboat Published
+        th Office
+        th Location
+        th
       - @boats.each do |boat|
-        = render layout: 'boats/boat', locals: {boat: boat} do
-          = link_to 'Edit', edit_broker_area_my_boat_path(boat)
-          = ' | '
-          = link_to 'Show', broker_area_my_boat_path(boat)
+        tr
+          td #{boat.ref_no}
+          td #{boat.source_id}
+          td
+            - if boat.primary_image
+              | #{image_tag(boat.primary_image.file_url(:mini), size: '64x43', alt: '')}
+          td #{boat.name}
+          td #{boat.manufacturer.name} #{boat.model.name}
+          td
+            - if boat.poa?
+              abbr(title="Price on Application") POA
+            - else
+              | #{boat.price&.to_i}&nbsp;<abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr> #{boat.vat_rate&.name}
+          td #{boat.offer_status.capitalize}
+          td #{boat.status.capitalize}
+          td #{boat.office&.name}
+          td #{boat.country&.name} #{boat.location}
+          td
+            = link_to broker_area_my_boat_path(boat) do
+              i.glyphicon.glyphicon-eye-open
+            = link_to edit_broker_area_my_boat_path(boat), style: 'margin-left: 1ex' do
+              i.glyphicon.glyphicon-pencil
+            = link_to broker_area_my_boat_path(boat), method: 'delete', style: 'margin-left: 1ex', \
+                    data: {confirm: 'Are you sure you want delete this boat?'} do
+              i.glyphicon.glyphicon-remove
+            - if boat.published
+              = link_to 'RB View', sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex'
     = paginate @boats
   - else
-    p.lead.text-center You have no boats to manage so far
-
+    p.text-center You have no boats to manage so far

@@ -1,6 +1,6 @@
 $ ->
   $.fn.generalSelect = ->
-    @.selectize()
+    @.selectize(allowEmptyOption: true)
     @.each ->
       $sel = $(@)
       if $sel.data('onchange-fill-models') && !$sel.initialized

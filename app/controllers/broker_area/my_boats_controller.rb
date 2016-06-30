@@ -3,7 +3,7 @@ module BrokerArea
     protect_from_forgery except: :upload_image
 
     def index
-      @boats = current_broker.boats.active.boat_view_includes.includes(:country).page(params[:page]).per(15)
+      @boats = current_broker.boats.boat_view_includes.includes(:country).page(params[:page]).per(15)
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
       @offices = current_broker.offices.order(:name)
     end
@@ -82,8 +82,10 @@ module BrokerArea
     private
 
     def boat_params
-      params.require(:boat).permit(:year_built, :length_m, :price, :boat_type_id, :poa,
-                                   :location, :short_description, :description)
+      params.require(:boat).permit(
+          :name, :year_built, :length_m, :price, :boat_type_id, :poa, :location,
+          :short_description, :description, :owners_comment, :source_id, :offer_status, :published
+      )
     end
 
     def assign_boat_data
@@ -118,7 +120,11 @@ module BrokerArea
       @boat.drive_type = if params[:drive_type].present?
                              DriveType.create_with(created_by_user: current_broker)
                                  .where(name: params[:drive_type]).first_or_create
-                           end
+                         end
+      @boat.office = if params[:office].present?
+                       Office.find_by(id: params[:office])
+                     end
+      @boat.new_boat = case params[:newness] when 'new' then true when 'used' then false end
     end
 
     def assign_specs
@@ -128,7 +134,7 @@ module BrokerArea
         boat_spec = boat_specs.find { |bs| bs.specification.name == spec_name } ||
             @boat.boat_specifications.new(specification: Specification.find_by(name: spec_name))
         boat_spec.value = spec_value
-        boat_spec.save!
+        boat_spec.save! if boat_spec.changed?
       end
       params_spec_names = params_boat_specs.map(&:first)
       boat_specs.each do |bs|

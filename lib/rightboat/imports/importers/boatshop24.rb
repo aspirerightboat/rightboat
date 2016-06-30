@@ -26,13 +26,7 @@ module Rightboat
           'no_of_air_chambers' => Proc.new { |boat, val| boat.set_missing_attr(:chambers_count, val) },
           'no_of_previous_owners' => Proc.new { |boat, val| boat.set_missing_attr(:previous_owners_count, val) },
           'width' => Proc.new { |boat, val| boat.set_missing_attr('width', get_value_m(val)) },
-          'condition' => Proc.new do |boat, val|
-            if val =~ /new/i
-              boat.new_boat = true
-            elsif val =~ /used/i
-              boat.new_boat = false
-            end
-          end
+          'condition' => :new_boat
         )
 
         def self.params_validators

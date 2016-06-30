@@ -1,8 +1,4 @@
-- new_boat = false #action_name == 'new'
-- url = new_boat ? broker_area_my_boats_path : broker_area_my_boat_path(@boat)
-- method = new_boat ? 'post' : 'patch'
-
-= form_for @boat, url: url, method: method, html: {class: 'boat-form big-form'} do |f|
+= form_for @boat, url: broker_area_my_boat_path(@boat), method: 'patch', html: {class: 'boat-form big-form'} do |f|
   h3 Manufacturer & Model
   .form-group
     .row
@@ -189,7 +185,7 @@
         .col-sm-4= spec_checkable_field :microwave
         .col-sm-4= spec_checkable_field :freezer
         .col-sm-4= spec_checkable_field :dishwasher
-    b Accomodation
+    b Accommodation
     .form-group
       .row
         .col-sm-4= spec_number_field :crew_cabins_count
@@ -206,15 +202,24 @@
         .col-sm-4= spec_checkable_field :spinnaker
         .col-sm-4= spec_checkable_field :storm_jib
         .col-sm-4= spec_checkable_field :winches_count
-    h3 Business Details
+    - if @specs_hash.any?
+      h3 Other Specifications
+      .form-group
+        .row
+          - @specs_hash.each do |name, value|
+            .col-sm-4
+              = spec_text_field name
+    h3 Business details
     .form-group
       .row
         .col-sm-4
-          = f.label :office, 'Listing office'
-          = f.select :office, options_from_collection_for_select(current_broker.offices, 'id', 'name', f.object.office_id), include_blank: 'Head Office'
+          = label_tag :office, 'Listing office'
+          = select_tag :office, options_for_select(current_broker.offices.pluck(:name, :id), @boat.office_id), \
+                  include_blank: 'Head Office'
         .col-sm-4
-          = label_tag :new_or_used
-          = select_tag :new_or_used, options_for_select(%w(new used), f.object.new_boat? ? 'new' : 'used')
+          = label_tag :newness
+          = select_tag :newness, options_for_select([%w(New new), %w(Used used)], \
+                  ((@boat.new_boat? ? 'new' : 'used') if !@boat.new_boat.nil?)), prompt: 'Please select...'
         .col-sm-4
           = f.label :name, 'Boat name'
           = f.text_field :name
@@ -256,12 +261,8 @@
           = spec_text_field :control_type
         .col-sm-4
           = spec_textarea_field :disclaimer, nil, rows: 3, cols: 80, style: ''
-    - if @specs_hash.any?
-      h3 Other Specifications
-      .form-group
-        .row
-          - @specs_hash.each do |name, value|
-            .col-sm-4
-              = spec_text_field name
+        .col-sm-4
+          = f.check_box :published
+          = f.label :published, 'Publish on Rightboat'
   .nice-buttons.text-center
     button.nice-button(type="submit") Save

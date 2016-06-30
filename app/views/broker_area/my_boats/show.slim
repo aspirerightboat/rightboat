@@ -5,6 +5,12 @@
     .row.boat-description
       .boat-specs.col-xs-12
         dl.dl-horizontal
+          dt Active?
+          dd= @boat.active? ? 'Active' : 'Inactive'
+        dl.dl-horizontal
+          dt Published?
+          dd= @boat.published? ? 'Published' : 'Not Published'
+        dl.dl-horizontal
           dt Boat Images
           dd
             - @boat.boat_images.each do |bi|
@@ -25,6 +31,9 @@
               | POA
             - else
               | #{@boat.price} #{@boat.currency&.symbol} #{@boat.vat_rate&.name}
+        dl.dl-horizontal
+          dt New/Used
+          dd= case @boat.new_boat when true then 'New' when false then 'Used' end
         dl.dl-horizontal
           dt LOA
           dd

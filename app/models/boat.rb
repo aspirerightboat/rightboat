@@ -86,6 +86,7 @@ class Boat < ActiveRecord::Base
   belongs_to :country
   has_many :old_slugs, as: :sluggable, dependent: :delete_all
   has_many :class_groups, class_name: 'BoatClassGroup'
+  has_many :media, class_name: 'BoatMedium'
 
   validates_presence_of :manufacturer, :model
   validate :valid_manufacturer_model

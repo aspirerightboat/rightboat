@@ -81,6 +81,24 @@ ActiveAdmin.register Boat do
         end
       end
     end
+    if boat.media.any?
+      panel 'Boat Additional Media' do
+        table_for boat.media.not_deleted do
+          column :source_url do |bm|
+            bm.source_url
+          end
+          column :title do |bm|
+            bm.attachment_title
+          end
+          column :alternate_text do |bm|
+            bm.alternate_text
+          end
+          column :type do |bm|
+            bm.type_string
+          end
+        end
+      end
+    end
   end
 
   form do |f|

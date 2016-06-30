@@ -103,7 +103,7 @@ module Rightboat
 
       DYNAMIC_ATTRIBUTES = [
         :import, :error_msg, :user, :images, :pending_images_count, :new_record, :tax_status, :update_country, :country, :location,
-        :office, :office_id, :target, :importer, :class_groups
+        :office, :office_id, :target, :importer, :class_groups, :media
       ]
 
       attr_reader :missing_spec_attrs
@@ -168,6 +168,7 @@ module Rightboat
 
         handle_specs
         handle_class_groups
+        handle_media
 
         if @missing_spec_attrs.present?
           importer.log_warning 'Unknown Spec Attrs', @missing_spec_attrs.map { |k, v| "#{k}: #{v}" }.join("\n")
@@ -324,6 +325,47 @@ module Rightboat
           update_class_groups.each do |name, value|
             x = existing_class_groups.find { |x| x.class_code.name == name }
             x.primary = value
+            x.deleted_at = nil
+            x.save! if x.changed?
+          end
+        end
+      end
+
+      def handle_media
+        return if media.blank?
+        media.each { |x| x[:source_url] = x[:source_url].gsub('http://https', 'https') }
+
+        if target.new_record?
+          media.each do |x|
+            target.media.build(x)
+          end
+        else
+          media_hash = {}
+          media.each do |x|
+            media_hash[x[:source_url]] = x
+          end
+
+          existing_media = target.media.where(source_url: media_hash.keys).to_a
+          existing_keys = existing_media.map(&:source_url)
+
+          create_media = media_hash.except(*existing_keys)
+          create_media.each do |key, value|
+            target.media.create(value)
+          end
+
+          delete_keys = existing_keys - media_hash.keys
+          delete_keys.each do |key|
+            x = existing_media.find { |x| x.source_url == key }
+            x.destroy(:force)
+          end
+
+          update_media = media_hash.except(*create_media.keys)
+          update_media.each do |key, value|
+            x = existing_media.find { |x| x.source_url == key }
+            x.attachment_title = value[:attachment_title]
+            x.alternate_text = value[:alternate_text]
+            x.type_string = value[:type_string]
+            x.last_modified = value[:last_modified]
             x.deleted_at = nil
             x.save! if x.changed?
           end

@@ -44,21 +44,26 @@
   = render 'shared/pswp'
 
   #main_content
-    - if @boat.user == current_user || @boat.offer_available?
-      .boat-header
-        .container
-          .row
-            - if @boat.user == current_user
-              .col-sm-10
-                = link_to 'PDF Link', makemodel_boat_pdf_path(@boat), class: 'btn-flat btn-block btn-black'
-            - elsif @boat.offer_available?
-              .col-sm-2
-                = link_to 'Request Details', '#', class: 'btn-flat btn-block btn-black request-details'
-              .col-sm-8
-                h5.inline Click here for full boat specification and to contact seller
-            - if virtual_tour = @boat.media.virtual_tour.first
-              .col-sm-2
-                = link_to 'Virtual Tour', virtual_tour.source_url, class: 'btn-flat btn-block btn-black', target: '_blank'
+    .boat-header
+      .container
+        .row
+          - if @boat.user == current_user
+            .col-sm-2
+              = link_to 'PDF Link', makemodel_boat_pdf_path(@boat), class: 'btn-flat btn-block btn-black'
+            .col-sm-8
+          - elsif @boat.offer_available?
+            .col-sm-2
+              = link_to 'Request Details', '#', class: 'btn-flat btn-block btn-black request-details'
+            .col-sm-8
+              h5.inline Click here for full boat specification and to contact seller
+          - else
+            .col-sm-2
+              = link_to 'Under Offer', 'javascript: void(0);', class: 'btn-flat btn-block btn-red'
+            .col-sm-8
+              h5.inline This boat is Under Offer, so you are unable to Request Details on it.
+          - if virtual_tour = @boat.media.virtual_tour.first
+            .col-sm-2
+              = link_to 'Virtual Tour', virtual_tour.source_url, class: 'btn-flat btn-block btn-black', target: '_blank'
     .container
       .row.boat-description
         .boat-specs.col-md-7.col-sm-6.col-xs-12.pull-right

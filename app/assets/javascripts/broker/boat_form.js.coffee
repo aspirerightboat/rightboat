@@ -181,3 +181,8 @@ $ ->
       $area.keyup ->
         $counter.text(maxLen - $area.val().length)
       .keyup()
+
+    $('.checkable-label').each ->
+      $el = $(@)
+      $field = $($(@).data('focus-field'))
+      $el.click -> $field.focus()

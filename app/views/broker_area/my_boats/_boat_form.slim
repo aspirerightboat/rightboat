@@ -119,100 +119,99 @@
     b Dimensions
     .form-group
       .row
-        .col-sm-4= spec_m_ft_field 'air_draft_m', 'Air Draught'
-        .col-sm-4= spec_m_ft_field 'draft_m', 'Draft'
-        .col-sm-4= spec_m_ft_field 'air_draft_m', 'Air Draft'
-        .col-sm-4= spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
-        .col-sm-4= spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
-        .col-sm-4= spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
+        .col-sm-4.field-item= spec_m_ft_field 'air_draft_m', 'Air Draught', label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_m_ft_field 'draft_m', 'Draft', label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_m_ft_field 'air_draft_m', 'Air Draft', label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line'), label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS, label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS, label_style: 'min-width: 150px'
     b Engines
     .form-group
       .row
-        .col-sm-4= spec_number_field :engine_horse_power
-        .col-sm-4= spec_number_field :max_speed_knots, 'Max speed (knots)'
-        .col-sm-4= spec_number_field :gallons_per_hour, 'Fuel gallons per hour'
-        .col-sm-4= spec_text_field :engine_location
-        .col-sm-4= spec_text_field :gearbox
-        .col-sm-4= spec_text_field :propeller_type
-        .col-sm-4= spec_text_field :starting_type
-        .col-sm-4= spec_number_field :engine_hours
-        .col-sm-4= spec_number_field :cylinders_count
-        .col-sm-4= spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS
-        .col-sm-4= spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS
-        .col-sm-4= spec_number_field :litres_per_hour
-        .col-sm-4= spec_number_field :range
-        .col-sm-4= ajax_collection_field :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor'
-        .col-sm-4= spec_checkable_field :cooling_system
+        .col-sm-4.field-item= spec_number_field :engine_horse_power, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_number_field :max_speed_knots, 'Max speed (knots)', label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_number_field :gallons_per_hour, 'Fuel gallons per hour', label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_text_field :engine_location, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_text_field :gearbox, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_text_field :propeller_type, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_text_field :starting_type, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_number_field :engine_hours, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_number_field :cylinders_count, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS, label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS, label_style: 'min-width: 150px'
+        .col-sm-4.field-item= spec_number_field :litres_per_hour, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_number_field :range, nil, label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= ajax_collection_field :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor', label_options: {style: 'min-width: 150px'}
+        .col-sm-4.field-item= spec_checkable_field :cooling_system
     b Navigation Equipment
     .form-group
       .row
-        .col-sm-4= spec_checkable_field :navigation_lights
-        .col-sm-4= spec_checkable_field :depth_instrument
-        .col-sm-4= spec_checkable_field :autopilot
-        .col-sm-4= spec_checkable_field :vhf
-        .col-sm-4= spec_checkable_field :speed_instrument
-        .col-sm-4= spec_checkable_field :compass
-        .col-sm-4= spec_checkable_field :wind_instrument
-        .col-sm-4= spec_checkable_field :gps
-        .col-sm-4= spec_checkable_field :plotter
-        .col-sm-4= spec_checkable_field :radar
+        .col-sm-4.field-item= spec_checkable_field :navigation_lights
+        .col-sm-4.field-item= spec_checkable_field :depth_instrument
+        .col-sm-4.field-item= spec_checkable_field :autopilot
+        .col-sm-4.field-item= spec_checkable_field :vhf
+        .col-sm-4.field-item= spec_checkable_field :speed_instrument
+        .col-sm-4.field-item= spec_checkable_field :compass
+        .col-sm-4.field-item= spec_checkable_field :wind_instrument
+        .col-sm-4.field-item= spec_checkable_field :gps
+        .col-sm-4.field-item= spec_checkable_field :plotter
+        .col-sm-4.field-item= spec_checkable_field :radar
     b Electrical Equipment
     .form-group
       .row
-        .col-sm-4= spec_checkable_field :stern_thruster
-        .col-sm-4= spec_checkable_field :battery_charger
-        .col-sm-4= spec_checkable_field :inverter
-        .col-sm-4= spec_checkable_field :shore_power
-        .col-sm-4= spec_checkable_field :heating
-        .col-sm-4= spec_checkable_field :holding_tanks
-        .col-sm-4= spec_checkable_field :tv
-        .col-sm-4= spec_checkable_field :dvd_player
-        .col-sm-4= spec_checkable_field :bow_thruster
-        .col-sm-4= spec_checkable_field :battery
-        .col-sm-4= spec_checkable_field :generator
-        .col-sm-4= spec_checkable_field :bilge_pump
-        .col-sm-4= spec_checkable_field :air_conditioning
-        .col-sm-4= spec_checkable_field :cd_player
+        .col-sm-4.field-item= spec_checkable_field :stern_thruster
+        .col-sm-4.field-item= spec_checkable_field :battery_charger
+        .col-sm-4.field-item= spec_checkable_field :inverter
+        .col-sm-4.field-item= spec_checkable_field :shore_power
+        .col-sm-4.field-item= spec_checkable_field :heating
+        .col-sm-4.field-item= spec_checkable_field :holding_tanks
+        .col-sm-4.field-item= spec_checkable_field :tv
+        .col-sm-4.field-item= spec_checkable_field :dvd_player
+        .col-sm-4.field-item= spec_checkable_field :bow_thruster
+        .col-sm-4.field-item= spec_checkable_field :battery
+        .col-sm-4.field-item= spec_checkable_field :generator
+        .col-sm-4.field-item= spec_checkable_field :bilge_pump
+        .col-sm-4.field-item= spec_checkable_field :air_conditioning
+        .col-sm-4.field-item= spec_checkable_field :cd_player
     b General Equipment
     .form-group
       .row
-        .col-sm-4= spec_checkable_field :anchor
-        .col-sm-4= spec_checkable_field :spray_hood
-        .col-sm-4= spec_checkable_field :fire_extinguisher
-        .col-sm-4= spec_checkable_field :bimimi
-        .col-sm-4= spec_checkable_field :fenders
+        .col-sm-4.field-item= spec_checkable_field :anchor
+        .col-sm-4.field-item= spec_checkable_field :spray_hood
+        .col-sm-4.field-item= spec_checkable_field :fire_extinguisher
+        .col-sm-4.field-item= spec_checkable_field :bimimi
+        .col-sm-4.field-item= spec_checkable_field :fenders
     b Galley
     .form-group
       .row
-        .col-sm-4= spec_checkable_field :oven
-        .col-sm-4= spec_checkable_field :fridge
-        .col-sm-4= spec_checkable_field :microwave
-        .col-sm-4= spec_checkable_field :freezer
-        .col-sm-4= spec_checkable_field :dishwasher
+        .col-sm-4.field-item= spec_checkable_field :oven
+        .col-sm-4.field-item= spec_checkable_field :fridge
+        .col-sm-4.field-item= spec_checkable_field :microwave
+        .col-sm-4.field-item= spec_checkable_field :freezer
+        .col-sm-4.field-item= spec_checkable_field :dishwasher
     b Accommodation
     .form-group
       .row
-        .col-sm-4= spec_number_field :crew_cabins_count
-        .col-sm-4= spec_number_field :crew_berths_count
-        .col-sm-4= spec_checkable_field :toilet
-        .col-sm-4= spec_checkable_field :bath
-        .col-sm-4= spec_checkable_field :shower
+        .col-sm-4.field-item= spec_number_field :crew_cabins_count
+        .col-sm-4.field-item= spec_number_field :crew_berths_count
+        .col-sm-4.field-item= spec_checkable_field :toilet
+        .col-sm-4.field-item= spec_checkable_field :bath
+        .col-sm-4.field-item= spec_checkable_field :shower
     b Rig/Sails
     .form-group
       .row
-        .col-sm-4= spec_checkable_field :genoa
-        .col-sm-4= spec_checkable_field :tri_sail
-        .col-sm-4= spec_checkable_field :mainsail
-        .col-sm-4= spec_checkable_field :spinnaker
-        .col-sm-4= spec_checkable_field :storm_jib
-        .col-sm-4= spec_checkable_field :winches_count
+        .col-sm-4.field-item= spec_checkable_field :genoa
+        .col-sm-4.field-item= spec_checkable_field :tri_sail
+        .col-sm-4.field-item= spec_checkable_field :mainsail
+        .col-sm-4.field-item= spec_checkable_field :spinnaker
+        .col-sm-4.field-item= spec_checkable_field :storm_jib
+        .col-sm-4.field-item= spec_checkable_field :winches_count
     - if @specs_hash.any?
       h3 Other Specifications
       .form-group
         .row
           - @specs_hash.each do |name, value|
-            .col-sm-4
-              = spec_text_field name
+            .col-sm-4.field-item= spec_text_field name
     h3 Business details
     .form-group
       .row

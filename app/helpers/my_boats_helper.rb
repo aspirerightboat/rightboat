@@ -19,12 +19,14 @@ module MyBoatsHelper
   end
 
   def spec_checkable_field(spec_name, label = nil, options = {})
+    check_id = "#{spec_name}_check"
+    res = tag(:input, type: 'checkbox', id: check_id)
     label ||= spec_name.to_s.titleize
-    value = @specs_hash.delete(spec_name)
-    opts = {id: spec_name, class: 'form-control', style: 'width: 200px; display: inline-block;'}.merge!(options)
+    res << label_tag(check_id, label, class: 'checkable-label', 'data-focus-field' => "##{spec_name}")
 
-    res = '<input type="checkbox">'.html_safe
-    res << label_tag(spec_name, label)
+    value = @specs_hash.delete(spec_name)
+    opts = {id: spec_name, class: 'form-control checkable-field', style: 'width: 200px; display: inline-block;'}.merge!(options)
+
     res << text_field_tag("boat_specs[#{spec_name}]", value, opts)
   end
 

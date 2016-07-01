@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   )
   BOAT_YEAR_REQUESTERS = %w(inquiries@denisonyachtsales.com)
   COMMENT_REQUESTERS = %w(suffolk@clarkeandcarter.co.uk sales@boats.co.uk)
+  LOA_REQUESTERS = %w(inquiries@denisonyachtsales.com)
 
   serialize :broker_ids, Array
 
@@ -126,6 +127,10 @@ class User < ActiveRecord::Base
 
   def comment_requested?
     COMMENT_REQUESTERS.include?(email)
+  end
+
+  def loa_requested?
+    LOA_REQUESTERS.include?(email)
   end
 
   def send_email_confirmation

@@ -17,67 +17,71 @@
     .form-group
       .row
         .col-sm-4
-          div
-            = f.label :boat_type
+          .field-item
+            = f.label :boat_type, style: 'min-width: 145px'
             = f.select :boat_type_id, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), @boat.boat_type_id), \
-                    {prompt: 'Please select...'}, id: 'boat_type', class: 'select-general select-dark inline-select'
-          div
-            = f.label :year_built
+                    {prompt: 'Please select...'}, placeholder: 'Please select...', id: 'boat_type', class: 'select-general select-dark inline-select'
+          .field-item
+            = f.label :year_built, style: 'min-width: 145px'
             - year = Date.today.year
             = f.select :year_built, options_for_select(year.downto(year - 40).to_a.reverse, @boat.year_built), \
-                              {prompt: 'Please select...'}, id: 'year_built', class: 'select-general select-dark inline-select'
-          div
+                              {prompt: 'Please select...'}, placeholder: 'Please select...', id: 'year_built', class: 'select-general select-dark inline-select'
+          .field-item
             = ajax_collection_field :engine_manufacturer, @boat.engine_manufacturer&.name, \
-                    placeholder: 'eg. Yanmar', data: {'onchange-clear' => '#engine_model'}
-          div
+                    placeholder: 'eg. Yanmar', data: {'onchange-clear' => '#engine_model'}, label_options: {style: 'min-width: 145px'}
+          .field-item
             = ajax_collection_field :engine_model, @boat.engine_model&.name, \
-                    placeholder: 'eg. 40HP', data: {'include-param' => '#engine_manufacturer'}
-          div
-            = spec_number_field :engine_count
+                    placeholder: 'eg. 40HP', data: {'include-param' => '#engine_manufacturer'}, label_options: {style: 'min-width: 145px'}
+          .field-item
+            = spec_number_field :engine_count, nil, label_options: {style: 'min-width: 145px'}
         .col-sm-4
-          div
+          .field-item
             = ajax_collection_field :country, @boat.country&.name, placeholder: 'eg. United Kingdom', \
-                    data: {collection: 'countries', create: false, 'onchange-clear' => '#location'}
-          div
+                    data: {collection: 'countries', create: false, 'onchange-clear' => '#location'}, label_options: {style: 'min-width: 100px'}
+          .field-item
             = ajax_collection_field :location, @boat.location, placeholder: 'eg. North Palm Beach', name: 'boat[location]', \
-                    data: {'include-param' => '#country'}
-          div
-            = spec_ajax_collection_field :hull_material, placeholder: 'eg. Carbon'
-          div
-            = ajax_collection_field :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel'
-          div
-            = spec_ajax_collection_field :keel_type, placeholder: 'eg. Multi-Hull'
+                    data: {'include-param' => '#country'}, label_options: {style: 'min-width: 100px'}
+          .field-item
+            = spec_ajax_collection_field :hull_material, placeholder: 'eg. Carbon', label_options: {style: 'min-width: 100px'}
+          .field-item
+            = ajax_collection_field :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel', label_options: {style: 'min-width: 100px'}
+          .field-item
+            = spec_ajax_collection_field :keel_type, placeholder: 'eg. Multi-Hull', label_options: {style: 'min-width: 100px'}
         .col-sm-4
-          div= m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m'
-          div= spec_m_ft_field 'beam_m', 'Beam'
-          div= spec_m_ft_field 'draft_max', 'Draft Max'
-          div= spec_m_ft_field 'draft_min', 'Draft Min'
-          div= spec_number_field :cabins_count
-          div= spec_number_field :berths_count
+          .field-item= m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m', label_style: 'min-width: 100px'
+          .field-item= spec_m_ft_field 'beam_m', 'Beam', label_style: 'min-width: 100px'
+          .field-item= spec_m_ft_field 'draft_max', 'Draft Max', label_style: 'min-width: 100px'
+          .field-item= spec_m_ft_field 'draft_min', 'Draft Min', label_style: 'min-width: 100px'
+          .field-item= spec_number_field :cabins_count, nil, label_options: {style: 'min-width: 100px'}
+          .field-item= spec_number_field :berths_count, nil, label_options: {style: 'min-width: 100px'}
     .form-group
       .row
         .col-sm-12
           = f.label :price_amount, 'Asking price'
-          = f.number_field :price, step: '100', style: 'width: 120px', id: 'price_amount'
+          '
+          = f.number_field :price, step: '100', class: 'form-control', id: 'price_amount', \
+                  style: 'width: 120px; display: inline-block; text-align: right;'
+          '
           = currency_select 'price_currency', @boat.safe_currency, \
                   id: 'price_currency', class: ' select-currency select-dark inline-select'
-          | - Or -
-          = f.check_box :poa, id: 'boat_poa'
-          = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
+          '
           = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
           = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
+          '  - Or - &nbsp;
+          = f.check_box :poa, id: 'boat_poa'
+          = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
     .form-group
       .row
-        .col-sm-12
+        .col-xs-12.col-sm-6
           = f.label :short_description, 'Short description'
-          br
-          = f.text_area :short_description, id: 'short_description', rows: 3, cols: 100
-    .form-group
-      .row
-        .col-sm-12
+          div <small><i>This text will appear on the advert details page, please give a short, accurate description of the boat. HTML&nbsp;tags will be stripped.</i></small> <span id="short_desc_counter" class="textarea-countdown">480</span>
+          = f.text_area :short_description, id: 'short_description', rows: 4, cols: 70, maxlength: 480, \
+                  style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#short_desc_counter'}
+        .col-xs-12.col-sm-6
           = f.label :boat_description, 'Description'
-          br
-          = f.text_area :description, id: 'boat_description', rows: 5, cols: 100
+          div <small><i>HTML tags will be stripped.</i></small> <span id="desc_counter" class="textarea-countdown">2000</span>
+          = f.text_area :description, id: 'boat_description', rows: 5, cols: 70, maxlength: 2000, \
+                  style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#desc_counter'}
     h3 Images
     .form-group
       .row

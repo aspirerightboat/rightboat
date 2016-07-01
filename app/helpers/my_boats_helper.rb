@@ -1,20 +1,21 @@
 module MyBoatsHelper
-  def m_ft_field(name, value, label, id = nil)
-    render partial: 'broker_area/my_boats/m_ft_field', locals: {name: name, value: value, label_text: label, id: id}
+  def m_ft_field(name, value, label, id = nil, options = {})
+    render partial: 'broker_area/my_boats/m_ft_field', locals: {name: name, value: value, label_text: label, id: id, options: options}
   end
 
-  def spec_m_ft_field(spec_name, label)
-    m_ft_field("boat_specs[#{spec_name}]", @specs_hash.delete(spec_name), label, spec_name)
+  def spec_m_ft_field(spec_name, label, options = {})
+    m_ft_field("boat_specs[#{spec_name}]", @specs_hash.delete(spec_name), label, spec_name, options)
   end
 
-  def spec_unit_field(spec_name, label, units)
+  def spec_unit_field(spec_name, label, units, options = {})
     value = @specs_hash.delete(spec_name)
     amount, unit = (value.split(' ', 2) if value)
     render partial: 'broker_area/my_boats/spec_unit_field',
            locals: {name: "boat_specs[#{spec_name}]",
                     value: value, amount: amount, selected_unit: unit,
                     label_text: label,
-                    units: units}
+                    units: units,
+                    options: options}
   end
 
   def spec_checkable_field(spec_name, label = nil, options = {})
@@ -29,12 +30,13 @@ module MyBoatsHelper
 
   def ajax_collection_field(id, value, options = {})
     label = (options.delete(:label) || id.to_s).titleize
+    res = label_tag(id, label, options.delete(:label_options) || {})
+
     name = options.delete(:name) || id
     opts = {placeholder: 'Please select...', id: id,
             class: 'collection-select select-dark inline-select', data: {collection: "#{id}s", create: true},
             style: 'width: 200px'}.deep_merge!(options)
 
-    res = label_tag(id, label)
     res << text_field_tag(name, value, opts)
   end
 
@@ -58,6 +60,8 @@ module MyBoatsHelper
 
   def spec_common_field(spec_name, label = nil, options = {})
     label ||= spec_name.to_s.titleize
+    res = label_tag(spec_name, label, options.delete(:label_options) || {})
+
     name = "boat_specs[#{spec_name}]"
     value = @specs_hash.delete(spec_name)
     field_method = case options.delete(:field_type)
@@ -66,8 +70,6 @@ module MyBoatsHelper
                    when :textarea then :text_area_tag
                    end
     opts = {id: spec_name, class: 'form-control', style: 'width: 120px; display: inline-block;'}.deep_merge!(options)
-
-    res = label_tag(spec_name, label)
     res << send(field_method, name, value, opts)
   end
 end

@@ -1,6 +1,7 @@
 module BrokerArea
   class MyBoatsController < CommonController
     protect_from_forgery except: :upload_image
+    include ActionView::Helpers::SanitizeHelper
 
     def index
       @boats = current_broker.boats.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
@@ -106,6 +107,8 @@ module BrokerArea
 
                     end
       @boat.assign_attributes(boat_params)
+      @boat.short_description = strip_tags(@boat.short_description) if @boat.short_description.present?
+      @boat.description = strip_tags(@boat.description) if @boat.description.present?
       @boat.currency = Currency.cached_by_name(params[:price_currency])
       @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
       @boat.fuel_type = if params[:fuel_type].present?

@@ -69,7 +69,12 @@ $ ->
 
     $('#boat_poa').each ->
       $poa = $(@)
-      poaClick = -> $('#price_amount, #price_currency, #vat_included').prop('disabled', $poa.prop('checked'))
+      poaClick = ->
+        checked = $poa.prop('checked')
+        $('#price_amount, #vat_included').prop('disabled', checked)
+        sel = $('#price_currency').data('selectize')
+        if checked then sel.lock() else sel.unlock()
+
       $poa.click(poaClick)
       poaClick()
 
@@ -168,3 +173,11 @@ $ ->
             .find('[data-dz-name]').each(-> if cap then $(@).text(cap) else $(@).css(visibility: 'hidden')).end()
             .append($('<a/>').addClass('dz-remove').attr('href', 'javascript:undefined;').text('Remove file'))
             .addClass('dz-complete')
+
+    $('[data-textarea-counter]').each ->
+      $area = $(@)
+      maxLen = parseInt($area.attr('maxlength'))
+      $counter = $($area.data('textarea-counter'))
+      $area.keyup ->
+        $counter.text(maxLen - $area.val().length)
+      .keyup()

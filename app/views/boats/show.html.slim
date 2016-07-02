@@ -58,7 +58,7 @@
               h5.inline Click here for full boat specification and to contact seller
           - else
             .col-sm-2
-              = link_to 'Under Offer', 'javascript: void(0);', class: 'btn-flat btn-block btn-red'
+              .btn-flat.btn-block.btn-red.offer-status Under Offer
             .col-sm-8
               h5.inline This boat is Under Offer, so you are unable to Request Details on it.
           - if virtual_tour = @boat.media.virtual_tour.first

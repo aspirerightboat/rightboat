@@ -6,9 +6,9 @@ require 'xxhash'
 module Rightboat
   module Imports
     class SourceBoat
-      include ActionView::Helpers::TextHelper # for simple_format
       include ActiveModel::Validations
       include Utils
+      include Rightboat::BoatDescriptionUtils
 
       validates_presence_of :user, :source_id, :manufacturer, :model
 
@@ -154,7 +154,7 @@ module Rightboat
           value = send(attr_name)
           case attr_name
           when :description
-            target.description = cleanup_description(value)
+            target.description = try_cleanup_description(value)
           when :short_description
             target.short_description = cleanup_short_description(short_description || description || target.description)
           when :new_boat
@@ -487,27 +487,8 @@ module Rightboat
         end
       end
 
-      ALLOWED_TAGS = %w(p br i b strong h3 ul ol li)
-
-      def cleanup_description(str)
-        return '' if str.blank?
-        str = simple_format(str) if !str['<']
-
-        frag = Nokogiri::HTML.fragment(str)
-        frag.css('table').remove
-
-        frag.traverse do |node|
-          if node.elem? && node != frag
-            tag_name = node.name
-            if tag_name.in?(ALLOWED_TAGS)
-              node.each { |attr, _| node.delete(attr) }
-              node.remove if tag_name == 'p' && node.text.blank?
-            else
-              node.replace(node.children)
-            end
-          end
-        end
-        str = frag.to_html
+      def try_cleanup_description(str)
+        str = cleanup_description(str)
         do_import_substitutions!(str)
         str
       rescue LoadError => e
@@ -519,28 +500,6 @@ module Rightboat
         else
           raise e
         end
-      end
-
-      def cleanup_short_description(desc)
-        return '' if desc.blank?
-        desc = desc[0..480]
-        while true
-          if (pos = desc =~ /[^>.!]+\z/).nil?
-            break
-          end
-          prev = pos - 1
-          if desc[prev..pos] =~ /\.\d/
-            desc = desc[0..(prev - 1)]
-          else
-            desc = desc[0..prev]
-            break
-          end
-        end
-        desc = "#{desc}..." if desc.blank?
-        desc.gsub!(/\S+@\S(?:\.\S)+/, '') # remove email
-        desc.gsub!(/[\d\(\) -]{9,20}/, '') # remove phone
-        desc.gsub!(%r{(?:https?://|www\.)\S+}, '') # remove url
-        Nokogiri::HTML.fragment(desc).to_html # ensure html is valid
       end
 
     end

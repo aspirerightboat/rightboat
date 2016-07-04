@@ -2,12 +2,12 @@
   h3 Manufacturer & Model
   .form-group
     .row
-      .col-sm-6
+      .col-sm-6.col-xs-12
         = label_tag :manufacturer
         - manufacturer_name = (@boat.manufacturer.name if @boat.manufacturer.name != 'Unknown')
         = text_field_tag :manufacturer, manufacturer_name, id: 'manufacturer_picker', class: 'select-dark', \
                 data: {collection: 'manufacturers'}, placeholder: 'e.g. Beneteau'
-      .col-sm-6
+      .col-sm-6.col-xs-12
         = label_tag :model
         - model_name = (@boat.model.name if @boat.model.name != 'Unknown')
         = text_field_tag :model, model_name, id: 'model_picker', class: 'select-dark', \
@@ -15,26 +15,28 @@
   #makemodel_wait
     h3 Main Boat Information
     .form-group
-      .row
-        .col-sm-4
+      .row.label-150.input-200
+        .col-md-4.col-sm-6.col-xs-12
           .field-item
-            = f.label :boat_type, style: 'min-width: 145px'
+            = f.label :boat_type
             = f.select :boat_type_id, options_for_select(BoatType.where(name: %w(Power Sail Other)).pluck(:name, :id), @boat.boat_type_id), \
-                    {prompt: 'Please select...'}, placeholder: 'Please select...', id: 'boat_type', class: 'select-general select-dark inline-select'
+                    {prompt: 'Please select...'}, placeholder: 'Please select...', id: 'boat_type', \
+                    class: 'select-general select-dark inline-select', style: 'width: 200px'
           .field-item
-            = f.label :year_built, style: 'min-width: 145px'
+            = f.label :year_built
             - year = Date.today.year
             = f.select :year_built, options_for_select(year.downto(year - 40).to_a.reverse, @boat.year_built), \
-                              {prompt: 'Please select...'}, placeholder: 'Please select...', id: 'year_built', class: 'select-general select-dark inline-select'
+                    {prompt: 'Please select...'}, placeholder: 'Please select...', id: 'year_built', \
+                    class: 'select-general select-dark inline-select', style: 'width: 200px'
           .field-item
             = ajax_collection_field :engine_manufacturer, @boat.engine_manufacturer&.name, \
-                    placeholder: 'eg. Yanmar', data: {'onchange-clear' => '#engine_model'}, label_options: {style: 'min-width: 145px'}
+                    placeholder: 'eg. Yanmar', data: {'onchange-clear' => '#engine_model'}
           .field-item
             = ajax_collection_field :engine_model, @boat.engine_model&.name, \
-                    placeholder: 'eg. 40HP', data: {'include-param' => '#engine_manufacturer'}, label_options: {style: 'min-width: 145px'}
+                    placeholder: 'eg. 40HP', data: {'include-param' => '#engine_manufacturer'}
           .field-item
-            = spec_number_field :engine_count, nil, label_options: {style: 'min-width: 145px'}
-        .col-sm-4
+            = spec_number_field :engine_count
+        .col-md-4.col-sm-6.col-xs-12
           .field-item
             = ajax_collection_field :country, @boat.country&.name, placeholder: 'eg. United Kingdom', \
                     data: {collection: 'countries', create: false, 'onchange-clear' => '#location'}, label_options: {style: 'min-width: 100px'}
@@ -47,7 +49,7 @@
             = ajax_collection_field :fuel_type, @boat.fuel_type&.name, placeholder: 'eg. Diesel', label_options: {style: 'min-width: 100px'}
           .field-item
             = spec_ajax_collection_field :keel_type, placeholder: 'eg. Multi-Hull', label_options: {style: 'min-width: 100px'}
-        .col-sm-4
+        .col-md-4.col-sm-6.col-xs-12
           .field-item= m_ft_field 'boat[length_m]', @boat.length_m, content_tag(:abbr, 'LOA', title: 'Length OverAll'), 'length_m', label_style: 'min-width: 100px'
           .field-item= spec_m_ft_field 'beam_m', 'Beam', label_style: 'min-width: 100px'
           .field-item= spec_m_ft_field 'draft_max', 'Draft Max', label_style: 'min-width: 100px'
@@ -60,7 +62,7 @@
           = f.label :price_amount, 'Asking price'
           '
           = f.number_field :price, step: '100', class: 'form-control', id: 'price_amount', \
-                  style: 'width: 120px; display: inline-block; text-align: right;'
+                  style: 'width: 120px; display: inline-block; text-align: right; vertical-align: top;'
           '
           = currency_select 'price_currency', @boat.safe_currency, \
                   id: 'price_currency', class: ' select-currency select-dark inline-select'
@@ -74,12 +76,18 @@
       .row
         .col-xs-12.col-sm-6
           = f.label :short_description, 'Short description'
-          div <small><i>This text will appear on the advert details page, please give a short, accurate description of the boat. HTML&nbsp;tags will be stripped.</i></small> <span id="short_desc_counter" class="textarea-countdown">480</span>
+          div
+            |
+              <small><i>This text will appear on the advert details page, please give a short, accurate description of the boat.
+              Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
+            span#short_desc_counter.textarea-countdown 480
           = f.text_area :short_description, id: 'short_description', rows: 4, cols: 70, maxlength: 480, \
                   style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#short_desc_counter'}
         .col-xs-12.col-sm-6
           = f.label :boat_description, 'Description'
-          div <small><i>HTML tags will be stripped.</i></small> <span id="desc_counter" class="textarea-countdown">2000</span>
+          div
+            | <small><i>Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
+            span#desc_counter.textarea-countdown 2000
           = f.text_area :description, id: 'boat_description', rows: 5, cols: 70, maxlength: 2000, \
                   style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#desc_counter'}
     h3 Images
@@ -116,156 +124,151 @@
                       path(d="M32.6568542,29 L38.3106978,23.3461564 C39.8771021,21.7797521 39.8758057,19.2483887 38.3137085,17.6862915 C36.7547899,16.1273729 34.2176035,16.1255422 32.6538436,17.6893022 L27,23.3431458 L21.3461564,17.6893022 C19.7823965,16.1255422 17.2452101,16.1273729 15.6862915,17.6862915 C14.1241943,19.2483887 14.1228979,21.7797521 15.6893022,23.3461564 L21.3431458,29 L15.6893022,34.6538436 C14.1228979,36.2202479 14.1241943,38.7516113 15.6862915,40.3137085 C17.2452101,41.8726271 19.7823965,41.8744578 21.3461564,40.3106978 L27,34.6568542 L32.6538436,40.3106978 C34.2176035,41.8744578 36.7547899,41.8726271 38.3137085,40.3137085 C39.8758057,38.7516113 39.8771021,36.2202479 38.3106978,34.6538436 L32.6568542,29 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" sketch:type="MSShapeGroup")
           .images-dropzone.dropzone(data-upload-url="#{upload_image_broker_area_my_boat_path(@boat)}")
     h3 Additional Boat Information
+    .form-group
+      .row.label-150.input-200
+        .col-md-4.col-sm-6.col-xs-12.field-item
+          = f.label :name, 'Boat name'
+          = f.text_field :name, class: 'form-control', style: 'display: inline-block;'
+        .col-md-4.col-sm-6.col-xs-12.field-item
+          = label_tag :newness
+          = select_tag :newness, options_for_select([%w(New new), %w(Used used)], \
+                  ((@boat.new_boat? ? 'new' : 'used') if !@boat.new_boat.nil?)), prompt: 'Please select...', \
+                  class: 'select-general select-dark inline-select', style: 'width: 200px'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :passengers_count, 'Passenger capacity'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :designer, 'Passenger capacity'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :hull_color
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :hull_construction
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :hull_type
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :ballast_kgs, 'Ballast (kgs)'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :super_structure_colour, 'Super Structure Color'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :super_structure_construction, '<abbr title="Super Structure">SS</abbr> construction'.html_safe
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :deck_colour, 'Deck Color'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :deck_construction
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :cockpit_type
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :control_type
     b Dimensions
     .form-group
-      .row
-        .col-sm-4.field-item= spec_m_ft_field 'air_draft_m', 'Air Draught', label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_m_ft_field 'draft_m', 'Draft', label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_m_ft_field 'air_draft_m', 'Air Draft', label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line'), label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS, label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS, label_style: 'min-width: 150px'
+      .row.label-150
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_m_ft_field 'air_draft_m', 'Air Draught'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_m_ft_field 'draft_m', 'Draft'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_m_ft_field 'air_draft_m', 'Air Draft'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_m_ft_field 'lwl_m', content_tag(:abbr, 'LWL', title: 'Length at Water Line')
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_unit_field 'fresh_water_tanks', 'Freshwater capacity', Boat::VOLUME_UNITS
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_unit_field 'displacement_kgs', 'Displacement', Boat::WEIGHT_UNITS
     b Engines
     .form-group
-      .row
-        .col-sm-4.field-item= spec_number_field :engine_horse_power, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_number_field :max_speed_knots, 'Max speed (knots)', label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_number_field :gallons_per_hour, 'Fuel gallons per hour', label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_text_field :engine_location, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_text_field :gearbox, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_text_field :propeller_type, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_text_field :starting_type, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_number_field :engine_hours, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_number_field :cylinders_count, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS, label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS, label_style: 'min-width: 150px'
-        .col-sm-4.field-item= spec_number_field :litres_per_hour, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_number_field :range, nil, label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= ajax_collection_field :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor', label_options: {style: 'min-width: 150px'}
-        .col-sm-4.field-item= spec_checkable_field :cooling_system
+      .row.label-150.input-200
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :engine_horse_power
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :max_speed_knots, 'Max speed (knots)'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :gallons_per_hour, 'Fuel gallons per hour'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :engine_location
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :gearbox
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :propeller_type, nil, style: 'width: 200px; display: inline-block;'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field :starting_type
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :engine_hours
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :cylinders_count
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_unit_field 'cruising_speed', 'Cruising speed', Boat::SPEED_UNITS
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_unit_field 'engine_tankage', 'Tankage', Boat::VOLUME_UNITS
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :litres_per_hour
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :range
+        .col-md-4.col-sm-6.col-xs-12.field-item= ajax_collection_field :drive_type, @boat.drive_type&.name, placeholder: 'eg. Electro-motor'
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :cooling_system
     b Navigation Equipment
     .form-group
       .row
-        .col-sm-4.field-item= spec_checkable_field :navigation_lights
-        .col-sm-4.field-item= spec_checkable_field :depth_instrument
-        .col-sm-4.field-item= spec_checkable_field :autopilot
-        .col-sm-4.field-item= spec_checkable_field :vhf
-        .col-sm-4.field-item= spec_checkable_field :speed_instrument
-        .col-sm-4.field-item= spec_checkable_field :compass
-        .col-sm-4.field-item= spec_checkable_field :wind_instrument
-        .col-sm-4.field-item= spec_checkable_field :gps
-        .col-sm-4.field-item= spec_checkable_field :plotter
-        .col-sm-4.field-item= spec_checkable_field :radar
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :navigation_lights
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :depth_instrument
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :autopilot
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :vhf
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :speed_instrument
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :compass
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :wind_instrument
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :gps
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :plotter
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :radar
     b Electrical Equipment
     .form-group
       .row
-        .col-sm-4.field-item= spec_checkable_field :stern_thruster
-        .col-sm-4.field-item= spec_checkable_field :battery_charger
-        .col-sm-4.field-item= spec_checkable_field :inverter
-        .col-sm-4.field-item= spec_checkable_field :shore_power
-        .col-sm-4.field-item= spec_checkable_field :heating
-        .col-sm-4.field-item= spec_checkable_field :holding_tanks
-        .col-sm-4.field-item= spec_checkable_field :tv
-        .col-sm-4.field-item= spec_checkable_field :dvd_player
-        .col-sm-4.field-item= spec_checkable_field :bow_thruster
-        .col-sm-4.field-item= spec_checkable_field :battery
-        .col-sm-4.field-item= spec_checkable_field :generator
-        .col-sm-4.field-item= spec_checkable_field :bilge_pump
-        .col-sm-4.field-item= spec_checkable_field :air_conditioning
-        .col-sm-4.field-item= spec_checkable_field :cd_player
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :stern_thruster
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :battery_charger
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :inverter
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :shore_power
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :heating
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :holding_tanks
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :tv
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :dvd_player
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :bow_thruster
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :battery
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :generator
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :bilge_pump
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :air_conditioning
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :cd_player
     b General Equipment
     .form-group
       .row
-        .col-sm-4.field-item= spec_checkable_field :anchor
-        .col-sm-4.field-item= spec_checkable_field :spray_hood
-        .col-sm-4.field-item= spec_checkable_field :fire_extinguisher
-        .col-sm-4.field-item= spec_checkable_field :bimimi
-        .col-sm-4.field-item= spec_checkable_field :fenders
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :anchor
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :spray_hood
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :fire_extinguisher
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :bimimi
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :fenders
     b Galley
     .form-group
       .row
-        .col-sm-4.field-item= spec_checkable_field :oven
-        .col-sm-4.field-item= spec_checkable_field :fridge
-        .col-sm-4.field-item= spec_checkable_field :microwave
-        .col-sm-4.field-item= spec_checkable_field :freezer
-        .col-sm-4.field-item= spec_checkable_field :dishwasher
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :oven
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :fridge
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :microwave
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :freezer
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :dishwasher
     b Accommodation
     .form-group
-      .row
-        .col-sm-4.field-item= spec_number_field :crew_cabins_count
-        .col-sm-4.field-item= spec_number_field :crew_berths_count
-        .col-sm-4.field-item= spec_checkable_field :toilet
-        .col-sm-4.field-item= spec_checkable_field :bath
-        .col-sm-4.field-item= spec_checkable_field :shower
+      .row.label-150.input-200
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :crew_cabins_count
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_number_field :crew_berths_count
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :toilet
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :bath
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :shower
     b Rig/Sails
     .form-group
       .row
-        .col-sm-4.field-item= spec_checkable_field :genoa
-        .col-sm-4.field-item= spec_checkable_field :tri_sail
-        .col-sm-4.field-item= spec_checkable_field :mainsail
-        .col-sm-4.field-item= spec_checkable_field :spinnaker
-        .col-sm-4.field-item= spec_checkable_field :storm_jib
-        .col-sm-4.field-item= spec_checkable_field :winches_count
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :genoa
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :tri_sail
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :mainsail
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :spinnaker
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :storm_jib
+        .col-md-4.col-sm-6.col-xs-12.field-item= spec_checkable_field :winches_count
     - if @specs_hash.any?
       h3 Other Specifications
       .form-group
-        .row
+        .row.label-150.input-200
           - @specs_hash.each do |name, value|
-            .col-sm-4.field-item= spec_text_field name
+            .col-md-4.col-sm-6.col-xs-12.field-item= spec_text_field name
     h3 Business details
     .form-group
-      .row
-        .col-sm-4
-          = label_tag :office, 'Listing office'
-          = select_tag :office, options_for_select(current_broker.offices.pluck(:name, :id), @boat.office_id), \
-                  include_blank: 'Head Office'
-        .col-sm-4
-          = label_tag :newness
-          = select_tag :newness, options_for_select([%w(New new), %w(Used used)], \
-                  ((@boat.new_boat? ? 'new' : 'used') if !@boat.new_boat.nil?)), prompt: 'Please select...'
-        .col-sm-4
-          = f.label :name, 'Boat name'
-          = f.text_field :name
-        .col-sm-4
-          = f.label :owners_comment
-          = f.text_area :owners_comment, rows: 2, cols: 50
-        .col-sm-4
-          = label_tag :known_defects
-          = text_area_tag :known_defects, nil, rows: 2, cols: 50
-        .col-sm-4
-          = f.label :source_id, 'Internal Reference'
-          = f.text_field :source_id
-        .col-sm-4
-          = f.label :offer_status, 'Marketing status'
-          = f.select :offer_status, Boat::OFFER_STATUSES, class: 'select-general select-dark inline-select'
-        .col-sm-4
-          = spec_number_field :passengers_count, 'Passenger capacity'
-        .col-sm-4
-          = spec_text_field :designer, 'Passenger capacity'
-        .col-sm-4
-          = spec_text_field :hull_color
-        .col-sm-4
-          = spec_text_field :hull_construction
-        .col-sm-4
-          = spec_text_field :hull_type
-        .col-sm-4
-          = spec_text_field :ballast_kgs, 'Ballast (kgs)'
-        .col-sm-4
-          = spec_text_field :super_structure_colour, 'Super Structure Color'
-        .col-sm-4
-          = spec_text_field :super_structure_construction
-        .col-sm-4
-          = spec_text_field :deck_colour, 'Deck Color'
-        .col-sm-4
-          = spec_text_field :deck_construction
-        .col-sm-4
-          = spec_text_field :cockpit_type
-        .col-sm-4
-          = spec_text_field :control_type
-        .col-sm-4
-          = spec_textarea_field :disclaimer, nil, rows: 3, cols: 80, style: ''
-        .col-sm-4
-          = f.check_box :published
-          = f.label :published, 'Publish on Rightboat'
+      .row.label-150.input-200
+        .col-md-4.col-sm-6.col-xs-12
+          .field-item
+            = f.label :source_id, 'Internal Reference'
+            = f.text_field :source_id, class: 'form-control', style: 'display: inline-block;'
+          .field-item
+            = label_tag :office, 'Listing office'
+            = select_tag :office, options_for_select(current_broker.offices.pluck(:name, :id), @boat.office_id), \
+                    include_blank: 'Head Office', class: 'select-general select-dark inline-select', style: 'width: 200px'
+          .field-item
+            = f.label :offer_status, 'Marketing status'
+            = f.select :offer_status, Boat::OFFER_STATUSES.map { |s| [s.titleize, s] }, \
+                    {}, class: 'select-general select-dark inline-select', style: 'width: 200px'
+          .field-item
+            = f.check_box :published
+            = f.label :published, 'Publish on Rightboat'
+        .col-md-4.col-sm-6.col-xs-12
+          .field-item
+            = f.label :owners_comment
+            = f.text_area :owners_comment, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
+          .field-item
+            = label_tag :known_defects
+            = text_area_tag :known_defects, nil, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
+        .col-md-4.col-sm-6.col-xs-12
+          .field-item
+            = spec_textarea_field :disclaimer, nil, rows: 3, cols: 80, style: 'width: 100%'
   .nice-buttons.text-center
     button.nice-button(type="submit") Save

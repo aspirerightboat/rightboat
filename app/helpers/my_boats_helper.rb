@@ -25,7 +25,7 @@ module MyBoatsHelper
     res << label_tag(check_id, label, class: 'checkable-label', 'data-focus-field' => "##{spec_name}")
 
     value = @specs_hash.delete(spec_name)
-    opts = {id: spec_name, class: 'form-control checkable-field', style: 'width: 200px; display: inline-block;'}.merge!(options)
+    opts = {id: spec_name, class: 'form-control', style: 'width: 200px; display: inline-block;'}.merge!(options)
 
     res << text_field_tag("boat_specs[#{spec_name}]", value, opts)
   end
@@ -71,7 +71,7 @@ module MyBoatsHelper
                    when :number then :number_field_tag
                    when :textarea then :text_area_tag
                    end
-    opts = {id: spec_name, class: 'form-control', style: 'width: 120px; display: inline-block;'}.deep_merge!(options)
+    opts = {id: spec_name, class: 'form-control', style: 'display: inline-block;'}.deep_merge!(options)
     res << send(field_method, name, value, opts)
   end
 end

@@ -184,5 +184,21 @@ $ ->
 
     $('.checkable-label').each ->
       $el = $(@)
-      $field = $($(@).data('focus-field'))
-      $el.click -> $field.focus()
+      $field = $($el.data('focus-field'))
+      $check = $el.parent().find('input[type=checkbox]')
+      oldVal = $field.val()
+      $check.change ->
+        if @checked
+          if $field.val() == '' then $field.val(oldVal || 'Yes')
+          $field[0].setSelectionRange(0, $field.val().length)
+        else
+          if $field.val() != '' then oldVal = $field.val(); $field.val('')
+        $field.focus()
+
+      updCheck = ->
+        $check.prop('checked', $field.val() != '')
+      $field.keyup ->
+        updCheck()
+
+      updCheck()
+

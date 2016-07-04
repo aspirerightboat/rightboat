@@ -264,9 +264,9 @@
           .field-item
             = f.label :owners_comment
             = f.text_area :owners_comment, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
-          .field-item
-            = label_tag :known_defects
-            = text_area_tag :known_defects, nil, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
+          /.field-item
+          /  = label_tag :known_defects
+          /  = text_area_tag :known_defects, nil, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
         .col-md-4.col-sm-6.col-xs-12
           .field-item
             = spec_textarea_field :disclaimer, nil, rows: 3, cols: 80, style: 'width: 100%'

@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
   has_one :user_setting
   has_many :created_manufacturers, class_name: 'Manufacturer', foreign_key: 'created_by_user_id'
   has_many :created_models, class_name: 'Model', foreign_key: 'created_by_user_id'
+  has_many :broker_iframes
 
   mount_uploader :avatar, AvatarUploader
 

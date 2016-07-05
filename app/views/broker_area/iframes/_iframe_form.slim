@@ -1,0 +1,22 @@
+- url = @iframe.new_record? ? broker_area_iframes_path : broker_area_iframe_path(@iframe)
+= form_for @iframe, url: url, html: {class: 'iframe-form'} do |f|
+  h3 Filter boats to
+  .form-group
+    .row
+      .col-xs-12.field-item
+        = f.check_box :user_boats_only
+        = f.label :user_boats_only, 'My boats only'
+      .col-xs-12.field-item
+        = label_tag :manufacturers
+        = text_field_tag :manufacturers, @manufacturer_items.map { |i| i[:id] }.join('-'), \
+                id: 'manufacturers_picker', class: 'select-dark', \
+                data: {'initial-options' => @manufacturer_items&.to_json}, placeholder: 'Any'
+      .col-xs-12.field-item
+        = label_tag :countries
+        = select_tag :countries, options_for_select(Country.country_options, @country_ids), \
+                id: 'countries_picker', class: 'select-dark', \
+                prompt: 'Any', placeholder: 'Any', multiple: true
+
+
+  .nice-buttons.text-center
+    button.nice-button(type="submit")= @iframe.new_record? ? 'Create' : 'Save'

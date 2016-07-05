@@ -1,0 +1,32 @@
+= render layout: 'broker_area/common/broker_layout', locals: {tab: :iframes, sidebar: render('broker_area/common/iframes_sidebar')} do
+
+  - if @iframes.present?
+    h1
+      small.pull-right= link_to 'New iFrame', new_broker_area_iframe_path
+    table.rb-table
+      tr
+        th #
+        th Show
+        th Manufacturers
+        th Countries
+        th
+      - @iframes.each do |iframe|
+        tr
+          td #{iframe.id}
+          td #{iframe.user_boats_only? ? 'Only my boats' : 'All boats'}
+          td #{iframe.filter_manufacturer_names&.join(', ')}
+          td #{iframe.filter_country_names&.join(', ')}
+          td
+            div(style="whitespace: nowrap")
+              = link_to broker_area_iframe_path(iframe) do
+                i.glyphicon.glyphicon-eye-open
+              = link_to edit_broker_area_iframe_path(iframe), style: 'margin-left: 1ex' do
+                i.glyphicon.glyphicon-pencil
+              = link_to broker_area_iframe_path(iframe), method: 'delete', style: 'margin-left: 1ex', data: {confirm: 'Are you sure you want delete this iframe?'} do
+                i.glyphicon.glyphicon-remove
+    = paginate @iframes
+  - else
+    .no-items-notice
+      ' You have no iframes to manage so far.
+      = link_to 'Add one', new_broker_area_iframe_path
+      | .

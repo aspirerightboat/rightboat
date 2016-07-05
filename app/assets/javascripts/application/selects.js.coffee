@@ -40,7 +40,7 @@ $ ->
           data = {q: query}
           data.manufacturer_ids = $sel.closest('form').find('input.manufacturers-picker').val() if collection == 'models'
           $.getJSON url, data, (res) ->
-            callback(res[collection])
+            callback(res.items)
           .fail ->
             callback()
   $('.manufacturers-picker, .models-picker').makemodelPickers()

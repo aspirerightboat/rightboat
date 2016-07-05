@@ -170,6 +170,7 @@ Rails.application.routes.draw do
         get :find_template
       end
     end
+    resources :iframes
   end
 
   namespace :member, path: 'my-rightboat' do

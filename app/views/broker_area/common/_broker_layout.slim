@@ -17,6 +17,7 @@
         li= link_to_unless tab  == :my_account, 'My Account', details_broker_area_path
         li= link_to_unless tab  == :boats, 'Boats', boats_overview_broker_area_path
         li= link_to_unless tab  == :leads, 'Leads', my_leads_broker_area_path
+        li= link_to_unless tab  == :iframes, 'IFrames', broker_area_iframes_path
   .row
     - if sidebar.present?
       #sidebar.col-xs-12.col-sm-3.sidebar-offcanvas(role="navigation")

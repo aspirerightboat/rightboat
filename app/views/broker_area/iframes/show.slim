@@ -1,0 +1,15 @@
+= render layout: 'broker_area/common/broker_layout', locals: {tab: :iframes, sidebar: render('broker_area/common/iframes_sidebar')} do
+  .h1-row
+    h1 View IFrame
+    small= link_to 'Edit', edit_broker_area_iframe_path(@iframe)
+    .row.boat-description
+      .boat-specs.col-xs-12
+        dl.dl-horizontal
+          dt Show only
+          dd= @iframe.user_boats_only? ? 'My boats' : 'All boats'
+        dl.dl-horizontal
+          dt Manufacturers
+          dd= @iframe.filter_manufacturer_names&.join(', ') || 'Any'
+        dl.dl-horizontal
+          dt Countries
+          dd= @iframe.filter_country_names&.join(', ') || 'Any'

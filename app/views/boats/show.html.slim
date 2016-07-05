@@ -15,7 +15,7 @@
   - if session[:boats_count] && @back_url
     .navbar-h Boats <strong>For Sale</strong>
     h3
-      | Search Results:&nbsp;
+      ' Search Results:
       strong= implicit_boats_count(session[:boats_count])
       span.hidden-sm boats for sale
   - else

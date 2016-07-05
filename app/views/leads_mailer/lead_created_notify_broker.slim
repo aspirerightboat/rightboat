@@ -21,7 +21,7 @@ ul
     li <b>Year:</b> #{@boat.year_built}
   - if @broker.loa_requested?
     li
-      <b>LOA:</b>&nbsp;
+      ' <b>LOA:</b>
       - if @boat.length_m
         = "#{@boat.length_m}m"
   li <b>Details page:</b> <a href="#{boat_url}">#{boat_url}</a>

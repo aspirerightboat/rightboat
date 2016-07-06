@@ -8,7 +8,8 @@ class ApplicationController < ActionController::Base
     case exception
     when ActiveRecord::RecordNotFound,
         ActionController::RoutingError,
-        ActionController::UnknownFormat
+        ActionController::UnknownFormat,
+        ActionController::InvalidAuthenticityToken
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     when SolrIsDownError
       render file: "#{Rails.root}/public/503.html", layout: false, status: :service_unavailable

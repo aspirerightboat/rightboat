@@ -50,8 +50,8 @@ module Rightboat
 
         if manufacturer_model
           any_of do
-            with :manufacturer, manufacturer_model
-            with :manufacturer_model, manufacturer_model
+            with :manufacturer, manufacturer_model.downcase
+            with :manufacturer_model, manufacturer_model.downcase
           end
         end
 

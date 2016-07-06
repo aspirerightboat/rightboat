@@ -13,7 +13,7 @@
         dl.dl-horizontal
           dt Boat Images
           dd
-            - @boat.boat_images.each do |bi|
+            - @boat.boat_images.not_deleted.each do |bi|
               = image_tag bi.file_url(:mini), alt: bi.caption, size: '127x85'
         dl.dl-horizontal
           dt Boat Ref

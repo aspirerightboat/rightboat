@@ -55,7 +55,10 @@
             - else
               | #{boat.price&.to_i}&nbsp;<abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr> #{boat.vat_rate&.name}
           td #{boat.offer_status.humanize}
-          td #{boat.published ? 'Published' : 'Not Published'} (#{boat.status.capitalize})
+          td
+            = boat.published? ? 'Published' : 'Not Published'
+            - if boat.published? && boat.status == 'inactive'
+              |  (Inactive reason: #{boat.inactive_reason})
           td #{boat.office&.name}
           td #{boat.country&.name} #{boat.location}
           td

@@ -156,23 +156,29 @@ $ ->
 
     $('.images-dropzone').each ->
       $dropzone = $(@)
-      $dropzone.dropzone
+      dz = new Dropzone @, {
         url: $dropzone.data('upload-url'),
-        maxFilesize: 5, # megabytes
         addRemoveLinks: true,
-        removedfile: (a, b, c) -> console.log('removedfile', a, b, c)
-
-      if window.boatImages.length
-        $dropzone.addClass('dz-started')
-        t = $('#dropzone_template').html()
-        $.each window.boatImages, ->
-          cap = @caption || ''
-          $(t).appendTo($dropzone)
-            .find('[data-dz-thumbnail]').attr('alt', cap).attr('src', @url).end()
-            .find('[data-dz-size]').css(visibility: 'hidden').end()
-            .find('[data-dz-name]').each(-> if cap then $(@).text(cap) else $(@).css(visibility: 'hidden')).end()
-            .append($('<a/>').addClass('dz-remove').attr('href', 'javascript:undefined;').text('Remove file'))
-            .addClass('dz-complete')
+        maxFilesize: 10, # in Mb
+        removedfile: ((file) ->
+          if (id = $(file.previewElement).data('boat-image-id'))
+            $.post $dropzone.data('remove-url'), {image: id}, ->
+              $(file.previewElement).hide(200)
+        ),
+        init: (->
+          @.on 'success', (file, responseText) ->
+            $(file.previewElement).data('boat-image-id', responseText.id)
+        )
+      }
+      $.each $('#boat_images_infos').data('data'), ->
+        # see: https://github.com/enyo/dropzone/wiki/FAQ#how-to-show-files-already-stored-on-server
+        file = {name: @name, size: 0}
+        dz.emit('addedfile', file)
+        dz.emit('thumbnail', file, @url)
+        dz.emit('complete', file)
+        $(file.previewElement).data('boat-image-id', @id)
+        $('.dz-size', $dropzone).css(visibility: 'hidden')
+        dz.files.push(file)
 
     $('[data-textarea-counter]').each ->
       $area = $(@)

@@ -224,6 +224,15 @@ class Boat < ActiveRecord::Base
     offer_status == 'available'
   end
 
+  def inactive_reason
+    return 'Deleted' if deleted?
+    return 'Not Published' if !published?
+    return 'Invalid Manufacturer' if !manufacturer
+    return 'Invalid Model' if !model
+    return 'Invalid Price' if !valid_price?
+    'Bad Manufacturer' if !manufacturer.regular?
+  end
+
   private
 
   def valid_manufacturer_model

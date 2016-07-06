@@ -1,11 +1,10 @@
 module BrokerArea
   class MyBoatsController < CommonController
     protect_from_forgery except: :upload_image
-    include ActionView::Helpers::SanitizeHelper
     include Rightboat::BoatDescriptionUtils
 
     def index
-      @boats = current_broker.boats.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
+      @boats = current_broker.boats.not_deleted.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
       @boats = @boats.where(id: Boat.id_from_ref_no(params[:ref_no])) if params[:ref_no].present?
       @boats = @boats.where(source_id: params[:source_id]) if params[:source_id].present?
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
@@ -31,18 +30,18 @@ module BrokerArea
     end
 
     def edit
-      @boat = Boat.find_by(slug: params[:id])
+      load_boat
       @boat.price = @boat.price.to_i if @boat.price == @boat.price.to_i
       @specs_hash = @boat.boat_specifications.specs_hash
     end
 
     def show
-      @boat = Boat.find_by(slug: params[:id])
+      load_boat
       @boat_spec_by_name = @boat.boat_specifications.includes(:specification).index_by { |bs| bs.specification.name }
     end
 
     def update
-      @boat = Boat.find_by(slug: params[:id])
+      load_boat
       assign_boat_data
 
       if @boat.save
@@ -57,8 +56,9 @@ module BrokerArea
     end
 
     def destroy
+      load_boat
       @boat.destroy
-      redirect_to member_boats_path, notice: 'Boat deleted successfully.'
+      redirect_to broker_area_my_boats_path, notice: 'Boat deleted successfully.'
     end
 
     def upload_image
@@ -151,6 +151,10 @@ module BrokerArea
       boat_specs.each do |bs|
         bs.destroy! if !bs.specification.name.in?(params_spec_names)
       end
+    end
+
+    def load_boat
+      @boat = Boat.find_by(slug: params[:id])
     end
 
   end

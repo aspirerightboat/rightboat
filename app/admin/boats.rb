@@ -171,7 +171,7 @@ ActiveAdmin.register Boat do
 
     def destroy
       resource.update_column(:deleted_by_user_id, current_user.id)
-      destroy! { admin_boats_path }
+      destroy! { request.referer || {action: :index} }
     end
   end
 

@@ -10,10 +10,10 @@ class Boat < ActiveRecord::Base
 
   searchable do
     text :ref_no,               boost: 5
-    text :name,                 boost: 4
-    text :manufacturer_model,   boost: 3
-    text :manufacturer,         boost: 3
+    text :manufacturer,         boost: 4
+    text :manufacturer_model,   boost: 3.5
     text :model,                boost: 3
+    text :name,                 boost: 2.5
     text :country,              boost: 2
     text :fuel_type,            boost: 2
     text :boat_type,            boost: 2
@@ -87,6 +87,8 @@ class Boat < ActiveRecord::Base
   belongs_to :country
   has_many :old_slugs, as: :sluggable, dependent: :delete_all
   has_many :class_groups, class_name: 'BoatClassGroup'
+  has_many :media, class_name: 'BoatMedium'
+  belongs_to :deleted_by_user, class_name: 'User'
 
   validates_presence_of :manufacturer, :model
   validate :valid_manufacturer_model

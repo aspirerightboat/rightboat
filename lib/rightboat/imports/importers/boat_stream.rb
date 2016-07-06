@@ -52,6 +52,7 @@ module Rightboat
             if el == 'VehicleRemarketing' && @boat
               @boat.engine_count = @engines_count if @engines_count > 0
               @boat.location = @location.values.reject(&:blank?).join(', ') if @location
+              @boat.media = @media if @media
               @importer.enqueue_job(@boat)
               @boat = nil
             end
@@ -122,6 +123,8 @@ module Rightboat
                           @location = {}
                           @class_group = {}
                           @boat.class_groups = []
+                          @media = []
+                          @medium = {}
                         else
                           @boat = nil
                         end
@@ -313,8 +316,17 @@ module Rightboat
                     when 'AdditionalMedia'
                       case @tree[5]
                       when 'MediaSourceURI' # http://marinabenalnautic.com/barcos-ocasion/fountaine-pajot-eleuthera-60
+                        @medium = {}
+                        @medium[:source_url] = chars.gsub('&amp;', '&')
+                      when 'MediaAttachmentTitle' # Virtual Tour
+                        @medium[:attachment_title] = chars
+                      when 'MediaAlternateText'
+                        @medium[:alternate_text] = chars
                       when 'MediaTypeString' # External Link | Embedded Video | Video Brochure
+                        @medium[:type_string] = chars
                       when 'MediaLastModifiedDateTime' # 2013-05-17T08:52:57-08:00
+                        @medium[:last_modified] = chars
+                        @media << @medium
                       end
                     when 'SoldDate' # eg. 2015-12-07
                     when 'NotForSaleInCountry'

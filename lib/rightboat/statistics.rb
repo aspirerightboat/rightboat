@@ -8,7 +8,7 @@ module Rightboat
     def self.monthly_boat_stats(boat)
       # registering the hit is done in BoatIntelligence (as it's just more there)
       views = get_monthly_boat_views(boat)
-      contacts = get_monthly_seller_contact_views(boat)
+      #contacts = get_monthly_seller_contact_views(boat)
       questions = get_monthly_questions(boat)
 
       ret = {}
@@ -18,7 +18,7 @@ module Rightboat
         month_name = months_ago.strftime("%b %y")
         stat = {views: 0, contacts: 0, questions: 0, label: month_name}
         stat[:views] = views[month_key] if views[month_key]
-        stat[:contacts] = contacts[month_key] if contacts[month_key]
+        #stat[:contacts] = contacts[month_key] if contacts[month_key]
         stat[:questions] = questions[month_key] if questions[month_key]
 
         ret[month_key] = stat
@@ -100,17 +100,11 @@ module Rightboat
     end
 
     def self.get_monthly_boat_views(boat)
-      boat_id = boat.respond_to?(:id) ? boat.id : boat.to_i
-      db = mongodb
-
-      from_date = Date.today - 365
-
-      pipes = [
-        {"$match" => {boat_id: boat_id, viewed_at: {"$gte" => from_date.to_time} }},
-        {"$group" => {_id: "$month", views: {"$sum" => "$count"}}},
-        {"$sort" => {_id: -1}}
-      ]
-      db['boat_hits'].find.aggregate(pipes).inject({}) {|h, x| h[x['_id']] = x['views'].to_i; h}
+      views = {}
+      UserActivity.where(boat_id: boat.id, kind: :boat_view).group("YEAR(created_at), MONTH(created_at)").select("count(boat_id) as views, concat(YEAR(created_at), '-', LPAD(MONTH(created_at), 2, '0')) as viewed_at").each do |row|
+        views[row.viewed_at] = row.views
+      end
+      views
     end
 
     def self.daily_banner_views(banner)

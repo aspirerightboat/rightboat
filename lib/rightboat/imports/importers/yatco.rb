@@ -96,7 +96,7 @@ module Rightboat
                 when key =~ /^sales_p(?:er|re)son_city$/ then boat.office[:address_attributes][:town_city] = val # "preson" misspelled in xml
                 when key =~ /^sales_p(?:er|re)son_state$/ then boat.office[:address_attributes][:state] = val # "preson" misspelled in xml
                 when key =~ /^sales_p(?:er|re)son_postal_code$/ then boat.office[:address_attributes][:zip] = val # "preson" misspelled in xml
-                when key == 'sales_person_id'
+                when key == 'sales_person_id' then boat.office[:source_id] = val
                 when val.length < 256 then boat.set_missing_attr(key, val) # Ignore other long values
                 end
               end

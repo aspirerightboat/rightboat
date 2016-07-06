@@ -163,7 +163,7 @@
   }
   .tax-status { font-size: 14px; margin-left: 1ex; }
   .boat-detail-item {
-    &:not(:last-child) {margin-right: 10px;}
+    &:not(:last-child):not(.pull-right) { margin-right: 10px; }
   }
   &, & .caption {
     .transition(all .25s ease-out);
@@ -421,10 +421,10 @@ a.pdf-link {
       background-color: @rb-color-primary;
       color: white;
       margin-bottom: 30px;
-      padding: 6px;
+      padding: 6px 0;
 
-      .inline {
-        margin-left: 15px;
+      h5.inline {
+        line-height: 28px;
       }
     }
 
@@ -604,6 +604,10 @@ a.pdf-link {
 #select-map {
   width: 100%;
   height: 200px;
+}
+
+.offer-status {
+  cursor: default;
 }
 
 @media(max-width: @screen-xs-max) {

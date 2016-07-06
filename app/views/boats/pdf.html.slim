@@ -1,6 +1,6 @@
 - broker = @boat.user
 - broker_info = broker.broker_info
-- office = @boat.office
+- dist = broker_info.lead_email_distribution
 
 .broker-info-block
   - if broker_info.logo? || broker.avatar?
@@ -8,24 +8,37 @@
       = wicked_pdf_image_tag broker_info.logo? ? broker_info.logo_url : broker.avatar_url
   .broker-info
     div <strong>#{broker.name}</strong>
-    = render partial: 'shared/address', locals: {address: office.try(:address) || broker.address}
-    - if office.try(:daytime_phone).present?
-      div <b>Tel:</b> #{office.daytime_phone}
-    - elsif broker.phone.present?
-      div <b>Tel:</b> #{broker.phone}
-    - if office.try(:mobile).present?
-      div <b>Mobile:</b> #{office.mobile}
-    - elsif broker.mobile.present?
-      div <b>Mobile:</b> #{broker.mobile}
-    - if office.try(:fax).present?
-      div <b>Fax:</b> #{office.fax}
-    - elsif broker.fax.present?
-      div <b>Fax:</b> #{broker.fax}
-    div <b>Email:</b> #{mail_to office.try(:email) || broker.email}
-    - if office.try(:website).present?
-      div #{link_to office.website, office.website}
-    - elsif broker.broker_info && broker.broker_info.website.present?
-      div #{link_to broker.broker_info.website, broker.broker_info.website}
+    - if dist && dist == 'user_only'
+      = render partial: 'shared/address', locals: { address: broker.address }
+      - if broker.phone.present?
+        div <b>Tel:</b> #{broker.phone}
+      - if broker.mobile.present?
+        div <b>Mobile:</b> #{broker.mobile}
+      - if broker.fax.present?
+        div <b>Fax:</b> #{broker.fax}
+      div <b>Email:</b> #{mail_to broker.email}
+      - if broker.broker_info && broker.broker_info.website.present?
+        div #{link_to broker.broker_info.website, broker.broker_info.website}
+    - else
+      - office = @boat.office
+      = render partial: 'shared/address', locals: { address: office.try(:address) || broker.address }
+      - if office.try(:daytime_phone).present?
+        div <b>Tel:</b> #{office.daytime_phone}
+      - elsif broker.phone.present?
+        div <b>Tel:</b> #{broker.phone}
+      - if office.try(:mobile).present?
+        div <b>Mobile:</b> #{office.mobile}
+      - elsif broker.mobile.present?
+        div <b>Mobile:</b> #{broker.mobile}
+      - if office.try(:fax).present?
+        div <b>Fax:</b> #{office.fax}
+      - elsif broker.fax.present?
+        div <b>Fax:</b> #{broker.fax}
+      div <b>Email:</b> #{mail_to office.try(:email) || broker.email}
+      - if office.try(:website).present?
+        div #{link_to office.website, office.website}
+      - elsif broker.broker_info && broker.broker_info.website.present?
+        div #{link_to broker.broker_info.website, broker.broker_info.website}
 
 - if @boat.primary_image
   .boat-main-image

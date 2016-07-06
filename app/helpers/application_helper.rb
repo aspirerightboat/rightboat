@@ -47,7 +47,7 @@ module ApplicationHelper
     end
   end
 
-  def currency_tag(name, selected, options = {})
+  def currency_select(name, selected, options = {})
     selected = selected.is_a?(Currency) ? selected.name : selected
     select_tag name, options_for_select(Currency.pluck(:symbol, :name), selected), options
   end
@@ -105,10 +105,10 @@ module ApplicationHelper
 
     return media_url # unless current_user
 
-    if session[:boat_type].present?
-      media_url = HomeSetting.find_by(boat_type: session[:boat_type])&.attached_media || media_url
-    end
-
-    asset_url(media_url)
+    # if session[:boat_type].present?
+    #   media_url = HomeSetting.find_by(boat_type: session[:boat_type])&.attached_media || media_url
+    # end
+    #
+    # asset_url(media_url)
   end
 end

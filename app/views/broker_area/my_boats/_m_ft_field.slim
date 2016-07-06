@@ -1,9 +1,8 @@
-.form-group.m-ft-field
-  label
-    = label_text
-    input.m-input(type="number" step="0.01" name="#{name}" value="#{value}")
-  | m <=>
-  input.ft-input(type="number" step="1")
-  | ft
-  input.in-input(type="number" step="1")
-  | in
+.m-ft-field
+  label(style=options.delete(:label_style))= label_text
+  input.m-input.form-control(type="number" step="0.01" name="#{name}" value="#{value}" id="#{id}")
+  '  m ⇄
+  input.ft-input.form-control(type="number" step="1")
+  '  ft
+  input.in-input.form-control(type="number" step="1")
+  |  in

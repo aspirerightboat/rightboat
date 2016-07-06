@@ -61,6 +61,14 @@ Rails.application.routes.draw do
   resource :search, controller: :search, only: [], constraints: {format: :json} do
     get :manufacturers
     get :models
+    get :engine_manufacturers
+    get :engine_models
+    get :hull_materials
+    get :keel_types
+    get :fuel_types
+    get :countries
+    get :locations
+    get :drive_types
   end
 
   # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }
@@ -154,7 +162,15 @@ Rails.application.routes.draw do
     get :account_history
   end
   namespace :broker_area, path: 'broker-area' do
-    resources :my_boats, path: 'my-boats', only: [:index, :new]
+    resources :my_boats, path: 'my-boats' do
+      member do
+        post :upload_image
+        post :remove_image
+      end
+      collection do
+        get :find_template
+      end
+    end
   end
 
   namespace :member, path: 'my-rightboat' do

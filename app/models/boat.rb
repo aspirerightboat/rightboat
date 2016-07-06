@@ -4,6 +4,7 @@ class Boat < ActiveRecord::Base
   OFFER_STATUSES = %w(available under_offer sold)
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)
+  SPEED_UNITS = %w(knots mph rpm)
 
   attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy, :custom_model
 
@@ -225,17 +226,26 @@ class Boat < ActiveRecord::Base
     offer_status == 'available'
   end
 
+  def inactive_reason
+    return 'Deleted' if deleted?
+    return 'Not Published' if !published?
+    return 'Invalid Manufacturer' if !manufacturer
+    return 'Invalid Model' if !model
+    return 'Invalid Price' if !valid_price?
+    'Bad Manufacturer' if !manufacturer.regular?
+  end
+
   private
 
   def valid_manufacturer_model
     if (model_id_changed? || manufacturer_id_changed?) && model && model.manufacturer != manufacturer
-      errors.add :model_id, "[#{model}] should belongs to manufacturer[#{manufacturer}]"
+      errors.add :model_id, "model [#{model}] should belong to manufacturer [#{manufacturer}]"
     end
   end
 
   def valid_price
-    unless valid_price?
-      self.errors.add :price, 'can\'t be blank'
+    if published? && !valid_price?
+      self.errors.add :price, "can't be blank"
     end
   end
 
@@ -308,7 +318,7 @@ class Boat < ActiveRecord::Base
   end
 
   def change_status
-    if !deleted? && manufacturer && model && valid_price? && manufacturer.regular?
+    if !deleted? && published? && manufacturer && model && valid_price? && manufacturer.regular?
       self.status = 'active'
     else
       self.status = 'inactive'

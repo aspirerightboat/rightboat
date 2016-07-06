@@ -46,7 +46,7 @@
             = ff.text_field :county, placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
             = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
           .form-group
-            = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), { prompt: 'Country...' }, class: 'country-select', style: 'display: block;'
+            = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), { prompt: 'Country...' }, class: 'country-select select-dark', style: 'display: block;'
         = f.fields_for :broker_info do |ff|
           .form-group
             = ff.label :logo, 'Logo <b>?</b>'.html_safe, title: 'make sure you upload your logo 400x200px - this appears on each boat specification that is required. The logo ideally should be on a transparent or white background.'
@@ -55,9 +55,10 @@
     .row
       .col-xs-12#offices_table_block
         h2
-          | Offices
-          small
-            | (These offices are all auto updated/created from the data in the feed. However, you still have the ability to edit these or create new ones, as you see fit.)
+          |
+            Offices
+            <small>(These offices are all auto updated/created from the data in the feed.
+            However, you still have the ability to edit these or create new ones, as you see fit.)</small>
         table.rb-table#offices_table
           tr
             th Name
@@ -98,16 +99,16 @@
               = label_tag :daytime_phone, 'Daytime Phone'
               .rb-control-group
                 .rb-control-group-addon
-                  = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country Code', \
-                               class: 'select-general', style: 'margin-right: 10px'
+                  = select_tag :daytime_phone_code, options_for_country_code, prompt: 'Country Code', placeholder: 'Country Code', \
+                               class: 'select-azure country-code-select', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :daytime_phone, '', class: 'form-control'
             .col-sm-6.col-xs-12
               = label_tag :evening_phone, 'Evening Phone'
               .rb-control-group
                 .rb-control-group-addon
-                  = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country Code', \
-                               class: 'select-general', style: 'margin-right: 10px'
+                  = select_tag :evening_phone_code, options_for_country_code, prompt: 'Country Code', placeholder: 'Country Code', \
+                               class: 'select-azure country-code-select', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :evening_phone, '', class: 'form-control'
           .row
@@ -115,8 +116,8 @@
               = label_tag :mobile, 'Mobile'
               .rb-control-group
                 .rb-control-group-addon
-                  = select_tag :mobile_code, options_for_country_code, prompt: 'Country Code', \
-                               class: 'select-general', style: 'margin-right: 10px'
+                  = select_tag :mobile_code, options_for_country_code, prompt: 'Country Code', placeholder: 'Country Code', \
+                               class: 'select-azure country-code-select', style: 'margin-right: 10px'
                 .rb-control
                   = phone_field_tag :mobile, '', class: 'form-control'
             .col-sm-6.col-xs-12

@@ -290,9 +290,9 @@ module Rightboat
 
         def read_new_or_used(str)
           return if str.blank?
-          case
-          when str =~ /new|N/i then 'new'
-          when str =~ /used|U/i then 'used'
+          case str
+          when /new|n/i then true
+          when /used|u/i then false
           else log_warning "Unexpected new_or_used: #{str}"; nil
           end
         end

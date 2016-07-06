@@ -20,6 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  helpers:
+    select:
+      prompt: "Please select..."
   poa: "P.O.A."
   search_plural:
     one: "Search"

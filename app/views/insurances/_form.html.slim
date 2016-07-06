@@ -43,7 +43,7 @@
                 .rb-control
                   = f.text_field :total_value, class: 'form-control', 'data-validetta' => 'number'
                 .rb-control-group-addon
-                  = currency_tag 'insurance[currency]', current_currency, class: 'select-azure select-currency'
+                  = currency_select 'insurance[currency]', current_currency, class: 'select-azure select-currency'
           .form-group.row
             .col-md-5.col-xs-12 8. Years no Claims
             .col-md-5.col-xs-12

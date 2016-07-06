@@ -72,7 +72,7 @@ module Rightboat
               @x.advert_features {
                 @x.boat_type boat.boat_type.try(:name_stripped)
                 @x.boat_category boat.category.try(:name)
-                @x.new_or_used (boat.new_boat? ? 'new' : 'used').camelize
+                @x.new_or_used case boat.new_boat when true then 'New' when false then 'Used' end
                 @x.vessel_lying boat.location, country: boat.country.try(:iso)
                 @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency.try(:name), vat_included: boat.vat_rate.try(:tax_paid?)
                 @x.marketing_descs {

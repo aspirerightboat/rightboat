@@ -1,3 +1,9 @@
+- content_for :head_styles do
+  = stylesheet_link_tag 'broker', media: 'all'
+
+- content_for :head_scripts do
+  = javascript_include_tag 'broker'
+
 - content_for :header_text do
   .navbar-h Broker Area
 

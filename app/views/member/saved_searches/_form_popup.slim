@@ -54,7 +54,7 @@
                   .row
                     .col-xs-5.col-sm-4
                       = f.label :price
-                      = currency_tag 'saved_search[currency]', @saved_search.currency, class: 'select-azure select-currency'
+                      = currency_select 'saved_search[currency]', @saved_search.currency, class: 'select-azure select-currency'
                     .col-xs-7.col-sm-8
                       .row
                         .col-xs-6

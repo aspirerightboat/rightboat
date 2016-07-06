@@ -55,7 +55,7 @@
               .rb-control
                 = label_tag :price
               .rb-control-group-addon
-                = currency_tag :currency, current_currency, class: 'select-azure slider-currency-select'
+                = currency_select :currency, current_currency, class: 'select-azure slider-currency-select'
           .col-xs-7.col-sm-8
             = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
         .range-slider-wrapper.row.length-input-group

@@ -6,6 +6,7 @@ class Model < ActiveRecord::Base
   has_many :buyer_guides
   has_many :finances
   has_many :insurances
+  belongs_to :created_by_user, class_name: 'User'
 
   validates_presence_of :manufacturer, :name
   validates_uniqueness_of :name, scope: :manufacturer_id

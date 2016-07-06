@@ -1,0 +1,69 @@
+= render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
+  .h1-row
+    h1 View Boat
+    small= link_to 'Edit boat', edit_broker_area_my_boat_path(@boat)
+    .row.boat-description
+      .boat-specs.col-xs-12
+        dl.dl-horizontal
+          dt Active?
+          dd= @boat.active? ? 'Active' : 'Inactive'
+        dl.dl-horizontal
+          dt Published?
+          dd= @boat.published? ? 'Published' : 'Not Published'
+        dl.dl-horizontal
+          dt Boat Images
+          dd
+            - @boat.boat_images.not_deleted.each do |bi|
+              = image_tag bi.file_url(:mini), alt: bi.caption, size: '127x85'
+        dl.dl-horizontal
+          dt Boat Ref
+          dd= @boat.ref_no
+        dl.dl-horizontal
+          dt Manufacturer/Model
+          dd #{@boat.manufacturer.name} #{@boat.model}
+        dl.dl-horizontal
+          dt Boat Type
+          dd #{@boat.boat_type&.name}
+        dl.dl-horizontal
+          dt Asking price
+          dd
+            - if @boat.poa?
+              | POA
+            - else
+              | #{@boat.price} #{@boat.currency&.symbol} #{@boat.vat_rate&.name}
+        dl.dl-horizontal
+          dt New/Used
+          dd= case @boat.new_boat when true then 'New' when false then 'Used' end
+        dl.dl-horizontal
+          dt LOA
+          dd
+            - if @boat.length_m.present?
+              | #{@boat.length_m} m
+        dl.dl-horizontal
+          dt Year Built
+          dd #{@boat.year_built}
+        dl.dl-horizontal
+          dt Engine Make
+          dd #{@boat.engine_manufacturer&.name}
+        dl.dl-horizontal
+          dt Engine Model
+          dd #{@boat.engine_model&.name}
+        dl.dl-horizontal
+          dt Fuel Type
+          dd #{@boat.fuel_type&.name}
+        dl.dl-horizontal
+          dt Country
+          dd #{@boat.country&.name}
+        dl.dl-horizontal
+          dt Location
+          dd #{@boat.location}
+        dl.dl-horizontal
+          dt Description
+          dd #{simple_format @boat.description}
+        - @boat_spec_by_name.each do |spec_name, boat_spec|
+          dl.dl-horizontal
+            dt= boat_spec.specification.display_name
+            dd
+              = boat_spec.value
+              - if spec_name.end_with?('_m')
+                |  m

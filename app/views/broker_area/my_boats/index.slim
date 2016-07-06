@@ -1,13 +1,77 @@
+- content_for :sidebar do
+  = form_tag broker_area_my_boats_path, method: :get, style: 'margin-top: 3em' do
+    h5 RB Ref
+    = text_field_tag :ref_no, params[:ref_no], class: 'form-control'
+    h5 Source ID
+    = text_field_tag :source_id, params[:source_id], class: 'form-control'
+    h5 Office
+    = select_tag :office_id, options_from_collection_for_select(@offices, :id, :name, params[:office_id]), \
+                prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    h5 Manufacturer name contains
+    = text_field_tag :manufacturer_q, params[:manufacturer_q], class: 'form-control'
+    h5 Model name contains
+    = text_field_tag :model_q, params[:model_q], class: 'form-control'
+    h5 Marketing Status
+    = select_tag :offer_status, options_for_select(Boat::OFFER_STATUSES.map { |s| [s.humanize, s] }, params[:offer_status]), \
+                prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    h5 Published to Rightboat
+    = select_tag :published, options_for_select([%w(Published 1), %w(Unpublished 0)], params[:offer_status]), \
+                prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    .nice-buttons.text-center(style="margin-top: 1em")
+      button.nice-button(type="submit") Filter
+      button.transparent-button.clear-filters(type="button") Clear Filters
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   h1
     | My Boats
     - if !Rails.env.production?
       small.pull-right= link_to 'New Boat', new_broker_area_my_boat_path
 
-  - if @boats.any?
-    #boats-list.row(data-layout-mode="#{current_layout_mode}")
-      = render partial: 'boats/boat', collection: @boats
+  - if @boats.present?
+    table.rb-table
+      tr
+        th Ref
+        th Source ID
+        th Image
+        th Name
+        th Makemodel
+        th Price
+        th Marketing Status
+        th Righboat Published
+        th Office
+        th Location
+        th
+      - @boats.each do |boat|
+        tr
+          td #{boat.ref_no}
+          td #{boat.source_id}
+          td
+            - if boat.primary_image
+              | #{image_tag(boat.primary_image.file_url(:mini), size: '64x43', alt: '')}
+          td #{boat.name}
+          td #{boat.manufacturer.name} #{boat.model.name}
+          td
+            - if boat.poa?
+              abbr(title="Price on Application") POA
+            - else
+              | #{boat.price&.to_i}&nbsp;<abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr> #{boat.vat_rate&.name}
+          td #{boat.offer_status.humanize}
+          td
+            = boat.published? ? 'Published' : 'Not Published'
+            - if boat.published? && boat.status == 'inactive'
+              |  (Inactive reason: #{boat.inactive_reason})
+          td #{boat.office&.name}
+          td #{boat.country&.name} #{boat.location}
+          td
+            div(style="whitespace: nowrap")
+              = link_to broker_area_my_boat_path(boat) do
+                i.glyphicon.glyphicon-eye-open
+              = link_to edit_broker_area_my_boat_path(boat), style: 'margin-left: 1ex' do
+                i.glyphicon.glyphicon-pencil
+              = link_to broker_area_my_boat_path(boat), method: 'delete', style: 'margin-left: 1ex', \
+                      data: {confirm: 'Are you sure you want delete this boat?'} do
+                i.glyphicon.glyphicon-remove
+            - if boat.published
+              = link_to 'RB&nbsp;View'.html_safe, sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex'
     = paginate @boats
   - else
-    p.lead.text-center You have no boats to manage so far
-
+    p.text-center You have no boats to manage so far

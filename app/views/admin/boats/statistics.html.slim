@@ -52,12 +52,12 @@ javascript:
           name: 'Views',
           data: #{raw @monthly.map{|k,v| v[:views]}.to_json}
         },
+        // {
+        //   name: 'Contact Details',
+        //   data: #{raw @monthly.map{|k,v| v[:contacts]}.to_json}
+        // },
         {
-          name: 'Contact Details',
-          data: #{raw @monthly.map{|k,v| v[:contacts]}.to_json}
-        },
-        {
-          name: 'Questions',
+          name: 'Leads',
           data: #{raw @monthly.map{|k,v| v[:questions]}.to_json}
         }
       ]

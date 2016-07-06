@@ -23,7 +23,7 @@
         span(data-attr-name="price")= boat_price(boat)
         span.tax-status.small= 'Tax paid' if boat.tax_paid?
       .boat-detail-item.boat-length
-        span Length:
+        span Length:&nbsp;
         span(data-attr-name="loa")= boat_length(boat)
       .boat-detail-item.boat-year
         span Year: #{boat.year_built}

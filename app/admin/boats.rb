@@ -81,6 +81,24 @@ ActiveAdmin.register Boat do
         end
       end
     end
+    if boat.media.any?
+      panel 'Boat Additional Media' do
+        table_for boat.media.not_deleted do
+          column :source_url do |bm|
+            bm.source_url
+          end
+          column :title do |bm|
+            bm.attachment_title
+          end
+          column :alternate_text do |bm|
+            bm.alternate_text
+          end
+          column :type do |bm|
+            bm.type_string
+          end
+        end
+      end
+    end
   end
 
   form do |f|
@@ -150,6 +168,11 @@ ActiveAdmin.register Boat do
     def find_resource
       Boat.find_by(slug: params[:id]) || Boat.find(params[:id])
     end
+
+    def destroy
+      resource.update_column(:deleted_by_user_id, current_user.id)
+      destroy! { admin_boats_path }
+    end
   end
 
   sidebar 'Tools', only: [:show, :edit] do
@@ -206,7 +229,9 @@ ActiveAdmin.register Boat do
     if (activate = boat.deleted?)
       boat.revive
       boat.user.increment(:boats_count)
+      boat.update_column(:deleted_by_user_id, nil)
     else
+      boat.update_column(:deleted_by_user_id, current_user.id)
       boat.destroy
     end
 
@@ -226,6 +251,15 @@ ActiveAdmin.register Boat do
       cnt += b.boat_images.each { |bi| bi.destroy(:force) }.size
     end
     redirect_to collection_path, notice: "#{cnt} boat images was deleted"
+  end
+
+  batch_action :destroy do |ids|
+    Boat.find(ids).each do |boat|
+      boat.update_column(:deleted_by_user_id, current_user.id)
+      boat.destroy!
+    end
+
+    redirect_to({action: :index}, notice: "Deleted these boat_ids=#{ids.join(',')}")
   end
 
 end

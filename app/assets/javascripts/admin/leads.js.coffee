@@ -21,18 +21,15 @@ $ ->
     minYear = 2015
     maxYear = 2015
     chart = undefined
-    viewType = ['annually', 'monthly', 'weekly']
-    months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    weeks = ['1th', '2nd', '3rd', '4th', '5th', '6th']
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    weeks = ['1st', '2nd', '3rd', '4th', '5th', '6th']
     statuses = ['rejected', 'pending', 'approved', 'invoiced']
     colors = 
       'rejected':   'red'
       'pending':    'yellow'
       'approved':   'orange'
       'invoiced':   'green'
-    currentView = 0
     yearsArray = []
-    annuallData = {}
 
     getWeekOfMonth = (date) ->
       day = date.getDate()
@@ -41,10 +38,9 @@ $ ->
       prefixes = weeks
       prefixes[0 | day / 7]
 
-    setChart = (name, categories, data, color) ->
+    setChart = (data) ->
       len = chart.series.length
-      chart.yAxis[0].options.stackLabels.enabled = true
-      chart.xAxis[0].setCategories categories
+      chart.xAxis[0].setCategories data.categories
       i = 0
       while i < len
         chart.series[0].remove()
@@ -62,7 +58,7 @@ $ ->
       createTime = new Date(x.created_at)
       year = createTime.getFullYear()
       x.year = year
-      x.month = createTime.getMonth() + 1
+      x.month = months[createTime.getMonth()]
       x.week = getWeekOfMonth(createTime)
       minYear = year if year < minYear
       maxYear = year if year > maxYear
@@ -71,20 +67,38 @@ $ ->
     year = minYear
     while year <= maxYear
       yearsArray.push(year)
-      yearString = year.toString()
-      annuallData[yearString] =
+      year += 1
+
+    drilldown =
+      annual:
+        categories: yearsArray
+        name: 'Annual'
+        series: _.map statuses, (st1) ->
+          type: 'column'
+          name: st1
+          color: colors[st1]
+          data: _.map yearsArray, (year) ->
+            name: year.toString()
+            y: _.size(_.where leads, { year: year, status: st1 })
+
+    _.map yearsArray, (year) ->
+      yearData = _.where leads, { year: year }
+      drilldown[year.toString()] =
         categories: months
         series: _.map statuses, (status) ->
           name: status
           data: _.map months, (month) ->
-            y: _.size(_.where leads, { year: year, month: month, status: status })
-            drilldown:
-              categories: weeks
-              series: _.map statuses, (st) ->
-                name: st
-                data: _.map weeks, (week) ->
-                  _.size(_.where leads, { year: year, month: month, week: week, status: st })
-      year += 1
+            name: month + ', ' + year
+            y: _.size(_.where yearData, { month: month, status: status })
+
+      _.map months, (month) ->
+        monthData = _.where yearData, { month: month }
+        drilldown[year.toString()][month] =
+          categories: weeks
+          series: _.map statuses, (status) ->
+            name: status
+            data: _.map weeks, (week) ->
+              _.size(_.where monthData, { week: week, status: status })
 
     chart = new (Highcharts.Chart)
       chart:
@@ -93,7 +107,7 @@ $ ->
       colors: _.map colors, (color) ->
         color
       title:
-        text: viewType[currentView]
+        text: 'Annual'
       subtitle:
         text: ''
       xAxis:
@@ -122,15 +136,22 @@ $ ->
         point:
           events:
             click: ->
-              drilldown = @drilldown
-              if drilldown
-                currentView += 1
+              if name = @name
+                splitted = name.split(', ')
                 chart.setTitle
-                  text: viewType[currentView]
-                chart.yAxis[0].options.stackLabels.enabled = false
-                setChart null, drilldown.categories, drilldown
-              else
-                window.location.reload true
+                  text: name
+
+                if splitted.length > 1
+                  year = splitted[1]
+                  month = splitted[0]
+                  $backButton.data('year', year).text('Back to ' + year)
+                  setChart drilldown[year][month]
+                else
+                  year = splitted[0]
+                  $backButton.data('year', null).text('Back to Annual')
+                  setChart drilldown[year]
+
+                $backButton.show()
               return
         dataLabels:
           enabled: false
@@ -152,10 +173,18 @@ $ ->
         if @point.drilldown
           s += '<br/>Click for detail'
         s
-      series: _.map statuses, (status) ->
-        type: 'column'
-        name: status
-        data: _.map yearsArray, (year) ->
-          y: _.size(_.where leads, { year: year, status: status })
-          drilldown: annuallData[year.toString()]
-        color: colors[status]
+      series: drilldown.annual.series
+
+    $backButton = $('<button id="back-btn" style="display: none;">Back</button>').appendTo $('#lead-graph')
+    $backButton.click ->
+      if year = $(this).data('year')
+        $backButton.data('year', null).text('Back to Annual')
+        chart.setTitle
+          text: year
+        setChart drilldown[year]
+      else
+        $backButton.data('year', null).text('Back').hide()
+        chart.setTitle
+          text: 'Annual'
+        setChart drilldown['annual']
+    return

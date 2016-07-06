@@ -5,7 +5,7 @@ class ApplicationMailer < ActionMailer::Base
   add_template_helper MailerHelper
 
   STAGING_EMAIL = ('info@rightboat.com' if Rails.env.staging?)
-  DEVELOPER_EMAILS = %w(llukomskyy@n-ix.com xmpolaris@hotmail.com)
+  DEVELOPER_EMAILS = %w(llukomskyy@n-ix.com sieraruo@gmail.com)
 
   private
 

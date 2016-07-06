@@ -156,23 +156,36 @@ $ ->
 
     $('.images-dropzone').each ->
       $dropzone = $(@)
-      $dropzone.dropzone
+      dz = new Dropzone @, {
         url: $dropzone.data('upload-url'),
-        maxFilesize: 5, # megabytes
         addRemoveLinks: true,
-        removedfile: (a, b, c) -> console.log('removedfile', a, b, c)
+        removedfile: ((file) ->
+          console.log('removedfile', file)
+        ),
+        init: (->
+          @.on 'success', (file, responseText) ->
+            # TODO: receive image id from responseText and handle remove link
+            console.log(file, responseText, $('.dz-remove', file.previewElement))
+
+            #file.previewTemplate.appendChild(document.createTextNode(responseText));
+        )
+      }
 
       if window.boatImages.length
-        $dropzone.addClass('dz-started')
-        t = $('#dropzone_template').html()
         $.each window.boatImages, ->
-          cap = @caption || ''
-          $(t).appendTo($dropzone)
-            .find('[data-dz-thumbnail]').attr('alt', cap).attr('src', @url).end()
-            .find('[data-dz-size]').css(visibility: 'hidden').end()
-            .find('[data-dz-name]').each(-> if cap then $(@).text(cap) else $(@).css(visibility: 'hidden')).end()
-            .append($('<a/>').addClass('dz-remove').attr('href', 'javascript:undefined;').text('Remove file'))
-            .addClass('dz-complete')
+          # see: https://github.com/enyo/dropzone/wiki/FAQ#how-to-show-files-already-stored-on-server
+          file = {name: @name, size: 0}
+          dz.emit('addedfile', file)
+          dz.emit('thumbnail', file, @url)
+          dz.emit('complete', file)
+          # TODO: handle remove link
+          console.log(@id, $('.dz-remove', file.previewElement))
+#          $(t).appendTo($dropzone)
+#            .find('[data-dz-thumbnail]').attr('alt', cap).attr('src', @url).end()
+#            .find('[data-dz-size]').css(visibility: 'hidden').end()
+#            .find('[data-dz-name]').each(-> if cap then $(@).text(cap) else $(@).css(visibility: 'hidden')).end()
+#            .append($('<a/>').addClass('dz-remove').attr('href', 'javascript:undefined;').text('Remove file'))
+#            .addClass('dz-complete')
 
     $('[data-textarea-counter]').each ->
       $area = $(@)

@@ -62,9 +62,25 @@ module BrokerArea
     end
 
     def upload_image
-      @boat = Boat.find_by(slug: params[:id])
+      load_boat
       bi = @boat.boat_images.new(file: params[:file])
-      bi.save ? head(:ok) : head(:unprocessable_entity)
+
+      if bi.save
+        render json: {id: bi.id}
+      else
+        head :unprocessable_entity
+      end
+    end
+
+    def remove_image
+      load_boat
+      bi = @boat.boat_images.find(params[:image])
+
+      if bi.destroy
+        head :ok
+      else
+        head :bad_request
+      end
     end
 
     def find_template

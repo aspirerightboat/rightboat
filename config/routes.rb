@@ -165,6 +165,7 @@ Rails.application.routes.draw do
     resources :my_boats, path: 'my-boats' do
       member do
         post :upload_image
+        post :remove_image
       end
       collection do
         get :find_template

@@ -160,32 +160,24 @@ $ ->
         url: $dropzone.data('upload-url'),
         addRemoveLinks: true,
         removedfile: ((file) ->
-          console.log('removedfile', file)
+          if (id = $(file.previewElement).data('boat-image-id'))
+            $.post $dropzone.data('remove-url'), {image: id}, ->
+              $(file.previewElement).hide(200)
         ),
         init: (->
           @.on 'success', (file, responseText) ->
-            # TODO: receive image id from responseText and handle remove link
-            console.log(file, responseText, $('.dz-remove', file.previewElement))
-
-            #file.previewTemplate.appendChild(document.createTextNode(responseText));
+            $(file.previewElement).data('boat-image-id', responseText.id)
         )
       }
-
-      if window.boatImages.length
-        $.each window.boatImages, ->
-          # see: https://github.com/enyo/dropzone/wiki/FAQ#how-to-show-files-already-stored-on-server
-          file = {name: @name, size: 0}
-          dz.emit('addedfile', file)
-          dz.emit('thumbnail', file, @url)
-          dz.emit('complete', file)
-          # TODO: handle remove link
-          console.log(@id, $('.dz-remove', file.previewElement))
-#          $(t).appendTo($dropzone)
-#            .find('[data-dz-thumbnail]').attr('alt', cap).attr('src', @url).end()
-#            .find('[data-dz-size]').css(visibility: 'hidden').end()
-#            .find('[data-dz-name]').each(-> if cap then $(@).text(cap) else $(@).css(visibility: 'hidden')).end()
-#            .append($('<a/>').addClass('dz-remove').attr('href', 'javascript:undefined;').text('Remove file'))
-#            .addClass('dz-complete')
+      $.each $('#boat_images_infos').data('data'), ->
+        # see: https://github.com/enyo/dropzone/wiki/FAQ#how-to-show-files-already-stored-on-server
+        file = {name: @name, size: 0}
+        dz.emit('addedfile', file)
+        dz.emit('thumbnail', file, @url)
+        dz.emit('complete', file)
+        $(file.previewElement).data('boat-image-id', @id)
+        $('.dz-size', $dropzone).css(visibility: 'hidden')
+        dz.files.push(file)
 
     $('[data-textarea-counter]').each ->
       $area = $(@)

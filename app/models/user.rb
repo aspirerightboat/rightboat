@@ -52,6 +52,7 @@ class User < ActiveRecord::Base
   has_many :exports, dependent: :delete_all
   has_many :mail_clicks
   has_one :user_setting
+  has_many :deleted_boats, class_name: 'Boat', foreign_key: :deleted_by_user_id
 
   mount_uploader :avatar, AvatarUploader
 

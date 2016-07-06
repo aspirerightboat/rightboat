@@ -159,6 +159,7 @@ $ ->
       dz = new Dropzone @, {
         url: $dropzone.data('upload-url'),
         addRemoveLinks: true,
+        maxFilesize: 10, # in Mb
         removedfile: ((file) ->
           if (id = $(file.previewElement).data('boat-image-id'))
             $.post $dropzone.data('remove-url'), {image: id}, ->

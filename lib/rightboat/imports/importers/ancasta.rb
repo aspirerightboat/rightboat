@@ -1,6 +1,5 @@
 module Rightboat::Imports
   class Importers::Ancasta < ImporterBase
-    include ActionView::Helpers::TextHelper # for simple_format
 
     ENGINE_TYPES = {
       '3D' => 'Tri Diesel',
@@ -13,7 +12,6 @@ module Rightboat::Imports
       '2O' => 'Twin Outboard',
       '2P' => 'Twin Petrol',
       '2E' => 'Twin Electric',
-      '2P' => 'Twin Petrol',
       '2ES' => 'Twin Electric',
       '1DS' => 'Single Diesel',
       '2DS' => 'Twin Diesel',
@@ -119,7 +117,7 @@ module Rightboat::Imports
       str.gsub!(/<img[^>]*>/, '')
       str.gsub!(/<a [^>]*>(.*?)<\/a>/, '\1')
       str.gsub!(/<p>\s*<\/p>/, '')
-      str = simple_format(str.gsub(/<br[^>]*>/, "\n").strip) if !str['<p>']
+      str = ActionController::Base.helpers.simple_format(str.gsub(/<br[^>]*>/, "\n").strip) if !str['<p>']
       str
     end
   end

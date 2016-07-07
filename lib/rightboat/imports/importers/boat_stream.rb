@@ -21,8 +21,6 @@ module Rightboat
         end
 
         class BoatStreamParser < Nokogiri::XML::SAX::Document
-          include ActionView::Helpers::TextHelper # for simple_format
-
           def initialize(importer, party_ids)
             @party_ids = party_ids.split(', ')
             @importer = importer
@@ -399,7 +397,7 @@ module Rightboat
           end
 
           def process_description(str)
-            str = simple_format(str) if !str['<']
+            str = ActionController::Base.helpers.simple_format(str) if !str['<']
             str
           end
         end

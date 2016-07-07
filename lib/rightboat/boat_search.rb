@@ -29,8 +29,8 @@ module Rightboat
           end
         end
         with :live, true
-        with :ref_no, ref_no if ref_no
-        without :ref_no, exclude_ref_no if exclude_ref_no
+        with :ref_no, ref_no.downcase if ref_no
+        without :ref_no, exclude_ref_no.downcase if exclude_ref_no
         paginate page: page, per_page: per_page
         order_by order_col, order_dir if order
 
@@ -50,8 +50,8 @@ module Rightboat
 
         if manufacturer_model
           any_of do
-            with :manufacturer, manufacturer_model
-            with :manufacturer_model, manufacturer_model
+            with :manufacturer, manufacturer_model.downcase
+            with :manufacturer_model, manufacturer_model.downcase
           end
         end
 

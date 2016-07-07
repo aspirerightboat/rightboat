@@ -21,20 +21,16 @@ class Boat < ActiveRecord::Base
     text :engine_model,         boost: 1
     text :drive_type,           boost: 1
     text :description,          boost: 0.5
-    string :ref_no
-    string :manufacturer_model
-    string :manufacturer
-    string :model
+    string(:ref_no) { |boat| boat.ref_no.downcase }
+    string(:manufacturer_model) { |boat| boat.manufacturer_model.downcase }
+    string(:manufacturer) { |boat| boat.manufacturer.name.downcase }
+    string(:model) { |boat| boat.model.name.downcase }
+    string(:fuel_type) { |boat| boat.fuel_type&.name_stripped&.downcase }
+    string(:boat_type) { |boat| boat.boat_type&.name_stripped&.downcase }
     integer :user_id
     integer :manufacturer_id
     integer :model_id
-    string :fuel_type do |boat|
-      boat.fuel_type.try(:name_stripped)
-    end
     integer :category_id
-    string :boat_type do |boat|
-      boat.boat_type.try(:name_stripped)
-    end
     integer :drive_type_id
     integer :country_id
     integer :boat_type_id
@@ -149,8 +145,7 @@ class Boat < ActiveRecord::Base
   end
 
   def manufacturer_model
-    return manufacturer.to_s if !model || model.name == 'Unknown'
-    [manufacturer.to_s, model.to_s].reject(&:blank?).join(' ')
+    "#{manufacturer.name} #{model.name if model.name != 'Unknown'}".strip
   end
 
   def short_makemodel_fileslug(max_length = 25)

@@ -6,7 +6,7 @@ module Rightboat
     # e.g. yachtworld: Marine Projects Sigma 38, Alloy Yachts Pilothouse
     def self.split(mnm)
       search = Boat.retryable_solr_search! do
-        with :manufacturer_model, mnm
+        with :manufacturer_model, mnm.downcase
         order_by :live, :desc
         paginate per_page: 1
       end

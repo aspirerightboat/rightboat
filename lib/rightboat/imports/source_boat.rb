@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'rightboat/imports/utils' # fix "Circular dependency" error while running multithreaded import
 require 'rightboat/make_model_splitter'
+require 'rightboat/boat_description_utils'
 require 'xxhash'
 
 module Rightboat
@@ -185,6 +186,10 @@ module Rightboat
           klass = Boat.reflections[attr_name.to_s].klass
           value = instance_variable_get("@#{attr_name}".to_sym)
           unless value.is_a?(ActiveRecord::Base)
+            if value&.is_a?(String) && value =~ /&/
+              value = CGI.unescapeHTML(CGI.unescapeHTML(value)) # eg. Yacht &amp;amp; Motor
+            end
+
             if value.blank? || value.to_s =~ /^[\.0]+$/
               value = nil
             elsif attr_name == :currency

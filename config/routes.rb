@@ -173,6 +173,7 @@ Rails.application.routes.draw do
     end
     resources :iframes
   end
+  get 'if/:token', to: 'broker_area/iframes#iframe_content', as: :broker_iframe
 
   namespace :member, path: 'my-rightboat' do
     root to: 'dashboard#index' # member_root_path

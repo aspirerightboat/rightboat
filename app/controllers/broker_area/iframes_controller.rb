@@ -1,5 +1,6 @@
 module BrokerArea
   class IframesController < CommonController
+    skip_before_action :require_broker_user, only: [:iframe_content]
 
     def index
       @iframes = current_broker.broker_iframes.page(params[:page]).per(30)
@@ -53,6 +54,10 @@ module BrokerArea
 
       @iframe.destroy
       redirect_to broker_area_iframes_path, notice: 'IFrame deleted successfully.'
+    end
+
+    def iframe_content
+      render layout: 'broker_iframe'
     end
 
     private

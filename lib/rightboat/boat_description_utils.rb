@@ -1,14 +1,12 @@
 module Rightboat
   module BoatDescriptionUtils
-    include ActionView::Helpers::TextHelper # for simple_format
-
     ALLOWED_TAGS = %w(p br i b strong h3 ul ol li)
 
     private
 
     def cleanup_description(str)
       return '' if str.blank?
-      str = simple_format(str) if !str['<']
+      str = ActionController::Base.helpers.simple_format(str) if !str['<']
 
       frag = Nokogiri::HTML.fragment(str)
       frag.css('table').remove

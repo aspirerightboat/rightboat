@@ -11,11 +11,11 @@ loadPreview = ($el) ->
 
 $(document).ready ->
 
-  $('.rb-datepicker').datetimepicker
-    formatTime: ''
-    format: 'Y-m-d'
-    scrollInput: false
-    timepicker: false
+#  $('.rb-datepicker').datetimepicker
+#    formatTime: ''
+#    format: 'Y-m-d'
+#    scrollInput: false
+#    timepicker: false
 
   $('.preview-wrap > div').each ->
     loadPreview($(this));

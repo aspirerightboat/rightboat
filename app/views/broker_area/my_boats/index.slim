@@ -25,8 +25,7 @@
     .col-sm-3
       h1
         | My Boats
-        / - if !Rails.env.production?
-        /   small.pull-right= link_to 'New Boat', new_broker_area_my_boat_path
+        small.pull-right= link_to 'New Boat', new_broker_area_my_boat_path
     .col-sm-9
       .panel.panel-danger
         .panel-body

@@ -1,7 +1,5 @@
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
   h1 Business Details
-  h2
-    small Currently, any changes you make to your listings are temporary, as they will be over written by new import updates. If you have any queries about this - or need to get a listing updated, don't hesitate to get in contact with us.
 
   script#office_template.hidden(type="text/template")= render 'office_row'
   = form_for current_broker, url: update_details_broker_area_path, method: :post, \

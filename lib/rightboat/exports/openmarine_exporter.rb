@@ -70,7 +70,7 @@ module Rightboat
                 end
               }
               @x.advert_features {
-                @x.boat_type boat.boat_type.try(:name_stripped)
+                @x.boat_type boat.boat_type&.name_stripped&.capitalize
                 @x.boat_category boat.category.try(:name)
                 @x.new_or_used case boat.new_boat when true then 'New' when false then 'Used' end
                 @x.vessel_lying boat.location, country: boat.country.try(:iso)

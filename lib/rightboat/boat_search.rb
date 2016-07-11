@@ -29,8 +29,8 @@ module Rightboat
           end
         end
         with :live, true
-        with :ref_no, ref_no.downcase if ref_no
-        without :ref_no, exclude_ref_no.downcase if exclude_ref_no
+        with :ref_no, ref_no if ref_no
+        without :ref_no, exclude_ref_no if exclude_ref_no
         paginate page: page, per_page: per_page
         order_by order_col, order_dir if order
 
@@ -50,8 +50,8 @@ module Rightboat
 
         if manufacturer_model
           any_of do
-            with :manufacturer, manufacturer_model.downcase
-            with :manufacturer_model, manufacturer_model.downcase
+            with :manufacturer, manufacturer_model
+            with :manufacturer_model, manufacturer_model
           end
         end
 
@@ -153,7 +153,7 @@ module Rightboat
 
     def read_params(params)
       @q = read_str(params[:q])
-      @manufacturer_model = read_str(params[:manufacturer_model])
+      @manufacturer_model = read_str(params[:manufacturer_model]&.downcase)
       @manufacturer_ids = read_tags(params[:manufacturers])
       @model_ids = read_tags(params[:models])
       @manufacturer_id = params[:manufacturer_id] if params[:manufacturer_id].present?
@@ -162,14 +162,14 @@ module Rightboat
       @boat_type_id = params[:boat_type_id] if params[:boat_type_id].present?
       # @category = read_tags(params[:category])
       @country_ids = read_tags(params[:countries])
-      @boat_type = read_str(params[:boat_type])
+      @boat_type = read_str(params[:boat_type]&.downcase)
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
       @price_min = read_price(params[:price_min], params[:currency])
       @price_max = read_price(params[:price_max], params[:currency])
       @length_min = read_length(params[:length_min], params[:length_unit])
       @length_max = read_length(params[:length_max], params[:length_unit])
-      @ref_no = read_str(params[:ref_no])
+      @ref_no = read_str(params[:ref_no]&.downcase)
       @new_used = read_hash(params[:new_used], 'new', 'used')
       @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
@@ -177,7 +177,7 @@ module Rightboat
         @order_col, @order_dir = self.class.read_order(params[:order])
         @order = params[:order] if @order_col
       end
-      @exclude_ref_no = params[:exclude_ref_no]
+      @exclude_ref_no = read_str(params[:exclude_ref_no]&.downcase)
     end
 
     def read_str(str)

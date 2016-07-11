@@ -10,11 +10,11 @@ class FuelType < ActiveRecord::Base
   def name_stripped
     case name.to_s
       when /petrol|lpg/i
-        'Petrol'
+        'petrol'
       when /diesel/i
-        'Diesel'
+        'diesel'
       else
-        'Other'
+        'other'
     end
   end
 

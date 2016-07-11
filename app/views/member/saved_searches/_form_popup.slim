@@ -18,9 +18,9 @@
                     .col-xs-8
                       = radio_button_tag 'saved_search[boat_type]', '', @saved_search.boat_type.blank?, id: 'saved_search_boat_type_all'
                       = f.label :boat_type_all, 'All'
-                      = f.radio_button :boat_type, 'Power'
+                      = f.radio_button :boat_type, 'power'
                       = f.label :boat_type_power, 'Power'
-                      = f.radio_button :boat_type, 'Sail'
+                      = f.radio_button :boat_type, 'sail'
                       = f.label :boat_type_sail, 'Sail'
 
               .form-group.row

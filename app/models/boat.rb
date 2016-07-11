@@ -25,8 +25,8 @@ class Boat < ActiveRecord::Base
     string(:manufacturer_model) { |boat| boat.manufacturer_model.downcase }
     string(:manufacturer) { |boat| boat.manufacturer.name.downcase }
     string(:model) { |boat| boat.model.name.downcase }
-    string(:fuel_type) { |boat| boat.fuel_type&.name_stripped&.downcase }
-    string(:boat_type) { |boat| boat.boat_type&.name_stripped&.downcase }
+    string(:fuel_type) { |boat| boat.fuel_type&.name_stripped }
+    string(:boat_type) { |boat| boat.boat_type&.name_stripped }
     integer :user_id
     integer :manufacturer_id
     integer :model_id
@@ -120,7 +120,7 @@ class Boat < ActiveRecord::Base
     length_unit ||= 'm'
     options = {
         exclude_ref_no: ref_no,
-        boat_type:  boat_type.try(:name_stripped),
+        boat_type:  boat_type&.name_stripped,
         length_unit: length_unit
     }
 

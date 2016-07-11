@@ -30,9 +30,9 @@
               .col-xs-8
                 = radio_button_tag :boat_type, '', params[:boat_type].blank?, id: 'adv_boat_type_all'
                 = label_tag :boat_type_all, 'All', for: 'adv_boat_type_all'
-                = radio_button_tag :boat_type, 'Power', params[:boat_type] == 'Power', id: 'adv_boat_type_power'
+                = radio_button_tag :boat_type, 'power', params[:boat_type] == 'power', id: 'adv_boat_type_power'
                 = label_tag :boat_type_power, 'Power', for: 'adv_boat_type_power'
-                = radio_button_tag :boat_type, 'Sail', params[:boat_type] == 'Sail', id: 'adv_boat_type_sail'
+                = radio_button_tag :boat_type, 'sail', params[:boat_type] == 'sail', id: 'adv_boat_type_sail'
                 = label_tag :boat_type_sail, 'Sail', for: 'adv_boat_type_sail'
       .col-sm-6.col-xs-12
         .form-group.row

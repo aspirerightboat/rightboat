@@ -5,7 +5,7 @@ class BoatType < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name, use: [:slugged]
 
-  GENERAL_TYPES = %w(Power Sail Other)
+  GENERAL_TYPES = %w(power sail other)
 
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
@@ -17,11 +17,11 @@ class BoatType < ActiveRecord::Base
   def name_stripped
     case name.to_s
       when /power|motor|cruiser/i
-        'Power'
+        'power'
       when /sail/i
-        'Sail'
+        'sail'
       else
-        'Other'
+        'other'
     end
   end
 end

@@ -12,6 +12,7 @@ class Lead < ActiveRecord::Base
   belongs_to :accessed_by_broker, class_name: 'User'
   has_many :lead_trails, foreign_key: 'lead_id'
   belongs_to :last_lead_trail, foreign_key: 'last_lead_trail_id', class_name: 'LeadTrail'
+  belongs_to :created_from_affiliate, class_name: 'User'
 
   validates_presence_of :boat_id
   validates_presence_of :email, :first_name, :surname, if: 'user_id.blank?'

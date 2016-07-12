@@ -1,5 +1,4 @@
 .range-slider-wrapper {
-  &:extend(.row);
   text-align: left;
 }
 
@@ -22,6 +21,13 @@
   }
   &:before{left: -2px;}
   &:after{right: 0;}
+
+  &.grey-base {
+    background: lightgrey;
+    &:before, &:after {
+      background: lightgrey;
+    }
+  }
 }
 
 .ui-slider .ui-slider-handle {

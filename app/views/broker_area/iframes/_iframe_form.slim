@@ -8,7 +8,7 @@
         = f.label :user_boats_only, 'My boats only'
       .col-xs-12.field-item
         = label_tag :manufacturers
-        = text_field_tag :manufacturers, @manufacturer_items.map { |i| i[:id] }.join('-'), \
+        = text_field_tag :manufacturers, @manufacturer_items&.map { |i| i[:id] }&.join('-'), \
                 id: 'manufacturers_picker', class: 'select-dark', \
                 data: {'initial-options' => @manufacturer_items&.to_json}, placeholder: 'Any'
       .col-xs-12.field-item

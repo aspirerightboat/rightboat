@@ -57,6 +57,8 @@ module BrokerArea
     end
 
     def iframe_content
+      load_iframe_from_token
+      @boats = @iframe.filtered_boats.active.boat_view_includes.includes(:country).page(params[:page]).per(6 * 3)
       render layout: 'broker_iframe'
     end
 
@@ -68,6 +70,10 @@ module BrokerArea
 
     def load_iframe
       @iframe = current_broker.broker_iframes.find(params[:id])
+    end
+
+    def load_iframe_from_token
+      @iframe = BrokerIframe.find_by!(token: params[:token])
     end
 
     def assign_filter_params

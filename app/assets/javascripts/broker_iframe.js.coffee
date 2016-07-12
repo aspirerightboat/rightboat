@@ -14,10 +14,9 @@
 #  require twitter/bootstrap/tab.js
 #  require twitter/bootstrap/affix.js
 
-#  require jquery-ui/slider
-#  require jquery.datetimepicker.full.min
+#= require jquery-ui/slider
 #  require jquery.ui.touch-punch
-#  require selectize
+#= require selectize
 #  require js-cookie
 #  require slick.min
 #  require photoswipe.min
@@ -25,4 +24,7 @@
 #  require validetta
 #  require cocoon
 #  require_tree ./common
-#  require_tree ./application
+#= require common/utils
+#= require application/selects
+#= require application/slider
+#= require_tree ./broker_iframe

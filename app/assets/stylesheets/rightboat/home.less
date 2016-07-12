@@ -273,44 +273,6 @@
   }
 }
 
-
-.NiceButton() {
-  display: inline-block;
-  padding: 5px 10px;
-  transition: 0.3s ease-out;
-  border-width: 0;
-
-  &:focus {
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-  }
-  &:not(:first-child) {
-    margin: 0 0 0 5px;
-  }
-}
-
-.nice-buttons {
-  .transparent-button {
-    .NiceButton();
-    color: @rb-color-dark;
-    background-color: transparent;
-    &:hover, &:focus {
-      box-shadow: none;
-      color: #2d1065;
-    }
-  }
-}
-.nice-button {
-  .NiceButton();
-  color: white;
-  background-color: @rb-color-dark;
-
-  &:hover, &:focus {
-    color: white;
-    background-color: #2d1065;
-    text-decoration: none;
-  }
-}
-
 .last-row-pad {
   padding-bottom: 15px;
 }

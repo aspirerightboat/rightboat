@@ -1,0 +1,38 @@
+.boat-items {
+  display: flex;
+}
+
+.boat-item {
+  .thumb {
+    position: relative;
+    overflow: hidden;
+
+    &.under-offer, &.sold {
+      &::before {
+        background-repeat: no-repeat;
+        background-size: 120px 120px;
+        content: '';
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 120px;
+        height: 120px;
+        z-index: 1;
+      }
+    }
+    &.under-offer::before { background-image: image-url('strip-under-offer.png'); }
+    &.sold::before { background-image: image-url('strip-sold.png'); }
+
+    img {
+      .overlay { display: none; }
+
+      width: 100%;
+      transition: transform .25s ease-out;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+}

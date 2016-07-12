@@ -340,7 +340,7 @@
   vertical-align: -3px;
 }
 
-.rb-control-group-addon .selectize-control {
+.rb-control-group-addon:not(.no-pads) .selectize-control {
   margin-right: 1ex;
 }
 
@@ -403,6 +403,20 @@
   }
   .selectize-dropdown {
     border: 1px solid #fff;
+  }
+}
+
+.select-clear-dark {
+  .selectize-input {
+    border: 1px solid #fff;
+    background-color: transparent !important;
+    color: #fff;
+    input {
+      color: #fff;
+      &::-webkit-input-placeholder { color: white; }
+      &::-moz-placeholder { color: white; }
+      &:-ms-input-placeholder { color: white; }
+    }
   }
 }
 

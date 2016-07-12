@@ -22,7 +22,7 @@ $ ->
           data = {q: query}
           data.manufacturer = maker if collection == 'models'
           $.getJSON url, data, (res) ->
-            callback(res[collection])
+            callback(res.items)
           .fail ->
             callback()
         onChange: (value) ->

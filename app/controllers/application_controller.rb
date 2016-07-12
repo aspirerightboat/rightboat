@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :clear_old_session
   before_action :set_country_specific_units_for_non_user
   before_action :set_user_specific_settings
+  before_action :remember_broker_from_iframe
 
   serialization_scope :view_context
 
@@ -119,4 +120,11 @@ class ApplicationController < ActionController::Base
     sale_boat_pdf_path(boat.manufacturer, boat.model, boat)
   end
   helper_method :makemodel_boat_pdf_path
+
+  def remember_broker_from_iframe
+    if params[:iframe] && (iframe = BrokerIframe.find_by(token: params[:iframe]))
+      session[:iframe_broker_id] = iframe.user_id
+      redirect_to url_for(params.except(:iframe))
+    end
+  end
 end

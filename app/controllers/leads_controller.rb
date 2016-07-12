@@ -16,8 +16,10 @@ class LeadsController < ApplicationController
       user = User.find_by(email: params[:email])
 
       if user && user.valid_password?(params[:password])
+        registered_from_affiliate = session[:iframe_broker_id]
         sign_in(user)
         user.remember_me! if params[:remember_me]
+        session[:iframe_broker_id] = registered_from_affiliate if registered_from_affiliate
       else
         render json: ['Invalid email or password'], root: false, status: 403 and return
       end
@@ -27,6 +29,8 @@ class LeadsController < ApplicationController
     lead.boat = Boat.find_by(slug: params[:id])
     lead.boat_currency_rate = lead.boat.safe_currency.rate
     lead.mark_if_suspicious(current_user, request.remote_ip)
+    lead.created_from_affiliate = current_user&.registered_from_affiliate ||
+        User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
 
     if lead.save
       lead.handle_lead_created_mails unless lead.suspicious?
@@ -115,6 +119,7 @@ class LeadsController < ApplicationController
     user.role = 'PRIVATE'
     user.email_confirmed = true
     user.assign_phone_from_leads
+    user.registered_from_affiliate = User.find_by(id: session.delete(:iframe_broker_id)) if session[:iframe_broker_id]
 
     if user.save
       sign_in(user)

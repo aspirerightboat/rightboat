@@ -55,6 +55,8 @@ class User < ActiveRecord::Base
   has_many :created_manufacturers, class_name: 'Manufacturer', foreign_key: 'created_by_user_id'
   has_many :created_models, class_name: 'Model', foreign_key: 'created_by_user_id'
   has_many :deleted_boats, class_name: 'Boat', foreign_key: :deleted_by_user_id
+  has_many :broker_iframes
+  belongs_to :registered_from_affiliate, class_name: 'User'
 
   mount_uploader :avatar, AvatarUploader
 

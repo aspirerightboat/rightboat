@@ -26,7 +26,7 @@ module ApplicationHelper
       'data-value0' => v0,
       'data-value1' => v1,
       'data-unit' => options[:unit],
-      class: "slider #{field}-slider"
+      class: "slider #{field}-slider #{options[:class]}".strip
     }
 
     ret = content_tag(:div, '', html_options)

@@ -1,0 +1,54 @@
+.container(style="margin-top: 8px")
+  = form_tag search_path, method: :get, class: 'row', id: 'iframe_search_form', data: {iframe: @iframe.token} do
+    .col-md-3
+      .iframe-header
+        a.iframe-header-logo(href="/")
+        h1.iframe-header-text Search boats<br>for sale
+    .col-md-9
+      .filters
+        .row
+          .col-sm-10
+            .row
+              .col-sm-6
+                .radio-buttons.text-center.field-row-height
+                  = radio_button_tag :boat_type, '', nil, id: 'boat_type_all', checked: true
+                  = label_tag :boat_type_all, 'All', for: 'boat_type_all'
+                  = radio_button_tag :boat_type, 'Power', nil, id: 'boat_type_power'
+                  = label_tag :boat_type_power, 'Power', for: 'boat_type_power'
+                  = radio_button_tag :boat_type, 'Sail', nil, id: 'boat_type_sail'
+                  = label_tag :boat_type_sail, 'Sail', for: 'boat_type_sail'
+              .col-sm-6.field-row-height
+                = text_field_tag :q, nil, class: 'form-control', placeholder: 'Keyword search'
+              .col-sm-6.field-row-height
+                .row.range-slider-wrapper
+                  = hidden_field_tag :price_min
+                  = hidden_field_tag :price_max
+                  .col-xs-3.col-sm-3.col-lg-2
+                    = label_tag :price
+                  .col-xs-9.col-sm-9.col-lg-10
+                    .rb-control-group
+                      .rb-control
+                        = slider_tag(:price, unit: current_currency.try(:name) || 'GBP', class: 'grey-base')
+                      .rb-control-group-addon.no-pads
+                        = currency_select :currency, current_currency, class: 'select-dark slider-currency-select'
+              .col-sm-6.field-row-height
+                .row.range-slider-wrapper
+                  = hidden_field_tag :length_min
+                  = hidden_field_tag :length_max
+                  .col-xs-3.col-sm-3.col-lg-2
+                    = label_tag :length
+                  .col-xs-9.col-sm-9.col-lg-10
+                    .rb-control-group
+                      .rb-control
+                        = slider_tag(:length, unit: current_length_unit, class: 'grey-base')
+                      .rb-control-group-addon.no-pads
+                        = select_tag :length_unit, length_unit_options, class: 'select-dark slider-length-select'
+          .col-sm-2.filter-buttons
+            button.nice-button(type="submit") Search
+  .row.boats-view(data-layout-mode="thumbnail" style="margin-top: 2em")
+    - @boats.each do |b|
+      = render partial: 'boats/boat', locals: {boat: b, multiselectable: false, boat_message_required: false, \
+              show_social_actions: false, broker_iframe: @iframe}
+  .row
+    .col-xs-12.no-top-pad-pagination.text-center
+      = paginate @boats

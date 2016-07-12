@@ -1,0 +1,68 @@
+html {
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #fff;
+}
+
+.iframe-header {
+  min-height: 94px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 80px;
+}
+.iframe-header-text {
+  margin: 0;
+  font-size: 1.7em;
+  display: inline-block;
+}
+.iframe-header-logo {
+  background: transparent image-url('logo-mini-powered.png') no-repeat center center;
+  width: 64px;
+  height: 92px;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -92px/2;
+}
+
+.filters {
+  border: 2px solid #60bbff;
+  padding: 8px 15px 2px 15px;
+  position: relative;
+
+  .nice-button {
+    border-radius: 4px;
+    width: 100%;
+  }
+  .filter-buttons {
+    margin-bottom: 6px;
+  }
+  @media (min-width: @screen-sm-min) {
+    .filter-buttons {
+      margin-top: 37px;
+    }
+  }
+}
+
+.field-row-height {
+  min-height: 40px;
+
+  .ui-slider {
+    margin-bottom: 15px;
+  }
+}
+
+.no-top-pad-pagination .pagination {
+  margin-top: 0;
+}

@@ -8,4 +8,4 @@ Rails.application.config.assets.version = '1.0'
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-Rails.application.config.assets.precompile += %w(pdf.css mailer.css broker.css broker.js)
+Rails.application.config.assets.precompile += %w(pdf.css mailer.css broker.css broker.js broker_iframe.css broker_iframe.js)

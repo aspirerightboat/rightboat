@@ -10,9 +10,19 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require dropzone
- *  require_self
+ *= require jquery-ui/slider
+ *= require jquery.datetimepicker.css
+ *= require_self
  */
 
-@import "broker/boat_form";
-@import "broker/iframes";
+@import "custom_bootstrap/custom_bootstrap";
+@import "custom_bootstrap/mixins";
+@import "custom-jquery-ui/slider";
+@import "plugins/selectize";
+
+@import "rightboat/boats";
+@import "rightboat/scaffold";
+@import "rightboat/nice_buttons";
+@import "broker_iframe/layout";
+@import "broker_iframe/radio-buttons";
+@import "broker_iframe/boat_items";

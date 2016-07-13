@@ -1,6 +1,7 @@
 module BrokerArea
   class IframesController < CommonController
     skip_before_action :require_broker_user, only: [:iframe_content]
+    after_action :allow_iframe, only: :iframe_content
 
     def index
       @iframes = current_broker.broker_iframes.page(params[:page]).per(30)
@@ -81,6 +82,10 @@ module BrokerArea
           manufacturer_ids: params[:manufacturers].split('-'),
           country_ids: params[:countries],
       }
+    end
+
+    def allow_iframe
+      response.headers.delete('X-Frame-Options')
     end
   end
 end

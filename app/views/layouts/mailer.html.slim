@@ -12,7 +12,11 @@ html(xmlns="http://www.w3.org/1999/xhtml")
         td.container
           table
             tr
-              td= email_image_tag 'mail_header.png', alt: 'Find Your Rightboat', class: 'img-responsive'
+              td
+                - if @user_country_iso == 'US'
+                  = email_image_tag 'mail-header-us.jpg', alt: 'Find Your Rightboat', class: 'img-responsive'
+                - else
+                  = email_image_tag 'mail-header.png', alt: 'Find Your Rightboat', class: 'img-responsive'
             tr
               td
                 .content.text-right= link_to 'Log in', new_user_session_url

@@ -94,20 +94,20 @@ ActiveAdmin.register BoatImage do
 
   member_action :destroy, method: :delete do
     i = BoatImage.find(params[:id])
-    i.destroy
+    i.update(deleted_at: Time.now, deleted_by_user_id: current_user.id)
     redirect_to request.referer || admin_boat_images_path
   end
 
   member_action :undelete, method: :post do
     i = BoatImage.find(params[:id])
-    i.revive
+    i.update(deleted_at: nil, deleted_by_user_id: nil)
     redirect_to request.referer || admin_boat_images_path
   end
 
   collection_action :delete_boat_images, method: :post do
     boat = Boat.find(params[:boat_id])
-    cnt = boat.boat_images.destroy_all.size
-    redirect_to request.referer || admin_boat_images_path, notice: "#{cnt} images deactivated"
+    boat.boat_images.update_all(deleted_at: Time.now, deleted_by_user_id: current_user.id)
+    redirect_to request.referer || admin_boat_images_path, notice: "#{boat.boat_images.count} images deactivated"
   end
 
 end

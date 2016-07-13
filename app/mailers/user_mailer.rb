@@ -8,7 +8,7 @@ class UserMailer < ApplicationMailer
   after_action :amazon_delivery
 
   def saved_search_updated(user_id, searches, saved_searches_alert_id)
-    @user = User.find(user_id)
+    load_user_and_personalize(user_id)
     @saved_searches_alert = SavedSearchesAlert.find(saved_searches_alert_id)
     saved_search_ids = []
     @searches = searches.map { |saved_search_id, boat_ids|
@@ -29,7 +29,7 @@ class UserMailer < ApplicationMailer
   end
 
   def email_confirmation(user_id)
-    @user = User.find(user_id)
+    load_user_and_personalize(user_id)
     @confirm_href = confirm_email_url(user: user_id, token: @user.confirm_email_token)
 
     to_email = STAGING_EMAIL || @user.email
@@ -37,7 +37,7 @@ class UserMailer < ApplicationMailer
   end
 
   def broker_registered(user_id)
-    @user = User.find(user_id)
+    load_user_and_personalize(user_id)
     @confirm_href = confirm_email_url(user: user_id, token: @user.confirm_email_token)
 
     to_email = STAGING_EMAIL || @user.email
@@ -45,7 +45,7 @@ class UserMailer < ApplicationMailer
   end
 
   def boat_status_changed(user_id, boat_id, reason, alert_reason)
-    @user = User.find(user_id)
+    load_user_and_personalize(user_id)
     @boat = Boat.find(boat_id)
     @reason = reason
     @alert_reason = alert_reason
@@ -60,12 +60,19 @@ class UserMailer < ApplicationMailer
   end
 
   def boat_detail(user_id, boat_id)
-    @user = User.find(user_id)
+    load_user_and_personalize(user_id)
     @boat = Boat.find(boat_id)
     attach_boat_pdf
 
     to_email = STAGING_EMAIL || @user.email
     mail(to: to_email, subject: "Boat Detail ##{@boat.ref_no} - #{@boat.manufacturer} #{@boat.model}")
+  end
+
+  private
+
+  def load_user_and_personalize(user_id)
+    @user = User.find(user_id)
+    personalize_email_for(@user)
   end
 
 end

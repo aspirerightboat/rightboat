@@ -10,6 +10,7 @@ class LeadsMailer < ApplicationMailer
     @lead = Lead.find(lead_id)
     @boat = @lead.boat
     @office = @boat.office
+    @user_country_iso = @lead.user_country_iso
     attach_boat_pdf
 
     to_email = STAGING_EMAIL || @lead.email
@@ -20,6 +21,7 @@ class LeadsMailer < ApplicationMailer
     @leads = Lead.where(id: lead_ids).includes(boat: [:manufacturer, :model])
     @boats = @leads.map(&:boat)
     @user_name = @leads.first.first_name
+    @user_country_iso = @leads.first.user_country_iso
     attach_boat_zip(zip_file)
 
     to_email = STAGING_EMAIL || @leads.first.email
@@ -68,18 +70,17 @@ class LeadsMailer < ApplicationMailer
 
   def lead_reviewed_notify_broker(lead_id)
     @lead = Lead.find(lead_id)
+    @user = @lead.boat.user
+    personalize_email_for(@user)
 
-    to_email = STAGING_EMAIL || broker_emails(@lead.boat.user)
+    to_email = STAGING_EMAIL || broker_emails(@user)
     mail(to: to_email, subject: "Lead reviewed notification - #{@lead.name}, ##{@lead.id}")
   end
 
   private
 
   def broker_emails(broker)
-    ret = [broker.email]
-    additional_email = broker.broker_info.try(:additional_email) || []
-    ret += additional_email
-    ret
+    [broker.email].concat(broker.broker_info&.additional_email&.presence || [])
   end
 
   def lead_broker_params(lead_id)
@@ -88,6 +89,8 @@ class LeadsMailer < ApplicationMailer
     @office = @boat.office
 
     @broker = @boat.user
+    personalize_email_for(@broker)
+
     if STAGING_EMAIL
       to_emails = STAGING_EMAIL
     else

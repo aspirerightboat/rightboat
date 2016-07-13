@@ -158,10 +158,14 @@ module BrokerArea
       boat_specs = @boat.boat_specifications.includes(:specification)
       params_boat_specs = params[:boat_specs].select { |_k, v| v.present? }
       params_boat_specs.each do |spec_name, spec_value|
-        boat_spec = boat_specs.find { |bs| bs.specification.name == spec_name } ||
-            @boat.boat_specifications.new(specification: Specification.find_by(name: spec_name))
-        boat_spec.value = spec_value
-        boat_spec.save! if boat_spec.changed?
+        boat_spec = boat_specs.find { |bs| bs.specification.name == spec_name }
+        if !boat_spec && (spec = Specification.find_by(name: spec_name))
+          boat_spec = @boat.boat_specifications.new(specification: spec)
+        end
+        if boat_spec
+          boat_spec.value = spec_value
+          boat_spec.save! if boat_spec.changed?
+        end
       end
       params_spec_names = params_boat_specs.map(&:first)
       boat_specs.each do |bs|

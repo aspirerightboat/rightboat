@@ -39,6 +39,8 @@ class ImportBoatImagesJob
         img.update_image_from_source(proxy_with_auth: @proxy_with_auth, log_error_proc: log_error_proc)
       end
 
+      img.deleted_at = nil if img.deleted? && img.deleted_by_user_id.nil?
+
       success = !img.changed? || img.file_exists? && img.save
       images_count += 1 if success
     end

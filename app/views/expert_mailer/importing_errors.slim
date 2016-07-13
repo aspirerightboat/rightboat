@@ -1,5 +1,5 @@
 p
-  | Import #{link_to "#{@import.import_type} ##{@import.id}", admin_import_url(@import)} was finished with errors:
+  ' Import #{link_to "#{@import.import_type} ##{@import.id}", admin_import_url(@import)} was finished with errors:
   b= link_to 'View log', admin_import_trail_url(@import_trail)
 
 p

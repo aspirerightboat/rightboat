@@ -26,4 +26,8 @@ class ApplicationMailer < ActionMailer::Base
   def attach_boat_zip(file_path)
     attachments[File.basename(file_path)] = File.read(file_path)
   end
+
+  def personalize_email_for(user)
+    @user_country_iso = user&.user_setting&.country_iso
+  end
 end

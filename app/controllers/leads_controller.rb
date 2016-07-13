@@ -28,6 +28,7 @@ class LeadsController < ApplicationController
     lead = Lead.new(lead_params)
     lead.boat = Boat.find_by(slug: params[:id])
     lead.boat_currency_rate = lead.boat.safe_currency.rate
+    lead.user_country_iso = current_user&.user_setting&.country_iso || session[:country]
     lead.mark_if_suspicious(current_user, request.remote_ip)
     lead.created_from_affiliate = current_user&.registered_from_affiliate ||
         User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
@@ -74,6 +75,7 @@ class LeadsController < ApplicationController
       lead.status = 'batched'
       lead.boat = boat
       lead.boat_currency_rate = boat.safe_currency.rate
+      lead.user_country_iso = current_user&.user_setting&.country_iso || session[:country]
       lead.mark_if_suspicious(current_user, request.remote_ip)
       lead
     end

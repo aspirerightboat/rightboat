@@ -61,7 +61,7 @@
                             - if ss.price_min || ss.price_max
                               - currency = (Currency.find_by(name: ss.currency) if ss.currency) || Currency.default
                               = "from #{number_to_currency(ss.price_min, unit: currency.symbol, precision: 0)}" if ss.price_min
-                              = "upto #{number_to_currency(ss.price_max, unit: currency.symbol, precision: 0)}" if ss.price_max
+                              = " upto #{number_to_currency(ss.price_max, unit: currency.symbol, precision: 0)}" if ss.price_max
                           td= "#{"from #{ss.length_min.to_i} " if ss.length_min.to_i}#{"upto #{ss.length_max}" if ss.length_max} #{ss.length_unit}" if ss.length_min || ss.length_max
                           td.text-center
                             |

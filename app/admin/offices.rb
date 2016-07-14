@@ -23,7 +23,7 @@ ActiveAdmin.register Office do
     default_main_content
     panel 'Address' do
       attributes_table_for office.address do
-        Address.columns.each { |column| row column.name.to_sym unless column.name.in?(%w(id addressible_id addressible_type)) }
+        (Address.column_names - %w(id addressible_id addressible_type)).each { |column| row column }
       end
     end
   end

@@ -59,7 +59,7 @@
           dd #{@boat.location}
         dl.dl-horizontal
           dt Description
-          dd #{simple_format @boat.description}
+          dd #{simple_format @boat.extra.description}
         - @boat_spec_by_name.each do |spec_name, boat_spec|
           dl.dl-horizontal
             dt= boat_spec.specification.display_name

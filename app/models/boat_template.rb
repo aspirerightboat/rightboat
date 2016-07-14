@@ -19,7 +19,7 @@ class BoatTemplate < ActiveRecord::Base
 
       if !template
         boats = Boat.where(manufacturer: manufacturer, model: model, published: true)
-                    .includes(:currency, boat_specifications: :specification).to_a
+                    .includes(:currency, :extra, boat_specifications: :specification).to_a
 
         template = if boats.one?
                      new(auto_created: true).initialize_from_boat(boats.first)
@@ -46,8 +46,8 @@ class BoatTemplate < ActiveRecord::Base
                    end
     end
     self.length_m ||= boat.length_m
-    self.short_description ||= boat.short_description
-    self.description ||= boat.description
+    self.short_description ||= boat.extra.short_description
+    self.description ||= boat.extra.description
     self.boat_type_id ||= boat.boat_type_id
     self.drive_type_id ||= boat.drive_type_id
     self.engine_manufacturer_id ||= boat.engine_manufacturer_id

@@ -74,22 +74,23 @@
           = f.label :poa, content_tag(:abbr, 'POA', title: 'Price on Application')
     .form-group
       .row
-        .col-xs-12.col-sm-6
-          = f.label :short_description, 'Short description'
-          div
-            |
-              <small><i>This text will appear on the advert details page, please give a short, accurate description of the boat.
-              Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
-            span#short_desc_counter.textarea-countdown 480
-          = f.text_area :short_description, id: 'short_description', rows: 4, cols: 70, maxlength: 480, \
-                  style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#short_desc_counter'}
-        .col-xs-12.col-sm-6
-          = f.label :boat_description, 'Description'
-          div
-            | <small><i>Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
-            span#desc_counter.textarea-countdown 2000
-          = f.text_area :description, id: 'boat_description', rows: 5, cols: 70, maxlength: 2000, \
-                  style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#desc_counter'}
+        = f.fields_for :extra do |ff|
+          .col-xs-12.col-sm-6
+            = ff.label :short_description, 'Short description'
+            div
+              |
+                <small><i>This text will appear on the advert details page, please give a short, accurate description of the boat.
+                Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
+              span#short_desc_counter.textarea-countdown 480
+            = ff.text_area :short_description, id: 'short_description', rows: 4, cols: 70, maxlength: 480, \
+                    style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#short_desc_counter'}
+          .col-xs-12.col-sm-6
+            = ff.label :boat_description, 'Description'
+            div
+              | <small><i>Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
+              span#desc_counter.textarea-countdown 2000
+            = ff.text_area :description, id: 'boat_description', rows: 5, cols: 70, maxlength: 2000, \
+                    style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#desc_counter'}
     h3 Images
     .form-group
       .row
@@ -234,15 +235,17 @@
           .field-item
             = f.check_box :published
             = f.label :published, 'Publish on Rightboat'
-        .col-md-4.col-sm-6.col-xs-12
-          .field-item
-            = f.label :owners_comment
-            = f.text_area :owners_comment, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
-          /.field-item
-          /  = label_tag :known_defects
-          /  = text_area_tag :known_defects, nil, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
-        .col-md-4.col-sm-6.col-xs-12
-          .field-item
-            = spec_textarea_field :disclaimer, nil, rows: 3, cols: 80, style: 'width: 100%'
+        = f.fields_for :extra do |ff|
+          .col-md-4.col-sm-6.col-xs-12
+            .field-item
+              = ff.label :owners_comment
+              = ff.text_area :owners_comment, rows: 3, cols: 50, class: 'form-control', maxlength: 2000, style: 'width: 100%'
+            /.field-item
+            /  = label_tag :known_defects
+            /  = text_area_tag :known_defects, nil, rows: 3, cols: 50, class: 'form-control', style: 'width: 100%'
+          .col-md-4.col-sm-6.col-xs-12
+            .field-item
+              = ff.label :disclaimer
+              = ff.text_area :disclaimer, rows: 3, cols: 80, class: 'form-control', maxlength: 2000, style: 'width: 100%'
   .nice-buttons.text-center
     button.nice-button(type="submit") Save

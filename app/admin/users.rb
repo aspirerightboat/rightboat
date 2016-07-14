@@ -153,7 +153,7 @@ ActiveAdmin.register User do
         column do
           panel 'Broker Details' do
             attributes_table_for resource.broker_info do
-              BrokerInfo.columns.each { |column| row column.name.to_sym unless column.name.in?(%w(id user_id)) }
+              (BrokerInfo.column_names - %w(id user_id)).each { |column| row column }
             end
           end
         end

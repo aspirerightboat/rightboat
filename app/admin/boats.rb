@@ -1,7 +1,8 @@
 ActiveAdmin.register Boat do
   permit_params :manufacturer_id, :model_id, :price, :currency_id, :year_built, :poa,
-                :featured, :recently_reduced, :offer_status, :new_boat, :description, :short_description,
-                :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id, :slug
+                :featured, :recently_reduced, :offer_status, :new_boat,
+                :fuel_type_id, :boat_type_id, :drive_type_id, :location, :country_id, :slug,
+                extra_attributes: [:id, :description, :short_description, :owners_comment, :disclaimer]
 
   menu priority: 2
 
@@ -61,7 +62,12 @@ ActiveAdmin.register Boat do
 
   show do |boat|
     default_main_content
-    panel 'More specifications' do
+    panel 'Extra Information' do
+      attributes_table_for resource.extra do
+        (BoatExtra.column_names - %w(id boat_id deleted_at updated_at created_at)).each { |col| row col }
+      end
+    end
+    panel 'Specifications' do
       table_for boat.boat_specifications.not_deleted.includes(:specification) do
         column :name do |bs|
           bs.specification.display_name
@@ -110,8 +116,6 @@ ActiveAdmin.register Boat do
       f.input :currency
       f.input :new_boat, as: :boolean
       f.input :year_built
-      f.input :short_description
-      f.input :description
       f.input :boat_type
       f.input :fuel_type
       f.input :drive_type
@@ -121,6 +125,13 @@ ActiveAdmin.register Boat do
       f.input :featured, as: :boolean
       f.input :recently_reduced, as: :boolean
       f.input :slug
+
+      f.has_many :extra, allow_destroy: false, new_record: f.object.extra.blank? do |ff|
+        ff.input :short_description
+        ff.input :description
+        ff.input :owners_comment
+        ff.input :disclaimer
+      end
     end
     actions
   end

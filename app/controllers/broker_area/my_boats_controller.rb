@@ -109,7 +109,7 @@ module BrokerArea
     def boat_params
       params.require(:boat).permit(
           :name, :year_built, :length_m, :price, :boat_type_id, :poa, :location,
-          :short_description, :description, :owners_comment, :source_id, :offer_status, :published
+          :source_id, :offer_status, :published, extra_attributes: [:id, :short_description, :description, :owners_comment, :disclaimer]
       )
     end
 
@@ -125,8 +125,8 @@ module BrokerArea
 
                     end
       @boat.assign_attributes(boat_params)
-      @boat.description = cleanup_description(@boat.description) if @boat.description.present?
-      @boat.short_description = cleanup_short_description(@boat.short_description) if @boat.short_description.present?
+      @boat.extra.description = cleanup_description(@boat.extra.description) if @boat.extra.description.present?
+      @boat.extra.short_description = cleanup_short_description(@boat.extra.short_description) if @boat.extra.short_description.present?
       @boat.currency = Currency.cached_by_name(params[:price_currency])
       @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
       @boat.fuel_type = if params[:fuel_type].present?

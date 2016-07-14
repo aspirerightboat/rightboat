@@ -26,9 +26,9 @@ p
   - @boat.boat_specifications.each do |spec|
     | #{spec.specification.display_name}: #{spec.value}
     br
-  | Description: #{@boat.description.html_safe}
+  | Description: #{@boat.extra.description.html_safe}
   br
-  | Owners Comment: #{@boat.owners_comment}
+  | Owners Comment: #{@boat.extra.owners_comment}
   br
 
 h4 Images

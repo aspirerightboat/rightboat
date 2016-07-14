@@ -76,7 +76,7 @@ module Rightboat
                 @x.vessel_lying boat.location, country: boat.country.try(:iso)
                 @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency.try(:name), vat_included: boat.vat_rate.try(:tax_paid?)
                 @x.marketing_descs {
-                  @x.marketing_desc(language: 'en') { @x.cdata! boat.description.to_s }
+                  @x.marketing_desc(language: 'en') { @x.cdata! boat.extra.description.to_s }
                 }
                 @x.manufacturer boat.manufacturer.name
                 @x.model boat.model.name
@@ -86,7 +86,7 @@ module Rightboat
               }
               @x.boat_features {
                 spec_item boat.name, 'name'
-                spec_item boat.owners_comment, 'owners_comment'
+                spec_item boat.extra.owners_comment, 'owners_comment'
                 spec_item specs.delete(:reg_details), 'reg_details'
                 spec_item specs.delete(:known_defects), 'known_defects'
                 spec_item specs.delete(:engine_range_nautical_miles), 'range'

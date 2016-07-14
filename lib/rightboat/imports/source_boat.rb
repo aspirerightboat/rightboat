@@ -148,32 +148,11 @@ module Rightboat
 
         user_id = user.respond_to?(:id) ? user.id : user
         self.target = Boat.where(user_id: user_id, source_id: source_id, import_id: import.id).first_or_initialize
+        self.target.extra ||= BoatExtra.new
 
         adjust_location(target)
 
-        NORMAL_ATTRIBUTES.each do |attr_name|
-          value = send(attr_name)
-          case attr_name
-          when :description
-            target.description = try_cleanup_description(value)
-          when :short_description
-            target.short_description = cleanup_short_description(short_description || description || target.description)
-          when :new_boat
-            target.new_boat = if value&.is_a?(String)
-                                case value
-                                when /\A(?:New|N)\z/i then true
-                                when /\A(?:Used|U)\z/i then false
-                                end
-                              else
-                                value
-                              end
-          when :poa
-            target.poa = value
-          else
-            target.send("#{attr_name}=", value) if value.present?
-          end
-        end
-
+        handle_normal_attributes
         handle_specs
         handle_class_groups
         handle_media
@@ -239,6 +218,31 @@ module Rightboat
         end
 
         saved
+      end
+
+      def handle_normal_attributes
+        NORMAL_ATTRIBUTES.each do |attr_name|
+          value = send(attr_name)
+          case attr_name
+          when :description
+            target.extra.description = try_cleanup_description(value)
+          when :short_description
+            target.extra.short_description = cleanup_short_description(short_description || description || target.extra.description)
+          when :owners_comment
+            target.extra.owners_comment = try_cleanup_description(value)
+          when :new_boat
+            target.new_boat = if value&.is_a?(String)
+                                case value
+                                when /\A(?:New|N)\z/i then true
+                                when /\A(?:Used|U)\z/i then false
+                                end
+                              end
+          when :poa
+            target.poa = value
+          else
+            target.send("#{attr_name}=", value) if value.present?
+          end
+        end
       end
 
       def handle_specs

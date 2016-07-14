@@ -57,7 +57,7 @@ class Boat < ActiveRecord::Base
   after_save :update_leads_price
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
-  after_create :assign_slug
+  after_create :assign_slug, :ensure_extra
   after_destroy :destroy_slave_images
 
   has_many :favourites, dependent: :delete_all
@@ -85,6 +85,8 @@ class Boat < ActiveRecord::Base
   has_many :class_groups, class_name: 'BoatClassGroup'
   has_many :media, class_name: 'BoatMedium'
   belongs_to :deleted_by_user, class_name: 'User'
+  has_one :extra, class_name: 'BoatExtra', dependent: :destroy
+  accepts_nested_attributes_for :extra
 
   validates_presence_of :manufacturer, :model
   validate :valid_manufacturer_model
@@ -333,5 +335,9 @@ class Boat < ActiveRecord::Base
 
   def destroy_slave_images
     slave_images.each { |i| i.destroy(:force) }
+  end
+
+  def ensure_extra
+    create_extra! unless extra
   end
 end

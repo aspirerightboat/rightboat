@@ -12,6 +12,7 @@ FactoryGirl.define do
     vat_rate
     manufacturer
     model
+    extra
 
     sequence(:name) { |n| "boat-name-#{n}" }
     sequence(:slug) { |n| "boat-slug-#{n}" }
@@ -23,11 +24,14 @@ FactoryGirl.define do
     year_built 2000
     price 100_000
     length_m 10
-    sequence(:description) { |n| "Description #{n}" }
-    sequence(:short_description) { |n| "Short Description #{n}" }
     secure_payment false
     offer_status "available"
     status :active
+  end
+
+  factory :extra do
+    sequence(:description) { |n| "Description #{n}" }
+    sequence(:short_description) { |n| "Short Description #{n}" }
   end
 
   factory :boat_category do

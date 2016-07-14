@@ -47,12 +47,13 @@
         .col-md-8.col-xs-12= bs.text_field :value, class: 'form-control'
   fieldset
     h5 4. Additional Information:
+    = f.fields_for :extra do |ff|
     .form-group.clearfix
-      .col-md-4.col-xs-12= f.label :description
-      .col-md-8.col-xs-12= f.text_area :description, class: 'form-control'
+      .col-md-4.col-xs-12= ff.label :description
+      .col-md-8.col-xs-12= ff.text_area :description, class: 'form-control'
     .form-group.clearfix
-      .col-md-4.col-xs-12= f.label :owners_comment
-      .col-md-8.col-xs-12= f.text_area :owners_comment, class: 'form-control'
+      .col-md-4.col-xs-12= ff.label :owners_comment
+      .col-md-8.col-xs-12= ff.text_area :owners_comment, class: 'form-control'
   fieldset
     h5 5. Boat images:
     .form-group.clearfix

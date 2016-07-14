@@ -1,5 +1,5 @@
 - @page_title = boat_title(@boat)
-- @page_description = "#{@boat.manufacturer_model} for sale - #{truncate(strip_tags(@boat.short_description), length: 200, omission: '...')}"
+- @page_description = "#{@boat.manufacturer_model} for sale - #{truncate(strip_tags(@boat.extra.short_description), length: 200, omission: '...')}"
 - @canonical_url = sale_boat_url(@boat.manufacturer, @boat.model, @boat)
 - if @boat.primary_image
   - @image_url = @boat.primary_image.file_url
@@ -81,7 +81,7 @@
         .col-md-5.col-sm-6.col-xs-12.color-primary
           h1 About this #{@boat.manufacturer_model}
           .truncated-description
-            == @boat.short_description
+            == @boat.extra.short_description
     - if @boat.user != current_user
       .boat-footer
         .container.clearfix

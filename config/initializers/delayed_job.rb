@@ -9,26 +9,6 @@ Delayed::Worker.delay_jobs = !Rails.env.test?
 Delayed::Worker.raise_signal_exceptions = :term
 Delayed::Worker.logger = Logger.new("#{Rails.root}/log/delayed_job.log", 5, 50.megabytes)
 
-if Rails.env.production?
-  module Delayed
-    module Plugins
-      class ErrorsNotifier < Plugin
-
-        callbacks do |lifecycle|
-          lifecycle.around(:invoke_job) do |job, *args, &block|
-            begin
-              block.call(job, *args)
-            rescue StandardError => error
-              context = {job: {id: job.id, handler: job.handler}, error_location: 'Delayed Job Worker'}
-              Rightboat::CleverErrorsNotifier.try_notify(error, nil, nil, context)
-              raise error
-            end
-          end
-        end
-
-      end
-    end
-  end
-
-  Delayed::Worker.plugins << Delayed::Plugins::ErrorsNotifier
-end
+require 'sunspot/queue/delayed_job'
+class Sunspot::Queue::DelayedJob::IndexJob; include Rightboat::DelayedJobNotifyOnError end
+class Sunspot::Queue::DelayedJob::RemovalJob; include Rightboat::DelayedJobNotifyOnError end

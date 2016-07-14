@@ -1,4 +1,6 @@
 class LeadCreatedMailsJob
+  include Rightboat::DelayedJobNotifyOnError
+
   def initialize(lead_ids)
     @lead_ids = lead_ids
   end

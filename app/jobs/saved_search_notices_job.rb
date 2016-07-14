@@ -1,4 +1,6 @@
 class SavedSearchNoticesJob
+  include Rightboat::DelayedJobNotifyOnError
+
   attr_reader :logger
 
   def perform

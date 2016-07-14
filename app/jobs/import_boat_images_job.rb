@@ -1,4 +1,6 @@
 class ImportBoatImagesJob
+  include Rightboat::DelayedJobNotifyOnError
+
   def initialize(import_trail_id, boat_id, images_info, proxy_url)
     @import_trail_id = import_trail_id
     @boat_id = boat_id

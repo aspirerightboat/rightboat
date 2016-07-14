@@ -1,4 +1,6 @@
 class ZipPdfDetailsJob
+  include Rightboat::DelayedJobNotifyOnError
+
   attr_accessor :boats, :job, :leads, :files
 
   def initialize(job:, leads: ,boats:)

@@ -101,6 +101,11 @@ module Rightboat
         def enqueue_jobs
           doc = download_feed(@import.param[:url].strip)
 
+          if doc.root.name != 'open_marine'
+            log_error 'Invalid Openmarine xml'
+            return
+          end
+
           log 'Scraping'
           broker_nodes = doc.root.element_children
           broker_node = @broker_id == 'first' ? broker_nodes[0] : broker_nodes.find { |node| @broker_id == node['code'] }

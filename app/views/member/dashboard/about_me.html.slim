@@ -9,7 +9,7 @@
           h4 This is what we know about you so far, you can add, edit and change your personal information whenever you like.
           .form-group.row
             .col-sm-4.col-xs-12
-              = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title enq-req-title'
+              = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title enq-req-title simple-select-dark'
             .col-sm-4.col-xs-12
               = f.text_field :first_name, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-4.col-xs-12
@@ -34,14 +34,13 @@
               .col-sm-6.col-xs-12
                 = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
               .col-sm-6.col-xs-12
-                = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), {prompt: 'Country'}, class: 'country-select'
+                = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), {prompt: 'Country'}, class: 'country-select select-dark'
           br
           h4
             | Change password
             br
             small
-              i
-                | (Leave blank if you don't want to change)
+              i Leave blank if you don't want to change
 
           .form-group.row
             .col-sm-4.col-xs-12

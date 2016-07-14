@@ -37,7 +37,8 @@
       h4.text-uppercase= boat.manufacturer
       h5= boat.model
       .boat-detail-item.boat-length
-        span Length:
+        span
+          ' Length:
         span(data-attr-name='loa')= boat_length(boat)
       .boat-detail-item
         span Year: #{boat.year_built}

@@ -117,23 +117,33 @@ class LeadsController < ApplicationController
   end
 
   def signup_and_view_pdf
-    user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
-    user.role = 'PRIVATE'
-    user.email_confirmed = true
-    user.assign_phone_from_leads
-    user.registered_from_affiliate = User.find_by(id: session.delete(:iframe_broker_id)) if session[:iframe_broker_id]
+    user = User.find_by(email: params[:email])
 
-    if user.save
-      sign_in(user)
-      lead_ids = [params[:lead_id], params[:lead_ids]&.split(',')].flatten.compact
-      boat_ids = Lead.where(id: lead_ids).pluck(:boat_id)
-      boats = Boat.where(id: boat_ids).to_a
-      follow_makemodel_of_boats(boats)
-      render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
-                                                        locals: {form_name: 'lead_signup_form'})}
+    if user
+      if !user.valid_password?(params[:password])
+        render json: ['User with this email already exists but password does not match'], root: false, status: :unprocessable_entity
+        return
+      end
     else
-      render json: user.errors.full_messages, root: false, status: 422
+      user = User.new(params.permit(:title, :first_name, :last_name, :phone, :email, :password, :password_confirmation))
+      user.role = 'PRIVATE'
+      user.email_confirmed = true
+      user.assign_phone_from_leads
+      user.registered_from_affiliate = User.find_by(id: session.delete(:iframe_broker_id)) if session[:iframe_broker_id]
+
+      if !user.save
+        render json: user.errors.full_messages, root: false, status: :unprocessable_entity
+        return
+      end
     end
+
+    sign_in(user)
+    lead_ids = [params[:lead_id], params[:lead_ids]&.split(',')].flatten.compact
+    boat_ids = Lead.where(id: lead_ids).pluck(:boat_id)
+    boats = Boat.where(id: boat_ids).to_a
+    follow_makemodel_of_boats(boats)
+    render json: {google_conversion: render_to_string(partial: 'shared/google_signup_conversion',
+                                                      locals: {form_name: 'lead_signup_form'})}
   end
 
   def define_payment_method

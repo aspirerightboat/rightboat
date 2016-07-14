@@ -21,7 +21,7 @@ $ ->
         $('#lead_downloading_popup').displayPopup()
 
     $.fn.leadSignupForm = ->
-      $form = @
+      $form = @.simpleAjaxForm()
       $form.on 'ajax:before', (e) ->
         $('#signup_email').val($('#lead_email').val())
         $('#signup_title').val($('#lead_title').val())

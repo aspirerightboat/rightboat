@@ -13,7 +13,7 @@
             To view the full specification and PDF in #{link_to 'My Rightboat', '#', class: 'bold-link open-features-popup'}
             simply enter a password:
 
-        = form_tag signup_and_view_pdf_path, class: 'simple-ajax-form p', id: 'lead_signup_form', remote: true, data: {format: :json} do
+        = form_tag signup_and_view_pdf_path, class: 'p', id: 'lead_signup_form', remote: true, data: {format: :json} do
           = hidden_field_tag :email, nil, id: 'signup_email'
           = hidden_field_tag :title, nil, id: 'signup_title'
           = hidden_field_tag :first_name, nil, id: 'signup_first_name'

@@ -20,7 +20,7 @@ class Boat < ActiveRecord::Base
     text :engine_manufacturer,  boost: 1
     text :engine_model,         boost: 1
     text :drive_type,           boost: 1
-    text :description,          boost: 0.5
+    text(:description,          boost: 0.5) { |boat| boat.extra.description }
     string(:ref_no) { |boat| boat.ref_no.downcase }
     string(:manufacturer_model) { |boat| boat.manufacturer_model.downcase }
     string(:manufacturer) { |boat| boat.manufacturer.name.downcase }

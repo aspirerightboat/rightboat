@@ -9,6 +9,7 @@ Delayed::Worker.delay_jobs = !Rails.env.test?
 Delayed::Worker.raise_signal_exceptions = :term
 Delayed::Worker.logger = Logger.new("#{Rails.root}/log/delayed_job.log", 5, 50.megabytes)
 
+require 'rightboat/delayed_job_notify_on_error'
 require 'sunspot/queue/delayed_job'
 class Sunspot::Queue::DelayedJob::IndexJob; include Rightboat::DelayedJobNotifyOnError end
 class Sunspot::Queue::DelayedJob::RemovalJob; include Rightboat::DelayedJobNotifyOnError end

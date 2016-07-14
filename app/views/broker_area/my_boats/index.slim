@@ -22,14 +22,15 @@
       button.transparent-button.clear-filters(type="button") Clear Filters
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   .row
-    .col-sm-3
+    .col-xs-12
       h1
         | My Boats
         small.pull-right= link_to 'New Boat', new_broker_area_my_boat_path
-    .col-sm-9
-      .panel.panel-danger
-        .panel-body
-          ' Currently, any changes you make to your listings are temporary, as they will be over written by new import updates. If you have any queries about this - or need to get a listing updated, don't hesitate to get in contact with us.
+    - if current_broker.imports.exists?
+      .col-xs-12
+        .panel.panel-danger
+          .panel-body
+            | Currently, any changes you make to your listings are temporary, as they will be over written by new import updates. If you have any queries about this - or need to get a listing updated, don't hesitate to get in contact with us.
 
   - if @boats.present?
     table.rb-table

@@ -16,6 +16,7 @@ if Rails.env.production?
   end
 
   every(1.day, at: Import.active.last.approx_end_time) { rake 'saved_search_notifier:send_mails' }
+  every(1.day, at: Import.active.last.approx_end_time + 10.minutes) { rake 'server_db:backup' }
 end
 
 every(2.minutes) { rake 'leads_approver:approve_recent' }

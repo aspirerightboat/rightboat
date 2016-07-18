@@ -22,7 +22,7 @@ namespace :server_db do
   end
 
   def mysql_cmd(cmd)
-    yml = YAML.load_file('config/database.yml')['development']
+    yml = YAML.load_file('config/database.yml')['production']
 
     # create this file to avoid warning "Using a password on the command line interface can be insecure"
     file = Tempfile.new('temp-config')

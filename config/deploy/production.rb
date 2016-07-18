@@ -2,8 +2,6 @@ server 'prod1.rightboat.com', user: 'rightboat', roles: %w{web app app1}
 server 'prod2.rightboat.com', user: 'rightboat', roles: %w{web app app2}
 server 'import.rightboat.com', user: 'rightboat', roles: %w{web app db import}
 
-set :ssh_options, {keys: ['~/.ssh/ProdKey.pem']}
-
 set :user, 'rightboat'
 set :application, 'rightboat.com'
 set :deploy_to, '/opt/applications/rightboat.com'

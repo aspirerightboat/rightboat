@@ -1,6 +1,7 @@
 class BoatImageUploader < ImageUploader
 
   process :store_dimensions
+  process :set_content_type
 
   def store_dir
     i = model.id
@@ -27,4 +28,19 @@ class BoatImageUploader < ImageUploader
       model.width, model.height = `identify -format "%w %h" #{file.path}`.split(' ')
     end
   end
+
+  def set_content_type
+    if file
+      content_type = model&.content_type
+      content_type ||= if file.content_type == 'application/octet-stream' || file.content_type.blank?
+                         FileMagic.new(FileMagic::MAGIC_MIME).file(file.path).split(';').first
+                         #MIME::Types.type_for(original_filename).first.to_s
+                       else
+                         file.content_type
+                       end
+
+      self.file.instance_variable_set(:@content_type, content_type)
+    end
+  end
+
 end

@@ -37,8 +37,8 @@ class BoatImage < ActiveRecord::Base
         file_content_type = mime_type_by_file_content(f.path)
         filename = File.basename(uri.path)
         filename = fix_file_ext(filename, file_content_type)
-        self.file = ActionDispatch::Http::UploadedFile.new(tempfile: f, filename: filename)
         self.content_type = file_content_type
+        self.file = ActionDispatch::Http::UploadedFile.new(tempfile: f, filename: filename)
         self.http_last_modified = Time.parse(f.meta['last-modified']) if f.meta['last-modified']
         self.http_etag = f.meta['etag'] if f.meta['etag']
         self.downloaded_at = Time.current
@@ -75,6 +75,8 @@ class BoatImage < ActiveRecord::Base
       else
         log_error_proc&.call("#{e.class.name}: #{e.message}. url=#{url}")
       end
+    rescue CarrierWave::ProcessingError => e
+      log_error_proc&.call("#{e.class.name}: #{e.message}. url=#{url}")
     end
   end
 

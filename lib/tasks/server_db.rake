@@ -10,10 +10,7 @@ namespace :server_db do
     opts = '--skip-extended-insert --skip-dump-date --lock-tables=false'
     mysql_cmd "mysqldump %{credentials} #{opts} %{database} > #{REPO_DIR}/rightboat.sql"
 
-    `cd #{REPO_DIR}`
-    `git add -A`
-    `git commit -m 'daily backup'`
-    `git push origin master`
+    `cd #{REPO_DIR} && git add -A && git commit -m 'daily backup' && git push origin master`
   end
 
   desc 'Restore db from latest dump (grabbed code from capistrano-db-tasks gem)'

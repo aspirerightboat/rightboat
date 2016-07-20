@@ -64,6 +64,7 @@ module BrokerArea
     def upload_image
       load_boat
       bi = @boat.boat_images.new(file: params[:file])
+      bi.position = (@boat.boat_images.maximum(:position) || 0) + 10
 
       if bi.save
         render json: {id: bi.id}
@@ -81,6 +82,30 @@ module BrokerArea
       else
         head :bad_request
       end
+    end
+
+    def move_image
+      load_boat
+      bi = @boat.boat_images.find(params[:image])
+      bi_prev = (@boat.boat_images.find(params[:prev]) if params[:prev].present?)
+      bi_next = (@boat.boat_images.find(params[:next]) if params[:next].present?)
+
+      prev_pos = bi_prev&.position || 0
+      next_pos = bi_next&.position || 0
+      bi.position = (prev_pos + next_pos) / 2
+      bi.position = prev_pos + 1 if bi.position <= prev_pos
+      bi.update_column(:position, bi.position)
+
+      if bi.position >= next_pos
+        if next_pos > prev_pos
+          @boat.boat_images.where('position >= ?', next_pos).where('id <> ?', bi.id).update_all('position = position + 10')
+        else
+          image_ids = @boat.boat_images.pluck(:id).drop_while { |bi_id| bi_id != bi_next&.id }.select { |bi_id| bi_id != bi.id }
+          BoatImage.where(id: image_ids).update_all('position = position + 10') if image_ids.any?
+        end
+      end
+
+      head :ok
     end
 
     def find_template

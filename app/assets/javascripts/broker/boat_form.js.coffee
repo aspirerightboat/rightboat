@@ -170,15 +170,35 @@ $ ->
             $(file.previewElement).data('boat-image-id', responseText.id)
         )
       }
-      $.each $('#boat_images_infos').data('data'), ->
-        # see: https://github.com/enyo/dropzone/wiki/FAQ#how-to-show-files-already-stored-on-server
-        file = {name: @name, size: 0}
-        dz.emit('addedfile', file)
-        dz.emit('thumbnail', file, @url)
-        dz.emit('complete', file)
-        $(file.previewElement).data('boat-image-id', @id)
-        $('.dz-size', $dropzone).css(visibility: 'hidden')
-        dz.files.push(file)
+      $('#boat_images_infos').each ->
+        $.each $(@).data('data'), ->
+          # see: https://github.com/enyo/dropzone/wiki/FAQ#how-to-show-files-already-stored-on-server
+          file = {name: @name, size: 0}
+          dz.emit('addedfile', file)
+          dz.emit('thumbnail', file, @url)
+          dz.emit('complete', file)
+          $(file.previewElement).data('boat-image-id', @id)
+          $('.dz-size', $dropzone).css(visibility: 'hidden')
+          dz.files.push(file)
+        $(@).remove()
+
+      $dropzone.sortable(
+        items:'.dz-preview',
+        opacity: 0.5,
+        containment: '.images-dropzone',
+        distance: 5,
+        tolerance: 'pointer',
+        revert: true,
+        start: ((e, ui) -> $dropzone.removeClass('dz-clickable'); ui.item.removeClass('dz-success')),
+        stop: (-> $dropzone.addClass('dz-clickable')),
+        update: (e, ui) ->
+          params = {}
+          params.image = ui.item.data('boat-image-id') || ''
+          params.prev = ui.item.prev('.dz-preview').data('boat-image-id') || ''
+          params.next = ui.item.next('.dz-preview').data('boat-image-id') || ''
+          $.post $dropzone.data('move-url'), params
+      )
+      .disableSelection()
 
     $('[data-textarea-counter]').each ->
       $area = $(@)

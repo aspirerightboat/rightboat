@@ -166,6 +166,7 @@ Rails.application.routes.draw do
       member do
         post :upload_image
         post :remove_image
+        post :move_image
       end
       collection do
         get :find_template

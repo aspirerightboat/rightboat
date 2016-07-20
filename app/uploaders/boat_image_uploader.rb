@@ -25,21 +25,15 @@ class BoatImageUploader < ImageUploader
 
   def store_dimensions
     if file && model
-      model.width, model.height = `identify -format "%w %h" #{file.path}`.split(' ')
+      safe_file_path = file.path.gsub(/[^\/\w.-]/, '')
+      model.width, model.height = `identify -format '%w %h' #{safe_file_path}`.chomp.split(' ')
     end
   end
 
   def set_content_type
-    if file
-      content_type = model&.content_type
-      content_type ||= if file.content_type == 'application/octet-stream' || file.content_type.blank?
-                         FileMagic.new(FileMagic::MAGIC_MIME).file(file.path).split(';').first
-                         #MIME::Types.type_for(original_filename).first.to_s
-                       else
-                         file.content_type
-                       end
-
-      self.file.instance_variable_set(:@content_type, content_type)
+    if file && model
+      model.content_type ||= model.mime_type_by_file_content(file.path)
+      file.instance_variable_set(:@content_type, model.content_type)
     end
   end
 

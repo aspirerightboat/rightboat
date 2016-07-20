@@ -5,7 +5,7 @@ class BoatImage < ActiveRecord::Base
 
   mount_uploader :file, BoatImageUploader
 
-  def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil)
+  def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil, force: nil)
     return if ENV['SKIP_DOWNLOAD_IMAGES']
 
     retries = 0
@@ -25,8 +25,8 @@ class BoatImage < ActiveRecord::Base
 
     begin
       headers = {}
-      headers['If-Modified-Since'] = http_last_modified.httpdate if http_last_modified
-      headers['If-None-Match'] = http_etag if http_etag
+      headers['If-Modified-Since'] = http_last_modified.httpdate if http_last_modified && !force
+      headers['If-None-Match'] = http_etag if http_etag && !force
       headers[:proxy_http_basic_authentication] = proxy_with_auth if proxy_with_auth
 
       open(uri, headers) do |f|
@@ -84,11 +84,11 @@ class BoatImage < ActiveRecord::Base
     file.file.present?
   end
 
-  private
-
   def mime_type_by_file_content(file_path)
     FileMagic.new(FileMagic::MAGIC_MIME).file(file_path).split(';').first
   end
+
+  private
 
   def fix_file_ext(filename, file_content_type)
     extension = File.extname(filename)

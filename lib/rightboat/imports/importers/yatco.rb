@@ -30,12 +30,16 @@ module Rightboat
           'engine_year3' => :engine_year3,
           'engine_horse_power1' => :engine_horse_power,
           'engine_horse_power3' => :engine_horse_power3,
+          'engine_horse_power4' => :engine_horse_power4,
           'engine_date_hours_registered1' => :engine_date_hours_registered1,
+          'engine_date_hours_registered2' => :engine_date_hours_registered2,
+          'engine_serial_number1' => :engine_serial_number1,
           'fuel_type' => :fuel_type,
           'fuel_capacity_ltr' => :fuel_tanks_capacity,
           'holding_tank_ltr' => :holding_tanks_capacity,
           'hull_id' => :hull_id,
           'num_berths' => :berths_count,
+          'num_crew_berths' => :crew_berths_count,
           'num_heads' => :heads_count,
           'rpm_cruise_speed' => :cruise_speed_rpm,
           'rpm_max_speed' => :max_speed_rpm,
@@ -51,8 +55,12 @@ module Rightboat
           {api_key: [:presence, /[a-z\d\-]+/], company_id: [:presence, /\A\d+\z/]}
         end
 
+        def cleaned_api_key
+          @import.param['api_key'].strip
+        end
+
         def enqueue_jobs
-          doc = get("http://data.yatco.com/dataservice/#{@import.param['api_key']}/vessellist")
+          doc = get("http://data.yatco.com/dataservice/#{cleaned_api_key}/vessellist")
 
           doc.search("CompanyID[text()='#{@import.param['company_id']}']").each do |company|
             job = { vessel_id: company.parent.children.search('VesselID').first.text }
@@ -61,7 +69,7 @@ module Rightboat
         end
 
         def process_job(job)
-          doc = get("http://data.yatco.com/dataservice/#{@import.param['api_key']}/vesseldetails/#{job[:vessel_id]}")
+          doc = get("http://data.yatco.com/dataservice/#{cleaned_api_key}/vesseldetails/#{job[:vessel_id]}")
           boat = SourceBoat.new(importer: self)
           boat.office = { address_attributes: {} }
           boat.images = []
@@ -84,6 +92,7 @@ module Rightboat
               else
                 case
                 when key == 'model_year' && boat.model.blank? then boat.model = val
+                when key == 'description_showing_instructions' # ignore field including contact info
                 when key =~ /description/i && boat.description.blank? then boat.description = val
                 when key =~ /location_(region_name|state)/
                   boat.location = val if boat.location.blank?

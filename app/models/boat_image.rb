@@ -84,8 +84,20 @@ class BoatImage < ActiveRecord::Base
     file.file.present?
   end
 
+  GIF_REGEX = /^GIF8/
+  PNG_REGEX = /^#{Regexp.new("\x89PNG".force_encoding('binary'))}/
+  JPG_REGEX = /^#{Regexp.new("\xff\xd8\xff\xe0\x00\x10JFIF".force_encoding('binary'))}/
+  JPG2_REGEX = /^#{Regexp.new("\xff\xd8\xff\xe1(.*){2}Exif".force_encoding('binary'))}/
+
+  # see: http://stackoverflow.com/questions/4600679/detect-mime-type-of-uploaded-file-in-ruby#answer-16635245
   def mime_type_by_file_content(file_path)
-    FileMagic.new(FileMagic::MAGIC_MIME).file(file_path).split(';').first
+    case IO.read(file_path, 10)
+    when GIF_REGEX then 'image/gif'
+    when PNG_REGEX then 'image/png'
+    when JPG_REGEX then 'image/jpeg' # there are cases when filemagic recognizes jpg files with this header as application/octet-stream
+    when JPG2_REGEX then 'image/jpeg'
+    else FileMagic.new(FileMagic::MAGIC_MIME).file(file_path).split(';').first
+    end
   end
 
   private
@@ -96,7 +108,7 @@ class BoatImage < ActiveRecord::Base
                           when 'image/jpeg' then '.jpg'
                           when 'image/png' then '.png'
                           when 'image/gif' then '.gif'
-                          when 'image/bmp' then '.bmp'
+                          when 'image/bmp', 'image/x-ms-bmp' then '.bmp'
                           when 'image/tiff' then '.tif'
                           when 'image/vnd.adobe.photoshop' then '.psd'
                           end

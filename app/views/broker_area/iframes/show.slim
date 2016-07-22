@@ -5,14 +5,17 @@
   .row.boat-description
     .boat-specs.col-xs-12
       dl.dl-horizontal
-        dt Show only
-        dd= @iframe.user_boats_only? ? 'My boats' : 'All boats'
+        dt Show
+        dd= @iframe.user_boats_only? ? 'Only my boats' : 'All boats'
       dl.dl-horizontal
         dt Manufacturers
         dd= @iframe.filter_manufacturer_names&.join(', ') || 'Any'
       dl.dl-horizontal
         dt Countries
         dd= @iframe.filter_country_names&.join(', ') || 'Any'
+      dl.dl-horizontal
+        dt Items Layout
+        dd= image_tag("/icons/#{@iframe.items_layout}-view.png", size: '23x16', alt: '')
 
   h2 IFrame Preview
   iframe(src="#{broker_iframe_url(@iframe.token)}" width="100%" height="600" frameborder="0" style="border: 2px solid gray")

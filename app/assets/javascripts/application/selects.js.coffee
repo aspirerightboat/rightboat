@@ -45,14 +45,13 @@ $ ->
             callback()
   $('.manufacturers-picker, .models-picker').makemodelPickers()
 
-  $('.layout-mode-select')
-  .selectize
+  $('.layout-mode-select').selectize
     render:
       item: (data, escape) ->
-        '<div><img class="view-mode-icon" src="/icons/' + data.text.toLowerCase() + '-view.png"></div>'
+        '<div><img class="view-mode-icon" src="/icons/' + data.text + '-view.png"></div>'
       option: (data, escape) ->
-        '<div><img class="view-mode-icon" src="/icons/' + data.text.toLowerCase() + '-view.png"></div>'
-  .change ->
+        '<div><img class="view-mode-icon" src="/icons/' + data.text + '-view.png"></div>'
+  $('#layout_mode.layout-mode-select').change ->
     $('[data-layout-mode]').attr('data-layout-mode', @value)
     Cookies.set('layout_mode', @value)
 

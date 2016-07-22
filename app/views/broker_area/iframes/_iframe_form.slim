@@ -16,7 +16,10 @@
         = select_tag :countries, options_for_select(Country.country_options, @country_ids), \
                 id: 'countries_picker', class: 'select-dark', \
                 prompt: 'Any', placeholder: 'Any', multiple: true
-
+      .col-xs-12.field-item
+        = f.label :items_layout
+        = f.select :items_layout, options_for_select(ApplicationController::LAYOUT_MODES, f.object.items_layout), \
+                {}, class: 'layout-mode-select select-dark'
 
   .nice-buttons.text-center
     button.nice-button(type="submit")= @iframe.new_record? ? 'Create' : 'Save'

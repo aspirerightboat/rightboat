@@ -58,8 +58,7 @@ module ApplicationHelper
   end
 
   def layout_mode_options
-    opts = ApplicationController::LAYOUT_MODES.map { |m| [m.capitalize, m] }
-    options_for_select(opts, current_layout_mode)
+    options_for_select(ApplicationController::LAYOUT_MODES, current_layout_mode)
   end
 
   def options_for_country_code(selected_code = nil)

@@ -66,7 +66,7 @@ module BrokerArea
     private
 
     def iframe_params
-      params.require(:broker_iframe).permit(:user_boats_only)
+      params.require(:broker_iframe).permit(:user_boats_only, :items_layout)
     end
 
     def load_iframe

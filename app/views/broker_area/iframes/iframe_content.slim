@@ -13,9 +13,9 @@
                 .radio-buttons.text-center.field-row-height
                   = radio_button_tag :boat_type, '', nil, id: 'boat_type_all', checked: true
                   = label_tag :boat_type_all, 'All', for: 'boat_type_all'
-                  = radio_button_tag :boat_type, 'Power', nil, id: 'boat_type_power'
+                  = radio_button_tag :boat_type, 'power', nil, id: 'boat_type_power'
                   = label_tag :boat_type_power, 'Power', for: 'boat_type_power'
-                  = radio_button_tag :boat_type, 'Sail', nil, id: 'boat_type_sail'
+                  = radio_button_tag :boat_type, 'sail', nil, id: 'boat_type_sail'
                   = label_tag :boat_type_sail, 'Sail', for: 'boat_type_sail'
               .col-sm-6.field-row-height
                 = text_field_tag :q, nil, class: 'form-control', placeholder: 'Keyword search'
@@ -45,7 +45,7 @@
                         = select_tag :length_unit, length_unit_options, class: 'select-dark slider-length-select'
           .col-sm-2.filter-buttons
             button.nice-button(type="submit") Search
-  .row.boats-view(data-layout-mode="thumbnail" style="margin-top: 2em")
+  .row.boats-view(data-layout-mode="#{@iframe.items_layout}" style="margin-top: 2em")
     - @boats.each do |b|
       = render partial: 'boats/boat', locals: {boat: b, multiselectable: false, boat_message_required: false, \
               show_social_actions: false, broker_iframe: @iframe}

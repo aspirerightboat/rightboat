@@ -1,6 +1,10 @@
 @radio-color-normal: #FFF;
 @radio-back-color-normal: @rb-color-dark;
 
+//.radio-buttons {
+//  overflow: hidden;
+//}
+
 input[type="radio"] {
   &:not(:checked),
   &:checked {
@@ -59,3 +63,13 @@ input[type="radio"] {
     border-color: darken(@radio-color-normal, 0.7);
   }
 }
+
+//.dark-radio-buttons {
+//  input[type="radio"] {
+//    &:checked, &:not(:checked) {
+//      & + label:before { border: 2px solid #13022c; }
+//      & + label:after { background: #13022c; }
+//      &:focus + label:before { border: 2px solid #13023e; }
+//    }
+//  }
+//}

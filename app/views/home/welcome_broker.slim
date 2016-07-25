@@ -2,66 +2,80 @@
   h1
     strong Rightboat for Yacht Brokers
 
+#rb-advantages
+  .rb-advantage.bg-cover(style="background-image: url(#{asset_path('rb-advantage1.png')});")
+    .row
+      .col-sm-6.col-sm-offset-6
+        .caption
+          | <b>No</b> monthly<br/>advertising costs
+  .rb-advantage.bg-cover(style="background-image: url(#{asset_path('rb-advantage3.png')});")
+    .row
+      .col-sm-6.col-sm-offset-6
+        .caption
+          | List all your boats<br/>for <b>FREE</b>
+  .rb-advantage.bg-cover(style="background-image: url(#{asset_path('rb-advantage2.png')});")
+    .row
+      .col-sm-6.col-sm-offset-6
+        .caption
+          | Pay <b>ONLY</b><br/>for great enquiries
+
 #main_content.container
   .row
     .col-xs-12.col-sm-6
-      h2
+      .em-section
+        h2 Broker Registration
+        = form_tag register_broker_path, class: 'simple-ajax-form', id: 'register_broker_form', remote: true, data: {type: :json} do
+          .row
+            .col-xs-12
+              p If you are a professional yacht broker, provide your details below and one of our team will be in touch.
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = text_field_tag :company_name, nil, placeholder: 'Company Name', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-sm-6.col-xs-12
+              .form-group
+                = email_field_tag :email, '', placeholder: 'Main email address', class: 'form-control', 'data-validetta' => 'required,email'
+            .col-sm-6.col-xs-12
+              .form-group
+                = phone_field_tag :phone, '', placeholder: 'Phone', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-sm-2.col-xs-12
+              .form-group
+                = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title simple-select-dark'
+            .col-sm-4.col-xs-12
+              .form-group
+                = text_field_tag :first_name, nil, placeholder: 'First Name', id: 'first_name', class: 'form-control', 'data-validetta' => 'required'
+            .col-sm-6.col-xs-12
+              .form-group
+                = text_field_tag :last_name, nil, placeholder: 'Last name', id: 'last_name', class: 'form-control', 'data-validetta' => 'required'
+          .row
+            .col-xs-12.nice-buttons
+              button.nice-button(type="submit" style="min-width: 150px;") Send
+
+          .row(style="margin-top: 2em;")
+            .col-xs-12
+              p
+                ' Do you have an account already?
+                = link_to 'Login', '#', class: 'user-login'
+
+    .col-xs-12.col-sm-6
+      h1.no-top
         | Welcome to the World’s first, FREE to list, boat sales website.
-      h5
-        | Some of the reasons why we are the fastest growing boat for sales site:
+      h3
+        | Register as a professional broker member and list all your boats for FREE
+      ul.list-disc
+        li
+          | List your boats for FREE, with no set up costs, and only pay when you receive great enquiries!
+      h3 We're reaching more active boat buyers
+      ul.list-disc
+        li
+          | We pay search engines 1000’s every week to advertise YOUR boats for sale - which means we bring active buyers to your listings, directly positioning them on the right page to view your boats for sale.
 
-      h3 ● Register and list all your boats for free!
-      p
-        | No ongoing monthly advertising charges
-
-      h3 ● Reach ‘000s of serious boat buyers
-      p
-        | Rightboat makes it easy for buyers - clean data, no adverts, easy browsing and searching, custom alerts for when new boats are listed
-
-      h3 ● Free online digital marketing
-      p
-        | Rightboat uses state of the art digital marketing to find serious buyers for your boats
-
-      h3 ● Pay by results only
-      p
-        | Rightboat only charges brokers for good quality leads.
-
-    .col-xs-12.col-sm-6.em-section
-      h2 Broker Registration
-      = form_tag register_broker_path, class: 'simple-ajax-form', id: 'register_broker_form', remote: true, data: {type: :json} do
-        .row
-          .col-xs-12
-            p If you are a professional yacht broker, provide your details below and one of our team will be in touch.
-        .row
-          .col-sm-6.col-xs-12
-            .form-group
-              = text_field_tag :company_name, nil, placeholder: 'Company Name', class: 'form-control', 'data-validetta' => 'required'
-        .row
-          .col-sm-6.col-xs-12
-            .form-group
-              = email_field_tag :email, '', placeholder: 'Main email address', class: 'form-control', 'data-validetta' => 'required,email'
-          .col-sm-6.col-xs-12
-            .form-group
-              = phone_field_tag :phone, '', placeholder: 'Phone', class: 'form-control', 'data-validetta' => 'required'
-        .row
-          .col-sm-2.col-xs-12
-            .form-group
-              = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title simple-select-dark'
-          .col-sm-4.col-xs-12
-            .form-group
-              = text_field_tag :first_name, nil, placeholder: 'First Name', id: 'first_name', class: 'form-control', 'data-validetta' => 'required'
-          .col-sm-6.col-xs-12
-            .form-group
-              = text_field_tag :last_name, nil, placeholder: 'Last name', id: 'last_name', class: 'form-control', 'data-validetta' => 'required'
-        .row
-          .col-xs-12.nice-buttons
-            button.nice-button(type="submit" style="min-width: 150px;") Send
-
-        .row(style="margin-top: 2em;")
-          .col-xs-12
-            p
-              ' Do you have an account already?
-              = link_to 'Login', '#', class: 'user-login'
+      h3 Regional, national, or international boat buyers
+      ul.list-disc
+        li
+          | Whatever your market, our system matches your boats with our private member database.
 
 #broker_registered_popup.modal.fade
   .modal-dialog
@@ -79,3 +93,14 @@
 
         p.nice-buttons
           button.nice-button(type="button" aria-label="Close" data-dismiss="modal" style="min-width: 100px;") Ok
+
+javascript:
+  $('#rb-advantages').slick({
+    autoplay: true,
+    autoplaySpeed: 3000,
+    dots: true,
+    infinite: true,
+    speed: 500,
+    fade: true,
+    cssEase: 'linear'
+  });

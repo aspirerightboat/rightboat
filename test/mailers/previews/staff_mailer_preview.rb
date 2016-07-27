@@ -31,4 +31,8 @@ class StaffMailerPreview < ActionMailer::Preview
   def lead_quality_check
     StaffMailer.lead_quality_check(Lead.last.id)
   end
+
+  def broker_added_card
+    StaffMailer.broker_added_card(StripeCard.last.user.id)
+  end
 end

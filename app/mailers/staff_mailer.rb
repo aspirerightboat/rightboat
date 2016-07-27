@@ -51,4 +51,10 @@ class StaffMailer < ApplicationMailer
     to_email = RBConfig[:lead_quality_check_email]
     mail(to: to_email, subject: "#{@lead.boat.user.name} wants to review lead ##{@lead.id}")
   end
+
+  def broker_added_card(user_id)
+    @user = User.find(user_id)
+    @card = @user.stripe_card
+    mail(subject: 'Broker added stripe card on registration – Rightboat')
+  end
 end

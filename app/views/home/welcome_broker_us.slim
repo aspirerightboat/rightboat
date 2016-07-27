@@ -1,3 +1,8 @@
+- content_for :head_scripts do
+  script(type="text/javascript" src="https://js.stripe.com/v2/")
+  javascript:
+    Stripe.setPublishableKey('#{raw STRIPE_PUBLISHABLE_KEY}');
+
 - content_for :header_text do
   h1
     strong Rightboat for Yacht Brokers
@@ -50,12 +55,12 @@
           .row
             .col-sm-4.nice-buttons
               button.nice-button(type="submit" style="min-width: 150px;") Send
-
             .col-sm-8
               p
                 ' Do you have an account already?
                 br
                 = link_to 'Login here', '#', class: 'user-login'
+      #next_steps
 
     .col-xs-12.col-sm-6
       h1.no-top Broker Member Benefits
@@ -77,23 +82,6 @@
           | No more monthly subscriptions - payment for great results only.
         li
           | We only get paid on results – That’s the quality leads generated and sent directly to you.
-
-#broker_registered_popup.modal.fade
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(aria-label="Close" data-dismiss="modal" type="button")
-          span(aria-hidden="true") &times;
-        .h Dear <span id="broker_name">broker</span>
-      .modal-body
-        p
-          | Welcome to Rightboat. Our team will be in touch soon.
-          | <br>Alternatively please contact us on: <b>+44 333 322 2628</b>
-        p
-          | We look forward to working with you to drive sales.
-
-        p.nice-buttons
-          button.nice-button(type="button" aria-label="Close" data-dismiss="modal" style="min-width: 100px;") Ok
 
 javascript:
   $('#rb-advantages').slick({

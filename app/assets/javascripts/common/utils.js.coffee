@@ -45,7 +45,7 @@ $ ->
           ), 10
           window.location = json.location
         else if json.alert
-          $('<div class="alert alert-info">' + json.alert + '</div>').prependTo($form).hide().show(200)
+          $form.showFormError(json.alert)
     .on 'ajax:error', (e, xhr) ->
       $('.alert', $form).remove()
       if xhr.status == '200' # goes here when attached file
@@ -57,3 +57,7 @@ $ ->
         $.each errors, (i, msg) ->
           $errors.append('<div>' + msg + '</div>')
         $errors.hide().show(200)
+
+  $.fn.showFormError = (msg) ->
+    $('.alert', @).remove()
+    $('<div class="alert alert-info"/>').text(msg).prependTo(@).hide().show(200)

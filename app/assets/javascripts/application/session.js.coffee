@@ -38,28 +38,26 @@ $ ->
   onSubmit = (e) ->
     e.preventDefault()
     $this = $(e.target)
-    $this.find('button[type=submit]').attr('disabled', 'disabled')
+    $this.find('button[type=submit]').prop('disabled', true)
     $this.find('.alert').remove()
     url = $(e.target).attr('action')
-    $.ajax
-      method: 'POST'
-      dataType: 'JSON'
-      url: url
-      data: $this.serializeObject()
-    .success (response)->
-      # TODO: update page using ajax result instead of page refresh
-      return_to = response.return_to
+    $.post(url, $this.serializeObject(), null, 'json')
+    .done (data) ->
+      return_to = data.return_to
       if return_to
         window.location = return_to
       else
         window.location.reload()
-    .error (response)->
-      errors = response.responseJSON.errors
-      $errors = $('<div class="alert alert-danger">')
-      $.each errors, ->
-        $errors.append(this + '<br>')
-      $this.prepend($errors)
-    .always =>
-      $this.find('button[type=submit]').removeAttr('disabled')
+    .fail (xhr) ->
+      $errors = $('<div class="alert alert-danger"/>')
+      if (json = xhr.responseJSON)
+        errors = json.errors
+        $.each errors, ->
+          $errors.append(this + '<br>')
+      else
+        $errors.text('Something went wrong')
+      $errors.prependTo($this)
+    .always ->
+      $this.find('button[type=submit]').prop('disabled', false)
 
   $('.session-form').rbValidetta(onValid: onSubmit)

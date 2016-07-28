@@ -45,9 +45,6 @@ class BrokerAreaController < ApplicationController
     redirect_to({action: :details}, notice: 'coming soon')
   end
 
-  def charges
-  end
-
   def messages
   end
 

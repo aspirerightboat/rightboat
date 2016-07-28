@@ -1,8 +1,4 @@
-- content_for :head_scripts do
-  script(type="text/javascript" src="https://js.stripe.com/v2/")
-  javascript:
-    Stripe.setPublishableKey('#{raw STRIPE_PUBLISHABLE_KEY}');
-
+- content_for :head_scripts, render('shared/stripe_js')
 - content_for :header_text do
   h1
     strong Rightboat for Yacht Brokers

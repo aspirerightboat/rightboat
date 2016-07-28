@@ -35,4 +35,8 @@ class StaffMailerPreview < ActionMailer::Preview
   def broker_added_card
     StaffMailer.broker_added_card(StripeCard.last.user.id)
   end
+
+  def broker_updated_card
+    StaffMailer.broker_updated_card(StripeCard.last.user.id)
+  end
 end

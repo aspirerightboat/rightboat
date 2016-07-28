@@ -155,7 +155,6 @@ Rails.application.routes.draw do
     post :change_password
     get :preferences
     post :update_preferences
-    get :charges
     get :messages
     get :boats_overview
     get :boats_manager
@@ -175,6 +174,11 @@ Rails.application.routes.draw do
       end
     end
     resources :iframes
+    resources :charges, only: [:index] do
+      collection do
+        post :update_card
+      end
+    end
   end
   get 'if/:token', to: 'broker_area/iframes#iframe_content', as: :broker_iframe
 

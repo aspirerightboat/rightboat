@@ -14,7 +14,7 @@ class SessionsController < Devise::SessionsController
 
   def failure
     warden_message = warden.message || :unauthenticated
-    error_msg = find_message(warden_message, scope: 'devise.failure', authentication_keys: 'username/email')
+    error_msg = find_message(warden_message, scope: 'devise.failure', authentication_keys: 'email')
     render json: { success: false, errors: [error_msg] }, status: 401
   end
 

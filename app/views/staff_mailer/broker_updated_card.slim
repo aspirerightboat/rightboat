@@ -1,0 +1,15 @@
+p
+  | Dear Manager,
+
+p
+  |
+    Broker #{link_to @user.name, admin_user_url(@user)} updated stripe card:
+    <br>
+    <br>Brand: <b>#{@card.brand}</b>
+    <br>Country: <b>#{@card.country_iso}</b>
+    <br>Last digits: <b>#{@card.last4.presence || @card.dynamic_last4}</b>
+    <br>Expiration month: <b>#{@card.exp_month}</b>
+    <br>Expiration year: <b>#{@card.exp_year}</b>
+
+p
+  | You can manage last registered brokers #{link_to 'here', admin_users_url(q: {role_eq: 2})}.

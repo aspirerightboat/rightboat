@@ -1,4 +1,19 @@
-= render layout: 'broker_area/common/broker_layout', locals: {tab: :my_account, sidebar: render('my_account_sidebar')} do
+- content_for :head_scripts, render('shared/stripe_js')
+
+= render layout: 'broker_area/common/broker_layout', \
+        locals: {tab: :my_account, sidebar: render('broker_area/my_account_sidebar')} do
+  h1 Update your card details
+  p
+    |
+      Rightboat will NEVER see these details – they are
+      sent directly from this form and stored on Stripe’s (our Payment Gateway) secure servers.
+  p
+    | Rightboat will charge only for genuine leads delivered to you.
+  #update_charges_card
+    - if @card
+      = render 'card_info'
+    = render partial: 'shared/stripe_card_form', locals: {form_url: update_card_broker_area_charges_path}
+
   h1 Charges and Payment
   p
     |

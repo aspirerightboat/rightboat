@@ -57,4 +57,10 @@ class StaffMailer < ApplicationMailer
     @card = @user.stripe_card
     mail(subject: 'Broker added stripe card on registration – Rightboat')
   end
+
+  def broker_updated_card(user_id)
+    @user = User.find(user_id)
+    @card = @user.stripe_card
+    mail(subject: 'Broker updated stripe card – Rightboat')
+  end
 end

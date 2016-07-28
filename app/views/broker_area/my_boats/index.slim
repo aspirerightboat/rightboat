@@ -7,9 +7,9 @@
     h5 Office
     = select_tag :office_id, options_from_collection_for_select(@offices, :id, :name, params[:office_id]), \
                 prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
-    h5 Manufacturer name contains
+    h5 Manufacturer Name contains
     = text_field_tag :manufacturer_q, params[:manufacturer_q], class: 'form-control'
-    h5 Model name contains
+    h5 Model Name contains
     = text_field_tag :model_q, params[:model_q], class: 'form-control'
     h5 Marketing Status
     = select_tag :offer_status, options_for_select(Boat::OFFER_STATUSES.map { |s| [s.humanize, s] }, params[:offer_status]), \
@@ -39,10 +39,10 @@
         th Source ID
         th Image
         th Name
-        th Makemodel
+        th Make / Model
         th Price
         th Marketing Status
-        th Righboat Published
+        th Rightboat Published
         th Office
         th Location
         th
@@ -59,7 +59,7 @@
             - if boat.poa?
               abbr(title="Price on Application") POA
             - else
-              | #{boat.price&.to_i}&nbsp;<abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr> #{boat.vat_rate&.name}
+              | <abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr>&nbsp;#{boat.price&.to_i} #{boat.vat_rate&.name}
           td #{boat.offer_status.humanize}
           td
             = boat.published? ? 'Published' : 'Not Published'

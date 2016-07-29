@@ -57,6 +57,7 @@ class User < ActiveRecord::Base
   has_many :deleted_boats, class_name: 'Boat', foreign_key: :deleted_by_user_id
   has_many :broker_iframes
   belongs_to :registered_from_affiliate, class_name: 'User'
+  has_one :stripe_card, dependent: :destroy
 
   mount_uploader :avatar, AvatarUploader
 
@@ -69,6 +70,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of :first_name, :last_name, unless: :company?
   validates_presence_of :company_name, if: :company?
+  validates_uniqueness_of :email, if: ->(u) { u.new_record? || u.email_changed? }
   validates_url :company_weburl, allow_blank: true, if: :company?
 
   before_create { build_user_alert } # will create user_alert

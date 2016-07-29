@@ -149,7 +149,9 @@ Rails.application.routes.draw do
 
   get 'welcome-broker', to: 'home#welcome_broker', as: :welcome_broker
   get 'welcome-broker-us', to: 'home#welcome_broker_us', as: :welcome_broker_us
-  resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:create]
+  resource :register_broker, controller: :register_broker, path: 'register-broker', only: [:create] do
+    post :add_card
+  end
 
   resource :broker_area, controller: :broker_area, path: 'broker-area', only: [:show] do
     get :getting_started
@@ -158,7 +160,6 @@ Rails.application.routes.draw do
     post :change_password
     get :preferences
     post :update_preferences
-    get :charges
     get :messages
     get :boats_overview
     get :boats_manager
@@ -178,6 +179,11 @@ Rails.application.routes.draw do
       end
     end
     resources :iframes
+    resources :charges, only: [:index] do
+      collection do
+        post :update_card
+      end
+    end
   end
   get 'if/:token', to: 'broker_area/iframes#iframe_content', as: :broker_iframe
 

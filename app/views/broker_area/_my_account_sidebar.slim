@@ -1,5 +1,5 @@
 li(class="#{'active' if action_name == 'details'}")= link_to 'Business Details', details_broker_area_path
 li(class="#{'active' if action_name == 'preferences'}")= link_to 'Preferences', preferences_broker_area_path
-li(class="#{'active' if action_name == 'charges'}")= link_to 'Charges', charges_broker_area_path
+li(class="#{'active' if controller_name == 'charges'}")= link_to 'Charges', broker_area_charges_path
 li(class="#{'active' if action_name == 'messages'}")= link_to 'Messages', messages_broker_area_path
 li(class="#{'active' if action_name == 'account_history'}")= link_to 'Account History', account_history_broker_area_path

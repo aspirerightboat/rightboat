@@ -75,8 +75,9 @@ gem 'xxhash' # calc simple hash 10x faster than Digest::SHA1.hexdigest
 gem 'ruby-filemagic' # determine mime-type by file content. requires "brew install libmagic" on OS X and "apt-get install libmagic-dev" on Ubuntu
 
 gem 'rails4-autocomplete'
-
 gem 'whenever', require: false
+
+gem 'stripe'
 
 group :development, :test do
   gem 'spring'

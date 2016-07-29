@@ -1,0 +1,9 @@
+.em-section
+  h2 Please enter your Credit Card details
+  p
+    |
+      Rightboat will NEVER see these details – they are
+      sent directly from this form and stored on Stripe’s (our Payment Gateway) secure servers.
+  p
+    | Rightboat will charge only for genuine leads delivered to you.
+  = render partial: 'shared/stripe_card_form', locals: {form_url: add_card_register_broker_path}

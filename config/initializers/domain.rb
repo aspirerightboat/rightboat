@@ -1,0 +1,2 @@
+RIGHTBOAT_DOMAIN = 'www.rightboat.com'
+RIGHTBOAT_DOMAIN_URL = "https://#{RIGHTBOAT_DOMAIN}"

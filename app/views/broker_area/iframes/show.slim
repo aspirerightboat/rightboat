@@ -18,9 +18,10 @@
         dd= image_tag("/icons/#{@iframe.items_layout}-view.png", size: '23x16', alt: '')
 
   h2 IFrame Preview
-  iframe(src="#{broker_iframe_url(@iframe.token)}" width="100%" height="600" frameborder="0" style="border: 2px solid gray")
+  - url = Rails.env.production? ? RIGHTBOAT_DOMAIN_URL + broker_iframe_path(@iframe.token) : broker_iframe_url(@iframe.token)
+  iframe(src="#{url}" width="100%" height="600" frameborder="0" style="border: 2px solid gray")
 
   h2 IFrame code
   p
     textarea(rows="5" cols="100" class="form-control")
-      | <iframe src="#{broker_iframe_url(@iframe.token)}" width="100%" height="600" frameborder="0"></iframe>
+      | <iframe src="#{url}" width="100%" height="600" frameborder="0"></iframe>

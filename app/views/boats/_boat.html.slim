@@ -1,7 +1,9 @@
-- boat_url = makemodel_boat_path(boat)
 - boat_message_required = !local_assigns[:boat_message_required].nil? ? local_assigns[:boat_message_required] : boat && boat.user.comment_requested?
 - show_social_actions = !local_assigns[:show_social_actions].nil? ? local_assigns[:show_social_actions] : true
 - broker_iframe = local_assigns[:broker_iframe]
+- boat_url = makemodel_boat_path(boat)
+- if broker_iframe
+  - boat_url = "#{boat_url}?iframe=#{broker_iframe.token}"
 
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12
   .boat-thumb.thumbnail.boat-view(class="#{('multiselectable' if local_assigns[:multiselectable])}"
@@ -37,7 +39,7 @@
             = favourite_link_to boat
             = render 'shared/social_share', boat: boat
         - if broker_iframe
-          = link_to 'View Boat Summary', "#{boat_url}?iframe=#{broker_iframe.token}", class: 'btn-flat pull-right btn-black view-summary', target: '_blank'
+          = link_to 'View Boat Summary', boat_url, class: 'btn-flat pull-right btn-black view-summary', target: '_blank'
         - else
           = link_to 'View Boat Summary', boat_url, class: 'btn-flat pull-right btn-black view-summary'
       = yield if block_given?

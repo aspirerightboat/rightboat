@@ -2,6 +2,7 @@ class BrokerIframe < ActiveRecord::Base
   serialize :filters
 
   belongs_to :user
+  has_many :iframe_clicks, dependent: :nullify
 
   before_validation :ensure_token
 

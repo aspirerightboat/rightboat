@@ -1,5 +1,5 @@
 .container(style="margin-top: 8px")
-  = form_tag search_path, method: :get, class: 'row', id: 'iframe_search_form', data: {iframe: @iframe.token} do
+  = form_tag search_path(iframe: @iframe.token), method: :get, class: 'row', id: 'iframe_search_form', data: {iframe: @iframe.token} do
     .col-md-3
       .iframe-header
         a.iframe-header-logo(href="/")

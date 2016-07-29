@@ -173,6 +173,7 @@ Rails.application.routes.draw do
         post :upload_image
         post :remove_image
         post :move_image
+        post :toggle_published
       end
       collection do
         get :find_template

@@ -2,6 +2,7 @@ module BrokerArea
   class MyBoatsController < CommonController
     protect_from_forgery except: :upload_image
     include Rightboat::BoatDescriptionUtils
+    before_filter :load_boat, only: [:edit, :show, :update, :destroy, :upload_image, :remove_image, :move_image, :toggle_published]
 
     def index
       @boats = current_broker.boats.not_deleted.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
@@ -30,18 +31,15 @@ module BrokerArea
     end
 
     def edit
-      load_boat
       @boat.price = @boat.price.to_i if @boat.price == @boat.price.to_i
       @specs_hash = @boat.boat_specifications.specs_hash
     end
 
     def show
-      load_boat
       @boat_spec_by_name = @boat.boat_specifications.includes(:specification).index_by { |bs| bs.specification.name }
     end
 
     def update
-      load_boat
       assign_boat_data
 
       if @boat.save
@@ -56,13 +54,11 @@ module BrokerArea
     end
 
     def destroy
-      load_boat
       @boat.destroy
       redirect_to broker_area_my_boats_path, notice: 'Boat deleted successfully.'
     end
 
     def upload_image
-      load_boat
       bi = @boat.boat_images.new(file: params[:file])
       bi.position = (@boat.boat_images.maximum(:position) || 0) + 10
 
@@ -74,7 +70,6 @@ module BrokerArea
     end
 
     def remove_image
-      load_boat
       bi = @boat.boat_images.find(params[:image])
 
       if bi.destroy
@@ -85,7 +80,6 @@ module BrokerArea
     end
 
     def move_image
-      load_boat
       bi = @boat.boat_images.find(params[:image])
       bi_prev = (@boat.boat_images.find(params[:prev]) if params[:prev].present?)
       bi_next = (@boat.boat_images.find(params[:next]) if params[:next].present?)
@@ -127,6 +121,14 @@ module BrokerArea
         )
       end
       render json: data
+    end
+
+    def toggle_published
+      if @boat.update published: params[:published]
+        head :ok
+      else
+        head :unprocessable_entity
+      end
     end
 
     private

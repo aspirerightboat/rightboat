@@ -1,4 +1,15 @@
 $ ->
+
+  $('.toggle-published').change ->
+    $this = $(this)
+    published = $this.val()
+    $.ajax
+      url: $this.closest('form').attr('action')
+      type: 'POST'
+      data: { published: published }
+      success: (data) ->
+        $this.closest('td').find('.published-status').text($this.find('option:selected').text())
+
   if $('.boat-form').length
     $makerInput = $('#manufacturer_picker')
     $modelInput = $('#model_picker')

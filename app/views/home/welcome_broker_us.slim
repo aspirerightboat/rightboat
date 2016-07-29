@@ -24,39 +24,39 @@
   .row(style="margin: 0 0 4em")
     .col-xs-12.col-sm-6
       .em-section
-        h2 Simply complete the short form below and someone from our team will be in touch.
-        = form_tag register_broker_path, class: 'simple-ajax-form', id: 'register_broker_form', remote: true, data: {type: :json} do
-          .row
-            .col-sm-12
-              .form-group
-                = text_field_tag :company_name, nil, placeholder: 'Company Name', class: 'form-control', 'data-validetta' => 'required'
-          .row
-            .col-sm-12
-              .form-group
-                = email_field_tag :email, '', placeholder: 'Main email address', class: 'form-control', 'data-validetta' => 'required,email'
-          .row
-            .col-sm-12
-              .form-group
-                = phone_field_tag :phone, '', placeholder: 'Phone', class: 'form-control', 'data-validetta' => 'required'
-          .row
-            .col-sm-2.col-xs-12
-              .form-group
-                = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title simple-select-dark'
-            .col-sm-4.col-xs-12
-              .form-group
-                = text_field_tag :first_name, nil, placeholder: 'First Name', id: 'first_name', class: 'form-control', 'data-validetta' => 'required'
-            .col-sm-6.col-xs-12
-              .form-group
-                = text_field_tag :last_name, nil, placeholder: 'Last name', id: 'last_name', class: 'form-control', 'data-validetta' => 'required'
-          .row
-            .col-sm-4.nice-buttons
-              button.nice-button(type="submit" style="min-width: 150px;") Send
-            .col-sm-8
-              p
-                ' Do you have an account already?
-                br
-                = link_to 'Login here', '#', class: 'user-login'
-      #next_steps
+        .wizard-step
+          h2 Simply complete the short form below and someone from our team will be in touch.
+          = form_tag register_broker_path, class: 'simple-ajax-form', id: 'register_broker_form', remote: true, data: {type: :json} do
+            .row
+              .col-sm-12
+                .form-group
+                  = text_field_tag :company_name, nil, placeholder: 'Company Name', class: 'form-control', 'data-validetta' => 'required'
+            .row
+              .col-sm-12
+                .form-group
+                  = email_field_tag :email, '', placeholder: 'Main email address', class: 'form-control', 'data-validetta' => 'required,email'
+            .row
+              .col-sm-12
+                .form-group
+                  = phone_field_tag :phone, '', placeholder: 'Phone', class: 'form-control', 'data-validetta' => 'required'
+            .row
+              .col-sm-2.col-xs-12
+                .form-group
+                  = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title simple-select-dark'
+              .col-sm-4.col-xs-12
+                .form-group
+                  = text_field_tag :first_name, nil, placeholder: 'First Name', id: 'first_name', class: 'form-control', 'data-validetta' => 'required'
+              .col-sm-6.col-xs-12
+                .form-group
+                  = text_field_tag :last_name, nil, placeholder: 'Last name', id: 'last_name', class: 'form-control', 'data-validetta' => 'required'
+            .row
+              .col-sm-4.nice-buttons
+                button.nice-button(type="submit" style="min-width: 150px;") Send
+              .col-sm-8
+                p
+                  ' Do you have an account already?
+                  br
+                  = link_to 'Login here', '#', class: 'user-login'
 
     .col-xs-12.col-sm-6
       h1.no-top Broker Member Benefits

@@ -46,10 +46,7 @@ class HomeController < ApplicationController
   end
 
   def welcome_broker
-    country_code = Rightboat::DbIpApi.country(request.remote_ip)
-    if country_code && country_code == 'US'
-      redirect_to welcome_broker_us_path and return
-    end
+    redirect_to welcome_broker_us_path if session[:country] == 'US'
   end
 
   def welcome_broker_us

@@ -131,4 +131,13 @@ class ApplicationController < ActionController::Base
       redirect_to url
     end
   end
+
+  def favorite_currency_symbol
+    if session[:country].present?
+      sym = Country.find_by(iso: session[:country])&.currency
+      return sym if sym.in?(%w(£ €))
+    end
+    '$'
+  end
+  helper_method :favorite_currency_symbol
 end

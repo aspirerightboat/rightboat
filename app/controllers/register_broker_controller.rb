@@ -10,7 +10,7 @@ class RegisterBrokerController < ApplicationController
       StaffMailer.broker_registered_notify_admin(user.id).deliver_later
       session[:registered_user_id] = user.id
 
-      render json: {add_card_step: render_to_string(partial: 'add_card_step')}
+      render json: {next_steps: render_to_string(partial: 'next_steps', locals: {broker_name: user.name})}
     else
       render json: user.errors.full_messages, root: false, status: 422
     end
@@ -36,7 +36,7 @@ class RegisterBrokerController < ApplicationController
 
     session.delete(:registered_user_id)
 
-    render json: {thank_you_step: render_to_string(partial: 'thank_you_step', locals: {broker_name: user.name})}
+    render json: {}
   rescue Stripe::CardError => e
     render json: {error: e.message}, status: :unprocessable_entity
   end

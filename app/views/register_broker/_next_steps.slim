@@ -1,0 +1,31 @@
+.wizard-step#deal_step
+  h2 The Deal
+  p
+    |
+      It's really simple – no fees for listing your boats (list as many as you like!).
+      You only pay for each quality lead delivered to you at a flat rate of #{favorite_currency_symbol}15 per lead.
+  p
+    | It really is payment by results.
+  form(action="")
+    p
+      input.inverse#agree_checkbox(type="checkbox")
+      label(for="agree_checkbox") I agree to Rightboat Limited's standard <a href="/toc" target="_blank">terms and conditions</a>
+  .nice-buttons
+    button.nice-button(type="button" style="min-width: 150px;") Next
+.wizard-step.hidden#card_step
+  h2 Please enter your Credit Card details
+  p
+    |
+      Rightboat will NEVER see these details – they are
+      sent directly from this form and stored on Stripe’s (our Payment Gateway) secure servers.
+  p
+    | Rightboat will charge only for genuine leads delivered to you.
+  = render partial: 'shared/stripe_card_form', locals: {form_url: add_card_register_broker_path}
+.wizard-step.hidden#thank_you_step
+  h2 Dear #{broker_name}
+  p
+    |
+      Welcome to Rightboat. Our team will be in touch soon.
+      <br>Alternatively please contact us on: <b>+44 333 322 2628</b>
+  p
+    | We look forward to working with you to drive sales.

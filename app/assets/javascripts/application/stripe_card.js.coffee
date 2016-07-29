@@ -1,6 +1,6 @@
 $ ->
   $.fn.stripeCardForm = (onCardSaved) ->
-    $card_form = $('#stripe_card_form')
+    $card_form = @
     $('.card-fields-number input', $card_form).payment('formatCardNumber')
     $('.card-fields-expire input', $card_form).payment('formatCardExpiry')
     $('.card-fields-cvc input', $card_form).payment('formatCardCVC')
@@ -52,13 +52,19 @@ $ ->
   $('#register_broker_form').each ->
     $broker_form = $(@)
     $broker_form.on 'ajax:success', (e, data) ->
-      $broker_form.closest('.em-section').slideUp(200)
-      $('#next_steps').append(data.add_card_step)
-      $('#stripe_card_form')
-      .closest('.em-section').hide().slideDown(200).end()
-      .stripeCardForm ($form, data) ->
-        $form.closest('.em-section').slideUp(200)
-        $(data.thank_you_step).appendTo('#next_steps').hide().slideDown(200)
+      $broker_form.closest('.wizard-step').slideUp(200)
+      .parent().append(data.next_steps)
+      $deal_step = $('#deal_step')
+      $deal_step.hide().slideDown(200)
+      .find('button').click ->
+        if $('input[type=checkbox]', $deal_step).is(':checked')
+          $deal_step.slideUp()
+          $('#card_step').removeClass('hidden').hide().slideDown(200)
+          $('#stripe_card_form').stripeCardForm ($form, data) ->
+            $form.closest('.wizard-step').slideUp(200)
+            $('#thank_you_step').removeClass('hidden').hide().slideDown(200)
+        else
+          $deal_step.find('form').showFormError('You must agree with terms and conditions')
 
   $('#update_charges_card').each ->
     $wraper = $(@)

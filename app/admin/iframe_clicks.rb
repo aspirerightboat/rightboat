@@ -4,7 +4,7 @@ ActiveAdmin.register IframeClick do
 
   config.sort_order = 'id_desc'
 
-  filter :broker_iframe_user_id, as: :select, collection: User.companies.order(:company_name)
+  filter :broker_iframe_user_id, as: :select, collection: User.companies
   filter :month, as: :select, collection: (1..12)
   preserve_default_filters!
 

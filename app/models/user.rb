@@ -58,6 +58,7 @@ class User < ActiveRecord::Base
   has_many :broker_iframes
   belongs_to :registered_from_affiliate, class_name: 'User'
   has_one :stripe_card, dependent: :destroy
+  has_one :facebook_user_info, dependent: :destroy
 
   mount_uploader :avatar, AvatarUploader
 

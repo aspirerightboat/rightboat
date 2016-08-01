@@ -9,7 +9,6 @@
         #login-content.row
           .col-sm-6
             h2.text-center Sign In
-            p If you already have an account, please enter your details:
             = form_for :user, url: user_session_path, html: {class: 'session-form'} do |f|
               .form-group
                 = f.label :email, 'Account'
@@ -24,6 +23,7 @@
                 = button_tag 'Login', type: 'submit', class: 'btn-flat btn-block'
               .form-group
                 = link_to 'Forgotten your password?', new_user_password_path, id: 'forgot-link'
+            = link_to 'Login with Facebook', '/auth/facebook', class: 'fb-btn', rel: 'nofollow'
           .col-sm-6
             h2.text-center Join for free
             p Sign up now for free and discover how easy it is to keep up to date with THE latest boats for sale. Find your right boat, and tailor your voyage to finding your next boat.

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     get 'sign-in', to: 'home#index', as: :new_user_session, defaults: { popup_login: true }
     post 'sign-in', to: 'sessions#create', as: :user_session
     delete 'sign-out', to: 'sessions#destroy', as: :destroy_user_session
+    get '/auth/:provider/callback', to: 'sessions#facebook_login', as: :facebook_login
     post 'sign-up', to: 'registrations#create', as: :user_registration
     put 'my-details', to: 'registrations#update', as: :user_profile
     get 'confirm-email', to: 'registrations#confirm_email', as: :confirm_email

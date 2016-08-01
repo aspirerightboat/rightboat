@@ -280,6 +280,7 @@ GEM
     has_scope (0.6.0)
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
+    hashie (3.4.4)
     highline (1.6.21)
     htmlentities (4.3.4)
     http (0.6.4)
@@ -305,6 +306,7 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     json (1.8.3)
+    jwt (1.5.1)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -353,6 +355,7 @@ GEM
       connection_pool (~> 2.0)
       optionable (~> 0.2.0)
     multi_json (1.11.2)
+    multi_xml (0.5.5)
     multipart-post (2.0.0)
     mysql2 (0.3.18)
     naught (1.0.0)
@@ -366,6 +369,20 @@ GEM
       mini_portile2 (~> 2.0.0.rc2)
     ntlm-http (0.1.1)
     oauth (0.5.1)
+    oauth2 (1.1.0)
+      faraday (>= 0.8, < 0.10)
+      jwt (~> 1.0, < 1.5.2)
+      multi_json (~> 1.3)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 3)
+    omniauth (1.3.1)
+      hashie (>= 1.2, < 4)
+      rack (>= 1.0, < 3)
+    omniauth-facebook (3.0.0)
+      omniauth-oauth2 (~> 1.2)
+    omniauth-oauth2 (1.4.0)
+      oauth2 (~> 1.0)
+      omniauth (~> 1.2)
     open_uri_redirections (0.2.1)
     optionable (0.2.0)
     options (2.3.2)
@@ -635,6 +652,7 @@ DEPENDENCIES
   mongoid
   mysql2
   nokogiri
+  omniauth-facebook
   open_uri_redirections
   permanent_records
   premailer-rails

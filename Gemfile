@@ -78,6 +78,7 @@ gem 'rails4-autocomplete'
 gem 'whenever', require: false
 
 gem 'stripe'
+gem 'omniauth-facebook'
 
 group :development, :test do
   gem 'spring'

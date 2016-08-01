@@ -33,4 +33,40 @@ class SessionsController < Devise::SessionsController
     cookies.delete :length_unit
     cookies.delete :country
   end
+
+  def facebook_login
+    auth = request.env['omniauth.auth']
+    fb_info = FacebookUserInfo.find_or_initialize_by(uid: auth.uid)
+    fb_info.email = auth.info.email.presence # valid email | nil
+    fb_info.first_name = auth.info.first_name # eg. Lev
+    fb_info.last_name = auth.info.last_name # eg. Lukomskyi
+    fb_info.name = auth.info.name # eg. Lev Lukomskyi
+    fb_info.gender = auth.extra.raw_info.gender # male | female
+    fb_info.image_url = auth.info.image # eg. http://graph.facebook.com/769845456403892/picture
+    fb_info.locale = auth.extra.raw_info.locale # eg. uk_UA
+    fb_info.profile_url = auth.extra.raw_info.link # eg. https://www.facebook.com/app_scoped_user_id/769845456403892/
+    fb_info.timezone = auth.extra.raw_info.timezone # eg. 2
+    fb_info.age_min = auth.extra.raw_info.age_range[:min] # eg. 21
+    fb_info.age_max = auth.extra.raw_info.age_range[:max] # eg. 21
+
+    user = fb_info.user || (User.find_by(email: fb_info.email) if fb_info.email.present?) || User.new
+    user.facebook_user_info = fb_info
+    user.first_name ||= fb_info.first_name
+    user.last_name ||= fb_info.last_name
+    user.name ||= fb_info.name
+    user.email = fb_info.email if user.email.blank?
+    user.role ||= 'PRIVATE'
+    user.password = SecureRandom.hex(10) if user.encrypted_password.blank?
+    user.email_confirmed = true if fb_info.email.present?
+    user.assign_phone_from_leads
+    user.registered_from_affiliate = User.find_by(id: session.delete(:iframe_broker_id)) if session[:iframe_broker_id]
+
+    if user.save && fb_info.save
+      sign_in(:user, user)
+      redirect_to request.referer || root_path
+    else
+      redirect_to root_path, alert: user.errors.full_messages.join('; ')
+    end
+  end
+
 end

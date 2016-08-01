@@ -13,14 +13,9 @@ class SessionsController < Devise::SessionsController
   end
 
   def failure
-    respond_to do |format|
-      format.html { redirect_to root_path, notice: 'Something went wrong' }
-      format.json {
-        warden_message = warden.message || :unauthenticated
-        error_msg = find_message(warden_message, scope: 'devise.failure', authentication_keys: 'email')
-        render json: { success: false, errors: [error_msg] }, status: 401
-      }
-    end
+    warden_message = warden.message || :unauthenticated
+    error_msg = find_message(warden_message, scope: 'devise.failure', authentication_keys: 'email')
+    render json: { success: false, errors: [error_msg] }, status: 401
   end
 
   def auth_options
@@ -72,6 +67,10 @@ class SessionsController < Devise::SessionsController
     else
       redirect_to root_path, alert: user.errors.full_messages.join('; ')
     end
+  end
+
+  def facebook_failure
+    redirect_to root_path
   end
 
 end

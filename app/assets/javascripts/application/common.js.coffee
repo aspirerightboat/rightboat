@@ -67,6 +67,11 @@ $ ->
     $('.page-links .save-search a').trigger 'click'
   sessionStorage.removeItem('saveSearch')
 
+  # remove #_=_ in url after facebook auth
+  if (window.location && window.location.hash == '#_=_')
+    if (window.history && history.pushState)
+      window.history.pushState("", document.title, window.location.pathname);
+
   if (target = window.location.hash)
     if $(target).length
       if $(target).hasClass 'modal'

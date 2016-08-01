@@ -134,7 +134,7 @@ class ApplicationController < ActionController::Base
 
   def favorite_currency_symbol
     if session[:country].present?
-      sym = Country.find_by(iso: session[:country])&.currency
+      sym = Country.find_by(iso: session[:country])&.currency&.symbol
       return sym if sym.in?(%w(£ €))
     end
     '$'

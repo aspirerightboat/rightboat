@@ -228,8 +228,7 @@ class Boat < ActiveRecord::Base
     return 'Not Published' if !published?
     return 'Invalid Manufacturer' if !manufacturer
     return 'Invalid Model' if !model
-    return 'Invalid Price' if !valid_price?
-    'Bad Manufacturer' if !manufacturer.regular?
+    'Invalid Price' if !valid_price?
   end
 
   private
@@ -315,7 +314,7 @@ class Boat < ActiveRecord::Base
   end
 
   def change_status
-    if !deleted? && published? && manufacturer && model && valid_price? && manufacturer.regular?
+    if !deleted? && published? && manufacturer && model && valid_price?
       self.status = 'active'
     else
       self.status = 'inactive'

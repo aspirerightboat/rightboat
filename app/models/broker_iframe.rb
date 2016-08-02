@@ -10,6 +10,10 @@ class BrokerIframe < ActiveRecord::Base
     self.token ||= SecureRandom.hex[0..16]
   end
 
+  def display_name
+    token
+  end
+
   def filter_manufacturer_names
     Manufacturer.where(id: filters[:manufacturer_ids]).pluck(:name) if filters && filters[:manufacturer_ids]
   end

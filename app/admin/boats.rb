@@ -18,6 +18,7 @@ ActiveAdmin.register Boat do
   filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES
   filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
   filter :boat_type_name, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
+  filter :deleted_at_present, as: :boolean, label: 'Deleted'
 
   index do
     selectable_column
@@ -179,7 +180,7 @@ ActiveAdmin.register Boat do
   controller do
     def scoped_collection
       # never add :primary_image - it breaks query for sorting
-      Boat.includes(:manufacturer, :user, :country, :office, :model)
+      end_of_association_chain.includes(:manufacturer, :user, :country, :office, :model, :currency)
     end
 
     def find_resource

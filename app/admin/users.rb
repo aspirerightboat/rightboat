@@ -22,6 +22,10 @@ ActiveAdmin.register User do
       end
       super
     end
+
+    def scoped_collection
+      end_of_association_chain.includes(:registered_from_affiliate)
+    end
   end
 
   index do
@@ -37,6 +41,9 @@ ActiveAdmin.register User do
     column :saved_searches_count
     column(:active_boats) { |user| user.boats_count }
     column('created_at') { |user| time_ago_with_hint(user.created_at) }
+    column 'Referral' do |user|
+      link_to user.registered_from_affiliate.name, admin_user_path(user.registered_from_affiliate) if user.registered_from_affiliate
+    end
     actions do |user|
       if user.company?
         link_to 'Broker area', getting_started_broker_area_path(broker_id: user.id), target: '_blank'

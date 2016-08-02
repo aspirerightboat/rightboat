@@ -17,7 +17,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:user, boat: [:manufacturer, :model, :user, :currency])
+      end_of_association_chain.includes(:user, :created_from_affiliate, boat: [:manufacturer, :model, :user, :currency])
     end
   end
 
@@ -47,6 +47,9 @@ ActiveAdmin.register Lead, as: 'Lead' do
       if lead.saved_searches_alert_id.present?
         link_to(lead.saved_searches_alert_id, admin_saved_searches_alert_path(lead.saved_searches_alert_id))
       end
+    end
+    column 'Referral' do |lead|
+      link_to lead.created_from_affiliate.name, admin_user_path(lead.created_from_affiliate) if lead.created_from_affiliate
     end
     actions do |lead|
       item 'Delete', delete_admin_lead_path(lead), class: 'delete-lead'

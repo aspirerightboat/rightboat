@@ -156,11 +156,21 @@ ActiveAdmin.register User do
           end
         end
       end
-      if resource.company?
+      if resource.company? || resource.facebook_user_info
         column do
-          panel 'Broker Details' do
-            attributes_table_for resource.broker_info do
-              (BrokerInfo.column_names - %w(id user_id)).each { |column| row column }
+          if resource.company?
+            panel 'Broker Details' do
+              attributes_table_for resource.broker_info do
+                (BrokerInfo.column_names - %w(id user_id)).each { |column| row column }
+              end
+            end
+          end
+          if (fb_info = resource.facebook_user_info)
+            panel 'Facebook User Information' do
+              para { link_to image_tag(fb_info.image_url), fb_info.profile_url }
+              attributes_table_for resource.facebook_user_info do
+                (FacebookUserInfo.column_names - %w(id user_id image_url profile_url)).each { |column| row column }
+              end
             end
           end
         end

@@ -63,14 +63,14 @@ class SessionsController < Devise::SessionsController
 
     if user.save && fb_info.save
       sign_in(:user, user)
-      redirect_to request.referer || root_path
+      redirect_to request.env['omniauth.origin'] || root_path
     else
       redirect_to root_path, alert: user.errors.full_messages.join('; ')
     end
   end
 
   def facebook_failure
-    redirect_to root_path
+    redirect_to params[:origin] || root_path
   end
 
 end

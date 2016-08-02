@@ -39,7 +39,13 @@ ActiveAdmin.register Boat do
     column :price do |boat|
       number_to_currency(boat.price, unit: boat.safe_currency.symbol, precision: 0)
     end
-    column :status
+    column :status do |boat|
+      if boat.status == 'inactive'
+        "inactive: #{boat.inactive_reason}"
+      else
+        boat.status
+      end
+    end
     column :user, :user, sortable: 'users.company_name'
     column :office, :office, sortable: 'offices.name'
     column :location do |boat|

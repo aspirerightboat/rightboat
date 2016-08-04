@@ -3,6 +3,7 @@ module BrokerArea
 
     def index
       @card = current_broker.stripe_card
+      @charges_text = current_broker.deal.processed_charges_text
     end
 
     def update_card

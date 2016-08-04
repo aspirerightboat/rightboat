@@ -5,7 +5,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
 
   filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Name | Manuf | Model | Office'
   filter :id
-  filter :user, as: :select, collection: User.companies.order(:company_name)
+  filter :user, as: :select, collection: User.companies
   filter :country, as: :select, collection: Country.order(:name)
   filter :manufacturer_name_cont
   filter :model_name_cont

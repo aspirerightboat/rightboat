@@ -17,7 +17,7 @@
           td #{iframe.filter_manufacturer_names&.join(', ')}
           td #{iframe.filter_country_names&.join(', ')}
           td
-            div(style="whitespace: nowrap")
+            div(style="white-space: nowrap")
               = link_to broker_area_iframe_path(iframe) do
                 i.glyphicon.glyphicon-eye-open
               = link_to edit_broker_area_iframe_path(iframe), style: 'margin-left: 1ex' do

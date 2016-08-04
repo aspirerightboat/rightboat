@@ -164,6 +164,11 @@ ActiveAdmin.register User do
                 (BrokerInfo.column_names - %w(id user_id)).each { |column| row column }
               end
             end
+            panel 'Deal' do
+              attributes_table_for resource.deal do
+                (Deal.column_names - %w(id user_id)).each { |column| row column }
+              end
+            end
           end
           if (fb_info = resource.facebook_user_info)
             panel 'Facebook User Information' do

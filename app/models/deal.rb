@@ -36,4 +36,9 @@ class Deal < ActiveRecord::Base
   def currency
     self[:currency] || Currency.default
   end
+
+  def within_trial?(date)
+    trial_started_at && trial_started_at <= date &&
+        trial_ended_at &&  date <= trial_ended_at
+  end
 end

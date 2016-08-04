@@ -102,21 +102,34 @@ class Lead < ActiveRecord::Base
   end
 
   def calc_lead_price
-    broker_info = boat.user.broker_info
-    res = if !boat.poa? && boat.price > 0
-            price_gbp = boat.price / boat_currency_rate
-            bound = RBConfig[:lead_price_coef_bound] # 500_000
-            if price_gbp > bound
-              bound * RBConfig[:lead_low_price_coef] + (price_gbp - bound) * RBConfig[:lead_high_price_coef]
+    deal = boat.user.deal
+
+    if deal.within_trial?(created_at)
+      return 0
+    end
+
+    if deal.deal_type == 'standard'
+      broker_info = boat.user.broker_info
+      res = if !boat.poa? && boat.price > 0
+              price_gbp = boat.price / boat_currency_rate
+              bound = RBConfig[:lead_price_coef_bound] # 500_000
+              if price_gbp > bound
+                bound * RBConfig[:lead_low_price_coef] + (price_gbp - bound) * RBConfig[:lead_high_price_coef]
+              else
+                price_gbp * RBConfig[:lead_low_price_coef]
+              end
+            elsif boat.length_m && boat.length_m > 0
+              boat.length_ft * broker_info.lead_length_rate
             else
-              price_gbp * RBConfig[:lead_low_price_coef]
+              RBConfig[:lead_flat_fee]
             end
-          elsif boat.length_m && boat.length_m > 0
-            boat.length_ft * broker_info.lead_length_rate
-          else
-            RBConfig[:lead_flat_fee]
-          end
-    res.clamp(broker_info.lead_min_price, broker_info.lead_max_price).round(2)
+      res.clamp(broker_info.lead_min_price, broker_info.lead_max_price).round(2)
+    elsif deal.deal_type == 'flat_lead'
+      res = deal.flat_lead_price
+      Currency.convert(res, deal.currency, Currency.default)
+    elsif deal.deal_type == 'flat_month'
+      0
+    end
   end
 
   def mark_suspicious(mail_title)

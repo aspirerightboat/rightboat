@@ -4,11 +4,12 @@ class RBConfig < ActiveRecord::Base
 
   def self.cached_configs
     @cached_configs ||= begin
-      RBConfig.pluck(:key, :value, :kind).map do |k, v, kind|
+      RBConfig.pluck(:key, :value, :text_value, :kind).map do |k, v, text_v, kind|
         v = case kind.to_sym
             when :integer then v.to_i
             when :float then v.to_f
-            when :string then v.to_s
+            when :string then v
+            when :text then text_v
             end
         [k, v]
       end.to_h.symbolize_keys
@@ -31,6 +32,25 @@ class RBConfig < ActiveRecord::Base
         {key: 'default_min_lead_price', value: '5', kind: :float, description: 'Default minimum lead price in £. Can be overridden by broker_info settings'},
         {key: 'default_max_lead_price', value: '300', kind: :float, description: 'Default maximum lead price in £. Can be overridden by broker_info settings'},
         {key: 'lead_gap_minutes', value: '3', kind: :float, description: 'Time between lead requests in minutes when second lead will be considered as suspicious'},
+        {key: 'charges_text_standard', text_value: (<<~TEXT
+          The cost per lead is set according to the boat listing price and charged at <b>%{lead_low_price_perc}</b>
+          and %{lead_high_price_perc} after %{lead_price_coef_bound} of boat listing price,
+          subject to a minimum lead charge of <b>%{default_min_lead_price}</b> and maximum of <b>%{default_max_lead_price}</b>.
+          The charge will be invoiced and payment accepted in <b>%{currency_iso}</b>.
+        TEXT
+        ), kind: :text, description: 'Default charges text with Standard Deal'},
+        {key: 'charges_text_flat_lead', text_value: (<<~TEXT
+          The cost per lead is flat price of <b>%{flat_lead_price}</b>.
+          The charge will be invoiced and payment accepted in <b>%{currency_iso}</b>.
+        TEXT
+        ), kind: :text, description: 'Default charges text with Flat Lead Price Deal'},
+        {key: 'charges_text_flat_month', text_value: (<<~TEXT
+          Flat rate per month is <b>%{flat_month_price}</b>.
+          The charge will be invoiced and payment accepted in <b>%{currency_iso}</b>.
+        TEXT
+        ), kind: :text, description: 'Default charges text with Flat Month Price Deal'},
+        {key: 'default_flat_lead_price', value: '15', kind: :float, description: 'Time between lead requests in minutes when second lead will be considered as suspicious'},
+        {key: 'default_flat_month_price', value: '500', kind: :float, description: 'Time between lead requests in minutes when second lead will be considered as suspicious'},
     ]
   end
 

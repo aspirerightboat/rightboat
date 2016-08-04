@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
   belongs_to :registered_from_affiliate, class_name: 'User'
   has_one :stripe_card, dependent: :destroy
   has_one :facebook_user_info, dependent: :destroy
+  has_one :deal, dependent: :destroy
 
   mount_uploader :avatar, AvatarUploader
 
@@ -77,6 +78,7 @@ class User < ActiveRecord::Base
   before_create { build_user_alert } # will create user_alert
   before_save :create_broker_info
   before_validation :ensure_username
+  before_save :ensure_deal, if: ->(u) { u.new_record? || u.role_changed? }
   after_save :reconfirm_email_if_changed, unless: :updated_by_admin
   after_create :send_email_confirmation, unless: :updated_by_admin
   after_create :send_new_email, if: :private?
@@ -211,6 +213,14 @@ class User < ActiveRecord::Base
       str = name.downcase.squeeze.gsub(' ', '-').gsub(/[^\w@.-]/, '')
       str = "u-#{str}" if str !~ /\A[a-zA-Z]/
       self.username = str
+    end
+  end
+
+  def ensure_deal
+    if company? && !deal
+      build_deal
+    elsif !company && deal
+      deal.destroy
     end
   end
 end

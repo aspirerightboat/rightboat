@@ -1,7 +1,12 @@
 - current_year = Date.today.year
 
 = form_for [:member, @boat], remote: true, data: {format: :json}, html: {class: 'simple-ajax-form', multipart: true} do |f|
+  = hidden_field_tag :authenticity_token, form_authenticity_token
   = f.hidden_field :currency_id, value: Currency.find_by(name: 'GBP').id
+  - if @boat.errors.any?
+    .alert.alert-danger
+      - @boat.errors.full_messages.each do |msg|
+        = msg
   fieldset
     p Can't find your Manufacturer? Please just select 'Custom' from the Manufacturer drop-down.
     h5 1. Boat Type:

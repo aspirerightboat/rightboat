@@ -3,7 +3,7 @@ ActiveAdmin.register Deal do
 
   config.sort_order = 'id_desc'
 
-  permit_params Deal.column_names - %w(id)
+  permit_params -> { Deal.column_names - %w(id) }
 
   filter :user, collection: -> { User.companies }
   filter :deal_type, as: :select, collection: -> { Deal::DEAL_TYPES }

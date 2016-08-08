@@ -117,7 +117,7 @@ $ ->
         inch = parseInt($inInput.val())
         res = if feet || inch then feet2metres(feet || 0, inch || 0) else ''
         $mInput.val(res)
-      $ftInInputs.change(ftInInputsChanged).keyup(ftInInputsChanged).mouseup(mInputChanged)
+      $ftInInputs.change(ftInInputsChanged).keyup(ftInInputsChanged).mouseup(ftInInputsChanged)
 
     $('.unit-field').each ->
       $hidden = $('input[type=hidden]', @)

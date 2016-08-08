@@ -32,6 +32,16 @@ class Manufacturer < ActiveRecord::Base
   end
 
   def self.solr_suggest_by_term(term)
+    if term.blank?
+      makers = Rails.cache.fetch 'top-30-maker-infos', expires_in: 1.day do
+        Manufacturer.joins(:boats)
+            .group('manufacturers.id, manufacturers.name').order('COUNT(*) DESC')
+            .limit(30).pluck('manufacturers.id, manufacturers.name')
+            .sort_by(&:second).map { |id, m_name| {id: id, name: m_name} }
+      end
+      return makers
+    end
+
     search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true

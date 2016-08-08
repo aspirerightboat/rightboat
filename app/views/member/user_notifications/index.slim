@@ -50,7 +50,6 @@
                           td= i + 1
                           td= ss.q
                           td
-                            - puts('ss.manufacturers', ss.manufacturers, Manufacturer.where(id: ss.manufacturers.map(&:to_i)).count)
                             = Manufacturer.where(id: ss.manufacturers).pluck(:name).join(', ') if ss.manufacturers.present?
                           td= Model.where(id: ss.models).pluck(:name).join(', ') if ss.models.present?
                           td= ss.boat_type

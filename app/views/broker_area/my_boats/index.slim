@@ -71,20 +71,17 @@
           td #{boat.country&.name} #{boat.location}
           td
             div(style="white-space: nowrap")
-              = link_to broker_area_my_boat_path(boat), style: 'margin-left: 1ex' do
-                abbr(title="View Details")
-                  i.glyphicon.glyphicon-eye-open
-              = link_to edit_broker_area_my_boat_path(boat), style: 'margin-left: 1ex' do
-                abbr(title="Edit")
-                  i.glyphicon.glyphicon-pencil
+              = link_to broker_area_my_boat_path(boat), style: 'margin-left: 1ex', title: 'View Details' do
+                i.glyphicon.glyphicon-eye-open
+              = link_to edit_broker_area_my_boat_path(boat), style: 'margin-left: 1ex', title: 'Edit' do
+                i.glyphicon.glyphicon-pencil
               = link_to broker_area_my_boat_path(boat), method: 'delete', style: 'margin-left: 1ex', \
-                      data: {confirm: 'Are you sure you want delete this boat?'} do
-                abbr(title="Permanently Delete")
-                  i.glyphicon.glyphicon-remove
+                      data: {confirm: 'Are you sure you want delete this boat?'}, title: 'Permanently Delete' do
+                i.glyphicon.glyphicon-remove
             - if boat.published
-              = link_to sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex' do
-                abbr(title="View as it appears on Rightboat")
-                  | RB View
+              = link_to sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex', \
+                      title: 'View as it appears on Rightboat' do
+                | RB View
     = paginate @boats
   - else
     p.text-center You have no boats to manage so far

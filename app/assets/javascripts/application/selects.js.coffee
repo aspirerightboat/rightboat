@@ -34,7 +34,7 @@ $ ->
         searchField: 'name',
         openOnFocus: true,
         closeAfterSelect: true,
-        preload: 'focus',
+        preload: (if collection == 'models' then 'focus' else false),
         delimiter: '-',
         options: $sel.data('initial-options') || [],
         load: (query, callback) ->
@@ -44,6 +44,10 @@ $ ->
             callback(res.items)
           .fail ->
             callback()
+        onChange: (_value) ->
+          if collection == 'manufacturers'
+            $sel.closest('form').find('input.models-picker').data('selectize').focus()
+
   $('.manufacturers-picker, .models-picker').makemodelPickers()
 
   $('.layout-mode-select').selectize

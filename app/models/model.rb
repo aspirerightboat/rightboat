@@ -61,6 +61,16 @@ class Model < ActiveRecord::Base
   end
 
   def self.solr_suggest_by_term(term, manufacturer_ids = nil)
+    if term.blank? && manufacturer_ids&.one?
+      maker_id = manufacturer_ids.first
+      models = Rails.cache.fetch "top-30-#{maker_id}-model-infos", expires_in: 1.day do
+        Model.joins(:boats).where('models.manufacturer_id = ?', maker_id)
+            .group('models.id, models.name').order('COUNT(*) DESC')
+            .limit(30).pluck('models.id, models.name')
+      end
+      return models.sort_by(&:second).map { |id, m_name| {id: id, name: m_name} }
+    end
+
     search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true

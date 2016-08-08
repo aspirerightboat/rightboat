@@ -1,10 +1,18 @@
 module SearchFormHelper
   def manufacturers_picker_field(name, manufacturer_ids = nil, field_id = nil)
     manufacturer_ids = manufacturer_ids.split('-') if manufacturer_ids&.is_a?(String)
-    manufacturers = (Manufacturer.where(id: manufacturer_ids).pluck_h(:id, :name) if manufacturer_ids)
+    selected_manufacturer_infos = (Manufacturer.where(id: manufacturer_ids).pluck(:id, :name) if manufacturer_ids)
+    popular_manufacturer_infos = Rails.cache.fetch 'top-30-maker-infos', expires_in: 1.day do
+      Manufacturer.joins(:boats)
+          .group('manufacturers.id, manufacturers.name').order('COUNT(*) DESC')
+          .limit(30).pluck('manufacturers.id, manufacturers.name')
+    end
+    initial_options = popular_manufacturer_infos.tap do |arr|
+      selected_manufacturer_infos&.each { |id, m_name| arr << [id, m_name] if !arr.find { |info| id == info[0] } }
+    end.sort_by(&:second).map { |id, m_name| {id: id, name: m_name} }
 
     text_field_tag name, manufacturer_ids&.join('-'), id: field_id || 'manufacturers_picker',
-                   data: {collection: 'manufacturers', 'initial-options' => manufacturers&.to_json},
+                   data: {collection: 'manufacturers', 'initial-options' => initial_options.to_json},
                    class: 'select-black tags-input manufacturers-picker', placeholder: 'e.g. Beneteau'
   end
 

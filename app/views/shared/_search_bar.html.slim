@@ -1,10 +1,7 @@
 nav.navbar.navbar-default.nabvar-tools
   .container
-    = form_tag search_path, method: :get, class: 'navbar-form navbar-left', role: 'search' do
-      = text_field_tag :q, params[:q], class: 'form-control', placeholder: 'New Search'
-      button(type='submit')
-        i.icon.icon-search
     ul.nav.navbar-nav.page-links
+      li: a.nav-link(href="/") New Search
       - if controller_name == 'search' || @back_url
         li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search nav-link'
       - if controller_name == 'search'

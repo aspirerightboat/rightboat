@@ -3,7 +3,7 @@ ActiveAdmin.register Deal do
 
   config.sort_order = 'id_desc'
 
-  permit_params -> { Deal.column_names - %w(id) }
+  permit_params { Deal.column_names - %w(id) }
 
   filter :user, collection: -> { User.companies }
   filter :deal_type, as: :select, collection: -> { Deal::DEAL_TYPES }
@@ -39,7 +39,7 @@ ActiveAdmin.register Deal do
     f.inputs do
       f.input :user, as: :select, collection: User.companies, include_blank: false
       f.input :deal_type, as: :select, collection: Deal::DEAL_TYPES, include_blank: false
-      f.input :charges_text
+      f.input :charges_text, hint: "You can change default text for each of deal types in #{link_to 'settings', admin_rb_configs_path('q[key_contains]' => 'charges_text_')} or override it here".html_safe
       f.input :flat_lead_price
       f.input :flat_month_price
       f.input :currency, as: :select, collection: Currency.all, include_blank: false

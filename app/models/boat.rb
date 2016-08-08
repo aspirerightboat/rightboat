@@ -326,7 +326,7 @@ class Boat < ActiveRecord::Base
   end
 
   def assign_custom_model
-    if manufacturer.name =~ /\Acustom\z/i && !custom_model.blank?
+    if custom_model.present? && manufacturer.name =~ /\Acustom\z/i
       new_model = manufacturer.models.find_or_create_by(name: custom_model)
       self.model_id = new_model.id
     end

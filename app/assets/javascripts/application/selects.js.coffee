@@ -28,6 +28,7 @@ $ ->
       collection = $sel.data('collection')
       url = '/search/' + collection
       $sel.selectize
+        plugins: ['remove_button'],
         valueField: 'id',
         labelField: 'name',
         searchField: 'name',

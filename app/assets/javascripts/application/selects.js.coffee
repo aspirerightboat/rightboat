@@ -68,6 +68,7 @@ $ ->
   $('.multiple-country-select').each ->
     $sel = $(@)
     $sel.selectize
+      plugins: ['remove_button'],
       render:
         item: (data, escape) ->
           '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>'

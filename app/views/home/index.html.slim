@@ -25,21 +25,20 @@
           = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat
 
   - if @newest_boats.any?
-    #newest-boats.nabvar-tools
-      .container
-        h3.text-center Newest boats
-        .slick-nav
-          - @newest_boats.each do |boat|
-            = link_to makemodel_boat_path(boat) do
-              .caption.text-center
-                h4
-                  strong= boat.manufacturer
-                  = boat.model
-                p.price(data-attr-name="price")= boat_price(boat)
-                p.boat-length
-                  span(data-attr-name="loa")= boat_length(boat)
-                p= boat.year_built
-                p= boat.country.to_s
+    #newest-boats.container
+      h3.text-center Newest boats
+      .slick-nav
+        - @newest_boats.each do |boat|
+          = link_to makemodel_boat_path(boat) do
+            .caption.text-center
+              h4
+                strong= boat.manufacturer
+                = boat.model
+              p.price(data-attr-name="price")= boat_price(boat)
+              p.boat-length
+                span(data-attr-name="loa")= boat_length(boat)
+              p= boat.year_built
+              p= boat.country.to_s
 
   #about.rb-brief.container
     .text-center

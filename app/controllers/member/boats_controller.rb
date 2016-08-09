@@ -13,18 +13,25 @@ class Member::BoatsController < Member::BaseController
   end
 
   def create
-    @boat = current_user.boats.new(boat_params)
+    @boat = current_user.boats.new(boat_params.merge(published: false))
 
     if @boat.save
       flash[:notice] = 'Boat created successfully.'
       if params[:boat][:sell_request_type].present?
         params[:boat][:sell_request_type].each do |sell_request_type|
-          StaffMailer.new_sell_request(@boat.id, sell_request_type).deliver_now unless params[:boat][:sell_request_type].blank?
+          StaffMailer.new_sell_request(@boat.id, sell_request_type).deliver_now unless sell_request_type.blank?
         end
       end
-      render json: { location: member_boats_path }
+
+      respond_to do |format|
+        format.html { redirect_to member_boats_path }
+        format.js { render json: { location: member_boats_path } }
+      end
     else
-      render json: @boat.errors.full_messages, root: false, status: 422
+      respond_to do |format|
+        format.html { render :new }
+        format.js { render json: @boat.errors.full_messages, root: false, status: 422 }
+      end
     end
   end
 
@@ -35,9 +42,15 @@ class Member::BoatsController < Member::BaseController
   def update
     if @boat.update(boat_params)
       flash[:notice] = 'Boat updated successfully.'
-      render json: { location: member_boats_path }
+      respond_to do |format|
+        format.html { redirect_to member_boats_path }
+        format.js { render json: { location: member_boats_path }, status: 200 }
+      end
     else
-      render json: @boat.errors.full_messages, root: false, status: 422
+      respond_to do |format|
+        format.html { render :edit }
+        format.js { render json: @boat.errors.full_messages, root: false, status: 422 }
+      end
     end
   end
 

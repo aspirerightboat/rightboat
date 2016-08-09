@@ -5,8 +5,10 @@ $ ->
       $sel = $(@)
       if $sel.data('onchange-fill-models') && !$sel.initialized
         $sel.initialized = true
-        $sel.on 'change', ->
-          $($sel.data('onchange-fill-models')).syncModelSelect($sel.val())
+        $makerSelect = $($sel.data('onchange-fill-models'))
+        $sel.on 'change initialize', ->
+          $makerSelect.syncModelSelect($sel.val())
+        $makerSelect.syncModelSelect($sel.val())
   $('.select-general').generalSelect()
 
   $.fn.initTitleSelect = ->

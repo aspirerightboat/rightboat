@@ -5,8 +5,7 @@ p
   | #{link_to @user.full_name, admin_user_url(@user.slug)} has posted new <b>sell my boat request</b> to Rightboat.
 
 p
-  | Request type:
-  b= @request_type
+  | Request type: <b>#{@request_type}</b>
 
 h4
   | Boat Specifications:
@@ -26,7 +25,7 @@ p
   - @boat.boat_specifications.each do |spec|
     | #{spec.specification.display_name}: #{spec.value}
     br
-  | Description: #{@boat.extra.description.html_safe}
+  | Description: #{@boat.extra.description.try(:html_safe)}
   br
   | Owners Comment: #{@boat.extra.owners_comment}
   br

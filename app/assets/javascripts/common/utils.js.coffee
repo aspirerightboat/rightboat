@@ -48,10 +48,10 @@ $ ->
           $form.showFormError(json.alert)
     .on 'ajax:error', (e, xhr) ->
       $('.alert', $form).remove()
-      if xhr.status == '200' # goes here when attached file
-        window.location = xhr.responseJSON.location
+      json = JSON.parse(xhr.responseText) || xhr.responseJSON
+      if xhr.status == 200 # goes here when attached file
+        window.location = json.location
       else
-        json = xhr.responseJSON
         errors = if $.isArray(json) then json else ['Something went wrong']
         $errors =  $('<div class="alert alert-danger">').prependTo($form)
         $.each errors, (i, msg) ->

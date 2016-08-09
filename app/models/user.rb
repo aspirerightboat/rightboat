@@ -219,7 +219,7 @@ class User < ActiveRecord::Base
   def ensure_deal
     if company? && !deal
       build_deal
-    elsif !company && deal
+    elsif !company? && deal
       deal.destroy
     end
   end

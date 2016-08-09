@@ -6,15 +6,30 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      = link_to root_path, class: 'navbar-brand' do
-        = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
-      ul.nav.navbar-nav
-        li
-          - if content_for? :header_text
-            = yield :header_text
-          - else
-            h1
-              span.hidden-sm Find your <strong>Rightboat</strong>
+      - if !current_page?(root_path)
+        = link_to root_path, class: 'navbar-brand' do
+          = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
+        ul.nav.navbar-nav
+          li
+            - if content_for? :header_text
+              = yield :header_text
+            - else
+              h1
+                span.hidden-sm Find your <strong>Rightboat</strong>
     #navbar.navbar-collapse.collapse
       ul#navbar-links.nav.navbar-nav.navbar-right
-        = render 'shared/nav_links'
+        - if user_signed_in?
+          li.dropdown.rb-dropdown
+            a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false")
+              | Welcome #{current_user.first_name}
+            ul.dropdown-menu
+              li= link_to 'Log Out', destroy_user_session_path, method: :delete
+          li
+            = link_to 'My Rightboat', member_root_path, class: 'require-login', \
+                    data: {'login-title' => 'To use My Rightboat, you must first Join as a Member.'}
+            - if current_user.company?
+          li= link_to 'Broker Area', broker_area_path
+
+        - else
+          li= link_to 'Sign in or Join for free', '#', class: 'user-login login-top'
+          li= link_to 'Broker', welcome_broker_path

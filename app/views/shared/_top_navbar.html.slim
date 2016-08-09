@@ -6,7 +6,7 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      - if !current_page?(root_path)
+      - if local_assigns[:include_header]
         = link_to root_path, class: 'navbar-brand' do
           = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
         ul.nav.navbar-nav

@@ -6,7 +6,7 @@
 
 - content_for :header do
   = render 'shared/advanced_search'
-  = render 'shared/top_navbar'
+  = render partial: 'shared/top_navbar', locals: {include_header: true}
 
 
 = render 'shared/search_bar'

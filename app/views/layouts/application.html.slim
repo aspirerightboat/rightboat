@@ -26,7 +26,7 @@ html
     - if content_for? :header
       = yield :header
     - else
-      = render 'shared/top_navbar'
+      = render partial: 'shared/top_navbar', locals: {include_header: true}
 
     #content-wrapper
       = yield

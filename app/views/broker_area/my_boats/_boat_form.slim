@@ -88,8 +88,8 @@
             = ff.label :boat_description, 'Description'
             div
               | <small><i>Only #{Rightboat::BoatDescriptionUtils::ALLOWED_TAGS.to_sentence} HTML&nbsp;tags without attributes are allowed.</i></small>
-              span#desc_counter.textarea-countdown 2000
-            = ff.text_area :description, id: 'boat_description', rows: 5, cols: 70, maxlength: 2000, \
+              span#desc_counter.textarea-countdown 20000
+            = ff.text_area :description, id: 'boat_description', rows: 5, cols: 70, maxlength: 20000, \
                     style: 'width: 100%', class: 'form-control', data: {'textarea-counter' => '#desc_counter'}
     h3 Images
     .form-group

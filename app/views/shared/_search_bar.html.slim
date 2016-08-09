@@ -1,7 +1,8 @@
-nav.navbar.navbar-default.nabvar-tools
+nav#search_bar
   .container
-    ul.nav.navbar-nav.page-links
-      li: a.nav-link(href="/") New Search
+    ul.flat-list
+      li: a.nav-link(href="/") &larr; Home
+    ul.flat-list
       - if controller_name == 'search' || @back_url
         li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search nav-link'
       - if controller_name == 'search'
@@ -13,12 +14,12 @@ nav.navbar.navbar-default.nabvar-tools
       - if content_for?(:navbar_links)
         = content_for(:navbar_links)
     - if @boats
-      ul.nav.navbar-nav.navbar-right.display-options
+      ul.flat-list.search-bar-display-options
         li
-          .navbar-text
-            span Sort by
-            = select_tag :sort, search_order_options, class: 'select-dark select-general boat-sorting-select', id: 'search_order'
+          label Sort by
+          = select_tag :sort, search_order_options, id: 'search_order', \
+                  class: 'select-dark select-general boat-sorting-select selectize-hide-input'
         li
-          .navbar-text
-            span View
-            = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'select-dark notranslate layout-mode-select'
+          label View
+          = select_tag :sort, layout_mode_options, id: 'layout_mode', \
+                  class: 'select-dark notranslate layout-mode-select selectize-hide-input'

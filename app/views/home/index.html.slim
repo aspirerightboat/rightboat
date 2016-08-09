@@ -23,7 +23,7 @@
           = render partial: 'boats/vertical_thumb', collection: @recent_boats, as: :boat
 
   - if @newest_boats.any?
-    #newest-boats.container.nabvar-tools
+    #newest-boats.container
       h3.text-center Newest boats
       .slick-nav
         - @newest_boats.each do |boat|

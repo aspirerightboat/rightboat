@@ -64,7 +64,7 @@ $ ->
     false
 
   if sessionStorage.getItem('saveSearch') == 'true'
-    $('.page-links .save-search a').trigger 'click'
+    $('#search_bar .save-search a').trigger 'click'
   sessionStorage.removeItem('saveSearch')
 
   # remove #_=_ in url after facebook auth

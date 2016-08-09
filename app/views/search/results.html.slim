@@ -2,12 +2,7 @@
   meta(name="robots" content="noindex, follow")
 
 - content_for :header_text do
-  h1
-    span.hidden-sm Find your <strong>Rightboat</strong>
-  h3
-    ' Search Results:
-    strong= implicit_boats_count(@boats.total_count)
-    span.hidden-sm &nbsp;boats for sale
+  h1 Find your <strong>Rightboat</strong>
 
 - content_for :header do
   = render 'shared/advanced_search'
@@ -15,6 +10,8 @@
 
 = render 'shared/search_bar'
 #main_content.container(data-prev-url="#{@prev_url}")
+  h2.top-h2.text-center Search Results: <b>#{implicit_boats_count(@boats.total_count)}</b> boats for sale
+
   - if @boats.length > 0
     #boats-list.row(data-layout-mode="#{current_layout_mode}")
       = render @boats, multiselectable: true

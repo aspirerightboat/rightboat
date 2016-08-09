@@ -1,11 +1,9 @@
-nav#footer.navbar.navbar-default
+nav#footer
   .container
-    h1.text-center.no-margin
-      strong The global choice of boats for sale
-    .row.rb-links
-      .footer-logo-wrap.col-xs-12.col-sm-2.no-divider
-        = link_to root_path do
-          = image_tag 'logo-footer.png', alt: 'Rightboat'
+    h1 The global choice of boats for sale
+    .row.footer-links
+      .footer-logo-wrap.col-xs-12.col-sm-2
+        = link_to image_tag('logo-footer.png', alt: 'Rightboat'), root_path
       .col-xs-12.col-sm-10
         .row
           ul.col-xs-6.col-sm-3
@@ -14,17 +12,15 @@ nav#footer.navbar.navbar-default
             li= link_to 'Articles and Guides', buyer_guides_path
             li= link_to 'News', articles_path
           ul.col-xs-6.col-sm-3
-            /li= link_to 'Marine Services', marine_services_home_path
             li= link_to 'Sell my boat', current_user ? member_boats_path : sell_my_boats_home_path
             li= link_to 'Berths', '#', class: 'require-login load-popup', data: {load_popup_id: 'berths_popup', load_popup_url: load_popup_berth_enquiries_path, 'login-title' => 'Please sign in or join as a member to make a berth request.'}
             li= link_to 'Finance', '#', class: 'require-login load-popup', data: {load_popup_id: 'finance_popup', load_popup_url: load_popup_finances_path, 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
             li= link_to 'Insurance', '#', class: 'require-login load-popup', data: {load_popup_id: 'insurance_popup', load_popup_url: load_popup_insurances_path, 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
-          ul.col-xs-6.col-sm-3.social-links
+          ul.col-xs-6.col-sm-3
             li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link', rel: 'nofollow', target: '_blank'
             li= link_to '@rightboat', 'https://twitter.com/rightboat', class: 'tw-link', rel: 'nofollow', target: '_blank'
-            /li= link_to 'Rightboat', 'https://plus.google.com/+Rightboat', class: 'gplus-link', rel: 'nofollow'
             li= link_to '/rightboat', 'https://www.linkedin.com/company/rightboat-ltd', class: 'linked-link', rel: 'nofollow', target: '_blank'
-            li= link_to 'Boats and Yacht Clubs', 'http://yachtingcrowd.com', class: 'no-icon', rel: 'nofollow', target: '_blank'
+            li= link_to 'Boats and Yacht Clubs', 'http://yachtingcrowd.com', rel: 'nofollow', target: '_blank'
           ul.col-xs-6.col-sm-3
             - if !Rails.env.development?
               li
@@ -39,15 +35,10 @@ nav#footer.navbar.navbar-default
               li= link_to 'Register as Broker', welcome_broker_path
             - unless current_user
               li= link_to 'Broker Login', '#', class: 'user-login'
-
-    .row.company-info
-      = link_to 'javascript: void(0);', class: 'no-divider' do
-        span &copy;#{Date.today.year} &nbsp; Rightboat Ltd - All Rights Reserved
-      = link_to privacy_policy_home_path do
-        span Policies
-      = link_to toc_home_path do
-        span Terms and Conditions
-      = mail_to 'info@rightboat.com', nil
+    .company-info-links
+      .copy &copy;#{Date.today.year} &nbsp; Rightboat Ltd - All Rights Reserved
+      = link_to 'Policies', privacy_policy_home_path
+      = link_to 'Terms and Conditions', toc_home_path
+      = mail_to 'info@rightboat.com'
       = link_to 'Cookies policy', cookies_policy_home_path
   = image_tag 'anchor.png', class: 'anchor-img', alt: ''
-.clearfix

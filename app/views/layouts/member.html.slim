@@ -18,9 +18,9 @@ html
     - if content_for? :header
       = yield :header
     - else
-      = render 'home/navbar'
       = render 'shared/advanced_search'
-      = render 'home/search'
+      = render 'shared/top_navbar'
+      = render 'home/search_hub'
 
     .page-gap
       .embed-responsive

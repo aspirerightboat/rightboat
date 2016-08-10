@@ -20,6 +20,10 @@ class Country < ActiveRecord::Base
     name
   end
 
+  def aliases
+    [name, iso, iso3] + misspellings.pluck(:alias_string)
+  end
+
   def self.by_priority # TODO: make priority column
     ret = self.where(iso: %w(GB US))
     ret += self.where(iso: %w(AU CA HR DK FR DE GR IE IT NL NZ PL ES SE CH TR)).order(:name)

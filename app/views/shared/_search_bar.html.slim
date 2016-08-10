@@ -1,7 +1,7 @@
 nav#search_bar
   .container
     ul.flat-list
-      li: a.nav-link(href="/") &larr; Home
+      li: a.nav-link(href="/") New Search
     ul.flat-list
       - if controller_name == 'search' || @back_url
         li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search nav-link'

@@ -13,4 +13,14 @@ module ActiveAdmin::BoatsHelper
   def boat_link(boat)
     link_to boat.manufacturer_model, makemodel_boat_path(boat)
   end
+
+  def boat_location_column(boat)
+    if boat.geocoded?
+      boat.geo_location
+    else
+      [boat.location,
+       boat.country&.name,
+       content_tag(:span, 'Not Geocoded', class: 'status_tag no')].reject(&:blank?).join('<br>').html_safe
+    end
+  end
 end

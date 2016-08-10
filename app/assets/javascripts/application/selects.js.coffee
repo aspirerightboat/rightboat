@@ -120,3 +120,8 @@ $ ->
             data.text
     if !$sel.val()
       $sel.val('')
+
+  $('select.select-state-if-us').each ->
+    @.selectize.on 'change', (value) ->
+      us_selected = value == ['234']
+      $('#state_picker').closest('.row').slideToggle(!us_selected)

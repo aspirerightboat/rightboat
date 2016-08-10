@@ -6,7 +6,7 @@ ActiveAdmin.register Boat do
 
   menu priority: 2
 
-  filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Name | Manuf | Model | Office'
+  filter :name_or_manufacturer_name_or_model_name_or_office_name_cont, as: :string, label: 'Name | Makemodel | Office'
   filter :id
   filter :user, as: :select, collection: User.companies.order(:company_name)
   filter :country, as: :select, collection: Country.order(:name)
@@ -22,7 +22,7 @@ ActiveAdmin.register Boat do
 
   index do
     selectable_column
-    column :id
+    column(:id) { |boat| "#{boat.id} (#{boat.ref_no})" }
     column :images do |boat|
       if boat.primary_image
         img = image_tag(boat.primary_image.file.url(:mini), size: '64x43')
@@ -31,31 +31,17 @@ ActiveAdmin.register Boat do
       end
       link_to(img, admin_boat_images_path(q: {boat_id_equals: boat.id}))
     end
-    column 'Imgs' do |boat|
-      boat.boat_images.not_deleted.count
+    column('Imgs') { |boat| boat.boat_images.not_deleted.count }
+    column('Name/Makemodel') do |boat|
+      [html_escape(boat.name),
+       link_to(boat.manufacturer.name, admin_manufacturer_path(boat.manufacturer)),
+       link_to(boat.model.name, admin_model_path(boat.model))].reject(&:blank?).join('<br>').html_safe
     end
-    column :name
-    column :manufacturer, :manufacturer, sortable: 'manufacturers.name'
-    column :model, :model, sortable: 'models.name'
-    column :price do |boat|
-      number_to_currency(boat.price, unit: boat.safe_currency.symbol, precision: 0)
-    end
-    column :status do |boat|
-      if boat.status == 'inactive'
-        "inactive: #{boat.inactive_reason}"
-      else
-        boat.status
-      end
-    end
+    column(:price) { |boat| number_to_currency(boat.price, unit: boat.safe_currency.symbol, precision: 0) }
+    column(:status) { |boat| boat.inactive? ? "inactive: #{boat.inactive_reason}" : boat.status }
     column :user, :user, sortable: 'users.company_name'
     column :office, :office, sortable: 'offices.name'
-    column :location do |boat|
-      res = []
-      res << link_to(boat.country.name, admin_country_path(boat.country)) if boat.country
-      res << html_escape(boat.location) if boat.location.present?
-      res << content_tag(:span, "#{'Not ' if !boat.geocoded?}Geocoded", class: "status_tag #{boat.geocoded? ? 'ok' : 'no'}")
-      res.join('<br>').html_safe
-    end
+    column(:location) { |boat| boat_location_column(boat) }
     actions do |boat|
       item 'Stats', statistics_admin_boat_path(boat), class: 'member_link'
       item boat.deleted? ? 'Activate' : 'Deactivate', toggle_active_admin_boat_path(boat.slug), class: 'member_link', method: :post
@@ -145,36 +131,20 @@ ActiveAdmin.register Boat do
 
   csv do
     column :id
-    column :images do |boat|
-      if boat.primary_image
-        boat.primary_image.file.url(:mini)
-      end
-    end
-    column 'Imgs' do |boat|
-      boat.boat_images.not_deleted.count
-    end
+    column(:images) { |boat| boat.primary_image&.file&.url(:mini) }
+    column('Imgs') { |boat| boat.boat_images.not_deleted.count }
     column :name
     column :manufacturer
     column :model
     column :boat_type
     column :category
     column :price
-    column :currency do |boat|
-      boat.currency.try(:name)
-    end
+    column(:currency) { |boat| boat.currency&.name }
     column :status
     column :user
-    column :office do |boat|
-      boat.office.try(:name)
-    end
-    column :country do |boat|
-      boat.country.name if boat.country
-    end
-    column :location do |boat|
-      res = []
-      res << boat.location if boat.location.present?
-      res.join(', ') + "(#{'Not ' if !boat.geocoded?}Geocoded)"
-    end
+    column(:office) { |boat| boat.office&.name }
+    column(:country) { |boat| boat.country&.name }
+    column(:location) { |boat| boat.location }
   end
 
   controller do

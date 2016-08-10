@@ -17,4 +17,8 @@ class ArticlesController < ApplicationController
     @prev_article = Article.where("created_at < ?", @article.created_at).first
   end
 
+  def rightboat_mini
+    pdf = File.join(Rails.root, 'public/pdfs/Rightboat.mini_06.1.pdf')
+    send_file(pdf, filename: 'Rightboat.mini_06.1.pdf', disposition: 'inline', type: 'application/pdf')
+  end
 end

@@ -81,7 +81,9 @@ Rails.application.routes.draw do
   # put 'session-settings', to: 'session_settings#change', constraints: { format: :json }
 
   get 'news(/category/:category_id)', to: 'articles#index', as: :articles
-  resources :articles, only: [:show], path: :news
+  resources :articles, only: [:show], path: :news do
+    get 'rightboat-mini', on: :collection
+  end
   resources :buyer_guides, only: [:index, :show]
   # resources :feedbacks, only: [:create]
   # resources :mail_subscriptions, only: [:create]

@@ -27,6 +27,7 @@ class Boat < ActiveRecord::Base
     string(:model) { |boat| boat.model.name.downcase }
     string(:fuel_type) { |boat| boat.fuel_type&.name_stripped }
     string(:boat_type) { |boat| boat.boat_type&.name_stripped }
+    string(:state) { |boat| boat.state&.downcase }
     integer :user_id
     integer :manufacturer_id
     integer :model_id
@@ -189,9 +190,7 @@ class Boat < ActiveRecord::Base
   end
 
   def geocoded?
-    return false if geo_location.blank? || country_id.nil?
-    _l, _, _c = geo_location.rpartition(',')
-    _l == location.to_s.downcase
+    geo_location && location.present? && geo_location.rpartition(', ')[0] == location
   end
 
   def favourited_by?(user)

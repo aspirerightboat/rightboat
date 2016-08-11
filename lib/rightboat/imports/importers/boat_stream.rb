@@ -185,7 +185,7 @@ module Rightboat
                         case @el
                         when 'CityName' then @location[:city_name] = chars if chars != 'Unknown' # eg. Chatham | Gwynedd, LL57 4HN | Unknown
                         when 'CountryID' then @boat.country = chars # eg. GB
-                        when 'StateOrProvinceCountrySub-DivisionID' then @location[:country_sub] = chars
+                        when 'StateOrProvinceCountrySub-DivisionID' then @boat.state = @location[:country_sub] = chars
                         # when 'Postcode'
                         end
                       end

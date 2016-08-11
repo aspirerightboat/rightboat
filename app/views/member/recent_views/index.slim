@@ -2,10 +2,9 @@
   .col-xs-12
     h1.pull-left My Recent Views
     - if @viewed_boats
-      ul.nav.navbar-nav.navbar-right.display-options.pull-right
+      ul.pull-right
         li
-          .navbar-text
-            = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'select-dark layout-mode-select notranslate'
+          = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'select-dark layout-mode-select notranslate'
 
     .clearfix
     hr

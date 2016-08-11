@@ -1,13 +1,8 @@
 nav#top-navbar.navbar.navbar-default.navbar-static-top
   .container
-    .navbar-header
-      button.navbar-toggle.collapsed(aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button")
-        span.sr-only Toggle navigation
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
-      - if local_assigns[:include_header]
-        = link_to root_path, class: 'navbar-brand' do
+    - if local_assigns[:include_header]
+      .top-navbar-header
+        = link_to root_path, class: 'rightboat-logo' do
           = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
         ul.nav.navbar-nav
           li
@@ -16,13 +11,17 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
             - else
               h1
                 span.hidden-sm Find your <strong>Rightboat</strong>
+    button.navbar-toggle.collapsed(aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button")
+      span.sr-only Toggle navigation
+      span.icon-bar
+      span.icon-bar
+      span.icon-bar
     #navbar.navbar-collapse.collapse
       ul#navbar-links.nav.navbar-nav.navbar-right
         - if user_signed_in?
-          li.dropdown.rb-dropdown
-            a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false")
-              | Welcome #{current_user.first_name}
-            ul.dropdown-menu
+          li.top-navbar-dropdown
+            span.top-navbar-menu-toggler Welcome #{current_user.first_name}
+            ul.top-navbar-menu
               li= link_to 'Log Out', destroy_user_session_path, method: :delete
           li
             = link_to 'My Rightboat', member_root_path, class: 'require-login', \

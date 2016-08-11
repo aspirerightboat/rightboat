@@ -15,7 +15,7 @@ module Rightboat
 
       NORMAL_ATTRIBUTES = [
         :source_id, :name, :description, :short_description, :poa, :price, :year_built, :offer_status,
-        :length_m, :length_f, :new_boat, :source_url, :owners_comment
+        :length_m, :length_f, :new_boat, :source_url, :owners_comment, :state
       ]
 
       SPEC_ATTRS = [
@@ -104,15 +104,15 @@ module Rightboat
       ]
 
       DYNAMIC_ATTRIBUTES = [
-        :import, :error_msg, :user, :images, :pending_images_count, :new_record, :tax_status, :update_country, :country, :location,
+        :import, :error_msg, :user, :images, :pending_images_count, :new_record, :tax_status, :country, :location,
         :office, :office_id, :target, :importer, :class_groups, :media
       ]
 
       attr_reader :missing_spec_attrs
-      attr_accessor *DYNAMIC_ATTRIBUTES
-      attr_accessor *SPEC_ATTRS
-      attr_accessor *NORMAL_ATTRIBUTES
-      attr_accessor *RELATION_ATTRIBUTES
+      attr_reader *DYNAMIC_ATTRIBUTES
+      attr_reader *SPEC_ATTRS
+      attr_reader *NORMAL_ATTRIBUTES
+      attr_reader *RELATION_ATTRIBUTES
 
       (NORMAL_ATTRIBUTES + SPEC_ATTRS + DYNAMIC_ATTRIBUTES + RELATION_ATTRIBUTES).each do |attr_name|
         define_method "#{attr_name}=" do |v|
@@ -461,73 +461,51 @@ module Rightboat
 
       def adjust_location(target)
         if location.blank? && country.blank?
-          # take info from office
-          if office.present?
-            target.country_id = office[:address_attributes].try(:[], :country_id)
-            target.geo_location = office[:address_attributes].try(:[], :town_city)
-          end
-          # otherwise take info from user itself
-          if target.geo_location.blank? && target.country_id.blank?
-            broker_address = user.address
-            target.country_id = broker_address.try(:country_id)
-            target.geo_location = broker_address.try(:city_town)
-          end
+          # take info from office address or broker user address
+          target.country_id = office&.dig(:address_attributes, :country_id) || user.address&.country_id
           return
         end
 
-        if country.to_s.downcase == location.to_s.downcase
-          self.location = ''
-        end
-
-        if country.to_s.downcase == 'uk'
-          self.country = 'GB'
-        end
-        full_location = [location.to_s, country.to_s].reject(&:blank?).join(', ').downcase.strip
-        if full_location != target.geo_location
-          _country = nil
-          if country.present?
-            q = Country.joins("LEFT JOIN misspellings ON misspellings.source_id = countries.id AND misspellings.source_type = 'Country'")
-            q = q.where('misspellings.alias_string = :name OR countries.name = :name OR countries.iso = :name', name: country)
-            _country = q.first
+        if country.present?
+          if country&.is_a?(String)
+            target.country = Country.where('name = :name OR iso = :name OR iso3 == :name', name: country)
+            target.country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.country
+          elsif country&.is_a?(Country)
+            target.country = country
           end
-          if _country
-            target.country = _country
-            target.geo_location = full_location
-          else
-            # Geocoder.configure(
-            #   http_proxy: 'http://uk.proxymesh.com:31280',
-            #   timeout: 15
-            # )
 
-            geo_result = Geocoder.search(full_location, lookup: :google).first
-            if geo_result && geo_result.country
-              self.country = geo_result.country_code
-              rcc = "#{Regexp.escape(geo_result.country_code)}|#{Regexp.escape(geo_result.country)}"
-              self.location = full_location.gsub(/[\s,]*(#{rcc})[^\w]*$/i, '')
-              target.geo_location = full_location
-              self.update_country = true
+          # Remove country name from location
+          if location.present?
+            if target.country
+              aliases_str = target.country.aliases.map { |a| Regexp.escape(a) }.join('|')
+              regex = /\b(?:#{aliases_str})\b/
+              location.gsub!(regex, '')
+            elsif country.is_a?(String)
+              location.gsub!(country, '')
             end
           end
+        end
 
-          if update_country
-            target.country = Country.find_by_iso(country) if country.present?
-            if !target.country && country.present?
-              target.country = Country.where('name LIKE ?', "#{country}%").first
-            end
-          end
+        if !target.geocoded?
+          full_location = [location.to_s, state, target.country&.name || country.to_s].reject(&:blank?).join(', ').downcase
 
-          if target.country
-            rcc = "#{Regexp.escape(target.country.iso)}|#{Regexp.escape(target.country.name)}"
-            target.location = location.to_s.gsub(/[\s,]*(#{rcc})[^\w]*$/i, '')
-          else
-            target.location = location.to_s.gsub(/[\s,]+$/, '')
+          if full_location.present? && (geo = Geocoder.search(full_location).first)
+            target.geo_location = geo.formatted_address
+            target.country = Country.find_by(iso: geo.country_code) if geo.country && target.country&.iso != geo.country_code
+            target.state = geo.state_code
+            target.location = target.geo_location.rpartition(', ')[0]
           end
         end
+
+        target.location ||= location
+        target.state ||= state || (Rightboat::USStates.recognize(target.location) if target.country&.iso == 'US')
 
         # ensure location not include broker company name
         # eg. Burton Waters Marina Limited
-        name_rcc = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
-        target.location = target.location.gsub(/(#{name_rcc})([\s,]+)?/i, '')
+        if target.location.present?
+          company_name = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
+          target.location.gsub!(/\b(?:#{company_name})[\s,]*/i, '')
+        end
       end
 
       def do_import_substitutions!(value)

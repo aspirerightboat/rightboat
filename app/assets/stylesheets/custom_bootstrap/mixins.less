@@ -1,92 +1,8 @@
-.navbar-overrides(@gutter) {
-  @rb-navbar-padding-horizontal: floor((@gutter / 2));
-
-  .navbar-collapse {
-    padding-right: @rb-navbar-padding-horizontal;
-    padding-left:  @rb-navbar-padding-horizontal;
-  }
-
-  .container,
-  .container-fluid {
-    > .navbar-header,
-    > .navbar-collapse {
-      margin-right: -@rb-navbar-padding-horizontal;
-      margin-left: -@rb-navbar-padding-horizontal;
-      @media (min-width: @grid-float-breakpoint) {
-        margin-right: 0;
-        margin-left:  0;
-      }
-    }
-  }
-
-  .navbar-brand {
-    padding: 0;
-    @media (min-width: @grid-float-breakpoint) {
-      .navbar > .container &,
-      .navbar > .container-fluid & {
-        margin-left: -@rb-navbar-padding-horizontal;
-      }
-    }
-  }
-
-  .navbar-toggle {
-    margin-right: @rb-navbar-padding-horizontal;
-  }
-  .navbar-nav {
-    margin: (@navbar-padding-vertical / 2) - @rb-navbar-padding-horizontal;
-    @media (min-width: @grid-float-breakpoint) {
-      margin: 0;
-    }
-    .input-group {
-      line-height: @line-height-computed;
-      .form-control { padding: 0; }
-    }
-  }
-
-  .navbar-form {
-    margin-left: -@rb-navbar-padding-horizontal;
-    margin-right: -@rb-navbar-padding-horizontal;
-    padding: 10px 0 0;
-    .box-shadow(none);
-    @media (min-width: @grid-float-breakpoint) {
-      width: auto;
-      border: 0;
-      margin-left: 0;
-      margin-right: 0;
-      padding-right: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-      .form-control {
-        width: 180px !important;
-        border: 0;
-        line-height: 1.2em !important;
-        height: auto;
-        margin-top: 5px;
-      }
-    }
-  }
-
-  .navbar-text {
-    @media (min-width: @grid-float-breakpoint) {
-      float: left;
-      margin-left: @rb-navbar-padding-horizontal;
-      margin-right: @rb-navbar-padding-horizontal;
-    }
-  }
-}
-
 .assign-gutter(@property) {
   @{property}: @xs-gutter;
-  @media (min-width: @screen-sm-min) {
-    @{property}: @sm-gutter;
-  }
-  @media (min-width: @screen-md-min) {
-    @{property}: @md-gutter;
-  }
-  @media (min-width: @screen-lg-min) {
-    @{property}: @lg-gutter;
-  }
-
+  @media (min-width: @screen-sm-min) { @{property}: @sm-gutter; }
+  @media (min-width: @screen-md-min) { @{property}: @md-gutter; }
+  @media (min-width: @screen-lg-min) { @{property}: @lg-gutter; }
 }
 
 .make-rb-grid-columns(@gutter, @prefix: '') {
@@ -108,17 +24,7 @@
   .col(1); // kickstart it
 }
 
-.clearfix-now {
-  &:before {
-    display: block;
-    content: ' ';
-    clear: both;
-  }
-}
-.clearfix-after {
-  &:after {
-    display: block;
-    content: ' ';
-    clear: both;
-  }
+.AzureSection() {
+  color: @rb-color-dark;
+  background-color: @rb-color-primary;
 }

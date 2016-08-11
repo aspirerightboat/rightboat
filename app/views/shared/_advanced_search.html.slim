@@ -89,13 +89,19 @@
           .col-xs-4
             = label_tag :countries_picker, 'Countries'
           .col-xs-8
-            - general_options = general_facets[:countries_data].map { |id, name, count| [count ? "#{name} (#{count})" : name, id] }
-            - found_countries = (@search_facets[:countries_data].to_json if @search_facets)
-            - selected_ids = ([*(params[:countries] || [])].to_json if params[:countries].present?)
-            = select_tag 'countries[]', options_for_select(general_options), id: 'countries_picker', \
-                    class: 'select-black multiple-country-select', multiple: 'multiple', \
-                    data: {'found-countries' => found_countries, 'selected-ids' => selected_ids}, \
+            - general_options = general_facets[:countries_data].map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
+            = text_field_tag :countries, params[:countries], id: 'countries_picker', \
+                    class: 'select-black multiple-country-select select-states-if-us', \
+                    data: {options: general_options}, \
                     placeholder: 'eg. United Kingdom'
+        .form-group.row(style="#{('display: none' if params[:state].blank?)}")
+          .col-xs-4
+            = label_tag :states_picker, 'States'
+          .col-xs-8
+            = text_field_tag :states, params[:states], \
+                    id: 'states_picker', class: 'select-black country-states-select', \
+                    data: {options: Rightboat::USStates.states_map.map { |k, v| {value: k, text: v} }}, \
+                    placeholder: 'eg. Florida'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'

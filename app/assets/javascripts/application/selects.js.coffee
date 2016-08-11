@@ -59,9 +59,9 @@ $ ->
   $('.layout-mode-select').selectize
     render:
       item: (data, escape) ->
-        '<div><img class="view-mode-icon" src="/icons/' + data.text + '-view.png"></div>'
+        '<div><img class="selectize-layout-icon" src="/icons/' + data.text + '-view.png"></div>'
       option: (data, escape) ->
-        '<div><img class="view-mode-icon" src="/icons/' + data.text + '-view.png"></div>'
+        '<div><img class="selectize-layout-icon" src="/icons/' + data.text + '-view.png"></div>'
   $('#layout_mode.layout-mode-select').change ->
     $('[data-layout-mode]').attr('data-layout-mode', @value)
     Cookies.set('layout_mode', @value)
@@ -71,25 +71,12 @@ $ ->
     $sel = $(@)
     $sel.selectize
       plugins: ['remove_button'],
+      delimiter: '-',
+      maxItems: 6,
+      options: $sel.data('options')
       render:
         item: (data, escape) ->
           '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>'
-    foundCountries = $sel.data('found-countries')
-    if !$.isEmptyObject(foundCountries)
-      selectize = $sel.data('selectize')
-      $sel.data('init-options', selectize.options)
-      selectize.clear()
-      selectize.clearOptions()
-      $.each foundCountries, ->
-        id = @[0]
-        name = @[1]
-        count = @[2]
-        text = name + ' (' + count + ')'
-        selectize.addOption(value: id, text: text)
-      selectize.refreshOptions()
-      selected_ids = $sel.data('selected-ids') || []
-      $.each selected_ids, ->
-        selectize.addItem(this, true)
 
   $.fn.countrySelect = ->
     @.selectize
@@ -120,3 +107,18 @@ $ ->
             data.text
     if !$sel.val()
       $sel.val('')
+
+  $('.country-states-select').each ->
+    $(@).selectize
+      plugins: ['remove_button'],
+      delimiter: '-',
+      maxItems: 6,
+      options: $(@).data('options')
+
+  $('input.select-states-if-us').each ->
+    @.selectize.on 'change', (value) ->
+      us_selected = value == '234'
+      $('#states_picker').closest('.row').each ->
+        if us_selected then $(@).slideDown() else $(@).slideUp()
+        $('#states_picker').get(0).selectize.clear() unless us_selected
+    @.selectize.trigger('change', $(@).val())

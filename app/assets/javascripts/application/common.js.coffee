@@ -47,15 +47,7 @@ $ ->
     $form = $advSearch.find('form')
     $('input[type=text]', $form).val('')
     $('input[type=checkbox]', $form).prop('checked', false)
-    $('#manufacturers_picker, #models_picker', $form).each -> @selectize.clear()
-    $('#countries_picker', $form).each ->
-      selectize = @selectize
-      selectize.clear()
-      if (initOpts = $(@).data('init-options'))
-        selectize.clearOptions()
-        $.each initOpts, (k, v) ->
-          selectize.addOption(value: k, text: v.text)
-        selectize.refreshOptions(false)
+    $('#manufacturers_picker, #models_picker, #countries_picker, #states_picker', $form).each -> @selectize.clear()
 
     $('.year-slider, .length-slider, .price-slider', $form).each ->
       $(@).data('value0', '')
@@ -64,7 +56,7 @@ $ ->
     false
 
   if sessionStorage.getItem('saveSearch') == 'true'
-    $('.page-links .save-search a').trigger 'click'
+    $('#search_bar .save-search a').trigger 'click'
   sessionStorage.removeItem('saveSearch')
 
   # remove #_=_ in url after facebook auth
@@ -104,3 +96,6 @@ $ ->
     $(@)
     .on 'ajax:beforeSend', (e) -> $(@).addClass('inline-loading')
     .on 'ajax:complete', (e) -> $(@).removeClass('inline-loading')
+
+  $('#trigger_login_popup').each ->
+    $('#login_popup').modal('show')

@@ -33,13 +33,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
     column :status
     column :user, :user, sortable: 'users.first_name'
     column :office, :office, sortable: 'offices.name'
-    column :location do |boat|
-      res = []
-      res << link_to(boat.country.name, admin_country_path(boat.country)) if boat.country
-      res << html_escape(boat.location) if boat.location.present?
-      res << content_tag(:span, "#{'Not ' if !boat.geocoded?}Geocoded", class: "status_tag #{boat.geocoded? ? 'ok' : 'no'}")
-      res.join('<br>').html_safe
-    end
+    column(:location) { |boat| boat_location_column(boat) }
     actions do |boat|
       item 'Unfavourite', admin_boat_path(boat, boat: { featured: false }), method: :put, class: 'member_link'
     end

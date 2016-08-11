@@ -9,7 +9,7 @@ module Rightboat
     attr_reader :facets_data, :search
 
     attr_reader :q, :manufacturer_model, :manufacturer_ids, :model_ids,
-                :country_ids, :boat_type, :manufacturer_id, :model_id,
+                :country_ids, :boat_type, :manufacturer_id, :model_id, :states,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max, :country_id, :boat_type_id,
                 :ref_no, :new_used, :tax_status, :page, :order, :order_col, :order_dir, :exclude_ref_no
 
@@ -71,6 +71,8 @@ module Rightboat
 
         with(:year).greater_than_or_equal_to(year_min) if year_min
         with(:year).less_than_or_equal_to(year_max) if year_max
+
+        any_of { states.each { |state| with :state, state } } if states
 
         any_of { country_ids.each { |country_id| with :country_id, country_id } } if country_ids
         # any_of { category.each { |category_id| with :category_id, category_id } } if category
@@ -178,6 +180,9 @@ module Rightboat
         @order = params[:order] if @order_col
       end
       @exclude_ref_no = read_str(params[:exclude_ref_no]&.downcase)
+      if params[:states].present?
+        @states = read_tags(params[:states])&.select { |s| Rightboat::USStates.states_map[s] }&.map(&:downcase)
+      end
     end
 
     def read_str(str)

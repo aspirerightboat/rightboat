@@ -14,6 +14,9 @@ abbr {
   h3 {
     font-size: 20px;
   }
+  .top-h2 {
+    margin: 0 auto 1.2em;
+  }
 }
 
 .bold-link {
@@ -233,6 +236,20 @@ abbr {
 
   &:hover, &:focus {
     background: #364886;
+  }
+}
+
+.flat-list {
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+
+    li:not(:first-child) { margin-left: 1ex; }
+  }
+  @media (max-width: @screen-sm-min) {
+    li {
+      margin: 0.5em 0;
+      text-align: center;
+    }
   }
 }
 

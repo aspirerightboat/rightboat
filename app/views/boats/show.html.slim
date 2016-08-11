@@ -47,7 +47,7 @@
     .boat-header
       .container
         .row
-          - if @boat.user == current_user
+          - if @boat.user == current_user || (current_user&.admin? && cookies[:broker_id] == @boat.user_id.to_s)
             .col-sm-2
               = link_to 'PDF Link', makemodel_boat_pdf_path(@boat), class: 'btn-flat btn-block btn-black'
             .col-sm-8
@@ -82,15 +82,14 @@
           h1 About this #{@boat.manufacturer_model}
           .truncated-description
             == @boat.extra.short_description
-    - if @boat.user != current_user
+    - if @boat.user != current_user && !(current_user&.admin? && cookies[:broker_id] == @boat.user_id.to_s)
       .boat-footer
         .container.clearfix
           .pull-right
-            - if @boat.user != current_user
-              = favourite_link_to @boat
-              = render 'shared/social_share', boat: @boat
-              - if @boat.offer_available?
-                = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
+            = favourite_link_to @boat
+            = render 'shared/social_share', boat: @boat
+            - if @boat.offer_available?
+              = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
 
 
 = render 'shared/lead_popup'

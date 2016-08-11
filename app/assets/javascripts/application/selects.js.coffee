@@ -71,25 +71,12 @@ $ ->
     $sel = $(@)
     $sel.selectize
       plugins: ['remove_button'],
+      delimiter: '-',
+      maxItems: 6,
+      options: $sel.data('options')
       render:
         item: (data, escape) ->
           '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>'
-    foundCountries = $sel.data('found-countries')
-    if !$.isEmptyObject(foundCountries)
-      selectize = $sel.data('selectize')
-      $sel.data('init-options', selectize.options)
-      selectize.clear()
-      selectize.clearOptions()
-      $.each foundCountries, ->
-        id = @[0]
-        name = @[1]
-        count = @[2]
-        text = name + ' (' + count + ')'
-        selectize.addOption(value: id, text: text)
-      selectize.refreshOptions()
-      selected_ids = $sel.data('selected-ids') || []
-      $.each selected_ids, ->
-        selectize.addItem(this, true)
 
   $.fn.countrySelect = ->
     @.selectize
@@ -121,11 +108,12 @@ $ ->
     if !$sel.val()
       $sel.val('')
 
-  $('select.select-states-if-us').each ->
+  $('input.select-states-if-us').each ->
     @.selectize.on 'change', (value) ->
-      us_selected = value && value.length == 1 && value[0] == '234'
-      $('#states_picker').closest('.row').slideToggle(!us_selected)
-    @.selectize.trigger('change', @.selectize.items)
+      us_selected = value == '234'
+      $('#states_picker').closest('.row').each ->
+        if us_selected then $(@).slideDown() else $(@).slideUp()
+    @.selectize.trigger('change', $(@).val())
 
   $('.country-states-select').each ->
     $(@).selectize

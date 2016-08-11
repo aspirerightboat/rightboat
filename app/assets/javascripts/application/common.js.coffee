@@ -47,15 +47,7 @@ $ ->
     $form = $advSearch.find('form')
     $('input[type=text]', $form).val('')
     $('input[type=checkbox]', $form).prop('checked', false)
-    $('#manufacturers_picker, #models_picker', $form).each -> @selectize.clear()
-    $('#countries_picker', $form).each ->
-      selectize = @selectize
-      selectize.clear()
-      if (initOpts = $(@).data('init-options'))
-        selectize.clearOptions()
-        $.each initOpts, (k, v) ->
-          selectize.addOption(value: k, text: v.text)
-        selectize.refreshOptions(false)
+    $('#manufacturers_picker, #models_picker, #countries_picker, #states_picker', $form).each -> @selectize.clear()
 
     $('.year-slider, .length-slider, .price-slider', $form).each ->
       $(@).data('value0', '')

@@ -108,7 +108,6 @@ Rails.application.routes.draw do
     collection do
       get :contact
       get :toc
-      # get :marine_services
       get :privacy_policy
       get :cookies_policy
       get :sell_my_boats

@@ -24,10 +24,6 @@ class HomeController < ApplicationController
     @page_title = 'Terms and Conditions'
   end
 
-  def marine_services
-    @pate_title = 'Marine Services'
-  end
-
   def privacy_policy
     @page_title = 'Privacy Policy'
   end

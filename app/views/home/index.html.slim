@@ -154,8 +154,6 @@
                 p.text-center.small
                   | -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
 
-  = render 'shared/lead_popup_batch'
-
   - if params[:popup_login]
     #trigger_login_popup
   coffee:

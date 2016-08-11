@@ -108,13 +108,6 @@ $ ->
     if !$sel.val()
       $sel.val('')
 
-  $('input.select-states-if-us').each ->
-    @.selectize.on 'change', (value) ->
-      us_selected = value == '234'
-      $('#states_picker').closest('.row').each ->
-        if us_selected then $(@).slideDown() else $(@).slideUp()
-    @.selectize.trigger('change', $(@).val())
-
   $('.country-states-select').each ->
     $(@).selectize
       plugins: ['remove_button'],
@@ -122,3 +115,10 @@ $ ->
       maxItems: 6,
       options: $(@).data('options')
 
+  $('input.select-states-if-us').each ->
+    @.selectize.on 'change', (value) ->
+      us_selected = value == '234'
+      $('#states_picker').closest('.row').each ->
+        if us_selected then $(@).slideDown() else $(@).slideUp()
+        $('#states_picker').get(0).selectize.clear() unless us_selected
+    @.selectize.trigger('change', $(@).val())

@@ -417,16 +417,20 @@ module Rightboat
             target_office.assign_attributes(office)
             target_office.source_id = office_id
             target_office.name ||= user.company_name
-            address = target_office.address || Address.new
-            address.assign_attributes(address_attrs) if address_attrs
-            office_changed = target_office.changed?
-            address_changed = address.changed?
 
-            if office_changed || address_changed
+            if target_office.changed?
               new_record = target_office.new_record?
-              target_office.save! if office_changed
-              address.save! if !new_record && address_changed
+              target_office.save!
               @@user_offices << target_office if new_record
+            end
+
+            if address_attrs
+              address = target_office.address || target_office.build_address
+              address.assign_attributes(address_attrs)
+
+              if address.changed?
+                address.save!
+              end
             end
 
             target.office = target_office

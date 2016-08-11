@@ -121,7 +121,16 @@ $ ->
     if !$sel.val()
       $sel.val('')
 
-  $('select.select-state-if-us').each ->
+  $('select.select-states-if-us').each ->
     @.selectize.on 'change', (value) ->
-      us_selected = value == ['234']
-      $('#state_picker').closest('.row').slideToggle(!us_selected)
+      us_selected = value && value.length == 1 && value[0] == '234'
+      $('#states_picker').closest('.row').slideToggle(!us_selected)
+    @.selectize.trigger('change', @.selectize.items)
+
+  $('.country-states-select').each ->
+    $(@).selectize
+      plugins: ['remove_button'],
+      delimiter: '-',
+      maxItems: 6,
+      options: $(@).data('options')
+

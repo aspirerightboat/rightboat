@@ -93,17 +93,17 @@
             - found_countries = (@search_facets[:countries_data].to_json if @search_facets)
             - selected_ids = ([*(params[:countries] || [])].to_json if params[:countries].present?)
             = select_tag 'countries[]', options_for_select(general_options), id: 'countries_picker', \
-                    class: 'select-black multiple-country-select select-state-if-us', multiple: 'multiple', \
+                    class: 'select-black multiple-country-select select-states-if-us', multiple: 'multiple', \
                     data: {'found-countries' => found_countries, 'selected-ids' => selected_ids}, \
                     placeholder: 'eg. United Kingdom'
         .form-group.row(style="#{('display: none' if params[:state].blank?)}")
           .col-xs-4
-            = label_tag :state_picker, 'State'
+            = label_tag :states_picker, 'States'
           .col-xs-8
-            = select_tag :state, \
-                    options_for_select(Rightboat::USStates.states_map.map { |k, v| [v, k] }, params[:state]), \
-                    id: 'state_picker', class: 'select-black select-general', \
-                    prompt: 'Please Select...', placeholder: 'eg. Florida'
+            = text_field_tag :states, params[:states], \
+                    id: 'states_picker', class: 'select-black country-states-select', \
+                    data: {options: Rightboat::USStates.states_map.map { |k, v| {value: k, text: v} }}, \
+                    placeholder: 'eg. Florida'
         .form-group.row
           .col-xs-4
             = label_tag :ref_no, 'Ref No.'

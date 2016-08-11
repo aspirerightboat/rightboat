@@ -156,21 +156,17 @@
 
   = render 'shared/lead_popup_batch'
 
-  javascript:
-    $(function() {
-      $('.flexslider').slick({
+  - if params[:popup_login]
+    #trigger_login_popup
+  coffee:
+    $ ->
+      $('.flexslider').slick
         slidesToShow: 1,
         arrows: true
-      });
-      if (#{raw params[:popup_login].to_json}) {
-        $('#login_popup').modal('show');
-      }
-      $('.slick-nav').slick({
+      $('.slick-nav').slick
         autoplay: true,
         autoplaySpeed: 30000,
         infinite: true,
         slidesToShow: 3,
         slidesToScroll: 3
-      });
-      $('.slick-nav .caption').css({visibility: 'visible'})
-    });
+      $('.slick-nav .caption').css(visibility: 'visible')

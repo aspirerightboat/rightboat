@@ -96,3 +96,6 @@ $ ->
     $(@)
     .on 'ajax:beforeSend', (e) -> $(@).addClass('inline-loading')
     .on 'ajax:complete', (e) -> $(@).removeClass('inline-loading')
+
+  $('#trigger_login_popup').each ->
+    $('#login_popup').modal('show')

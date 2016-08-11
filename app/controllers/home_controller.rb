@@ -6,10 +6,8 @@ class HomeController < ApplicationController
   after_action :set_visited, only: [:index]
 
   def index
-    if user_signed_in? && params[:popup_login]
-      # root page is used as login page too routing: /sign-in
-      flash[:notice] = 'You have signed in already.'
-      return redirect_to(root_path)
+    if params[:popup_login] && user_signed_in?
+      redirect_to(root_path) and return
     end
 
     @newest_boats = Boat.active.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)

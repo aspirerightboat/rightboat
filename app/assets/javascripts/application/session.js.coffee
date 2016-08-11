@@ -1,13 +1,3 @@
-adjustLoginLink = ->
-  if $(window).width() > 767
-    $('.rb-dropdown')
-      .on 'mouseenter', -> $(@).addClass 'open'
-      .on 'mouseleave', -> $(@).removeClass 'open'
-  else
-    $('.rb-dropdown')
-      .unbind('mouseenter')
-      .unbind('mouseleave')
-
 $ ->
   window.loginTitle = null
 
@@ -15,16 +5,11 @@ $ ->
     window.loginTitle = $(this).data('login-title')
     requireLogin(e, false)
 
-  $(document)
-  .on('ready', adjustLoginLink)
-  .on 'click', '.user-login', ->
+  $(document).on 'click', '.user-login', ->
     $('#login-content').show()
     $('#register-content').hide()
     $('#login_popup').displayPopup() unless $('#login_popup').is(':visible')
     false
-
-  $(window).resize ->
-    adjustLoginLink()
 
   $('#login_popup')
     .on 'hidden.bs.modal', ->

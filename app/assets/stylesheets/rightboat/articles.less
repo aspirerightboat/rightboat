@@ -72,6 +72,30 @@
   li.active a span.article-category { color: @rb-color-primary; }
 }
 
+#news {
+  li span {
+    display: inline-block;
+  }
+
+  .month {
+    width: 80px;
+  }
+
+  .year {
+    width: 47px;
+  }
+
+  .introductory {
+    @media(min-width: @screen-sm-min) {
+      padding-left: 127px;
+    }
+
+    @media(max-width: @screen-xs-max) {
+      padding-left: 30px;
+    }
+  }
+}
+
 #rb-tweets {
   margin-top: 2em;
 }

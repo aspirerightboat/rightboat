@@ -38,4 +38,9 @@ class Country < ActiveRecord::Base
   def self.country_code_options
     @country_code_options ||= by_priority.map { |x| [x.name, x.iso.downcase, x.country_code] }
   end
+
+  def self.european_country_ids
+    Country.where(iso: %w(GB DE IT FR ES TR NL BE GR PT SE AT CH DK FI NO IE HR LU IS MC PL RU RO CZ HU)).pluck(:id)
+  end
+
 end

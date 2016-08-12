@@ -1,6 +1,8 @@
-- unless @featured_boats.blank?
-  #featured-boats
-    h3.toolbar-title Featured Boats
-  #featured-wrap.container
-    .row(data-layout-mode="gallery")
-      = render @featured_boats
+- cache "featured_boats_in_#{session[:country]}", expires_in: 1.hour do
+  - fetch_featured_boats
+  - if @featured_boats.present?
+    #featured-boats
+      h3.toolbar-title Featured Boats
+    #featured-wrap.container
+      .row(data-layout-mode="gallery")
+        = render @featured_boats

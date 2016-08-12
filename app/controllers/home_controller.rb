@@ -13,7 +13,6 @@ class HomeController < ApplicationController
     @newest_boats = Boat.active.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
     @recent_tweets = Rails.env.development? ? [] : Rightboat::TwitterFeed.all
     load_recent_boats
-    load_featured
   end
 
   def contact
@@ -97,34 +96,4 @@ class HomeController < ApplicationController
     end
   end
 
-  def load_featured
-    country = Country.find_by(iso: session[:country])
-
-    @featured_boats = Rails.cache.fetch("featured_boats_#{session[:country]}", expires_in: 1.hours) do
-      Boat.featured.active.where(country: country).order('RAND()').limit(12)
-        .includes(:user, :currency, :manufacturer, :model, :country, :primary_image, :vat_rate).to_a
-    end
-
-    length = @featured_boats.length
-
-    if length < 6
-      limit = 6 - length
-
-      if session[:country] == 'US'
-        @featured_boats += Boat.featured.active
-          .where.not(country: country).limit(limit).order('RAND()')
-          .includes(:user, :currency, :manufacturer, :model, :country, :primary_image, :vat_rate).to_a
-      else
-        @featured_boats += Boat.featured.active
-          .where(country_id: european_country_ids.delete_if { |x| x == country.id }).limit(limit).order('RAND()')
-          .includes(:user, :currency, :manufacturer, :model, :country, :primary_image, :vat_rate).to_a
-      end
-    end
-  end
-
-  def european_country_ids
-    Rails.cache.fetch('european_country_ids', expires_in: 24.hours) do
-      Country.where(iso: %w(GB DE IT FR ES TR NL BE GR PT SE AT CH DK FI NO IE HR LU IS MC PL RU RO CZ HU)).pluck(:id)
-    end
-  end
 end

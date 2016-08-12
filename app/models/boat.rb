@@ -112,6 +112,7 @@ class Boat < ActiveRecord::Base
   scope :power, -> { with_boat_types.where('LOWER(boat_types.name) LIKE "%power%" OR LOWER(boat_types.name) LIKE "%motor%" OR LOWER(boat_types.name) LIKE "%cruiser%"') }
   scope :sail, -> { with_boat_types.where('LOWER(boat_types.name) LIKE "%sail%"') }
   scope :not_power_or_sail, -> { with_boat_types.where('boats.boat_type_id IS NULL OR LOWER(boat_types.name) NOT LIKE "%power%" AND LOWER(boat_types.name) NOT LIKE "%motor%" AND LOWER(boat_types.name) NOT LIKE "%cruiser%" AND LOWER(boat_types.name) NOT LIKE "%sail%"') }
+  scope :country_or_all, ->(country) { where(country: country) if country }
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true
 

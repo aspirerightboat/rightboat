@@ -123,6 +123,7 @@ module Rightboat
                           @boat.class_groups = []
                           @media = []
                           @medium = {}
+                          @country_id = nil
                         else
                           @boat = nil
                         end
@@ -155,9 +156,14 @@ module Rightboat
                           when 'LineOne' then addr[:line1] = chars
                           when 'LineTwo' then addr[:line2] = chars
                           when 'CityName' then addr[:town_city] = chars
-                          when 'CountryID' then addr[:country_id] = @country_id_by_iso[chars] # eg. GB
+                          when 'CountryID'
+                            addr[:country_id] = @country_id_by_iso[chars] # eg. GB
+                            @country_id = chars
                           when 'Postcode' then addr[:zip] = chars
-                          when 'StateOrProvinceCountrySub-DivisionID' then addr[:county] = chars
+                          when 'StateOrProvinceCountrySub-DivisionID'
+                            if @country_id != 'GB' # eg. 'E27': this should not be shown to users
+                              addr[:county] = chars
+                            end
                           end
                         end
                       end

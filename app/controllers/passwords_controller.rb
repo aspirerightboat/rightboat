@@ -7,7 +7,7 @@ class PasswordsController < Devise::PasswordsController
     if successfully_sent?(resource)
       render json: {}
     else
-      render json: ["Unfortunately, we could not find your email. Please register for a Rightboat account <a here='#' class='open-login-popup'>here</a>.".html_safe], root: false, status: 422
+      render json: ['Unfortunately, we could not find your email.'], root: false, status: 422
     end
   end
 end

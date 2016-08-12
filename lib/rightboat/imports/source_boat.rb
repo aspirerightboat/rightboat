@@ -469,7 +469,7 @@ module Rightboat
         if country.present?
           if country&.is_a?(String)
             target.country = Country.where('name = :name OR iso = :name OR iso3 = :name', name: country).first
-            target.country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.country
+            target.country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.source
           elsif country&.is_a?(Country)
             target.country = country
           end

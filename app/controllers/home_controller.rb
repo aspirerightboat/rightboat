@@ -46,6 +46,11 @@ class HomeController < ApplicationController
   def welcome_broker_us
   end
 
+  def welcome_popup
+    session[:welcome_popup_shown] = 1
+    render json: {show_popup: render_to_string(partial: 'home/welcome_popup', formats: [:html])}
+  end
+
   private
 
   def register_statistics

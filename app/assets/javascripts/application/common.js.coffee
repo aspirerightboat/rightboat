@@ -4,27 +4,6 @@ $.fn.rbValidetta = (opts = {}) ->
   opts = $.extend(opts, default_opts)
   @.validetta(opts)
 
-window.requireLogin = (e, disable_history)->
-  $loginBtn = $('.login-top')
-  if $loginBtn.length > 0
-    e.preventDefault()
-    $target = $(e.target)
-
-    unless disable_history
-      if $target.data('method') == 'post' && $target.attr('id')
-        href = location.href + '#' + $target.attr('id')
-      else
-        href = $target.attr('href')
-        href = $target.data('target') if href == '#'
-      if /my-rightboat\/saved-searches/.test(href)
-        sessionStorage.setItem('saveSearch', 'true')
-      else if history.pushState && window.location.href != href
-        history.pushState({}, '', href)
-
-    $loginBtn.trigger('click')
-    return false
-  true
-
 window.scrollToTarget = (target) ->
   $('html, body').animate
     scrollTop: $(target).offset().top
@@ -55,9 +34,9 @@ $ ->
       reinitSlider($(@))
     false
 
-  if sessionStorage.getItem('saveSearch') == 'true'
+  if sessionStorage.getItem('saveSearch')
     $('#search_bar .save-search a').trigger 'click'
-  sessionStorage.removeItem('saveSearch')
+    sessionStorage.removeItem('saveSearch')
 
   # remove #_=_ in url after facebook auth
   if (window.location && window.location.hash == '#_=_')

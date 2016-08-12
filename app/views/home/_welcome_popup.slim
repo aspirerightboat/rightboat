@@ -1,0 +1,18 @@
+#welcome_popup.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header.text-center
+        button.close(aria-label="Close" data-dismiss="modal" type="button")
+          span(aria-hidden="true") &times;
+        .h Welcome to Rightboat
+        div The world's best resource for boats for sale
+      .modal-body
+        ul.checks-list
+          li Register for free
+          li Set and receive alerts
+          li Search for your right boat
+        .nice-buttons.text-center.p
+          a.nice-button.open-register-popup(href="#" style="min-width: 150px") Register for free
+        .text-center
+          ' Do you have an account already?
+          a.open-login-popup(href="#") Login

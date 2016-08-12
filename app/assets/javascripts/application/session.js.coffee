@@ -1,24 +1,27 @@
 $ ->
-  window.loginTitle = null
+  $.fn.openLoginPopup = (title) ->
+    $link = $(@)
+    $('#login_popup').each ->
+      $popup = $(@)
 
-  $('.require-login').click (e) ->
-    window.loginTitle = $(this).data('login-title')
-    requireLogin(e, false)
+      if /my-rightboat\/saved-searches/.test($link.attr('href'))
+        sessionStorage.setItem('saveSearch', '1')
 
-  $(document).on 'click', '.user-login', ->
-    $('#login-content').show()
-    $('#register-content').hide()
-    $('#login_popup').displayPopup() unless $('#login_popup').is(':visible')
+      $('#login-title').text(title).show() if title
+      $('#login-content').show()
+      $('#register-content').hide()
+      $popup.displayPopup() unless $popup.is(':visible')
+    false
+  
+  $(document).on 'click', '.open-login-popup', (e) ->
+    $link = $(e.target)
+    title = $link.data('login-title')
+    $link.openLoginPopup(title)
     false
 
-  $('#login_popup')
-    .on 'hidden.bs.modal', ->
-      $('form .alert').remove()
-      window.loginTitle = null
-      $('#login-title').html('').hide()
-    .on 'shown.bs.modal', ->
-      if window.loginTitle && window.loginTitle.length > 0
-        $('#login-title').html(window.loginTitle).show()
+  $('#login_popup').on 'hidden.bs.modal', ->
+    $('form .alert', @).remove()
+    $('#login-title').text('').hide()
 
   onSubmit = (e) ->
     e.preventDefault()
@@ -46,3 +49,11 @@ $ ->
       $this.find('button[type=submit]').prop('disabled', false)
 
   $('.session-form').rbValidetta(onValid: onSubmit)
+
+  $('#trigger_welcome_popup').each ->
+    $trigger = $(@)
+    show_popup = ->
+      $.getJSON '/welcome_popup', null, (data) ->
+        $trigger.after(data.show_popup).remove()
+        $('#welcome_popup').displayPopup()
+    setTimeout(show_popup, 10 * 1000)

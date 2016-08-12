@@ -34,6 +34,8 @@ html
 
     - if !user_signed_in?
       = render 'shared/session_popup'
+      - if !session[:welcome_popup_shown] && !current_page?('/')
+        #trigger_welcome_popup
 
     - if content_for? :body_scripts
       = yield :body_scripts

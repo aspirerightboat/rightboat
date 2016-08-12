@@ -14,12 +14,11 @@ window.initBoatView = (el) ->
     false
 
   $('.fav-link', el).click (e) ->
-    window.loginTitle = 'Please sign in or join as a member to record your favourite boats.'
-    return false unless requireLogin(e, false)
+    if $('.login-button').length
+      $(@).openLoginPopup('Please sign in or join as a member to record your favourite boats.')
+      return false
 
-    $link = $(@).attr('disabled', 'disabled')
-    if $link.hasClass('remove-fav') || $link.hasClass('active')
-      return false unless confirm('Are you sure you want to permanently remove this boat from your Favourites?')
+    $link = $(@).prop('disabled', true)
 
     $.ajax
       url: '/my-rightboat/favourites'
@@ -35,7 +34,7 @@ window.initBoatView = (el) ->
     .error ->
       alert('Sorry, unexpected error occurred')
     .always ->
-      $link.removeAttr('disabled')
+      $link.prop('disabled', false)
     false
 
   $('.boat-img-thumb > a', el).click ->

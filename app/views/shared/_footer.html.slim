@@ -13,9 +13,9 @@ nav#footer
             li= link_to 'News', articles_path
           ul.col-xs-6.col-sm-3
             li= link_to 'Sell my boat', current_user ? member_boats_path : sell_my_boats_home_path
-            li= link_to 'Berths', '#', class: 'require-login load-popup', data: {load_popup_id: 'berths_popup', load_popup_url: load_popup_berth_enquiries_path, 'login-title' => 'Please sign in or join as a member to make a berth request.'}
-            li= link_to 'Finance', '#', class: 'require-login load-popup', data: {load_popup_id: 'finance_popup', load_popup_url: load_popup_finances_path, 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
-            li= link_to 'Insurance', '#', class: 'require-login load-popup', data: {load_popup_id: 'insurance_popup', load_popup_url: load_popup_insurances_path, 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
+            li= link_to 'Berths', '#', class: 'open-login-popup load-popup', data: {load_popup_id: 'berths_popup', load_popup_url: load_popup_berth_enquiries_path, 'login-title' => 'Please sign in or join as a member to make a berth request.'}
+            li= link_to 'Finance', '#', class: 'open-login-popup load-popup', data: {load_popup_id: 'finance_popup', load_popup_url: load_popup_finances_path, 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
+            li= link_to 'Insurance', '#', class: 'open-login-popup load-popup', data: {load_popup_id: 'insurance_popup', load_popup_url: load_popup_insurances_path, 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
           ul.col-xs-6.col-sm-3
             li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link', rel: 'nofollow', target: '_blank'
             li= link_to '@rightboat', 'https://twitter.com/rightboat', class: 'tw-link', rel: 'nofollow', target: '_blank'
@@ -34,7 +34,7 @@ nav#footer
             - if !current_user || !current_user.company?
               li= link_to 'Register as Broker', welcome_broker_path
             - unless current_user
-              li= link_to 'Broker Login', '#', class: 'user-login'
+              li= link_to 'Broker Login', '#', class: 'open-login-popup'
     .company-info-links
       .copy &copy;#{Date.today.year} &nbsp; Rightboat Ltd - All Rights Reserved
       = link_to 'Policies', privacy_policy_home_path

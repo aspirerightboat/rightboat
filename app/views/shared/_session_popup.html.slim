@@ -33,7 +33,7 @@
               li Personalise your experience
               li Download full specifications and broker details
               li Keep tabs on your favourite boats
-            = link_to 'Join', '#', class: 'btn-flat btn-block user-register'
+            = link_to 'Join', '#', class: 'btn-flat btn-block open-register-popup'
           .col-sm-12
             h4.trader-hint.text-center Are you a broker? Join as a #{link_to 'Broker', welcome_broker_path}
         #register-content.row(style="display: none;")
@@ -43,4 +43,4 @@
           .col-sm-12
             p
               ' Do you have an account already?
-              = link_to 'Login', '#', class: 'user-login'
+              = link_to 'Login', '#', class: 'open-login-popup'

@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     end
 
     @newest_boats = Boat.active.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
-    @recent_tweets = Rails.env.development? ? [] : Rightboat::TwitterFeed.all
+    @recent_tweets = [] # Rails.env.development? ? [] : Rightboat::TwitterFeed.all
     load_recent_boats
   end
 

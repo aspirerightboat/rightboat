@@ -78,3 +78,5 @@ $ ->
 
   $('#trigger_login_popup').each ->
     $('#login_popup').modal('show')
+
+  $('.default-slider').slick()

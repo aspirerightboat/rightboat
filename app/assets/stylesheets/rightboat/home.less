@@ -206,10 +206,12 @@
     text-decoration: none;
   }
 
+  .caption { visibility: hidden; }
+  .slick-initialized .caption { visibility: visible; }
+
   .caption {
     color: @rb-color-dark;
     padding: 6px;
-    visibility: hidden;
 
     .p, .h4 { display: block; }
     .p {

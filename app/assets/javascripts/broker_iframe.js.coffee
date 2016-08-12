@@ -18,7 +18,7 @@
 #  require jquery.ui.touch-punch
 #= require selectize
 #  require js-cookie
-#  require slick.min
+#  require slick
 #  require photoswipe.min
 #  require photoswipe-ui-default.min
 #  require validetta

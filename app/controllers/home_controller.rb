@@ -10,7 +10,6 @@ class HomeController < ApplicationController
       redirect_to(root_path) and return
     end
 
-    @newest_boats = Boat.active.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
     @recent_tweets = [] # Rails.env.development? ? [] : Rightboat::TwitterFeed.all
     load_recent_boats
   end

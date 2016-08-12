@@ -1,0 +1,12 @@
+- cache 'newest_boats', expires_in: 15.minutes do
+  - fetch_newest_boats
+  #newest-boats.container
+    h3.text-center Newest boats
+    .slick-nav
+      - @newest_boats.each do |boat|
+        = link_to makemodel_boat_path(boat), class: 'caption text-center' do
+          strong.h4 #{boat.manufacturer} #{boat.model}
+          span.p.price(data-attr-name="price")= boat_price(boat)
+          span.p.boat-length(data-attr-name="loa")= boat_length(boat)
+          span.p= boat.year_built
+          span.p= boat.country.name

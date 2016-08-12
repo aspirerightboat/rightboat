@@ -23,4 +23,8 @@ module HomeHelper
     end
   end
 
+  def fetch_newest_boats
+    @newest_boats = Boat.active.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
+  end
+
 end

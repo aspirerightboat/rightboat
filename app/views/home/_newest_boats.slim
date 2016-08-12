@@ -10,4 +10,4 @@
           span.p.price(data-attr-name="price")= boat_price(boat)
           span.p.boat-length(data-attr-name="loa")= boat_length(boat)
           span.p= boat.year_built
-          span.p= boat.country.name
+          span.p= boat.country&.name

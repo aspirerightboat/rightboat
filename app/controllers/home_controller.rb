@@ -33,6 +33,9 @@ class HomeController < ApplicationController
   def confirm_email
   end
 
+  def sell_my_boats
+  end
+
   def welcome
     render layout: false
   end

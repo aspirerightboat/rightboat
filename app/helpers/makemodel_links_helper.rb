@@ -31,10 +31,4 @@ module MakemodelLinksHelper
     end
   end
 
-  def maker_links_by_names(names, last_word_connector = nil)
-    Manufacturer.where(name: names).pluck(:name, :slug).map do |name, slug|
-      link_to(name, sale_manufacturer_path(slug))
-    end.to_sentence(last_word_connector: last_word_connector || ' and ').html_safe
-  end
-
 end

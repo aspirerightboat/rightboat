@@ -52,3 +52,6 @@
   .row
     .col-xs-12.no-top-pad-pagination.text-center
       = paginate @boats
+
+javascript:
+  window.currencyRates = #{raw Currency.pluck(:name, :rate).to_h.to_json};

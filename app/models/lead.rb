@@ -54,7 +54,7 @@ class Lead < ActiveRecord::Base
     end
   end
 
-  def mark_if_suspicious(user, remote_ip)
+  def mark_if_suspicious(user, email, remote_ip)
     if (remote_country = Rightboat::DbIpApi.country(remote_ip))
       suspicious_countries = Country.where(suspicious: true).pluck(:iso)
       if remote_country.in?(suspicious_countries)
@@ -67,7 +67,7 @@ class Lead < ActiveRecord::Base
         mark_suspicious('Multiple leads received – review required')
       end
     end
-    if user && user.leads.where(status: %w(rejected suspicious)).any?
+    if Lead.where(status: %w(rejected suspicious), email: user&.email || email.presence).any?
       mark_suspicious('Lead from user with rejected/suspicious leads – review required')
     end
   end

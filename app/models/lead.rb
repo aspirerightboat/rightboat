@@ -67,6 +67,9 @@ class Lead < ActiveRecord::Base
         mark_suspicious('Multiple leads received – review required')
       end
     end
+    if user.leads.where(status: %w(rejected suspicious)).any?
+      mark_suspicious('Lead from user with rejected/suspicious leads – review required')
+    end
   end
 
   def suspicious?

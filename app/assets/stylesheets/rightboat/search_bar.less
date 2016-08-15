@@ -17,6 +17,9 @@
       margin-left: 119px;
       flex-grow: 0.2; // temporarily to center buttons on search results
     }
+    ul:last-child {
+      margin-right: 0;
+    }
   }
 
   .nav-link {
@@ -35,8 +38,6 @@
   }
 
   .search-bar-display-options {
-    margin-right: 0;
-
     @media (min-width: @screen-sm-min) {
       li:not(:first-child) { margin-left: 1.5ex; }
     }

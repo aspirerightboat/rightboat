@@ -15,7 +15,7 @@
   p If you didn't receive the email, click Resend.
   = form_tag resend_confirmation_path, class: 'form-inline' do
     .form-group
-      = label_tag :email, 'Email'
+      = label_tag :email, 'Email', style: 'margin-right: 1ex'
       = text_field_tag :email, params[:email] || current_user&.email, class: 'form-control', 'data-validetta' => 'required,email'
     .form-group
       button.nice-button(type="submit") Resend

@@ -1,4 +1,38 @@
 class Country < ActiveRecord::Base
+  EUROPEAN_ISO_CODES = [
+      'AT', # Austria => EUR
+      'BE', # Belgium => EUR
+      'CY', # Cyprus => EUR
+      'EE', # Estonia => EUR
+      'FI', # Finland => EUR
+      'FR', # France => EUR
+      'DE', # Germany => EUR
+      'GR', # Greece => EUR
+      'IE', # Ireland => EUR
+      'IT', # Italy => EUR
+      'LV', # Latvia => EUR
+      'LT', # Lithuania => EUR
+      'LU', # Luxembourg => EUR
+      'MT', # Malta => EUR
+      'NL', # Netherlands => EUR
+      'PT', # Portugal => EUR
+      'ES', # Spain => EUR
+      'SI', # Slovenia => EUR
+      'SK', # Slovakia => EUR
+      # other
+      'TR', # Turkey => TRY
+      'SE', # Sweden => SEK
+      'CH', # Switzerland => CHF
+      'DK', # Denmark => DKK
+      'NO', # Norway => NOK
+      'HR', # Croatia => nil
+      'IS', # Iceland => nil
+      'MC', # Monaco => EUR
+      'PL', # Poland => PLN
+      'RO', # Romania => RON
+      'CZ', # Czech Republic => CZK
+      'HU', # Hungary => HUF
+  ]
   include FixSpelling
   include BoatOwner
 
@@ -40,7 +74,7 @@ class Country < ActiveRecord::Base
   end
 
   def self.european_country_ids
-    Country.where(iso: %w(GB DE IT FR ES TR NL BE GR PT SE AT CH DK FI NO IE HR LU IS MC PL RU RO CZ HU)).pluck(:id)
+    Country.where(iso: EUROPEAN_ISO_CODES).pluck(:id)
   end
 
 end

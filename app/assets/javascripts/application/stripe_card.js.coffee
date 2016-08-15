@@ -72,3 +72,12 @@ $ ->
       $('.alert', $form).remove()
       $form.get(0).reset()
       $wraper.each(-> $('p', @).remove()).prepend(data.card_info)
+
+  $('#pay_initial_broker_fee').each ->
+    $('#stripe_card_form').stripeCardForm ($form, data) ->
+      $('.alert', $form).remove()
+      $form[0].reset()
+      setTimeout (->
+        $('button[type=submit]', $form).prop('disabled', true)
+        window.location = data.redirect_to
+      ), 10

@@ -1,5 +1,7 @@
+- content_for :head_scripts, render('shared/stripe_js')
+
 .member-content(data-layout-mode='list')
-  = link_to 'My Boat Details', new_member_boat_path, class: 'btn-flat pull-right btn-white'
+  /= link_to 'My Boat Details', new_member_boat_path, class: 'btn-flat pull-right btn-white'
   h1 Sell My Boat
   hr
   .introduction
@@ -16,22 +18,33 @@
     p
       | We'll soon be launching a service, courtesy of our worldwide network of yacht brokers to offer you an up to-date market valuation for your boat, we'll also be able to advise you on a pre-­sale survey, or if you would like to try and sell the boat yourself, offer you a free listing on Rightboat.com (subject to the following #{link_to 'terms and conditions', toc_home_path, target: '_blank'}).
     p
-      | Our current price for listing your vessel is from £200 for 3 months.
-    p
-      | Simply complete your boat details on the form above and we'll call you right back to discuss your requirements.
+      | Our current price for listing your vessel is <b>#{privatee_broker_fee_text}</b> and we will charge <b>#{privatee_broker_fee_text}</b> for each genuine lead we send you.
   br
-  .my-boats
-    - if @my_boats.empty?
-      .alert.alert-warning
-        | You have no boats registered yet.
-    - else
-      .row
-        - @my_boats.each do |boat|
-          = render layout: 'member/shared/boat', locals: {boat: boat} do
-            .boat-links.boat-links-bottom
-              .boat-price
-                span(data-attr-name='price')= boat_price(boat)
-                span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
-              .pull-right
-                = link_to 'Edit', edit_member_boat_path(boat), class: 'btn-flat btn-black'
-                = link_to 'Delete', member_boat_path(boat), method: :delete, class: 'btn-flat btn-black'
+  .row(style="margin: 0 0 4em")
+    .col-xs-12.col-sm-6.col-sm-offset-3
+      .em-section#pay_initial_broker_fee
+        .wizard-step
+          h2 Please enter your Credit Card details
+          p
+            |
+              Rightboat will NEVER see these details – they are
+              sent directly from this form and stored on Stripe’s secure servers (Stripe is our Payment Gateway partner).
+          p
+            | Rightboat will charge only for genuine leads delivered to you.
+          = render partial: 'shared/stripe_card_form', \
+                  locals: {form_url: pay_initial_fee_member_boats_path, submit_text: privatee_broker_pay_text}
+  /.my-boats
+  /  - if @my_boats.empty?
+  /    .alert.alert-warning
+  /      | You have no boats registered yet.
+  /  - else
+  /    .row
+  /      - @my_boats.each do |boat|
+  /        = render layout: 'member/shared/boat', locals: {boat: boat} do
+  /          .boat-links.boat-links-bottom
+  /            .boat-price
+  /              span(data-attr-name='price')= boat_price(boat)
+  /              span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
+  /            .pull-right
+  /              = link_to 'Edit', edit_member_boat_path(boat), class: 'btn-flat btn-black'
+  /              = link_to 'Delete', member_boat_path(boat), method: :delete, class: 'btn-flat btn-black'

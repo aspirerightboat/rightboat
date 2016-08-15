@@ -9,7 +9,7 @@ loadPreview = ($el) ->
       $($this.parents('.row')[0]).find('img').attr('src', img.src)
     reader.readAsDataURL(this.files[0])
 
-$(document).ready ->
+$ ->
 
 #  $('.rb-datepicker').datetimepicker
 #    formatTime: ''

@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of :first_name, :last_name, unless: :company?
   validates_presence_of :company_name, if: :company?
-  validates_uniqueness_of :email, if: ->(u) { u.new_record? || u.email_changed? }
+  # validates_uniqueness_of :email, if: ->(u) { u.new_record? || u.email_changed? } # devise already validates email
   validates_url :company_weburl, allow_blank: true, if: :company?
 
   before_create { build_user_alert } # will create user_alert
@@ -188,7 +188,7 @@ class User < ActiveRecord::Base
   def create_broker_info
     if role_changed?
       if company?
-        new_record? ? build_broker_info : BrokerInfo.find_or_create_by(user_id: id)
+        self.broker_info ||= build_broker_info
       else
         BrokerInfo.where(user_id: id).delete_all
       end

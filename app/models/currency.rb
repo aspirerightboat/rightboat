@@ -29,45 +29,10 @@ class Currency < ActiveRecord::Base
   end
 
   def self.deal_currency_by_country(country_iso)
-    if country_iso.in? [
-                           'AT', # Austria => EUR
-                           'BE', # Belgium => EUR
-                           'CY', # Cyprus => EUR
-                           'EE', # Estonia => EUR
-                           'FI', # Finland => EUR
-                           'FR', # France => EUR
-                           'DE', # Germany => EUR
-                           'GR', # Greece => EUR
-                           'IE', # Ireland => EUR
-                           'IT', # Italy => EUR
-                           'LV', # Latvia => EUR
-                           'LT', # Lithuania => EUR
-                           'LU', # Luxembourg => EUR
-                           'MT', # Malta => EUR
-                           'NL', # Netherlands => EUR
-                           'PT', # Portugal => EUR
-                           'ES', # Spain => EUR
-                           'SI', # Slovenia => EUR
-                           'SK', # Slovakia => EUR
-                           # other
-                           'TR', # Turkey => TRY
-                           'SE', # Sweden => SEK
-                           'CH', # Switzerland => CHF
-                           'DK', # Denmark => DKK
-                           'NO', # Norway => NOK
-                           'HR', # Croatia => nil
-                           'IS', # Iceland => nil
-                           'MC', # Monaco => EUR
-                           'PL', # Poland => PLN
-                           'RO', # Romania => RON
-                           'CZ', # Czech Republic => CZK
-                           'HU', # Hungary => HUF
-                       ]
-      find_by(name: 'EUR')
-    elsif country_iso == 'GB'
-      find_by(name: 'GBP')
-    else
-      find_by(name: 'USD')
+    case country_iso
+    when *Country::EUROPEAN_ISO_CODES then find_by(name: 'EUR')
+    when 'GB' then find_by(name: 'GBP')
+    else find_by(name: 'USD')
     end
   end
 

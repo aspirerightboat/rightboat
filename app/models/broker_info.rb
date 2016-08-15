@@ -28,6 +28,15 @@ class BrokerInfo < ActiveRecord::Base
     self.additional_email = values.split(',')
   end
 
+  def self.privatee_broker_fee(country_iso)
+    res = {currency: Currency.deal_currency_by_country(country_iso)}
+    case country_iso
+    when *Country::EUROPEAN_ISO_CODES then res.merge!(price: 18)
+    when 'GB' then res.merge!(price: 15, vat: 3)
+    else res.merge!(price: 18)
+    end
+  end
+
   private
 
   def change_lead_price

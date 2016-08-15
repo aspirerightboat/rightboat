@@ -202,7 +202,11 @@ Rails.application.routes.draw do
     resources :user_notifications, only: [:index]
     resources :recent_views, only: [:index]
     resources :saved_searches, path: 'saved-searches', only: [:edit, :update, :create, :destroy]
-    resources :boats, except: [:show]
+    resources :boats, except: [:show] do
+      collection do
+        post :pay_initial_fee
+      end
+    end
     resources :leads, only: [:index, :destroy] do
       post :unhide, on: :collection
     end

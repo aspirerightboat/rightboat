@@ -4,7 +4,7 @@ html
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
 
-    title= @page_title.present? ? @page_title : 'Rightboat'
+    title= @page_title.presence || 'Rightboat'
 
     = render 'shared/meta_tags'
     = csrf_meta_tags

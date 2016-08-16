@@ -1,3 +1,5 @@
+- content_for :head_scripts, render('shared/init_google_charts')
+
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   h1 Boats Overview
 
@@ -10,6 +12,36 @@
 
   p
     | You have an <b>automatic feed</b>
+
+  #boats_stats.rightboat-chart(data-url="#{all_boats_stats_broker_area_my_boats_path}")
+  javascript:
+    $(function() {
+      google.charts.setOnLoadCallback(function() {
+        var $chart = $('#boats_stats');
+        var url = $chart.data('url');
+        $.ajax({
+          dataType: 'json',
+          url: url,
+          beforeSend: function() { $chart.addClass('loading') },
+          complete: function() { $chart.removeClass('loading') },
+          success: function(data) {
+            console.log(data);
+            var chartData = google.visualization.arrayToDataTable(data.chart_data);
+            var options = {
+              title: 'Boats Performance',
+              curveType: 'function',
+              legend: {position: 'bottom'},
+              vAxis: {
+                minValue: 0
+              }
+            };
+            var chart = new google.visualization.LineChart($chart.get(0));
+
+            chart.draw(chartData, options);
+          }
+        });
+      });
+    });
 
   /%p
   /  Do you wish to make a change?

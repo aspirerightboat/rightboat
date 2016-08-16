@@ -182,6 +182,7 @@ Rails.application.routes.draw do
       end
       collection do
         get :find_template
+        get :all_boats_stats
       end
     end
     resources :iframes

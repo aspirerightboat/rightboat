@@ -133,21 +133,11 @@ module BrokerArea
     end
 
     def boat_stats
-      months_count = 5
-      views = UserActivity.where(boat_id: @boat.id, kind: :boat_view)
-                  .where('created_at > ?', months_count.months.ago.to_date)
-                  .group('custom_date')
-                  .pluck("DATE_FORMAT(created_at, '%Y-%m') custom_date, COUNT(*)").to_h
-      leads = Lead.where(boat_id: @boat.id, status: %w(approved invoiced))
-                  .where('created_at > ?', months_count.months.ago.to_date)
-                  .group('custom_date')
-                  .pluck("DATE_FORMAT(created_at, '%Y-%m') custom_date, COUNT(*)").to_h
-      data = months_count.downto(0).map do |i|
-        key = i.months.ago.strftime('%Y-%m')
-        [key, views[key] || 0, leads[key] || 0]
-      end
+      render json: {chart_data: Rightboat::BoatStats.boat_views_leads(@boat)}
+    end
 
-      render json: {chart_data: [%w(Date Views Leads)].concat(data)}
+    def all_boats_stats
+      render json: {chart_data: Rightboat::BoatStats.general_broker_stats(current_broker)}
     end
 
     private

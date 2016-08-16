@@ -25,8 +25,8 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
               li= link_to 'Log Out', destroy_user_session_path, method: :delete
           li
             = link_to 'My Rightboat', member_root_path
-            - if current_user.company?
-          li= link_to 'Broker Area', broker_area_path
+          - if current_user.company?
+            li= link_to 'Broker Area', broker_area_path
 
         - else
           li= link_to 'Sign in or Join for free', '#', class: 'open-login-popup login-button'

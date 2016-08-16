@@ -7,7 +7,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
   config.sort_order = 'created_at_desc_and_first_name_asc_and_surname_asc'
   actions :all, except: [:destroy]
 
-  filter :first_name_or_surname_or_email_cont, as: :string, label: 'Customer'
+  filter :name_cont, as: :string, label: 'Customer'
   filter :boat_user_id, as: :select, collection: User.companies, label: 'Broker'
   filter :id
   filter :created_at, label: 'Date of Lead'
@@ -24,8 +24,8 @@ ActiveAdmin.register Lead, as: 'Lead' do
   index download_links: [:csv] do
     column :id
     column('Date of Lead', sortable: :created_at) { |lead| lead.created_at.strftime('%d %b %H:%M') }
-    column :customer, sortable: :first_name do |lead|
-      div { lead.user ? link_to(lead.user.name, admin_user_path(lead.user)) : lead.name }
+    column :customer, sortable: :name do |lead|
+      div { lead.user ? link_to(lead.name, admin_user_path(lead.user)) : lead.name }
       div { lead.email } if !lead.user
       div { lead_phone(lead) } if lead.phone.present?
       div { ip_link(lead.remote_ip) }

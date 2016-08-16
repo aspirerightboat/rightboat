@@ -20,7 +20,7 @@ class Lead < ActiveRecord::Base
 
   before_validation :fill_user_info
 
-  before_save :update_lead_price
+  before_save :update_lead_price, :set_name
   after_save :send_quality_check_email
   after_save :mail_if_suspicious
   after_save :became_not_suspicious
@@ -37,10 +37,9 @@ class Lead < ActiveRecord::Base
   scope :created_from, ->(status, from) { send(status).where('created_at > ?', from) }
   scope :created_between, ->(status, from, to) { send(status).where('created_at BETWEEN ? AND ?', from, to) }
 
-  def name
-    "#{title} #{first_name} #{surname}".strip.titleize
+  def to_s
+    name
   end
-  alias_method :to_s, :name
 
   def create_lead_trail
     lead_trail = LeadTrail.create!(lead: self, user: $current_user, new_status: status)
@@ -150,6 +149,10 @@ class Lead < ActiveRecord::Base
     if status_was == 'suspicious' && status == 'pending'
       handle_lead_created_mails
     end
+  end
+
+  def set_name
+    self.name =  user ? user.name : "#{title} #{first_name} #{surname}".strip.titleize
   end
 
 end

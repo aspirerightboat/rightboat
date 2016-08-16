@@ -25,6 +25,7 @@ module Rightboat
 
         pdf = WickedPdf.new.pdf_from_string(pdf,
             margin: { bottom: 20 },
+            header: { right: '[page] of [topage]' },
             footer: {
               content: view.render({
                 template:  'shared/_pdf_footer.html.slim',

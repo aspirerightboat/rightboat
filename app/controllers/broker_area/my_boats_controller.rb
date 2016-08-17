@@ -133,11 +133,11 @@ module BrokerArea
     end
 
     def boat_stats
-      render json: {chart_data: Rightboat::BoatStats.boat_views_leads(@boat)}
+      render json: {chart_data: Rightboat::BoatStats.boat_views_leads(@boat, 5)}
     end
 
     def all_boats_stats
-      render json: {chart_data: Rightboat::BoatStats.general_broker_stats(current_broker)}
+      render json: Rightboat::BoatStats.general_broker_stats(current_broker, 5)
     end
 
     private

@@ -64,7 +64,9 @@ class Boat < ActiveRecord::Base
   has_many :favourites, dependent: :delete_all
   has_many :leads
   has_many :boat_specifications
+  accepts_nested_attributes_for :boat_specifications, reject_if: 'value.blank?'
   has_many :boat_images, -> { order(:position, :id) }
+  accepts_nested_attributes_for :boat_images, reject_if: :all_blank
   has_one :primary_image, -> { not_deleted.order(:position, :id) }, class_name: 'BoatImage'
   has_many :slave_images, -> { not_deleted.order(:position, :id).offset(1) }, class_name: 'BoatImage'
   belongs_to :user
@@ -95,8 +97,7 @@ class Boat < ActiveRecord::Base
   validate :valid_featured
   validate :valid_terms
 
-  accepts_nested_attributes_for :boat_specifications, reject_if: 'value.blank?'
-  accepts_nested_attributes_for :boat_images, reject_if: :all_blank
+  include BoatOverridableFields
 
   scope :featured, -> { where(featured: true) }
   scope :reduced, -> { where(recently_reduced: true) }

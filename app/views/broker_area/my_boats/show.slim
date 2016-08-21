@@ -1,7 +1,40 @@
+- content_for :head_scripts, render('shared/init_google_charts')
+
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   .h1-row
     h1 View Boat
     small= link_to 'Edit boat', edit_broker_area_my_boat_path(@boat)
+
+    #boat_stats.rightboat-chart(data-url="#{boat_stats_broker_area_my_boat_path(@boat)}")
+    javascript:
+      $(function() {
+        google.charts.setOnLoadCallback(function() {
+          var $chart = $('#boat_stats');
+          var url = $chart.data('url');
+          $.ajax({
+            dataType: 'json',
+            url: url,
+            beforeSend: function() { $chart.addClass('loading') },
+            complete: function() { $chart.removeClass('loading') },
+            success: function(data) {
+              var chartData = google.visualization.arrayToDataTable(data.chart_data);
+              var options = {
+                title: 'Boat Performance',
+                legend: {position: 'bottom'},
+                vAxis: {minValue: 0},
+                series: {
+                  0: {color: 'royalblue'},
+                  1: {color: 'goldenrod'}
+                }
+              };
+              var chart = new google.visualization.ColumnChart($chart.get(0));
+
+              chart.draw(chartData, options);
+            }
+          });
+        });
+      });
+
     .row.boat-description
       .boat-specs.col-xs-12
         dl.dl-horizontal

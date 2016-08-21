@@ -178,9 +178,11 @@ Rails.application.routes.draw do
         post :remove_image
         post :move_image
         post :toggle_published
+        get :boat_stats
       end
       collection do
         get :find_template
+        get :all_boats_stats
       end
     end
     resources :iframes

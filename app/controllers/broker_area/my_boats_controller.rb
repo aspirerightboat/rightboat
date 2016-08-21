@@ -2,7 +2,8 @@ module BrokerArea
   class MyBoatsController < CommonController
     protect_from_forgery except: :upload_image
     include Rightboat::BoatDescriptionUtils
-    before_filter :load_boat, only: [:edit, :show, :update, :destroy, :upload_image, :remove_image, :move_image, :toggle_published]
+    before_filter :load_boat, only: [:edit, :show, :update, :destroy,
+                                     :upload_image, :remove_image, :move_image, :toggle_published, :boat_stats]
 
     def index
       @boats = current_broker.boats.not_deleted.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
@@ -129,6 +130,14 @@ module BrokerArea
       else
         head :unprocessable_entity
       end
+    end
+
+    def boat_stats
+      render json: {chart_data: Rightboat::BoatStats.boat_views_leads(@boat, 5)}
+    end
+
+    def all_boats_stats
+      render json: Rightboat::BoatStats.general_broker_stats(current_broker, 5)
     end
 
     private

@@ -1,3 +1,5 @@
+- content_for :head_scripts, render('shared/init_google_charts')
+
 = render layout: 'broker_area/common/broker_layout', locals: {tab: :boats, sidebar: render('broker_area/common/boats_sidebar')} do
   h1 Boats Overview
 
@@ -10,6 +12,63 @@
 
   p
     | You have an <b>automatic feed</b>
+
+  #boats_stats.row(data-url="#{all_boats_stats_broker_area_my_boats_path}")
+    .col-md-6.col-xs-12: #boat_views_stats.rightboat-chart
+    .col-md-6.col-xs-12: #boat_leads_stats.rightboat-chart
+  .row
+    .col-xs-12: #boat_inventory_stats.rightboat-chart
+  javascript:
+    $(function() {
+      google.charts.setOnLoadCallback(function() {
+        var $stats = $('#boats_stats');
+        var url = $stats.data('url');
+        var $viewsChart = $('#boat_views_stats');
+        var $leadsChart = $('#boat_leads_stats');
+        var $inventoryChart = $('#boat_inventory_stats');
+        var $allCharts = $viewsChart.add($leadsChart).add($inventoryChart);
+
+        $.ajax({
+          dataType: 'json',
+          url: url,
+          beforeSend: function() { $allCharts.addClass('loading') },
+          complete: function() { $allCharts.removeClass('loading') },
+          success: function(data) {
+            var viewsChartData = google.visualization.arrayToDataTable(data.views_monthly);
+            var viewsChart = new google.visualization.ColumnChart($viewsChart.get(0));
+            viewsChart.draw(viewsChartData, {
+              title: 'Boat Views',
+              legend: {position: 'bottom'},
+              vAxis: {minValue: 0, format: 'short'}
+            });
+            var leadsChartData = google.visualization.arrayToDataTable(data.leads_monthly);
+            var leadsChart = new google.visualization.ColumnChart($leadsChart.get(0));
+            leadsChart.draw(leadsChartData, {
+              title: 'Boat Leads',
+              legend: {position: 'bottom'},
+              vAxis: {minValue: 0},
+              series: {
+                0: {color: 'goldenrod'}
+              }
+            });
+            var inventoryChartData = google.visualization.arrayToDataTable(data.inventory_monthly);
+            var inventoryChart = new google.visualization.ColumnChart($inventoryChart.get(0));
+            inventoryChart.draw(inventoryChartData, {
+              title: 'Boat Inventory',
+              legend: {position: 'bottom'},
+              isStacked: true,
+              vAxis: {minValue: 0},
+              series: {
+                0: {color: 'royalblue'},
+                1: {color: 'orangered'},
+                2: {color: 'darkred'},
+                3: {color: 'limegreen'}
+              }
+            });
+          }
+        });
+      });
+    });
 
   /%p
   /  Do you wish to make a change?

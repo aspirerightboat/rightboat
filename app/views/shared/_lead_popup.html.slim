@@ -15,7 +15,7 @@
               The full boat specifications and broker details will be available for immediate viewing and your enquiry will be forwarded to the selling broker.
               This request is free and you are under no obligation.
         - unless current_user
-          p= link_to 'Toggle sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
+          p= link_to 'If you are already a member click here to sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
         = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'lead-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
           - unless current_user
             = hidden_field_tag :has_account

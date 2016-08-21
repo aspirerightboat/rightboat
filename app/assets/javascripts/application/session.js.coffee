@@ -53,7 +53,8 @@ $ ->
   $('#trigger_welcome_popup').each ->
     $trigger = $(@)
     show_popup = ->
-      $.getJSON '/welcome_popup', null, (data) ->
-        $trigger.after(data.show_popup).remove()
-        $('#welcome_popup').displayPopup()
-    setTimeout(show_popup, 10 * 1000)
+      if !$('.modal.in').length
+        $.getJSON '/welcome_popup', null, (data) ->
+          $trigger.after(data.show_popup).remove()
+          $('#welcome_popup').displayPopup()
+    setTimeout(show_popup, 25 * 1000)

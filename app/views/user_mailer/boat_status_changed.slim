@@ -4,7 +4,7 @@ p
 - case @reason
   - when 'deleted'
     p
-      | Unfortunately the boat #{@boat.manufacturer_model} which you
+      | Unfortunately the boat #{@boat.manufacturer_model} #{@boat.ref_no}, which you&nbsp;
       | #{@alert_reason == 'favourite' ? 'had in your favourites' : 'have enquired about'} has now been sold.
 
     - if @other_boats.count > 0

@@ -85,3 +85,7 @@ a.job-action {
 p {
   margin-bottom: 1em;
 }
+
+form fieldset > ol > li {
+  clear: both;
+}

@@ -13,6 +13,12 @@ module BoatOverridableFields
       define_method "#{attr_name}=" do |value|
         assign_overridable_field(attr_name, value)
       end
+      if attr_name.end_with?('_id')
+        association = attr_name.chomp('_id')
+        define_method "#{association}=" do |value|
+          assign_overridable_field(association, value)
+        end
+      end
     end
 
     def assign_overridable_field(attr_name, value)
@@ -39,6 +45,10 @@ module BoatOverridableFields
         build_raw_boat(attributes.slice(*OVERRIDABLE_FIELDS))
       end
       self[attr_name] = value
+    end
+
+    def imported_field_value(attr_name)
+      raw_boat ? raw_boat.send(attr_name) : send(attr_name)
     end
   end
 

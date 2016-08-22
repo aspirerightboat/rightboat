@@ -101,23 +101,56 @@ ActiveAdmin.register Boat do
   end
 
   form do |f|
+    override_opts = ->(attr_name) do
+      v = f.object.imported_field_value(attr_name)
+      input_html = {class: 'overridable-field',
+                    'data-raw-value' => case v when TrueClass then 1 when FalseClass then 0 else v.to_s end}
+
+      if attr_name.to_s.end_with?('_id')
+        input_html['data-raw-text'] = v.present? ? f.object.imported_field_value(attr_name.to_s.chomp('_id'))&.name : ''
+      end
+
+      {input_html: input_html}
+    end
+
     f.inputs do
-      f.input :manufacturer, include_blank: false
-      f.input :model, collection: [f.object.model], include_blank: false
-      f.input :price
-      f.input :poa
-      f.input :currency
-      f.input :new_boat, as: :boolean
-      f.input :year_built
-      f.input :boat_type
-      f.input :fuel_type
-      f.input :drive_type
-      f.input :location
-      f.input :country, as: :select, collection: Country.order(:name)
-      f.input :offer_status, as: :select, collection: Boat::OFFER_STATUSES
+      f.input :name, override_opts.call(:name)
+      f.input :manufacturer_id, override_opts.call(:manufacturer_id).deep_merge(
+          as: :string,
+          input_html: {
+              class: 'admin-maker-picker overridable-field', maxlength: nil,
+              'data-collection' => 'manufacturers',
+              'data-current-name' => f.object.manufacturer&.name.to_s
+          })
+      f.input :model_id, override_opts.call(:model_id).deep_merge(
+          as: :string,
+          input_html: {
+              class: 'admin-model-picker overridable-field', maxlength: nil,
+              'data-collection' => 'models',
+              'data-current-name' => f.object.model&.name.to_s
+          })
+      f.input :length_m, override_opts.call(:length_m)
+      f.input :length_f, override_opts.call(:length_f)
+      f.input :price, override_opts.call(:price)
+      f.input :poa, override_opts.call(:poa)
+      f.input :currency, override_opts.call(:currency_id)
+      f.input :new_boat, {as: :select, collection: [['New Boat', 1], ['Used Boat', 0]], include_blank: 'Select...'}.merge!(override_opts.call(:new_boat))
+      # f.input :vat_rate, {include_blank: 'Select...'}.merge!(override_opts.call(:vat_rate_id))
+      f.input :year_built, override_opts.call(:year_built)
+      f.input :boat_type, {include_blank: 'Select...'}.merge!(override_opts.call(:boat_type_id))
+      f.input :fuel_type, {include_blank: 'Select...'}.merge!(override_opts.call(:fuel_type_id))
+      f.input :drive_type, {include_blank: 'Select...'}.merge!(override_opts.call(:drive_type_id))
+      # f.input :category, {include_blank: 'Select...'}.merge!(override_opts.call(:category_id))
+      # f.input :engine_manufacturer, {include_blank: 'Select...'}.merge!(override_opts.call(:engine_manufacturer_id))
+      # f.input :engine_model, {include_blank: 'Select...'}.merge!(override_opts.call(:engine_model_id))
+      f.input :location, override_opts.call(:location)
+      f.input :geo_location, override_opts.call(:geo_location)
+      f.input :state, override_opts.call(:state)
+      f.input :country, {as: :select, collection: Country.order(:name)}.merge!(override_opts.call(:country_id))
+      f.input :offer_status, {as: :select, collection: Boat::OFFER_STATUSES}.merge!(override_opts.call(:offer_status))
+      f.input :office, {as: :select, collection: f.object.user.offices}.merge!(override_opts.call(:office_id))
       f.input :featured, as: :boolean
       f.input :recently_reduced, as: :boolean
-      f.input :slug
 
       f.has_many :extra, allow_destroy: false, new_record: f.object.extra.blank? do |ff|
         ff.input :short_description
@@ -154,7 +187,8 @@ ActiveAdmin.register Boat do
     end
 
     def find_resource
-      Boat.find_by(slug: params[:id]) || Boat.find(params[:id])
+      Boat.includes(raw_boat: [:manufacturer, :model, :currency, :boat_type, :fuel_type, :country])
+          .find_by(slug: params[:id]) || Boat.find(params[:id])
     end
 
     def destroy

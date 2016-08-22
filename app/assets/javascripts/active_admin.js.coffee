@@ -9,7 +9,7 @@
 
 #= require_tree ./common
 
-#= require admin/makemodel_pickers
+#= require admin/collection_pickers
 #= require admin/leads
 #= require admin/mispell_fixer
 #= require admin/misspelling

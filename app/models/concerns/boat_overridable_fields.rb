@@ -41,7 +41,7 @@ module BoatOverridableFields
     end
 
     def override_imported_value(attr_name, value)
-      if !raw_boat
+      if import_id && !expert_boat? && !raw_boat
         build_raw_boat(attributes.slice(*OVERRIDABLE_FIELDS))
       end
       self[attr_name] = value
@@ -49,6 +49,10 @@ module BoatOverridableFields
 
     def imported_field_value(attr_name)
       raw_boat ? raw_boat.send(attr_name) : send(attr_name)
+    end
+
+    def field_overridden?(attr_name)
+      raw_boat && send(attr_name).presence != raw_boat.send(attr_name).presence
     end
   end
 

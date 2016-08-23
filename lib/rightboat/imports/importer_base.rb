@@ -55,7 +55,7 @@ module Rightboat
 
         log "#{@manual ? 'Manual' : 'Auto'} start params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
 
-        @images_proxy_url = receive_proxy_url_or_throw
+        @images_proxy_url = receive_proxy_url_or_throw if @import.use_proxy_for_images?
 
         throw :stop if already_imported?
       end

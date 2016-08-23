@@ -10,6 +10,7 @@ $ ->
     $reset.attr('title', 'Imported value: ' + ($field.data('raw-text') || rawValue || '[empty]'))
     $reset.click ->
       if selectize
+        selectize.addOption([{id: rawValue, name: $field.data('raw-text')+''}])
         selectize.setValue(rawValue)
       else if isCheckbox
         $field.prop('checked', rawValue == '1').change()

@@ -151,18 +151,16 @@ $ ->
         options: if $input.val() then [{name: $input.val()}] else [],
         load: (query, callback) ->
           params = {q: query}
-          if $input.data('include-param')
-            $el = $($input.data('include-param'))
-            params[$el.attr('id')] = $el.val()
+          if ($includeParam = $($input.data('include-param'))).length
+            params[$includeParam.attr('id')] = $includeParam.val()
           $.getJSON url, params, (data) ->
             callback(data.items)
           .fail ->
             callback()
 
-      $input.change ->
-        if $input.data('onchange-clear') && ($dep = $($input.data('onchange-clear'))).length
-          sel = $dep.data('selectize')
-          sel.clearOptions()
+      if ($onchangeClear = $($input.data('onchange-clear'))).length
+        $input.change ->
+          $onchangeClear.data('selectize').clearOptions()
 
 
     $('.images-dropzone').each ->

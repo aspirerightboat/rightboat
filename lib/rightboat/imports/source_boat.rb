@@ -178,10 +178,6 @@ module Rightboat
               importer.log_error 'Unknown Currency', "#{value}" if !val
               value = val
             else
-              # if attr_name == :manufacturer || attr_name == :model
-              #   value = value.titleize
-              # end
-
               if attr_name == :model
                 query_option = {manufacturer_id: target.manufacturer_id}
               elsif attr_name == :engine_model
@@ -189,8 +185,6 @@ module Rightboat
               else
                 query_option = {}
               end
-              # value = klass.find_by(name: value)
-              # value ||= Misspelling
 
               value = klass.query_with_aliases(value).where(query_option).create_with(query_option).first_or_create!
             end
@@ -241,7 +235,7 @@ module Rightboat
           when :poa
             target.poa = value
           else
-            target.send("#{attr_name}=", value) if value.present?
+            target.send("#{attr_name}=", value.presence)
           end
         end
       end

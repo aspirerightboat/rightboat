@@ -28,9 +28,3 @@ $ ->
           selectize.enable()
         else
           $modelSelect.prop('disabled', false)
-
-  $.fn.loadModelsOfManufacturer = (selector) ->
-    @.each ->
-      @.change(-> $(selector).syncModelSelect(@value))
-
-  $('#q_manufacturer_id').loadModelsOfManufacturer('#q_model_id')

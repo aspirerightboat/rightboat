@@ -1,0 +1,19 @@
+.overridable-field {
+  &[type="text"], &[type="number"] {
+    width: calc(80% - 100px) !important;
+  }
+  &.selectize-control {
+    width: calc(80% - 100px);
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .selectize-input {
+    width: 100% !important;
+  }
+  ~ button {
+    margin-left: 1ex;
+  }
+}
+.overridden {
+  color: darkred;
+}

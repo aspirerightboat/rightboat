@@ -3,6 +3,8 @@ class Import < ActiveRecord::Base
 
   FREQUENCY_UNITS = %w(day monday)
 
+  cattr_accessor :import_running
+
   belongs_to :user, inverse_of: :imports
   has_many :import_trails
   belongs_to :last_import_trail, class_name: 'ImportTrail'
@@ -53,7 +55,9 @@ class Import < ActiveRecord::Base
 
   def try_run_import!(manual = false)
     if active? && !process_running?
+      @@import_running = true
       importer_class.new(self).run(manual)
+      @@import_running = false
     end
   end
 
@@ -95,6 +99,10 @@ class Import < ActiveRecord::Base
 
   def approx_end_time
     at_utc + approx_duration
+  end
+
+  def self.import_running?
+    @@import_running
   end
 
   private

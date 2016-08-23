@@ -11,6 +11,8 @@ class SearchController < ApplicationController
                          [Manufacturer.find_by(name: params[:manufacturer])&.id].compact
                        elsif params[:manufacturer_ids]
                          params[:manufacturer_ids].to_s.split(/,|-/)
+                       elsif params[:manufacturer_id]
+                         [params[:manufacturer_id]]
                        end
     models = manufacturer_ids.any? ? Model.solr_suggest_by_term(params[:q], manufacturer_ids) : []
     render json: {items: models}
@@ -44,14 +46,18 @@ class SearchController < ApplicationController
   end
 
   def engine_manufacturers
-    items = EngineManufacturer.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:name)
+    items = EngineManufacturer.where('name LIKE ?', "#{params[:q]}%").order(:name).limit(30).pluck_h(:id, :name)
     render json: {items: items}
   end
 
   def engine_models
-    manufacturer = (EngineManufacturer.find_by(name: params[:engine_manufacturer]) if params[:engine_manufacturer])
-    items = EngineModel.where(engine_manufacturer: manufacturer).where('name LIKE ?', "#{params[:q]}%")
-                .order(:name).limit(30).pluck_h(:name)
+    manufacturer_id = if params[:engine_manufacturer]
+                        EngineManufacturer.find_by(name: params[:engine_manufacturer])&.id
+                      elsif params[:engine_manufacturer_id]
+                        params[:engine_manufacturer_id]
+                      end
+    items = EngineModel.where(engine_manufacturer_id: manufacturer_id).where('name LIKE ?', "#{params[:q]}%")
+                .order(:name).limit(30).pluck_h(:id, :name)
     render json: {items: items}
   end
 

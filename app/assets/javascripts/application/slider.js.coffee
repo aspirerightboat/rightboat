@@ -7,11 +7,16 @@ getLocation = (href) ->
   return loc
 
 getYearsArray = ->
-  currentYear = new Date().getFullYear()
-  years = []
-  startYear = currentYear - 30
+  $yearSlider = $('.year-slider')
+  if $yearSlider.length > 0
+    startYear = parseInt $yearSlider.data('min')
+    endYear = parseInt $yearSlider.data('max')
 
-  while (startYear <= currentYear)
+  endYear = new Date().getFullYear() unless endYear && endYear > 1000
+  startYear = endYear - 30 unless startYear && startYear > 1000
+
+  years = []
+  while (startYear <= endYear)
     years.push(startYear++)
   years
 

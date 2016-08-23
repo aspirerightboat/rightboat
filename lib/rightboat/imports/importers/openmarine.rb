@@ -38,7 +38,10 @@ module Rightboat
               'ballast' => :ballast_kgs,
               'displacement' => :displacement_kgs,
               'where' => :where_built,
-              'year' => :year_built,
+              'year' => Proc.new do |boat, item|
+                tmp = item.text.to_i
+                boat.year_built = tmp > 1000 ? tmp : nil
+              end,
               'hull_colour' => :hull_color,
               'hull_construction' => :hull_material,
               'fuel' => :fuel_type,

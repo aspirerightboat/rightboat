@@ -13,15 +13,16 @@ $ ->
         selectize.setValue(rawValue)
       else if isCheckbox
         $field.prop('checked', rawValue == '1').change()
-      else if isSelect
-        $field.val(rawValue).change()
       else
-        $field.val(rawValue)
+        $field.val(rawValue).change()
       false
 
     valueChanged = ->
       val = if isCheckbox then (if $field[0].checked then '1' else '0') else $field.val()
-      changed = val != rawValue
+      changed = if $field.attr('type') == 'number'
+                  val != rawValue && parseFloat(val) != parseFloat(rawValue)
+                else
+                  val != rawValue
       $reset.toggle(changed)
 
     if selectize

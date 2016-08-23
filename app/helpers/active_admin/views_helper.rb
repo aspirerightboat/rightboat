@@ -18,4 +18,14 @@ module ActiveAdmin::ViewsHelper
       s.html_safe
     end
   end
+
+  def pretty_admin_field(resource, attr_name)
+    value = if attr_name.end_with?('_id')
+              send(:pretty_format, resource.send(attr_name.chomp('_id')))
+            else
+              html_escape(resource.send(attr_name).to_s).html_safe
+            end
+
+    value.present? ? value : '<span class="empty">empty</span>'.html_safe
+  end
 end

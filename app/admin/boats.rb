@@ -56,19 +56,24 @@ ActiveAdmin.register Boat do
   end
 
   show do |boat|
-    attributes_table do
-      Boat.column_names.each do |attr_name|
-        if attr_name.in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
-          row attr_name do
-            value = attr_name.end_with?('_id') ? send(:pretty_format, boat.send(attr_name.chomp('_id'))) : html_escape(boat.send(attr_name).to_s).html_safe
-            content = value.present? ? value : '<span class="empty">empty</span>'.html_safe
-            content += '<sup class="overridden">overridden</sup>'.html_safe if content && boat.field_overridden?(attr_name)
-            content
+    if boat.raw_boat
+      attributes_table do
+        Boat.column_names.each do |attr_name|
+          if attr_name.in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
+            row attr_name do
+              content = String.new.html_safe
+              if boat.field_overridden?(attr_name)
+                content << %(<div class="overridden">#{pretty_admin_field(boat.raw_boat, attr_name)}</div>).html_safe
+              end
+              content << pretty_admin_field(boat, attr_name)
+            end
+          else
+            row attr_name
           end
-        else
-          row attr_name
         end
       end
+    else
+      default_main_content
     end
     panel 'Extra Information' do
       attributes_table_for resource.extra do

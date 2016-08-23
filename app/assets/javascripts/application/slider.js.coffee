@@ -12,8 +12,9 @@ getYearsArray = ->
     startYear = parseInt $yearSlider.data('min')
     endYear = parseInt $yearSlider.data('max')
 
-  endYear = new Date().getFullYear() unless endYear && endYear > 1000
-  startYear = endYear - 30 unless startYear && startYear > 1000
+  currentYear = new Date().getFullYear()
+  endYear = currentYear unless endYear && endYear > 1000 && endYear <= currentYear
+  startYear = endYear - 30 unless startYear && startYear > 1000 && startYear <= currentYear
 
   years = []
   while (startYear <= endYear)

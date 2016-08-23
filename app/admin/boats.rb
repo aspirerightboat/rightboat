@@ -159,7 +159,8 @@ ActiveAdmin.register Boat do
       f.input :poa, override_opts.call(:poa)
       f.input :currency, override_opts.call(:currency_id)
       f.input :new_boat, {as: :select, collection: [['New Boat', 1], ['Used Boat', 0]], include_blank: 'Select...'}.merge!(override_opts.call(:new_boat))
-      f.input :vat_rate, {collection: VatRate.first(2), include_blank: 'Select...', }.merge!(override_opts.call(:vat_rate_id))
+      vat_rates = VatRate.where('id < 3 OR id = ? OR id = ?', f.object.vat_rate_id, f.object.imported_field_value(:vat_rate_id))
+      f.input :vat_rate, {collection: vat_rates, include_blank: 'Select...', }.merge!(override_opts.call(:vat_rate_id))
       f.input :year_built, override_opts.call(:year_built)
       f.input :boat_type, {include_blank: 'Select...'}.merge!(override_opts.call(:boat_type_id))
       f.input :fuel_type, {include_blank: 'Select...'}.merge!(override_opts.call(:fuel_type_id))
@@ -231,6 +232,17 @@ ActiveAdmin.register Boat do
     def find_resource
       Boat.includes(raw_boat: [:manufacturer, :model, :currency, :boat_type, :fuel_type, :country])
           .find_by(slug: params[:id]) || Boat.find(params[:id])
+    end
+
+    def update(_options={}, &block)
+      BoatOverridableFields::OVERRIDABLE_FIELDS.each do |attr_name|
+        resource.override_imported_value(attr_name, params[attr_name])
+      end
+
+      super do |success, failure|
+        block.call(success, failure) if block
+        failure.html { render :edit }
+      end
     end
 
     def destroy

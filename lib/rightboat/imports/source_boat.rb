@@ -190,12 +190,16 @@ module Rightboat
             end
           end
 
-          target.send "#{attr_name}=", value
+          if "#{attr_name}_id".in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
+            target.import_assign attr_name, value
+          else
+            target.send "#{attr_name}=", value
+          end
         end
 
         handle_office
 
-        target.poa ||= price.blank? || price.to_i <= 0
+        target.import_assign :poa, price.blank? || price.to_i <= 0 if target.poa.nil?
         target.deleted_at = nil if target.deleted? && target.deleted_by_user_id.blank?
         self.new_record = target.new_record?
         self.pending_images_count = images.size
@@ -226,16 +230,21 @@ module Rightboat
           when :owners_comment
             target.extra.owners_comment = try_cleanup_description(value)
           when :new_boat
-            target.new_boat = if value&.is_a?(String)
+            target_new_boat = if value&.is_a?(String)
                                 case value
                                 when /\A(?:New|N)\z/i then true
                                 when /\A(?:Used|U)\z/i then false
                                 end
                               end
+            target.import_assign :new_boat, target_new_boat
           when :poa
-            target.poa = value
+            target.import_assign :poa, value
           else
-            target.send("#{attr_name}=", value.presence)
+            if attr_name.to_s.in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
+              target.import_assign attr_name, value
+            else
+              target.send("#{attr_name}=", value.presence)
+            end
           end
         end
       end
@@ -427,10 +436,10 @@ module Rightboat
               end
             end
 
-            target.office = target_office
+            target.import_assign :office, target_office
           end
         elsif office_id
-          target.office_id = office_id
+          target.import_assign :office_id, office_id
         end
       end
 
@@ -456,22 +465,27 @@ module Rightboat
       def adjust_location(target)
         if location.blank? && country.blank?
           # take info from office address or broker user address
-          target.country_id = office&.dig(:address_attributes, :country_id) || user.address&.country_id
+          target.import_assign :country_id, office&.dig(:address_attributes, :country_id) || user.address&.country_id
           return
         end
 
+        target_country = target.country
+        target_geo_location = target.geo_location
+        target_location = target.location
+        target_state = target.state
+
         if country.present?
           if country&.is_a?(String)
-            target.country = Country.where('name = :name OR iso = :name OR iso3 = :name', name: country).first
-            target.country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.source
+            target_country = Country.where('name = :name OR iso = :name OR iso3 = :name', name: country).first
+            target_country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.source
           elsif country&.is_a?(Country)
-            target.country = country
+            target_country = country
           end
 
           # Remove country name from location
           if location.present?
-            if target.country
-              aliases_str = target.country.aliases.map { |a| Regexp.escape(a) }.join('|')
+            if target_country
+              aliases_str = target_country.aliases.map { |a| Regexp.escape(a) }.join('|')
               regex = /\b(?:#{aliases_str})\b/
               location.gsub!(regex, '')
             elsif country.is_a?(String)
@@ -481,25 +495,30 @@ module Rightboat
         end
 
         if !target.geocoded?
-          full_location = [location.to_s, state, target.country&.name || country.to_s].reject(&:blank?).join(', ').downcase
+          full_location = [location.to_s, state, target_country&.name || country.to_s].reject(&:blank?).join(', ').downcase
 
           if full_location.present? && (geo = Geocoder.search(full_location).first)
-            target.geo_location = geo.formatted_address
-            target.country = Country.find_by(iso: geo.country_code) if geo.country && target.country&.iso != geo.country_code
-            target.state = geo.state_code
-            target.location = target.geo_location.rpartition(', ')[0]
+            target_geo_location = geo.formatted_address
+            target_country = Country.find_by(iso: geo.country_code) if geo.country && target_country&.iso != geo.country_code
+            target_state = geo.state_code
+            target_location = target_geo_location.rpartition(', ')[0]
           end
         end
 
-        target.location ||= location
-        target.state ||= state || (Rightboat::USStates.recognize(target.location) if target.country&.iso == 'US')
+        target_location ||= location
+        target_state ||= state || (Rightboat::USStates.recognize(target.location) if target.country&.iso == 'US')
 
         # ensure location not include broker company name
         # eg. Burton Waters Marina Limited
-        if target.location.present?
+        if target_location.present?
           company_name = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
-          target.location.gsub!(/\b(?:#{company_name})[\s,]*/i, '')
+          target_location.gsub!(/\b(?:#{company_name})[\s,]*/i, '')
         end
+
+        target.import_assign :country, target_country
+        target.import_assign :geo_location, target_geo_location
+        target.import_assign :location, target_location
+        target.import_assign :state, target_state
       end
 
       def do_import_substitutions!(value)

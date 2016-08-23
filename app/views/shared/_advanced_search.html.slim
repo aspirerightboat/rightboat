@@ -48,7 +48,7 @@
           .col-xs-5.col-sm-4
             = label_tag :year
           .col-xs-7.col-sm-8
-            = slider_tag(:year)
+            = slider_tag(:year, @facets_data ? { min: @facets_data[:year_min], max: @facets_data[:year_max] } : {})
         .range-slider-wrapper.row
           .col-xs-5.col-sm-4
             .rb-control-group

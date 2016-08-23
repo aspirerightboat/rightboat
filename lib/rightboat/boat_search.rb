@@ -1,7 +1,7 @@
 module Rightboat
   class BoatSearch
     ORDER_TYPES = %w(score_desc created_at_desc price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
-    YEARS_RANGE = (Date.today.year - 30)..Date.today.year
+    YEARS_RANGE = (Date.today.year - 200)..Date.today.year
     PRICES_RANGE = 0..100_000_000
     LENGTHS_RANGE = 0..300
     PER_PAGE = 30
@@ -145,7 +145,8 @@ module Rightboat
       @facets_data = {
           price_min:  price_stats&.data && price_stats.min.try(:floor) || PRICES_RANGE.min,
           price_max:  price_stats&.data && price_stats.max.try(:ceil) || PRICES_RANGE.max,
-          year_min:   year_stats&.data && year_stats.min.try(:floor) || YEARS_RANGE.min,
+          # year_min:   year_stats&.data && year_stats.min.try(:floor) || YEARS_RANGE.min,
+          year_min:   boat_year_built_min || YEARS_RANGE.min,
           year_max:   year_stats&.data && year_stats.max.try(:ceil) || YEARS_RANGE.max,
           length_min: length_stats&.data && length_stats.min.try(:floor) || LENGTHS_RANGE.min,
           length_max: length_stats&.data && length_stats.max.try(:ceil) || LENGTHS_RANGE.max,
@@ -204,7 +205,7 @@ module Rightboat
 
     def read_year(year)
       if year.present?
-        year.to_i.clamp(1970, Time.current.year)
+        year.to_i.clamp(YEARS_RANGE.min, Time.current.year)
       end
     end
 
@@ -219,6 +220,12 @@ module Rightboat
     def read_hash(hash, *possible_keys)
       if hash.present? && hash.is_a?(Hash)
         hash.with_indifferent_access.slice(*possible_keys)
+      end
+    end
+
+    def boat_year_built_min
+      Rails.cache.fetch 'boat_year_built_min', expires_in: 1.day do
+        Boat.where('year_built > 1000').order(year_built: :asc).first.year_built
       end
     end
   end

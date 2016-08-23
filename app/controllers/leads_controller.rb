@@ -174,7 +174,7 @@ class LeadsController < ApplicationController
     @lead_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
       .merge(user_id: current_user.try(:id),
              remote_ip: request.remote_ip,
-             browser: request.env['HTTP_USER_AGENT'],
+             browser: request.env['HTTP_USER_AGENT'].to_s[0..255],
              saved_searches_alert_id: @saved_searches_alert_id&.id)
   end
 

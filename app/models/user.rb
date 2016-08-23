@@ -218,7 +218,8 @@ class User < ActiveRecord::Base
 
   def ensure_deal
     if company? && !deal
-      build_deal
+      d = build_deal
+      d.setup_flat_lead_deal(Currency.deal_currency_by_country(address&.country&.iso))
     elsif !company? && deal
       deal.destroy
     end

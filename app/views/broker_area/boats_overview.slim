@@ -16,6 +16,15 @@
   #boats_stats.row(data-url="#{all_boats_stats_broker_area_my_boats_path}")
     .col-md-6.col-xs-12: #boat_views_stats.rightboat-chart
     .col-md-6.col-xs-12: #boat_leads_stats.rightboat-chart
+  hr.invisible
+  .row
+    .col-sm-10.col-sm-offset-1
+      .panel.panel-danger
+        .panel-body
+          p
+            |
+              For a breakdown of boat views and leads per listing, go to the '#{link_to 'My Boats', broker_area_my_boats_path}' section, navigate to a boat and select 'View details'
+              which is represented by this icon: <i class="glyphicon glyphicon-eye-open"></i>
   .row
     .col-xs-12: #boat_inventory_stats.rightboat-chart
   javascript:

@@ -13,7 +13,7 @@
     - if local_assigns[:multiselectable]
       .tick(data-boat-id="#{boat.id}" data-boat-message-required="#{'required' if boat_message_required}")
         span.glyphicon.glyphicon-ok-circle
-    .boat-img-thumb(class="#{boat.offer_status.dasherize}")
+    .boat-img-thumb(class="#{boat.offer_status.try(:dasherize)}")
       = link_to boat_url, ({target: '_blank'} if broker_iframe) do
         - if boat.primary_image
           = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)

@@ -10,15 +10,6 @@ class User < ActiveRecord::Base
       'ADMIN' => 99
   }
 
-  CUSTOMER_DETAIL_REQUESTERS = %w(
-      nick@popsells.com brokerage@sunseekerlondon.com yachts@edwardsyachtsales.com
-      jamie.coombes@sunseekertorquay.com sales@southamptonwaters.co.uk mark@williamsandsmithells.com
-      inquiries@denisonyachtsales.com info@msp-yacht.de carolynemoody@ancasta.com
-  )
-  BOAT_YEAR_REQUESTERS = %w(inquiries@denisonyachtsales.com)
-  COMMENT_REQUESTERS = %w(suffolk@clarkeandcarter.co.uk sales@boats.co.uk info@boatsmart.co.uk)
-  LOA_REQUESTERS = %w(inquiries@denisonyachtsales.com)
-
   serialize :broker_ids, Array
 
   scope :active, -> { where active: true }
@@ -60,6 +51,7 @@ class User < ActiveRecord::Base
   has_one :stripe_card, dependent: :destroy
   has_one :facebook_user_info, dependent: :destroy
   has_one :deal, dependent: :destroy
+  has_many :special_requests, dependent: :destroy
 
   mount_uploader :avatar, AvatarUploader
 
@@ -128,19 +120,19 @@ class User < ActiveRecord::Base
   end
 
   def customer_detail_requested?
-    CUSTOMER_DETAIL_REQUESTERS.include?(email)
+    special_requests.customer_detail.any?
   end
 
   def boat_year_requested?
-    BOAT_YEAR_REQUESTERS.include?(email)
+    special_requests.boat_year.any?
   end
 
   def comment_requested?
-    COMMENT_REQUESTERS.include?(email)
+    special_requests.comment.any?
   end
 
   def loa_requested?
-    LOA_REQUESTERS.include?(email)
+    special_requests.loa.any?
   end
 
   def send_email_confirmation

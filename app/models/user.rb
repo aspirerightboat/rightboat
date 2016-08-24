@@ -77,7 +77,7 @@ class User < ActiveRecord::Base
   after_create :personalize_leads
   attr_accessor :updated_by_admin, :current_password
 
-  delegate :country, to: :address
+  delegate :country, to: :address, allow_nil: true
 
   def role=(r)
     if r.is_a?(String)

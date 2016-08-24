@@ -96,6 +96,14 @@ ActiveAdmin.register Import do
     end
     column :active
     column :import_type
+    column :param
+    column :threads
+    column :frequency_unit
+    column :at
+    column :queued_at
+    column :timezone do |import|
+      import.tz
+    end
     column :last_ran_at do |import|
       import.last_ran_at.blank? ? 'never' : l(import.last_ran_at, format: :long)
     end

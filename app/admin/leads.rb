@@ -31,7 +31,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
       div { ip_link(lead.remote_ip) }
     end
     column('Member?', sortable: :user_id) { |lead| yes_no_status(lead.user.present?) }
-    column(:broker, sortable: 'boats.user_id') { |lead| user_admin_link(lead.boat.user) }
+    column(:broker) { |lead| link_to lead.broker, admin_user_path(lead.boat.user) }
     column(:boat, sortable: :boat_id) { |lead| boat_link(lead.boat) }
     column('Boat length', sortable: 'boats.length_m') { |lead| boat_length_with_hint(lead.boat) }
     column('Boat price') { |lead| boat_admin_price(lead.boat) }

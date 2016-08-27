@@ -53,7 +53,7 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  before_validation :change_status, :assign_custom_model
+  before_validation :change_status, :assign_custom_model, :ensure_offer_status
   before_destroy :remove_activities, :decrease_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
@@ -339,5 +339,9 @@ class Boat < ActiveRecord::Base
 
   def ensure_extra
     create_extra! unless extra
+  end
+
+  def ensure_offer_status
+    self.offer_status == OFFER_STATUSES.first if offer_status.blank?
   end
 end

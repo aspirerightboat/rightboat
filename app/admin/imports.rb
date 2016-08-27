@@ -104,6 +104,7 @@ ActiveAdmin.register Import do
     column :timezone do |import|
       import.tz
     end
+    column :use_proxy_for_images
     column :last_ran_at do |import|
       import.last_ran_at.blank? ? 'never' : l(import.last_ran_at, format: :long)
     end

@@ -192,7 +192,12 @@ module Rightboat
 
     def read_tags(tags)
       if tags.present?
-        tags.is_a?(Array) ? tags : tags.split('-').reject(&:blank?).presence
+        arr = if tags.is_a?(String)
+                tags.split('-')
+              elsif tags.is_a?(Array)
+                tags
+              end
+        arr&.select { |tag| tag.is_a?(Numeric) || tag.is_a?(String) && tag =~ /\A\d+\z/ }
       end
     end
 

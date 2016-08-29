@@ -35,6 +35,7 @@ class RegisterBrokerController < ApplicationController
                                                 :exp_year, :last4, :dynamic_last4))
     stripe_card.stripe_customer_id = customer.id
     stripe_card.save!
+    user.broker_info.update(payment_method: 'card')
 
     StaffMailer.broker_added_card(user.id).deliver_later
 

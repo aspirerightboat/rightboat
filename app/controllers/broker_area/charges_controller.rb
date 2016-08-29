@@ -2,6 +2,7 @@ module BrokerArea
   class ChargesController < CommonController
 
     def index
+      @payment_method = current_broker.broker_info.payment_method
       @card = current_broker.stripe_card
       @charges_text = current_broker.deal.processed_charges_text
     end
@@ -26,6 +27,7 @@ module BrokerArea
       stripe_card.assign_attributes(params.permit(:user_id, :brand, :country_iso, :exp_month,
                                                   :exp_year, :last4, :dynamic_last4))
       stripe_card.save!
+      current_broker.broker_info.update(payment_method: 'card')
 
       StaffMailer.broker_updated_card(current_broker.id).deliver_later
 

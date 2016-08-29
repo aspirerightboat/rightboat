@@ -1,4 +1,4 @@
 p
   |
-    Your currently added card ends with <b>#{@card.last_digits}</b>
-    expires at <b>#{@card.exp_month}/#{@card.exp_year}</b>
+    Your currently added card <b>*#{@card.last_digits}</b>
+    expires at <b>#{'%02d' % @card.exp_month}/#{@card.exp_year}</b>

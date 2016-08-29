@@ -86,7 +86,7 @@ class Member::BoatsController < Member::BaseController
 
     user.role = User::ROLES['COMPANY']
     user.company_name = user.full_name
-    user.build_broker_info(paid_initial_fee: true)
+    user.build_broker_info(paid_initial_fee: true, payment_method: 'card')
     user.save!
 
     StaffMailer.user_paid_initial_fee(user.id).deliver_later

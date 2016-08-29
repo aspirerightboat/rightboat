@@ -2,7 +2,26 @@
 
 = render layout: 'broker_area/common/broker_layout', \
         locals: {tab: :my_account, sidebar: render('broker_area/my_account_sidebar')} do
-  h1 Update your card details
+  h1 Payment Details
+  p
+    ' Current payment status:
+    span(style="color: #{@payment_method == 'none' ? 'darkgoldenrod' : 'green'}")
+      - case @payment_method
+        - when 'none'
+          ' No payment details have been recorded. No leads can be delivered.
+          | <i class="glyphicon glyphicon-exclamation-sign"></i>
+        - when 'card'
+          ' Credit card details recorded securely
+          | <i class="glyphicon glyphicon-ok-sign"></i>
+        - when 'dd'
+          ' Direct Debit details have been recoded securely
+          | <i class="glyphicon glyphicon-ok-sign"></i>
+  - if @payment_method != 'dd' && current_broker.country&.iso == 'GB'
+    p If you prefer <b>Direct Debit</b>, please call us.
+  p
+
+
+  h2 #{@card ? 'Change' : 'Add'} credit card details
   p
     |
       Rightboat will NEVER see these details – they are
@@ -14,7 +33,7 @@
       = render 'card_info'
     = render partial: 'shared/stripe_card_form', locals: {form_url: update_card_broker_area_charges_path}
 
-  h1 Charges and Payment
+  h2 Charges and Payment
   p
     |
       #{@charges_text}

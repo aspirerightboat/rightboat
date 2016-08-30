@@ -163,7 +163,7 @@ RSpec.describe LeadsController do
         allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
         allow(RBConfig).to receive(:[]).with(:lead_gap_minutes).and_return(3)
 
-        allow_any_instance_of(Lead).to receive(:update_lead_price).and_return(22)
+        allow_any_instance_of(Lead).to receive(:update_lead_price!).and_return(22)
         xhr :post, :create_batch, params_1
 
         expect(response).to be_success

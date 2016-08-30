@@ -28,14 +28,15 @@ class Rightboat::XeroInvoicer
         xi.due_date = xi.date
         xi.branding_theme_id = branding_theme.branding_theme_id if branding_theme
 
-        vat_rate = broker.address.try(:country).try(:iso) == 'GB' ? 0.2 : 0
+        vat_rate = broker.country&.iso == 'GB' ? 0.2 : 0
+        broker_currency = broker.deal.currency
         leads_price = 0
         leads_price_discounted = 0
         total_discount = 0
         leads_str = 'Leads'
         leads.each do |lead|
           leads_str << " #{lead.id},"
-          lead_price = lead.lead_price
+          lead_price = Currency.convert(lead.lead_price, lead.lead_price_currency, broker_currency)
           leads_price += lead_price
           lead_price_discounted = (lead_price * (1 - discount_rate)).round(2)
           total_discount += lead_price - lead_price_discounted
@@ -61,7 +62,7 @@ class Rightboat::XeroInvoicer
         xi.total_tax = i.vat
         xi.total = i.total
         xi.reference = i.id
-        xi.currency_code = Currency.default.name
+        xi.currency_code = broker_currency.name
         xi.build_contact(contact_id: broker_info.xero_contact_id, name: contact_by_broker[broker].name, contact_status: 'ACTIVE')
         xero_invoices << xi
         i

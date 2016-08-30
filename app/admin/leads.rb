@@ -42,7 +42,9 @@ ActiveAdmin.register Lead, as: 'Lead' do
       end
     end
     column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
-    column('Lead Price £') { |lead| b { lead.lead_price } }
+    column('Lead Price') do |lead|
+      b { number_to_currency(lead.lead_price, unit: lead.lead_price_currency.symbol, precision: 2) }
+    end
     column('Mail ID', sortable: :saved_searches_alert_id) do |lead|
       if lead.saved_searches_alert_id.present?
         link_to(lead.saved_searches_alert_id, admin_saved_searches_alert_path(lead.saved_searches_alert_id))
@@ -76,47 +78,31 @@ ActiveAdmin.register Lead, as: 'Lead' do
 
   csv do
     column(:id)
-    column('Date of Lead') { |record| record.created_at }
-    column('User') { |record| record.user.try(&:name) }
-    column('Member?') { |record| record.user ? 'Yes' : 'No' }
-    column('Broker') { |record| record.boat.user.name }
-    column('Boat') { |record| record.boat.try(&:manufacturer_model) }
-    column('Length') { |record|
-      l = record.boat.try(&:length_m)
-      l if l.present?
+    column('Date of Lead') { |lead| lead.created_at }
+    column('User') { |lead| lead.user&.name }
+    column('Member?') { |lead| lead.user ? 'Yes' : 'No' }
+    column('Broker') { |lead| lead.boat&.user&.name }
+    column('Boat') { |lead| lead.boat&.manufacturer_model }
+    column('Length') { |lead|
+      return "#{lead.boat.length_m.round(2)}m" if lead.boat&.length_m
+      "#{lead.boat.length_f.round(2)}ft" if lead.boat&.length_f
     }
-    # column('Length(ft in)') { |record|
-    #   out = ""
-    #   if boat = record.boat
-    #     if boat.length_ft.present?
-    #       out << "#{boat.length_ft}ft "
-    #     end
-    #     if boat.length_in.present?
-    #       out << "#{boat.length_in}in"
-    #     end
-    #   end
-    #   out
-    # }
     column(:title)
     column(:first_name)
-    column(:last_name) { |record| record.surname }
+    column(:last_name) { |lead| lead.surname }
     column(:country_code)
     column(:phone)
     column(:email)
     column(:message)
     column(:status)
-    column('Last Status Change') { |record| record.updated_at }
-    column(:lead_price)
+    column('Last Status Change') { |lead| lead.updated_at }
+    column(:lead_price) { |lead| number_to_currency(lead.lead_price, unit: lead.lead_price_currency.symbol, precision: 2) }
     column(:remote_ip)
     column(:browser)
   end
 
   sidebar 'Tools', only: [:index] do
     link_to('Run approve-old-leads job', {action: :approve_old_leads}, method: :post, class: 'button')
-  end
-
-  sidebar 'Stats', only: [:index] do
-    "<b>Total leads price: #{leads.not_deleted.sum(:lead_price)}</b>".html_safe
   end
 
   collection_action :approve_old_leads, method: :post do

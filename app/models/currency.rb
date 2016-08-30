@@ -30,9 +30,9 @@ class Currency < ActiveRecord::Base
 
   def self.deal_currency_by_country(country_iso)
     case country_iso
-    when *Country::EUROPEAN_ISO_CODES then find_by(name: 'EUR')
-    when 'GB' then find_by(name: 'GBP')
-    else find_by(name: 'USD')
+    when *Country::EUROPEAN_ISO_CODES then cached_by_name('EUR')
+    when 'GB' then cached_by_name('GBP')
+    else cached_by_name('USD')
     end
   end
 

@@ -9,7 +9,10 @@
       th Boat
       th.text-right Length(m)
       th.text-right Price
-      th.text-right Lead cost GBP (ex VAT)
+      th.text-right
+        ' Lead cost
+        - if current_broker.country&.iso == 'GB'
+          | (ex VAT)
     - @leads.each do |lead|
       tr
         td #{lead.invoice.id}
@@ -18,6 +21,9 @@
         - boat = lead.boat
         td #{link_to boat.display_name, makemodel_boat_path(boat)}
         td.text-right #{"#{boat.length_m}m" if boat.length_m}
-        td.text-right #{boat.price} #{(boat.currency || Currency.default).symbol if boat.price}
-        td.text-right #{format_pence lead.lead_price}
+        td.text-right= number_to_currency(boat.price, unit: (boat.currency || Currency.default).symbol, precision: 0) if boat.price
+        td.text-right
+          - target_currency = @deal.currency
+          - lead_price = Currency.convert(lead.lead_price, lead.lead_price_currency, target_currency)
+          = number_to_currency(lead_price, unit: target_currency.symbol, precision: @deal.standard? ? 2 : 0)
   = paginate @leads

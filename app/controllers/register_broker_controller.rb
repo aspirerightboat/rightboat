@@ -9,8 +9,7 @@ class RegisterBrokerController < ApplicationController
       UserMailer.broker_registered(user.id).deliver_later
       StaffMailer.broker_registered_notify_admin(user.id).deliver_later
       session[:registered_user_id] = user.id
-      currency = Currency.deal_currency_by_country(session[:country])
-      user.deal.setup_flat_lead_deal(currency)
+      user.deal.currency = Currency.deal_currency_by_country(session[:country])
       user.deal.save!
 
       render json: {next_steps: render_to_string(partial: 'next_steps',

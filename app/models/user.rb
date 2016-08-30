@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :information, allow_destroy: true
   accepts_nested_attributes_for :offices, allow_destroy: true
   accepts_nested_attributes_for :broker_info, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :deal, allow_destroy: true
 
   # validates_inclusion_of :title, within: TITLES, allow_blank: true
 
@@ -210,8 +211,10 @@ class User < ActiveRecord::Base
 
   def ensure_deal
     if company? && !deal
-      d = build_deal
-      d.setup_flat_lead_deal(Currency.deal_currency_by_country(address&.country&.iso))
+      create_deal(
+          deal_type: 'flat_lead',
+          currency: Currency.deal_currency_by_country(country&.iso)
+      )
     elsif !company? && deal
       deal.destroy
     end

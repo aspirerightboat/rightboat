@@ -42,4 +42,9 @@ class Numeric
     end
   end
 
+  def try_skip_fraction
+    self_floor = self.floor
+    (self == self_floor) ? self_floor : self
+  end
+
 end

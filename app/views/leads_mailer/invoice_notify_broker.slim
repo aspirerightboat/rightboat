@@ -2,29 +2,34 @@ div(style="max-width: 600px")
   table.rb-table(style="text-align: center")
     tr
       th Lead
-      th Boat Length(m)
-      th Lead Rate (€/foot)
+      - @deal.standard?
+        th Boat Length(m)
+        th Lead Rate (#{@deal.currency.symbol}/foot)
       th Cost
     - @leads.each do |lead|
       tr
         td #{link_to lead.id, lead_url(lead)}
-        td #{lead.boat.length_ft}
-        td #{@broker_info.lead_length_rate}
-        td £#{lead.lead_price}
+        - @deal.standard?
+          td #{lead.boat.length_ft}
+          td #{@deal.lead_length_rate}
+        td
+          - lead_price = Currency.convert(lead.lead_price, lead.lead_price_currency, @deal.currency)
+          = number_to_currency(lead_price, unit: @deal.currency.symbol, precision: 2)
 
   table.rb-table(style="max-width: 250px; margin-left: auto; text-align: right")
     tr
       th Sub Total
-      th £#{@invoice.subtotal}
+      th= number_to_currency(@invoice.subtotal, unit: @deal.currency.symbol, precision: 2)
     tr
       td Broker Discount #{percents @invoice.discount_rate}
-      td £#{@invoice.discount}
-    tr
-      th Total ex VAT
-      th £#{@invoice.total_ex_vat}
-    tr
-      td VAT #{percents @invoice.vat_rate}
-      td £#{@invoice.vat}
+      td= number_to_currency(@invoice.discount, unit: @deal.currency.symbol, precision: 2)
+    - if @broker.country&.iso == 'GB'
+      tr
+        th Total ex VAT
+        th= number_to_currency(@invoice.total_ex_vat, unit: @deal.currency.symbol, precision: 2)
+      tr
+        td VAT #{percents @invoice.vat_rate}
+        td= number_to_currency(@invoice.vat, unit: @deal.currency.symbol, precision: 2)
     tr
       th Total
-      th £#{@invoice.total}
+      th= number_to_currency(@invoice.total, unit: @deal.currency.symbol, precision: 2)

@@ -14,6 +14,7 @@
 #= require admin/mispell_fixer
 #= require admin/misspelling
 #= require admin/overridable_field
+#= require admin/select_fields_toggler
 #= require admin/sortable
 #= require admin/sync_select
 #= require admin/users

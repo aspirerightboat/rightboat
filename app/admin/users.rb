@@ -4,8 +4,12 @@ ActiveAdmin.register User do
                 :avatar, :avatar_cache,
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
                 broker_info_attributes: [:id, :contact_name, :position, :description, :discount,
-                                         :lead_length_rate, :lead_min_price, :lead_max_price, :payment_method, :xero_contact_id,
-                                         :website, :additional_email_raw, :vat_number, :logo, :lead_email_distribution, :_destroy]
+                                         :payment_method, :xero_contact_id,
+                                         :website, :additional_email_raw, :vat_number, :logo, :lead_email_distribution, :_destroy],
+                deal_attributes: [:id, :deal_type, :charges_text, :currency_id, :lead_length_rate,
+                                  :lead_min_price, :lead_max_price, :flat_lead_price, :flat_month_price,
+                                  :trial_started_at, :trial_ended_at, :_destroy]
+
 
   config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'
   menu priority: 20
@@ -93,9 +97,6 @@ ActiveAdmin.register User do
         ff.input :contact_name
         ff.input :position
         ff.input :description
-        ff.input :lead_length_rate
-        ff.input :lead_min_price
-        ff.input :lead_max_price
         ff.input :discount
         ff.input :website
         ff.input :additional_email_raw, label: 'Additional email(seperated by comma)', input_html: {class: 'select-array'}
@@ -104,6 +105,19 @@ ActiveAdmin.register User do
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
         ff.input :xero_contact_id
         ff.input :payment_method, as: :select, collection: BrokerInfo::PAYMENT_METHODS, include_blank: false
+      end
+
+      f.has_many :deal, allow_destroy: false, new_record: f.object.deal.blank? do |ff|
+        ff.input :deal_type, as: :select, collection: Deal::DEAL_TYPES, include_blank: false, input_html: {'data-select-fields-toggler' => 'deal-type'}
+        ff.input :charges_text, hint: "You can change default text for each of deal types in #{link_to 'settings', admin_rb_configs_path('q[key_contains]' => 'charges_text_')} or override it here".html_safe
+        ff.input :lead_length_rate, input_html: {class: 'deal-type-standard'}
+        ff.input :lead_min_price, input_html: {class: 'deal-type-standard'}
+        ff.input :lead_max_price, input_html: {class: 'deal-type-standard'}
+        ff.input :flat_lead_price, input_html: {class: 'deal-type-flat_lead'}
+        ff.input :flat_month_price, input_html: {class: 'deal-type-flat_month'}
+        ff.input :currency, as: :select, collection: Currency.all, include_blank: false
+        ff.input :trial_started_at, as: :string, input_html: {class: 'datepicker', style: 'width: 100px', value: f.object.deal.trial_started_at&.strftime('%F')}
+        ff.input :trial_ended_at, as: :string, input_html: {class: 'datepicker', style: 'width: 100px', value: f.object.deal.trial_ended_at&.strftime('%F')}
       end
     end
     f.actions
@@ -166,7 +180,13 @@ ActiveAdmin.register User do
             end
             panel 'Deal' do
               attributes_table_for resource.deal do
-                (Deal.column_names - %w(id user_id)).each { |column| row column }
+                (Deal.column_names - %w(id user_id)).each do |column|
+                  if column == 'charges_text'
+                    row('Charges Text') { |deal| deal.processed_charges_text }
+                  else
+                    row column
+                  end
+                end
               end
             end
           end

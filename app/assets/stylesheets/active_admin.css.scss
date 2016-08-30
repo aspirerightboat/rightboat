@@ -89,3 +89,20 @@ p {
 form fieldset > ol > li {
   clear: both;
 }
+
+input[disabled] {
+  background-color: whitesmoke;
+}
+
+// override bootstrap lead style to fix leads#show page
+@media (min-width: 768px) {
+  .lead {
+    font-size: inherit;
+  }
+}
+.lead {
+  margin-bottom: auto;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}

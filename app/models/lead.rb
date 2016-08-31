@@ -37,6 +37,12 @@ class Lead < ActiveRecord::Base
   scope :not_invoiced, -> { where(invoice_id: nil) }
   scope :created_from, ->(status, from) { send(status).where('created_at > ?', from) }
   scope :created_between, ->(status, from, to) { send(status).where('created_at BETWEEN ? AND ?', from, to) }
+  scope :from_affiliates, -> { where.not(created_from_affiliate: nil) }
+  scope :month_eq, ->(month) { where('MONTH(created_at) = ?', month.to_i) }
+
+  def self.ransackable_scopes(_auth_object = nil)
+    [:month_eq]
+  end
 
   def to_s
     name

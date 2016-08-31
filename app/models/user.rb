@@ -160,7 +160,14 @@ class User < ActiveRecord::Base
   end
 
   def personalize_leads
-    Lead.where(email: email, user_id: nil).update_all(user_id: self.id)
+    Lead.where(email: email, user_id: nil).each do |lead|
+      lead.update(user_id: id)
+      UserActivity.create(kind: 'lead',
+                          lead_id: lead.id,
+                          user_id: id,
+                          user_email: email,
+                          created_at: lead.created_at)
+    end
   end
 
   private

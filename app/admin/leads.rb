@@ -51,7 +51,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
       if lead.lead_price_currency.name == 'GBP'
         b { price }
       else
-        abbr(title: "£#{lead.lead_price_gbp&.try_skip_fraction}") { price }
+        abbr(title: "£#{lead.lead_price_gbp&.round(2)&.try_skip_fraction}") { price }
       end
     end
     column('Mail ID', sortable: :saved_searches_alert_id) do |lead|

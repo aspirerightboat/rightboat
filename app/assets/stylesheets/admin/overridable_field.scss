@@ -17,6 +17,8 @@
 .overridden {
   color: darkred;
   text-decoration: line-through;
+  display: block;
+
   a, a:link, a:visited {
     color: darkred;
   }

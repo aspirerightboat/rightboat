@@ -13,6 +13,7 @@ class Lead < ActiveRecord::Base
   has_many :lead_trails, foreign_key: 'lead_id'
   belongs_to :last_lead_trail, foreign_key: 'last_lead_trail_id', class_name: 'LeadTrail'
   belongs_to :created_from_affiliate, class_name: 'User'
+  belongs_to :lead_price_currency, class_name: 'Currency'
 
   validates_presence_of :boat_id
   validates_presence_of :email, :first_name, :surname, if: 'user_id.blank?'
@@ -20,7 +21,7 @@ class Lead < ActiveRecord::Base
 
   before_validation :fill_user_info
 
-  before_save :update_lead_price, :set_name
+  before_save :set_name
   after_save :send_quality_check_email
   after_save :mail_if_suspicious
   after_save :became_not_suspicious
@@ -47,10 +48,37 @@ class Lead < ActiveRecord::Base
   end
 
   def update_lead_price
-    self.lead_price = calc_lead_price
-    if persisted? && lead_price_changed?
-      update_column :lead_price, lead_price
-    end
+    deal = boat.user.deal
+
+    self.lead_price_currency = deal.currency
+    self.lead_price_currency_rate = lead_price_currency.rate
+    self.lead_price = if deal.within_trial?(new_record? ? Time.current : created_at)
+                        0
+                      elsif deal.deal_type == 'standard'
+                        res = if !boat.poa? && boat.price > 0
+                                price = Currency.convert(boat.price, boat.safe_currency, lead_price_currency)
+                                bound = RBConfig[:lead_price_coef_bound] # 500_000
+                                if price > bound
+                                  bound * RBConfig[:lead_low_price_coef] + (price - bound) * RBConfig[:lead_high_price_coef]
+                                else
+                                  price * RBConfig[:lead_low_price_coef]
+                                end
+                              elsif (length_ft = boat.length_ft) && length_ft > 0
+                                length_ft * deal.lead_length_rate
+                              else
+                                deal.lead_max_price
+                              end
+                        res.clamp(deal.lead_min_price, deal.lead_max_price).round(2)
+                      elsif deal.deal_type == 'flat_lead'
+                        deal.flat_lead_price
+                      elsif deal.deal_type == 'flat_month'
+                        0
+                      end
+  end
+
+  def update_lead_price!
+    update_lead_price
+    save!
   end
 
   def mark_if_suspicious(user, email, remote_ip)
@@ -66,7 +94,7 @@ class Lead < ActiveRecord::Base
         mark_suspicious('Multiple leads received – review required')
       end
     end
-    if Lead.where(status: %w(rejected suspicious), email: user&.email || email.presence).any?
+    if Lead.where(status: %w(rejected suspicious), email: user&.email || email.presence).exists?
       mark_suspicious('Lead from user with rejected/suspicious leads – review required')
     end
   end
@@ -77,6 +105,10 @@ class Lead < ActiveRecord::Base
 
   def handle_lead_created_mails
     LeadCreatedMailsJob.new([id]).perform
+  end
+
+  def lead_price_gbp
+    lead_price / lead_price_currency_rate
   end
 
   private
@@ -100,37 +132,6 @@ class Lead < ActiveRecord::Base
       self.first_name = user.first_name
       self.surname = user.last_name
       self.phone = user.phone || user.mobile
-    end
-  end
-
-  def calc_lead_price
-    deal = boat.user.deal
-
-    if deal.within_trial?(created_at)
-      return 0
-    end
-
-    if deal.deal_type == 'standard'
-      broker_info = boat.user.broker_info
-      res = if !boat.poa? && boat.price > 0
-              price_gbp = boat.price / boat_currency_rate
-              bound = RBConfig[:lead_price_coef_bound] # 500_000
-              if price_gbp > bound
-                bound * RBConfig[:lead_low_price_coef] + (price_gbp - bound) * RBConfig[:lead_high_price_coef]
-              else
-                price_gbp * RBConfig[:lead_low_price_coef]
-              end
-            elsif boat.length_m && boat.length_m > 0
-              boat.length_ft * broker_info.lead_length_rate
-            else
-              RBConfig[:lead_flat_fee]
-            end
-      res.clamp(broker_info.lead_min_price, broker_info.lead_max_price).round(2)
-    elsif deal.deal_type == 'flat_lead'
-      res = deal.flat_lead_price
-      Currency.convert(res, deal.currency, Currency.default)
-    elsif deal.deal_type == 'flat_month'
-      0
     end
   end
 

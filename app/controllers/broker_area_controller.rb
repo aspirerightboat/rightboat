@@ -65,7 +65,9 @@ class BrokerAreaController < ApplicationController
   end
 
   def account_history
-    @leads = current_broker.broker_leads.where.not(invoice_id: nil).includes(:invoice, boat: [:manufacturer, :model, :currency])
+    @deal = current_broker.deal
+    @leads = current_broker.broker_leads.where.not(invoice_id: nil)
+                 .includes(:invoice, :lead_price_currency, boat: [:manufacturer, :model, :currency])
                  .order('id DESC').page(params[:page]).per(30)
   end
 

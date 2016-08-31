@@ -63,7 +63,7 @@ ActiveAdmin.register Boat do
             row attr_name do
               content = String.new.html_safe
               if boat.field_overridden?(attr_name)
-                content << %(<div class="overridden">#{pretty_admin_field(boat.raw_boat, attr_name)}</div>).html_safe
+                content << %(<del class="overridden">#{pretty_admin_field(boat.raw_boat, attr_name)}</del>).html_safe
               end
               content << pretty_admin_field(boat, attr_name)
             end

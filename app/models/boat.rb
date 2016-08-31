@@ -273,9 +273,9 @@ class Boat < ActiveRecord::Base
   end
 
   def update_leads_price
-    if poa_changed? || price_changed? || length_m_changed?
-      leads.not_deleted.not_invoiced.each do |lead|
-        lead.update_lead_price
+    if poa_changed? || price_changed? || length_m_changed? || length_f_changed? || currency_id_changed?
+      leads.not_deleted.not_invoiced.includes(boat: {user: :deal}).each do |lead|
+        lead.update_lead_price!
       end
     end
   end

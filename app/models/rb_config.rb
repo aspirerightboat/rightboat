@@ -28,7 +28,6 @@ class RBConfig < ActiveRecord::Base
         {key: 'lead_low_price_coef', value: '0.0002', kind: :float, description: 'Coefficient when price is <= £500.000. A £100.000 boat will be charged as 100.000 * 0.0002 = £20'},
         {key: 'lead_high_price_coef', value: '0.0001', kind: :float, description: 'Coefficient when price is > £500.000. A £600.000 boat will be charged as 500.000 * 0.0002 + 100.000 * 0.0001 = £110'},
         {key: 'lead_price_coef_bound', value: '500000', kind: :float, description: 'Under this price lead_low_price_coef is used and under – lead_high_price_coef'},
-        {key: 'lead_flat_fee', value: '99', kind: :float, description: 'If no boat price nor length present then lead price will be flat fee in £'},
         {key: 'default_min_lead_price', value: '5', kind: :float, description: 'Default minimum lead price in £. Can be overridden by broker_info settings'},
         {key: 'default_max_lead_price', value: '300', kind: :float, description: 'Default maximum lead price in £. Can be overridden by broker_info settings'},
         {key: 'lead_gap_minutes', value: '3', kind: :float, description: 'Time between lead requests in minutes when second lead will be considered as suspicious'},
@@ -36,6 +35,8 @@ class RBConfig < ActiveRecord::Base
           The cost per lead is set according to the boat listing price and charged at <b>%{lead_low_price_perc}</b>
           and <b>%{lead_high_price_perc}</b> after <b>%{lead_price_coef_bound}</b> of boat listing price,
           subject to a minimum lead charge of <b>%{default_min_lead_price}</b> and maximum of <b>%{default_max_lead_price}</b>.
+          If there is no boat price then lead price is <b>%{lead_length_rate}/ft</b> of length.
+          Otherwise lead price is <b>%{default_max_lead_price}</b>.
           The charge will be invoiced and payment accepted in <b>%{currency_iso}</b>.
         TEXT
         ), kind: :text, description: 'Default charges text with Standard Deal'},
@@ -66,5 +67,11 @@ class RBConfig < ActiveRecord::Base
     # create missing configs
     configs_to_create = default_configs.reject { |h| existing_keys.include?(h[:key]) }
     RBConfig.create(configs_to_create)
+  end
+
+  def self.repair_key(key)
+    config = RBConfig.find_or_initialize_by(key: key)
+    config.assign_attributes(defaults.find { |attrs| attrs[:key] == key.to_s })
+    config.save!
   end
 end

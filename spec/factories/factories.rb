@@ -154,7 +154,6 @@ FactoryGirl.define do
 
   factory :broker_info do
     user
-    lead_length_rate 1.0
     discount 0.0
 
     sequence(:website) { |n| "website-#{n}" }

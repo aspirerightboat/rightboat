@@ -32,13 +32,14 @@ class LeadsController < ApplicationController
     lead.mark_if_suspicious(current_user, params[:email], request.remote_ip)
     lead.created_from_affiliate = current_user&.registered_from_affiliate ||
         (User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id])
+    lead.update_lead_price
 
     if lead.save
       lead.handle_lead_created_mails unless lead.suspicious?
 
       json = {}
       json[:google_conversion] = render_to_string(partial: 'shared/google_lead_conversion',
-                                                  locals: {lead_price: lead.lead_price})
+                                                  locals: {lead_price_gbp: lead.lead_price_gbp})
       if current_user
         json[:downloading_popup] = render_to_string(partial: 'shared/lead_downloading_popup',
                                                     locals: {boat: lead.boat})
@@ -77,6 +78,7 @@ class LeadsController < ApplicationController
       lead.boat_currency_rate = boat.safe_currency.rate
       lead.user_country_iso = current_user&.user_setting&.country_iso || session[:country]
       lead.mark_if_suspicious(current_user, params[:email], request.remote_ip)
+      lead.update_lead_price
       lead
     end
 
@@ -248,7 +250,7 @@ class LeadsController < ApplicationController
     json[:lead_ids] = leads.map(&:id)
     leads.each do |lead|
       google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
-                                             locals: {lead_price: lead.lead_price})
+                                             locals: {lead_price_gbp: lead.lead_price_gbp})
     end
     json[:google_conversion] = google_conversions
     json

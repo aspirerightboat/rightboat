@@ -61,6 +61,7 @@ class LeadsMailer < ApplicationMailer
   def invoice_notify_broker(invoice_id)
     @invoice = Invoice.find(invoice_id)
     @broker = @invoice.user
+    @deal = @broker.deal
     @broker_info = @broker.broker_info
     @leads = @invoice.leads.includes(:boat).order('id DESC')
 

@@ -31,7 +31,7 @@ class LeadsController < ApplicationController
     lead.user_country_iso = current_user&.user_setting&.country_iso || session[:country]
     lead.mark_if_suspicious(current_user, params[:email], request.remote_ip)
     lead.created_from_affiliate = current_user&.registered_from_affiliate ||
-        User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
+        (User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id])
 
     if lead.save
       lead.handle_lead_created_mails unless lead.suspicious?
@@ -129,7 +129,7 @@ class LeadsController < ApplicationController
       user.role = 'PRIVATE'
       user.email_confirmed = true
       user.assign_phone_from_leads
-      user.registered_from_affiliate = User.find_by(id: session.delete(:iframe_broker_id)) if session[:iframe_broker_id]
+      user.registered_from_affiliate = User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
 
       if !user.save
         render json: user.errors.full_messages, root: false, status: :unprocessable_entity

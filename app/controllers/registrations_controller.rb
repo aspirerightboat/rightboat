@@ -10,7 +10,7 @@ class RegistrationsController < Devise::RegistrationsController
     update_user_settings
     @user.role = 'PRIVATE'
     @user.assign_phone_from_leads
-    @user.registered_from_affiliate = User.find_by(id: session.delete(:iframe_broker_id)) if session[:iframe_broker_id]
+    @user.registered_from_affiliate = User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
 
     if @user.save
       env['warden'].set_user(@user)

@@ -43,7 +43,12 @@ ActiveAdmin.register Lead, as: 'Lead' do
     end
     column('Last Status Change', sortable: :updated_at) { |lead| time_ago_with_hint(lead.updated_at) }
     column('Lead Price') do |lead|
-      b { number_to_currency(lead.lead_price, unit: lead.lead_price_currency.symbol, precision: 2) }
+      price = number_to_currency(lead.lead_price, unit: lead.lead_price_currency.symbol, precision: 2)
+      if lead.lead_price_currency.name == 'GBP'
+        b { price }
+      else
+        abbr(title: "£#{lead.lead_price_gbp&.try_skip_fraction}") { price }
+      end
     end
     column('Mail ID', sortable: :saved_searches_alert_id) do |lead|
       if lead.saved_searches_alert_id.present?
@@ -84,8 +89,11 @@ ActiveAdmin.register Lead, as: 'Lead' do
     column('Broker') { |lead| lead.boat&.user&.name }
     column('Boat') { |lead| lead.boat&.manufacturer_model }
     column('Length') { |lead|
-      return "#{lead.boat.length_m.round(2)}m" if lead.boat&.length_m
-      "#{lead.boat.length_f.round(2)}ft" if lead.boat&.length_f
+      if lead.boat&.length_m
+        "#{lead.boat.length_m.round(2)}m"
+      elsif lead.boat&.length_f
+        "#{lead.boat.length_f.round(2)}ft"
+      end
     }
     column(:title)
     column(:first_name)
@@ -97,6 +105,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
     column(:status)
     column('Last Status Change') { |lead| lead.updated_at }
     column(:lead_price) { |lead| number_to_currency(lead.lead_price, unit: lead.lead_price_currency.symbol, precision: 2) }
+    column('Lead Price £') { |lead| lead.lead_price_gbp&.try_skip_fraction }
     column(:remote_ip)
     column(:browser)
   end

@@ -5,6 +5,7 @@ class Deal < ActiveRecord::Base
   belongs_to :currency
 
   before_save :ensure_deal_params, if: ->(d) { d.new_record? || d.deal_type_changed? }
+  before_save :ensure_currency, unless: :currency_id
   after_update :change_leads_price
 
   def standard?; deal_type == 'standard' end
@@ -33,10 +34,6 @@ class Deal < ActiveRecord::Base
     end
   end
 
-  def currency
-    self[:currency] || Currency.default
-  end
-
   def within_trial?(date)
     trial_started_at && trial_started_at <= date &&
         trial_ended_at &&  date <= trial_ended_at
@@ -55,6 +52,10 @@ class Deal < ActiveRecord::Base
     when 'flat_month'
       self.flat_month_price ||= RBConfig[:default_flat_month_price]
     end
+  end
+
+  def ensure_currency
+    self.currency = Currency.default
   end
 
   def change_leads_price

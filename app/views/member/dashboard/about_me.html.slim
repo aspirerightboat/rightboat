@@ -7,33 +7,33 @@
       .row
         .col-sm-8.col-xs-12
           h4 This is what we know about you so far, you can add, edit and change your personal information whenever you like.
-          .form-group.row
-            .col-sm-4.col-xs-12
+          .row
+            .col-sm-4.col-xs-12.field-wrap
               = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title enq-req-title simple-select-dark'
-            .col-sm-4.col-xs-12
+            .col-sm-4.col-xs-12.field-wrap
               = f.text_field :first_name, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
-            .col-sm-4.col-xs-12
+            .col-sm-4.col-xs-12.field-wrap
               = f.text_field :last_name, placeholder: 'Last Name', class: 'form-control', 'data-validetta' => 'required'
-          .form-group.row
-            .col-sm-6.col-xs-12
+          .row
+            .col-sm-6.col-xs-12.field-wrap
               = f.email_field :email, placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email'
-            .col-sm-6.col-xs-12
+            .col-sm-6.col-xs-12.field-wrap
               = f.text_field :phone, placeholder: 'Tel/Mobile', class: 'form-control'
           = f.fields_for :address do |ff|
-            .form-group.row
-              .col-sm-6.col-xs-12
+            .row
+              .col-sm-6.col-xs-12.field-wrap
                 = ff.text_field :line1, placeholder: 'Address Line 1', class: 'form-control'
-              .col-sm-6.col-xs-12
+              .col-sm-6.col-xs-12.field-wrap
                 = ff.text_field :line2, placeholder: 'Address Line 2', class: 'form-control'
-            .form-group.row
-              .col-sm-6.col-xs-12
+            .row
+              .col-sm-6.col-xs-12.field-wrap
                 = ff.text_field :town_city, placeholder: 'City', class: 'form-control', style: 'margin-right: 5px'
-              .col-sm-6.col-xs-12
+              .col-sm-6.col-xs-12.field-wrap
                 = ff.text_field :county, placeholder: 'Region/County', class: 'form-control', style: 'margin-right: 5px'
-            .form-group.row
-              .col-sm-6.col-xs-12
+            .row
+              .col-sm-6.col-xs-12.field-wrap
                 = ff.text_field :zip, placeholder: 'Post Code/Zip', class: 'form-control'
-              .col-sm-6.col-xs-12
+              .col-sm-6.col-xs-12.field-wrap
                 = ff.select :country_id, options_for_select(Country.country_options, ff.object.country_id), {prompt: 'Country'}, class: 'country-select select-dark'
           br
           h4
@@ -42,12 +42,12 @@
             small
               i Leave blank if you don't want to change
 
-          .form-group.row
-            .col-sm-4.col-xs-12
+          .row
+            .col-md-4.col-xs-12.field-wrap
               = f.password_field :current_password, placeholder: 'Current Password', class: 'form-control'
-            .col-sm-4.col-xs-12
+            .col-md-4.col-xs-12.field-wrap
               = f.password_field :password, placeholder: 'Password', class: 'form-control'
-            .col-sm-4.col-xs-12
+            .col-md-4.col-xs-12.field-wrap
               = f.password_field :password_confirmation, placeholder: 'Confirm Password', class: 'form-control'
           /- if false
           /  %br

@@ -8,6 +8,7 @@ p
 
 - @searches.each do |saved_search, new_boats|
   p Search for #{saved_search.search_title}:
+  p Edit or activate / deactivate your saved search #{link_to 'here', member_user_notifications_url}.
   table.boats-list
     tr
       td

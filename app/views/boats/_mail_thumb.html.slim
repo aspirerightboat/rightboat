@@ -22,6 +22,7 @@ table.boat(border="1" bordercolor="#1daeeb" style="#{'display: none;' unless vis
               .manufacturer-model
                 span.text-uppercase
                   b= boat.manufacturer
+                span &nbsp;
                 = boat.model
               .boat-spec
                 | Length: #{boat_length(boat)}

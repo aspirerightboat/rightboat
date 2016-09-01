@@ -14,22 +14,29 @@ class Rightboat::XeroInvoicer
     contact_by_broker = ensure_contacts(brokers)
     branding_theme = $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
 
+    tax_rates = $xero.TaxRate.all(where: 'TaxType=="OUTPUT2" OR TaxType=="ECZROUTPUTSERVICES" OR TaxType=="EXEMPTOUTPUT"')
+    tax_rate_by_currency = {
+        'GBP' => tax_rates.find { |tr| tr.tax_type == 'OUTPUT2' },
+        'EUR' => tax_rates.find { |tr| tr.tax_type == 'ECZROUTPUTSERVICES' },
+        'USD' => tax_rates.find { |tr| tr.tax_type == 'EXEMPTOUTPUT' },
+    }
+
     Invoice.transaction do
       xero_invoices = []
       invoices = leads_by_broker.map do |broker, leads|
         inv_logger.info("Prepare invoice for broker_id=#{broker.id} (#{broker.name}) leads_count=#{leads.size}")
         broker_info = broker.broker_info
+        deal = broker.deal
         discount_rate = broker_info.discount
 
         i = Invoice.new
         xi = $xero.Invoice.build(type: 'ACCREC', status: 'DRAFT')
-        xi.line_amount_types = 'Exclusive'
+        xi.line_amount_types = 'NoTax'
         xi.date = Time.current.to_date
         xi.due_date = xi.date
         xi.branding_theme_id = branding_theme.branding_theme_id if branding_theme
 
-        vat_rate = broker.country&.iso == 'GB' ? 0.2 : 0
-        broker_currency = broker.deal.currency
+        broker_currency = deal.currency
         leads_price = 0
         leads_price_discounted = 0
         total_discount = 0
@@ -45,22 +52,20 @@ class Rightboat::XeroInvoicer
         xi.add_line_item(description: leads_str.chomp(','),
                          quantity: 1, unit_amount: leads_price, account_code: 200,
                          discount_rate: discount_rate * 100,
-                         line_amount: leads_price_discounted)
+                         line_amount: leads_price_discounted,
+                         tax_type: tax_rate_by_currency[broker_currency.name])
 
         i.subtotal = leads_price
         i.discount_rate = discount_rate
         i.discount = total_discount
         i.total_ex_vat = i.subtotal
-        i.vat_rate = vat_rate
+        i.vat_rate = broker_currency.name == 'GBP' ? 0.2 : 0
         i.vat = (i.total_ex_vat * i.vat_rate).round(2)
         i.total = i.total_ex_vat + i.vat
         i.user = broker
         i.save!
         Lead.where(id: leads.map(&:id)).update_all(invoice_id: i.id, status: 'invoiced', updated_at: Time.current)
 
-        xi.sub_total = i.subtotal
-        xi.total_tax = i.vat
-        xi.total = i.total
         xi.reference = i.id
         xi.currency_code = broker_currency.name
         xi.build_contact(contact_id: broker_info.xero_contact_id, name: contact_by_broker[broker].name, contact_status: 'ACTIVE')
@@ -101,7 +106,7 @@ class Rightboat::XeroInvoicer
   def fetch_leads(only_broker_id)
     rel = Lead.approved.not_deleted.where(invoice_id: nil)
               .where('leads.created_at < ?', Time.current.beginning_of_day)
-              .includes(boat: {user: :broker_info})
+              .includes(boat: {user: [:broker_info, deal: :currency]})
     if only_broker_id
       rel = rel.references(:boat).where(boats: {user_id: only_broker_id})
     end

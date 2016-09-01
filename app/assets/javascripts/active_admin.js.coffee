@@ -10,6 +10,7 @@
 #= require_tree ./common
 
 #= require admin/collection_pickers
+#= require admin/disable_number_scroll
 #= require admin/leads
 #= require admin/mispell_fixer
 #= require admin/misspelling

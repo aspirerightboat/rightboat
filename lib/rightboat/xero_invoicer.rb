@@ -176,7 +176,6 @@ class Rightboat::XeroInvoicer
   end
 
   def build_contact_for_broker(broker)
-    broker_info = broker.broker_info
     contact = $xero.Contact.build
     contact.name = broker.name
     contact.contact_number = broker.id.to_s
@@ -184,17 +183,18 @@ class Rightboat::XeroInvoicer
     contact.last_name = broker.last_name
     contact.email_address = broker.email
     contact.contact_status = 'ACTIVE'
-    contact.tax_number = broker_info.vat_number
+    contact.tax_number = broker.broker_info.vat_number
     contact.is_customer = true
+    contact.default_currency = broker.deal.currency.name
     if (address = broker.address)
-      contact.add_address(type: 'STREET',
+      contact.add_address(type: 'POBOX',
                           line1: address.line1,
                           line2: address.line2,
                           line3: address.line3,
                           city: address.town_city,
                           region: address.county,
                           postal_code: address.zip,
-                          country: address.country.try(:iso))
+                          country: address.country&.iso)
     end
     country_code = address.country.try(:country_code)
     contact.add_phone(type: 'DEFAULT', area_code: country_code, number: broker.phone) if broker.phone.present?

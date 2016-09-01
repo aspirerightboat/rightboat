@@ -36,9 +36,9 @@ class Rightboat::XeroInvoicer
         leads_str = 'Leads'
         leads.each do |lead|
           leads_str << " #{lead.id},"
-          lead_price = Currency.convert(lead.lead_price, lead.lead_price_currency, broker_currency)
+          lead_price = Currency.convert(lead.lead_price, lead.lead_price_currency, broker_currency).round(2)
           leads_price += lead_price
-          lead_price_discounted = (lead_price * (1 - discount_rate)).round(2)
+          lead_price_discounted = (lead_price * (1 - discount_rate))
           total_discount += lead_price - lead_price_discounted
           leads_price_discounted += lead_price_discounted
         end

@@ -35,6 +35,7 @@ nav#footer
               li= link_to 'Register as Broker', welcome_broker_path
             - unless user_signed_in?
               li= link_to 'Broker Login', '#', class: 'open-login-popup'
+            li= link_to 'Work for Us', work_for_us_home_path
     .company-info-links
       .copy &copy;#{Date.today.year} &nbsp; Rightboat Ltd - All Rights Reserved
       = link_to 'Policies', privacy_policy_home_path

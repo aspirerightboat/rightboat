@@ -115,6 +115,7 @@ Rails.application.routes.draw do
       get :sell_my_boats
       get :confirm_email
       get :welcome_popup
+      get :work_for_us
     end
   end
 

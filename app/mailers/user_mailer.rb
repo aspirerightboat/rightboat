@@ -3,6 +3,7 @@ class UserMailer < ApplicationMailer
   add_template_helper QrcodeHelper
   add_template_helper SavedSearchesMailerHelper
   add_template_helper MakemodelLinksHelper
+  add_template_helper SavedSearchHelper
   layout 'mailer'
 
   after_action :amazon_delivery

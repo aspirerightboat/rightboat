@@ -16,7 +16,7 @@ ActiveAdmin.register SavedSearch do
   index do
     column :id
     column(:user, sortable: 'users.first_name') { |ss| link_to ss.user.name, admin_user_path(ss.user) }
-    column(:search) { |ss| ss.search_title }
+    column(:search) { |ss| saved_search_title(ss) }
     column :alert
     column :created_at
 

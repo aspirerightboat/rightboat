@@ -20,7 +20,7 @@
         li= link_to_unless tab  == :iframes, 'IFrames', broker_area_iframes_path
   .row
     - if sidebar.present?
-      #sidebar.col-xs-12.col-sm-3.sidebar-offcanvas(role="navigation")
+      #sidebar.col-xs-12.col-sm-3.sidebar-offcanvas.rb-sidebar(role="navigation")
         .sidebar-nav
           ul.nav.nav-pills.nav-stacked
             = sidebar

@@ -1,10 +1,12 @@
+- @page_title = 'My Recent Views'
+
 .row
   .col-xs-12
-    h1.pull-left My Recent Views
+    h1.pull-left= @page_title
     - if @viewed_boats
       ul.pull-right
         li
-          = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'select-dark layout-mode-select notranslate'
+          = select_tag :sort, layout_mode_options, id: 'layout_mode', class: 'select-dark layout-mode-select selectize-hide-input notranslate'
 
     .clearfix
     hr

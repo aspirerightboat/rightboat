@@ -11,7 +11,7 @@ class SavedSearch < ActiveRecord::Base
   belongs_to :user, counter_cache: true
 
   def currency_sym
-    Currency.cached_by_name(currency).try(:symbol)
+    Currency.cached_by_name(currency)&.symbol
   end
 
   def manufacturers_str

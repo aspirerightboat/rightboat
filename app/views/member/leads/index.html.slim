@@ -1,6 +1,8 @@
+- @page_title = 'My Enquiries'
+
 .member-content(data-layout-mode='list')
   = link_to 'Un-hide all', unhide_member_leads_path, method: :post, remote: true, class: 'unhide-leads btn-flat pull-right btn-white'
-  h1 My Enquiries
+  h1= @page_title
   hr
   - if @leads.blank?
     .alert.alert-warning

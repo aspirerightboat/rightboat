@@ -1,5 +1,7 @@
+- @page_title = 'My Favourites'
+
 .member-content(data-layout-mode="list")
-  h1 My Favourites
+  h1= @page_title
   hr
   - if @favourites.blank?
     .alert.alert-warning

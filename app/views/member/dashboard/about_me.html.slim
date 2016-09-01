@@ -1,5 +1,7 @@
+- @page_title = 'About Me'
+
 .member-content
-  h1 About Me
+  h1= @page_title
   hr
   - if user_signed_in?
     = form_for current_user, url: user_profile_path, remote: true, data: {format: :json}, \

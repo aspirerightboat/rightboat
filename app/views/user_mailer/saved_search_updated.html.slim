@@ -7,8 +7,7 @@ p
   | New listings have been posted to Rightboat that match your following Saved #{t('search_plural', count: @searches.size)}:
 
 - @searches.each do |saved_search, new_boats|
-  p
-    b Saved Search for: #{saved_search.search_title}:
+  p Saved Search for: #{saved_search_title(saved_search)}:
   p Edit or activate / deactivate your saved search #{link_to 'here', member_user_notifications_url}.
   table.boats-list
     tr

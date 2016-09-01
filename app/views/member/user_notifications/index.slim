@@ -1,7 +1,9 @@
+- @page_title = 'My Notification Settings'
+
 .row
   .col-md-12.col-xs-12
     .member-content(data-layout-mode='list')
-      h1 My Notifications Settings
+      h1= @page_title
       hr
       p
         |
@@ -33,42 +35,16 @@
                     p Click on the Alert button to toggle new listings alerts on/off
                     table.rb-table
                       tr
-                        th #
-                        th Keyword
-                        th Manufacturers
-                        th Models
-                        th Boat Type
-                        th Countries
-                        th New / Used
-                        th Year
-                        th Price
-                        th Length
+                        th Search Filters
                         th.text-center.th-caption Action
-                        th.text-center Alert
-                      - @saved_searches.each_with_index do |ss, i|
+                      - @saved_searches.each do |ss|
                         tr(data-ss-id="#{ss.id}")
-                          td= i + 1
-                          td= ss.q
-                          td
-                            = Manufacturer.where(id: ss.manufacturers).pluck(:name).join(', ') if ss.manufacturers.present?
-                          td= Model.where(id: ss.models).pluck(:name).join(', ') if ss.models.present?
-                          td= ss.boat_type
-                          td= Country.where(id: ss.countries).pluck(:name).join(', ')
-                          td= ss.new_used.keys.join(' / ')
-                          td= "#{"from #{ss.year_min} " if ss.year_min}#{"up to #{ss.year_max}" if ss.year_max}"
-                          td
-                            - if ss.price_min || ss.price_max
-                              - currency = (Currency.find_by(name: ss.currency) if ss.currency) || Currency.default
-                              = "from #{number_to_currency(ss.price_min, unit: currency.symbol, precision: 0)}" if ss.price_min
-                              = " up to #{number_to_currency(ss.price_max, unit: currency.symbol, precision: 0)}" if ss.price_max
-                          td= "#{"from #{ss.length_min.to_i} " if ss.length_min.to_i}#{"up to #{ss.length_max}" if ss.length_max} #{ss.length_unit}" if ss.length_min || ss.length_max
+                          td= saved_search_title(ss)
                           td.text-center
-                            |
-                              #{link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'}
-                              #{link_to 'Edit', edit_member_saved_search_path(ss), class: 'label label-info', remote: true, format: :js}
-                              #{link_to 'x', member_saved_search_path(ss), class: 'label label-danger', method: :delete, remote: true, format: :js, data: {disable_with: 'Delete...'}}
-                          td.text-center
-                            = link_to (ss.alert ? 'Alert On' : 'No Alert'), '#', class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}"
+                            ' #{link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'}
+                            ' #{link_to 'Edit', edit_member_saved_search_path(ss), class: 'label label-info', remote: true, format: :js}
+                            ' #{link_to (ss.alert ? 'Alert On' : 'No Alert'), '#', class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}"}
+                            | #{link_to 'x', member_saved_search_path(ss), class: 'label label-danger', method: :delete, remote: true, format: :js, data: {disable_with: 'Delete...'}}
                             = hidden_field_tag("saved_searches[#{ss.id}][alert]", ss.alert, class: "saved-search-field #{dom_id(ss)}")
 
         .form-group

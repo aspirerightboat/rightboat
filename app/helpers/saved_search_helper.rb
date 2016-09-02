@@ -36,6 +36,7 @@ module SavedSearchHelper
       res << %( RefNo:&nbsp;<b>#{h ss.ref_no}</b>;)
     end
     res.strip!
+    res.gsub!(/;\z/, '')
     res.html_safe
   end
 end

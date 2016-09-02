@@ -116,8 +116,8 @@ ActiveAdmin.register User do
         ff.input :flat_lead_price, input_html: {class: 'deal-type-flat_lead'}
         ff.input :flat_month_price, input_html: {class: 'deal-type-flat_month'}
         ff.input :currency, as: :select, collection: Currency.all, include_blank: false
-        ff.input :trial_started_at, as: :string, input_html: {class: 'datepicker', style: 'width: 100px', value: f.object.deal.trial_started_at&.strftime('%F')}
-        ff.input :trial_ended_at, as: :string, input_html: {class: 'datepicker', style: 'width: 100px', value: f.object.deal.trial_ended_at&.strftime('%F')}
+        ff.input :trial_started_at, as: :string, input_html: {class: 'datepicker', style: 'width: 100px', value: f.object.deal&.trial_started_at&.strftime('%F')}
+        ff.input :trial_ended_at, as: :string, input_html: {class: 'datepicker', style: 'width: 100px', value: f.object.deal&.trial_ended_at&.strftime('%F')}
       end
     end
     f.actions

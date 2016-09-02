@@ -26,22 +26,6 @@ class SavedSearch < ActiveRecord::Base
     Country.where(id: countries).pluck(:name).join(', ') if countries.present?
   end
 
-  def search_title
-    not_defined = '..'
-    res = ''
-    res << %( Keyword = "#{q}";) if q.present?
-    res << %( BoatType = "#{boat_type}";) if boat_type.present?
-    res << %( Manufacturers = "#{manufacturers_str}";) if manufacturers_str.present?
-    res << %( Models = "#{models_str}";) if models_str.present?
-    res << %( Countries = "#{countries_str}";) if countries_str.present?
-    res << %( Year = #{year_min.presence || not_defined} - #{year_max.presence || not_defined};) if year_min.present? || year_max.present?
-    res << %( Price = #{currency_sym} #{number_with_delimiter(price_min.presence) || 0} - #{number_with_delimiter(price_max.presence) || not_defined};) if price_min.present? || price_max.present?
-    res << %( Length = #{length_min.presence || not_defined} - #{length_max.presence || not_defined}#{length_unit};) if length_min.present? || length_max.present?
-    res << %( RefNo = "#{ref_no}";) if ref_no.present?
-    res.strip!
-    res
-  end
-
   def to_search_params
     attributes.except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at').symbolize_keys
   end

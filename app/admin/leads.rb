@@ -118,6 +118,13 @@ ActiveAdmin.register Lead, as: 'Lead' do
     link_to('Run approve-old-leads job', {action: :approve_old_leads}, method: :post, class: 'button')
   end
 
+  sidebar 'Leads Total Price', only: [:index] do
+    b {
+      price = Lead.ransack(params[:q]).result.sum('lead_price / lead_price_currency_rate').round
+      number_to_currency(price, unit: Currency.default.symbol, precision: 0)
+    }
+  end
+
   collection_action :approve_old_leads, method: :post do
     res = Rightboat::LeadsApprover.approve_recent
     redirect_to({action: :index}, notice: "#{res} leads was approved")

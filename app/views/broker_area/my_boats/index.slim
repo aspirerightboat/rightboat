@@ -25,7 +25,8 @@
     .col-xs-12
       h1
         | My Boats
-        small.pull-right= link_to 'New Boat', new_broker_area_my_boat_path
+      h3
+        = link_to 'Create New Listing', new_broker_area_my_boat_path
     - if current_broker.imports.active.exists?
       .col-xs-12
         .panel.panel-danger

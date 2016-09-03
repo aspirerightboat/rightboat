@@ -20,12 +20,12 @@
         li= link_to_unless tab  == :iframes, 'IFrames', broker_area_iframes_path
   .row
     - if sidebar.present?
-      #sidebar.col-xs-12.col-sm-3.sidebar-offcanvas.rb-sidebar(role="navigation")
+      #sidebar.col-xs-12.col-sm-2.sidebar-offcanvas.rb-sidebar(role="navigation")
         .sidebar-nav
           ul.nav.nav-pills.nav-stacked
             = sidebar
     - @custom_flashes = true
-    .col-xs-12.member-right(class="#{'col-sm-9' if sidebar.present?}")
+    .col-xs-12.member-right(class="#{'col-sm-10' if sidebar.present?}")
       - if notice
         .alert.alert-info= notice
       - if alert

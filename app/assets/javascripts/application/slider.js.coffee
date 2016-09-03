@@ -55,8 +55,8 @@ $ ->
       html = if field == 'price'
         if value < 5000000
           $.numberWithCommas(value)
-        else if value < 10000000
-          $input.val('')
+        else
+          $input.val if minOrMax == 'min' then 5000000 else ''
           '5M+'
       else
         if ($slider.data('unit') == 'm' && value == 300) || ($slider.data('unit') == 'ft' && value == 1000)

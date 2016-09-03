@@ -199,7 +199,7 @@ module Rightboat
 
         handle_office
 
-        target.import_assign :poa, price.blank? || price.to_i <= 0 if target.poa.nil?
+        target.import_assign :poa, price.blank? || price.to_i <= 0 if target.poa.nil? || target.price.blank?
         target.deleted_at = nil if target.deleted? && target.deleted_by_user_id.blank?
         self.new_record = target.new_record?
         self.pending_images_count = images.size

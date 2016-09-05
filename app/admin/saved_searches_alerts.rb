@@ -2,10 +2,9 @@ ActiveAdmin.register SavedSearchesAlert do
   menu parent: 'Mails'
 
   config.sort_order = 'id_desc'
-  permit_params :user_id, :saved_search_ids, :opened_at
+  permit_params :user_id, :saved_search_ids, :saved_search_infos, :opened_at
 
   filter :user, collection: -> { User.not_companies.order(:first_name, :last_name) }
-  filter :saved_search_ids
   filter :opened_at
   filter :created_at
 
@@ -22,16 +21,8 @@ ActiveAdmin.register SavedSearchesAlert do
   index do
     column :id
     column(:user, sortable: 'users.first_name') { |ssa| link_to ssa.user.name, admin_user_path(ssa.user) }
-    column(:saved_search_ids) do |ssa|
-      links = []
-      SavedSearch.where(id: ssa.saved_search_ids).each do |search|
-        links << link_to(search.id, admin_saved_search_path(search))
-      end
-      raw links.join(', ')
-    end
-
+    column :saved_search_infos
     column :opened_at do |ssa|
-
       if ssa.opened_at.present?
         content_tag(:span, l(ssa.opened_at, format: :long))
       else
@@ -47,7 +38,7 @@ ActiveAdmin.register SavedSearchesAlert do
   csv do
     column :id
     column :user
-    column :saved_search_ids
+    column :saved_search_infos
     column :opened_at
     column :created_at
     column :updated_at

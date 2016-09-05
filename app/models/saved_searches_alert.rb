@@ -1,5 +1,6 @@
 class SavedSearchesAlert < ActiveRecord::Base
-  serialize :saved_search_ids, Array
+  serialize :saved_search_ids, Array # temporary
+  serialize :saved_search_infos, Array
   belongs_to :user
 
   before_create :assign_token

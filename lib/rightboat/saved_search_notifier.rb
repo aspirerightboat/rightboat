@@ -27,7 +27,8 @@ class Rightboat::SavedSearchNotifier
       searches.compact!
 
       if searches.any?
-        saved_searches_alert = SavedSearchesAlert.create!(user_id: user_id, saved_search_ids: searches.map(&:first))
+        saved_search_infos = searches.map { |id, boat_ids| {id: id, boat_ids: boat_ids} }
+        saved_searches_alert = SavedSearchesAlert.create!(user_id: user_id, saved_search_infos: saved_search_infos)
         UserMailer.saved_search_updated(user_id, searches, saved_searches_alert.id).deliver_later
         sent_mails += 1
       end

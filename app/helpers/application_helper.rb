@@ -30,8 +30,13 @@ module ApplicationHelper
     }
 
     ret = content_tag(:div, '', html_options)
-    ret << content_tag(:div, '', class: 'min-label')
-    ret << content_tag(:div, '', class: 'max-label')
+    label_tag = content_tag(:div, '', class: 'slider-label') do
+      content_tag(:span, 'From ') +
+      content_tag(:span, '', class: 'min-label') +
+      content_tag(:span, ' to ') +
+      content_tag(:span, '', class: 'max-label')
+    end
+    ret << label_tag
 
     ret.html_safe
   end

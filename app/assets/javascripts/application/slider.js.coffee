@@ -53,8 +53,10 @@ $ ->
     else
       $input.val(value)
       html = if field == 'price'
-        if value < 5000000
+        if value < 1000000
           $.numberWithCommas(value)
+        else if value < 5000000
+          value / 1000000 + 'M'
         else
           $input.val if minOrMax == 'min' then 5000000 else ''
           '5M+'

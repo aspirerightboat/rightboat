@@ -9,6 +9,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
 
   filter :name_cont, as: :string, label: 'Customer'
   filter :boat_user_id, as: :select, collection: User.companies, label: 'Broker'
+  filter :boat_import_import_type, as: :select, collection: Rightboat::Imports::ImporterBase.import_types, label: 'Import type'
   filter :id
   filter :created_at, label: 'Date of Lead'
   filter :updated_at, label: 'Last Status Change'

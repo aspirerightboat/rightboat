@@ -110,9 +110,9 @@ class Boat < ActiveRecord::Base
     .order('user_activities.id DESC').uniq.includes(*include_models)
   end
   scope :with_boat_types, -> { joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id') }
-  scope :power, -> { with_boat_types.where('LOWER(boat_types.name) LIKE "%power%" OR LOWER(boat_types.name) LIKE "%motor%" OR LOWER(boat_types.name) LIKE "%cruiser%"') }
-  scope :sail, -> { with_boat_types.where('LOWER(boat_types.name) LIKE "%sail%"') }
-  scope :not_power_or_sail, -> { with_boat_types.where('boats.boat_type_id IS NULL OR LOWER(boat_types.name) NOT LIKE "%power%" AND LOWER(boat_types.name) NOT LIKE "%motor%" AND LOWER(boat_types.name) NOT LIKE "%cruiser%" AND LOWER(boat_types.name) NOT LIKE "%sail%"') }
+  scope :power, -> { with_boat_types.where(boat_types: { name_stripped: 'power' }) }
+  scope :sail, -> { with_boat_types.where(boat_types: { name_stripped: 'sail' }) }
+  scope :not_power_or_sail, -> { with_boat_types.where(boat_types: { name_stripped: 'other' }) }
   scope :country_or_all, ->(country) { where(country: country) if country }
 
   delegate :tax_paid?, to: :vat_rate, allow_nil: true

@@ -219,7 +219,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active Boats:'
               end
               td class: 'text-green' do
-                text_node Boat.not_deleted.count
+                text_node Boat.active.count
               end
             end
             # tr do
@@ -235,7 +235,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active Power Boats:'
               end
               td do
-                text_node Boat.not_deleted.power.count
+                text_node Boat.active.power.count
               end
             end
             tr do
@@ -243,7 +243,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active Sail Boats:'
               end
               td do
-                text_node Boat.not_deleted.sail.count
+                text_node Boat.active.sail.count
               end
             end
             tr do
@@ -251,7 +251,7 @@ ActiveAdmin.register_page 'Dashboard' do
                 text_node 'Total active, not Power or Sail'
               end
               td do
-                text_node Boat.not_deleted.not_power_or_sail.count
+                text_node Boat.active.not_power_or_sail.count
               end
             end
           end

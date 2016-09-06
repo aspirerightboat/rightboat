@@ -19,7 +19,7 @@ ActiveAdmin.register Boat do
   filter :recently_reduced
   filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES
   filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
-  filter :boat_type_name, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
+  filter :boat_type_name_stripped, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
   filter :deleted_at_present, as: :boolean, label: 'Deleted'
 
   index do

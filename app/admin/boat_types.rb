@@ -11,7 +11,7 @@ ActiveAdmin.register BoatType do
   index do
     column :name
     column '# Boats' do |r|
-      r.boats.not_deleted.count
+      r.boats.active.count
     end
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]

@@ -16,7 +16,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
   filter :month, as: :select, collection: (1..12)
   filter :status, as: :select, collection: -> { Lead::STATUSES }
   filter :saved_searches_alert_id, label: 'Mail ID'
-  filter :created_from_affiliate_id, as: :select, collection: User.where(id: BrokerIframe.pluck('DISTINCT user_id')), label: 'Affiliate'
+  filter :created_from_affiliate_id, as: :select, collection: -> { User.where(id: BrokerIframe.pluck('DISTINCT user_id')) }, label: 'Affiliate'
 
   scope :from_affiliates
 

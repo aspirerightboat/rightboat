@@ -103,11 +103,9 @@ class Boat < ActiveRecord::Base
   scope :reduced, -> { where(recently_reduced: true) }
   scope :recently_reduced, -> { reduced.limit(3) }
   scope :recently_viewed, -> (user) do
-    include_models = [:manufacturer, :model, :user, :vat_rate, :country, :currency, :primary_image]
     joins(:user_activities)
-    .where(user_activities: {kind: :boat_view})
-    .where(user_activities: {user_id: user.id})
-    .order('user_activities.id DESC').uniq.includes(*include_models)
+        .where(user_activities: {kind: :boat_view, user_id: user.id})
+        .order('user_activities.id DESC').uniq
   end
   scope :with_boat_types, -> { joins('LEFT JOIN boat_types ON boats.boat_type_id = boat_types.id') }
   scope :power, -> { with_boat_types.where(boat_types: { name_stripped: 'power' }) }
@@ -230,6 +228,11 @@ class Boat < ActiveRecord::Base
     return 'Invalid Manufacturer' if !manufacturer
     return 'Invalid Model' if !model
     'Invalid Price' if !valid_price?
+  end
+
+  def price_gbp
+    return if poa?
+    Currency.convert(price, currency, Currency.default).round
   end
 
   private

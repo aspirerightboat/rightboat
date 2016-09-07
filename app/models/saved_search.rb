@@ -66,7 +66,8 @@ class SavedSearch < ActiveRecord::Base
 
     if !query.exists?
       ss = user.saved_searches.new(fixed_params)
-      ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params, per_page: 1).hits.first.try(:primary_key)
+      search_params = ss.to_search_params.merge!(order: 'created_at_desc')
+      ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(search_params, per_page: 1).hits.first&.primary_key
       ss.save!
       ss
     end

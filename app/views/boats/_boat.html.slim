@@ -1,46 +1,85 @@
-- boat_message_required = !local_assigns[:boat_message_required].nil? ? local_assigns[:boat_message_required] : boat && boat.user.comment_requested?
+- boat_message_required = !local_assigns[:boat_message_required].nil? ? local_assigns[:boat_message_required] : boat.user.comment_requested?
 - show_social_actions = !local_assigns[:show_social_actions].nil? ? local_assigns[:show_social_actions] : true
 - broker_iframe = local_assigns[:broker_iframe]
+- favourite_thumb = local_assigns[:favourite_thumb]
+- lead_thumb = local_assigns[:lead_thumb]
 - boat_url = makemodel_boat_path(boat)
 - if broker_iframe
   - boat_url = "#{boat_url}?iframe=#{broker_iframe.token}"
 
-.boat-thumb-container.col-md-4.col-sm-6.col-xs-12
-  .boat-thumb.thumbnail.boat-view(class="#{('multiselectable' if local_assigns[:multiselectable])}"
+.boat-thumb-container.col-md-4.col-sm-6.col-xs-12(style="#{'display: none;' if lead_thumb && lead&.hidden}")
+  .boat-thumb.boat-view(class="#{('multiselectable' if local_assigns[:multiselectable])}"
                                   data-boat-ref="#{boat.slug}"
                                   data-length="#{boat.length_m.to_f}"
-                                  data-price="#{boat.poa? ? nil : Currency.convert(boat.price, boat.currency, Currency.default)}")
+                                  data-price="#{boat.price_gbp}")
     - if local_assigns[:multiselectable]
       .tick(data-boat-id="#{boat.id}" data-boat-message-required="#{'required' if boat_message_required}")
         span.glyphicon.glyphicon-ok-circle
-    .boat-img-thumb(class="#{boat.offer_status.try(:dasherize)}")
-      = link_to boat_url, ({target: '_blank'} if broker_iframe) do
-        - if boat.primary_image
-          = image_tag boat.primary_image.file.url(:thumb), alt: boat_title(boat)
+    - primary_image = boat.primary_image
+    a.boat-thumb-image(class="#{boat.offer_status&.dasherize} #{'awaiting-image' unless primary_image}"
+                       href="#{boat_url}" target="#{'_blank' if broker_iframe}")
+      = image_tag primary_image.file.url(:thumb), alt: boat_title(boat) if primary_image
+    .boat-thumb-info
+      .boat-thumb-specs
+        - if favourite_thumb
+          .boat-thumb-corner-links
+            = link_to '&times;'.html_safe, '#', class: 'remove-fav', 'data-boat-id' => boat.id
+        - elsif lead_thumb
+          .boat-thumb-corner-links
+            .clearfix
+              - logo_url = boat.user.broker_info.logo? ? boat.user.broker_info.logo_url(:thumb) : boat.user.avatar_url(:thumb)
+              - if logo_url
+                .broker-logo.pull-left
+                  = image_tag logo_url, alt: boat.user.name, class: 'img-responsive'
+              .pull-right
+                = link_to 'Hide', member_lead_path(lead), method: :delete, remote: true, class: 'hide-lead btn-flat btn-white'
+                .broker-detail
+                  = boat.user.full_name
+                  - if (phone_number = (boat.user.phone || boat.user.mobile)).present?
+                    | <br>#{phone_number}
+                  | <br>#{boat.user.email}
+            div Request sent: #{lead.created_at.strftime('%d %b %Y')}
+        h4.text-uppercase= boat.manufacturer
+        h5= boat.model
+        - if !favourite_thumb && !lead_thumb
+          .boat-thumb-spec.boat-price.pull-right
+            span(data-attr-name="price")= boat_price(boat)
+            - if boat.tax_paid?
+              span.tax-status.small Tax paid
+        .boat-thumb-spec.boat-length
+          span
+            ' Length:
+          span(data-attr-name="loa")= boat_length(boat)
+        .boat-thumb-spec.boat-year
+          span Year: #{boat.year_built}
+        .boat-thumb-spec.boat-location
+          span Location: #{boat.country.to_s}
+      .boat-thumb-links
+        - if favourite_thumb
+          div
+            span(data-attr-name="price")= boat_price(boat)
+            - if boat.tax_paid?
+              span.tax-status.small Tax paid
+          .boat-thumb-main-links
+            - if boat.offer_available?
+              = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
+        - elsif lead_thumb
+          div
+            span(data-attr-name='price')= boat_price(boat)
+            - if boat.tax_paid?
+              span.tax-status.small Tax paid
+          .boat-thumb-main-links
+            = link_to 'View Full Specs<i></i>'.html_safe, makemodel_boat_pdf_path(boat), class: 'btn-flat btn-black pdf-link', target: '_blank'
+            = link_to 'Search Similar', search_path(boat.similar_options(current_currency, current_length_unit)), class: 'btn-flat btn-black search-similar'
+            = link_to 'Enquire Again', '#', class: 'btn-flat btn-black request-details'
         - else
-          .no-image
-    .caption(data-url="#{boat_url}")
-      h4.text-uppercase= boat.manufacturer
-      h5= boat.model
-      .boat-detail-item.boat-price.pull-right.text-right
-        span(data-attr-name="price")= boat_price(boat)
-        span.tax-status.small= 'Tax paid' if boat.tax_paid?
-      .boat-detail-item.boat-length
-        span
-          ' Length:
-        span(data-attr-name="loa")= boat_length(boat)
-      .boat-detail-item.boat-year
-        span Year: #{boat.year_built}
-      .boat-location
-        span Location: #{boat.country.to_s}
-      .boat-links.boat-links-bottom
-        - if show_social_actions
-          .action-links
-            = favourite_link_to boat
-            = render 'shared/social_share', boat: boat
-        - if broker_iframe
-          = link_to 'View Boat Summary', boat_url, class: 'btn-flat pull-right btn-black view-summary', target: '_blank'
-        - else
-          = link_to 'View Boat Summary', boat_url, class: 'btn-flat pull-right btn-black view-summary'
+          - if show_social_actions
+            .boat-thumb-social-links
+              = favourite_link_to boat
+              = render 'shared/social_share', boat: boat
+
+          .boat-thumb-main-links
+            - opts = {class: 'btn-flat btn-black view-summary'}
+            - opts.merge!(target: '_blank') if broker_iframe
+            = link_to 'View Boat Summary'.html_safe, boat_url, opts
       = yield if block_given?
-      .clearfix

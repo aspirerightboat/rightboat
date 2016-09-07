@@ -83,7 +83,7 @@ $ ->
 
     loadMultiSelected()
 
-    $('.boat-thumb.thumbnail.multiselectable .tick').hover (e) ->
+    $('.boat-thumb.multiselectable .tick').hover (e) ->
       if $('.multiselectable.selected').length == 0 # in selected mode
         $('#multiselected_explanation').animate
           bottom: '0px'
@@ -92,7 +92,7 @@ $ ->
         bottom: '-50px'
 
 
-    $('.boat-thumb.thumbnail.multiselectable .tick').on 'click', (e) ->
+    $('.boat-thumb.multiselectable .tick').on 'click', (e) ->
       e.stopPropagation()
       isSold = $(@).siblings('.sold').length > 0
       if isSold
@@ -100,12 +100,12 @@ $ ->
         return false
       if $(@).data('boat-message-required')
         $('#leads_message').attr('data-validetta', 'required')
-      parent = $(@).parents('.boat-thumb.thumbnail.multiselectable')
+      parent = $(@).parents('.boat-thumb.multiselectable')
       parent.toggleClass('selected')
       sendSelectedBoatsToCookies parent, $(@).data('boat-id')
       toggleBottomBar()
 
-    $('.boat-thumb.thumbnail.multiselectable').on 'click', (e) ->
+    $('.boat-thumb.multiselectable').on 'click', (e) ->
       return if $(e.target).hasClass('view-summary') # obey view summary button in anyt case
 
       if $('.multiselectable.selected').length > 0 # in selected mode

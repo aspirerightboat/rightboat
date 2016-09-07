@@ -52,6 +52,7 @@ class User < ActiveRecord::Base
   has_one :facebook_user_info, dependent: :destroy
   has_one :deal, dependent: :destroy
   has_many :special_requests, dependent: :destroy
+  has_one :comment_request, -> { comment }, class_name: 'SpecialRequest'
 
   mount_uploader :avatar, AvatarUploader
 
@@ -129,7 +130,7 @@ class User < ActiveRecord::Base
   end
 
   def comment_requested?
-    special_requests.comment.any?
+    comment_request.present?
   end
 
   def loa_requested?

@@ -16,12 +16,12 @@ class Rightboat::SavedSearchNotifier
       searches = saved_searches.map do |ss|
         search_query = ss.to_search_params.merge!(order: 'created_at_desc')
         found_boats = Rightboat::BoatSearch.new.do_search(search_query, includes: [], per_page: 5).results
-        if found_boats.any? && found_boats.first.id != ss.first_found_boat_id
+        if found_boats.any? && found_boats.first.id > (ss.first_found_boat_id || 0)
           boat_ids = found_boats.map(&:id)
           boat_ids.select! { |id| id > ss.first_found_boat_id } if ss.first_found_boat_id
           ss.first_found_boat_id = found_boats.first.id
           ss.save!
-          [ss.id, boat_ids]
+          [ss.id, boat_ids] if boat_ids.any?
         end
       end
       searches.compact!

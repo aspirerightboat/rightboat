@@ -4,23 +4,18 @@
   = link_to 'Un-hide all', unhide_member_leads_path, method: :post, remote: true, class: 'unhide-leads btn-flat pull-right btn-white'
   h1= @page_title
   hr
-  - if @leads.blank?
+  - if @leads.none?
     .alert.alert-warning
       | You have no enquiries yet.
   - else
     p Here are the listings of every enquiry you have made for full boat specifications along with broker contact information.
-    .row.my-enquiries-list
+    .row
       - @leads.each do |lead|
         - if (boat = lead.boat)
-          = render layout: 'member/shared/boat', locals: {boat: boat, lead: lead} do
-            .boat-links.boat-links-bottom
-              .boat-price
-                span(data-attr-name='price')= boat_price(boat)
-                span.tax-status.small= boat.tax_paid? ? 'Tax paid' : ''
-              .text-nowrap.pull-right
-                ' #{link_to 'View Full Specs<i></i>'.html_safe, makemodel_boat_pdf_path(boat), class: 'btn-flat btn-black pdf-link', target: '_blank'}
-                ' #{link_to 'Search Similar', search_path(boat.similar_options(current_currency, current_length_unit)), class: 'btn-flat btn-black search-similar'}
-                | #{link_to 'Enquire Again', '#', class: 'btn-flat btn-black request-details'}
+          = render partial: 'boats/boat', object: boat, locals: {lead_thumb: true, lead: lead}
+    .row.text-right
+      .col-xs-12
+        = paginate @leads
   .top-tip
     | *Top Tip: Set your alerts in #{link_to 'My Notifications', member_user_notifications_path} and we'll let you know if anything changes with these boat listings.
 

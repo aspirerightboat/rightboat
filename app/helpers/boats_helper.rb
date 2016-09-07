@@ -68,7 +68,7 @@ module BoatsHelper
     end
     ret[0] << ['Keel', spec_value_by_name['keel'] || spec_value_by_name['keel_type']]
     ret[0] << ['Hull Material', spec_value_by_name['hull_material']]
-    ret[0] << ['Boat Type', boat.boat_type.name_stripped&.titleize]
+    ret[0] << ['Boat Type', boat.boat_type&.name_stripped&.titleize]
     ret[0] << ['RB Ref', boat.ref_no]
 
     ret[1] = []

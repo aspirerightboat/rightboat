@@ -13,13 +13,6 @@ class Specification < ActiveRecord::Base
     display_name
   end
 
-  def self.visible_ordered_boat_specs(boat)
-    joins('LEFT JOIN boat_specifications ON specifications.id = boat_specifications.specification_id')
-        .where('specifications.visible = ?', true).order('specifications.position')
-        .where('boat_specifications.boat_id = ?', boat.id)
-        .pluck('specifications.display_name, boat_specifications.value')
-  end
-
   def self.rename(from, to)
     if (from_spec = Specification.where(name: from).first)
       if (to_spec = Specification.where(name: to).first)

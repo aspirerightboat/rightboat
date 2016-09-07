@@ -46,7 +46,7 @@ module BoatsHelper
     link_to 'Favourite', "#favourite-#{boat.id}", id: "favourite-#{boat.id}", class: fav_class, title: fav_title, data: {'boat-id' => boat.id, toggle: 'tooltip', placement: 'top'}
   end
 
-  def boat_specs(boat, full_spec = false)
+  def boat_specs(boat)
     spec_names = %w(beam_m draft_m draft_max draft_min drive_up engine_count berths_count cabins_count hull_material engine keel keel_type)
     spec_value_by_name = boat.boat_specifications.not_deleted.custom_specs_hash(spec_names)
 
@@ -88,16 +88,6 @@ module BoatsHelper
                                                                             models: boat.model.id,
                                                                             country: boat.country.slug))]
     end
-
-    # rest = if full_spec
-    #          boat.boat_specifications.visible_ordered_specs
-    #        else
-    #          Specification.visible_ordered_boat_specs(boat)
-    #        end
-
-    # rest.each do |pair|
-    #   ret << pair if ret.none? { |k, v| k == pair[0] }
-    # end
 
     ret.each { |col| col.select! { |pair| !pair[1].blank? } }
   end

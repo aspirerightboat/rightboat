@@ -25,6 +25,7 @@ class ErrorsMailer < ApplicationMailer
       @url = request.url
       @session = request.session.keys.map { |k| [k, request.session[k]] }
       @params = request.params.select { |k| k != 'controller' && k != 'action' }
+                    .map { |k, v| k =~ /\A(?:password|password_confirmation|old_password)\z/ ? '[FILTERED]' : v }
       @env = request.env.slice(*ActionDispatch::Request::ENV_METHODS)
     end
 

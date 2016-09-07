@@ -4,7 +4,7 @@ module HomeHelper
     country = Country.find_by(iso: session[:country])
 
     @featured_boats = Boat.featured.active.country_or_all(country).order('RAND()').limit(12)
-                          .includes(:manufacturer, :currency, :primary_image, :model, :vat_rate, :user, :country).to_a
+                          .includes(:manufacturer, :currency, :primary_image, :model, :vat_rate, :country, user: [:comment_request]).to_a
 
     length = @featured_boats.length
 
@@ -12,7 +12,7 @@ module HomeHelper
       limit = 6 - length
 
       other_boats = Boat.featured.active.limit(limit).order('RAND()')
-                        .includes(:manufacturer, :currency, :primary_image, :model, :vat_rate, :user, :country)
+                        .includes(:manufacturer, :currency, :primary_image, :model, :vat_rate, :country, user: [:comment_request])
       if session[:country] == 'US'
         other_boats = other_boats.where.not(country: country)
       else
@@ -24,7 +24,7 @@ module HomeHelper
   end
 
   def fetch_newest_boats
-    @newest_boats = Boat.active.order('id DESC').limit(21).includes(:currency, :manufacturer, :model, :country)
+    @newest_boats = Boat.active.order('id DESC').limit(15).includes(:currency, :manufacturer, :model, :country)
   end
 
 end

@@ -1,19 +1,22 @@
 module Member
   class FavouritesController < BaseController
     def index
-      @favourites = current_user.favourites.includes(boat: [:currency, :primary_image, :manufacturer, :model, :country, :vat_rate]).order(created_at: :desc)
+      @favourite_boats = Boat.active
+                             .joins(:favourites).where('favourites.user_id = ?', current_user.id).order('favourites.id DESC')
+                             .includes(:currency, :primary_image, :manufacturer, :model, :country, :vat_rate, user: [:comment_request])
+                             .page(params[:page]).per(15)
     end
 
     def create
       boat = Boat.find(params[:boat_id])
 
-      favorite = boat.favourites.where(user: current_user)
+      favorite_rel = boat.favourites.where(user: current_user)
 
       if boat.favourited_by?(current_user)
-        favorite.delete_all
+        favorite_rel.delete_all
         active = false
       else
-        favorite.create!
+        favorite_rel.create!
         active = true
       end
 

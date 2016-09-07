@@ -4,7 +4,7 @@ module BoatsHelper
   end
 
   def boat_length(boat, unit = nil)
-    return '' if !boat.length_m || boat.length_m <= 0
+    return nil if !boat.length_m || boat.length_m <= 0
     unit ||= try(:current_length_unit) || 'm'
     length = unit == 'ft' ? boat.length_ft.round : boat.length_m.round
     "#{length} #{unit}"

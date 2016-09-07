@@ -64,11 +64,20 @@ class HomeController < ApplicationController
 
   def load_recent_boats
     if current_user
-      fill_recent_views_for_new_user
-      @recent_boats = Boat.recently_viewed(current_user).limit(3)
+      boat_ids = current_user.user_activities.where(kind: 'boat_view')
+                     .order('id DESC').group(:boat_id).limit(3).pluck(:boat_id)
+      if boat_ids.empty? && cookies[:recently_viewed_boat_ids]
+        boat_ids = Boat.where(id: cookies.delete(:recently_viewed_boat_ids).split(',')).limit(3).pluck(:id)
+        boat_ids.each { |boat_id| UserActivity.create_boat_visit(boat_id: boat_id, user: current_user) }
+      end
+      if boat_ids.any?
+        @recent_boats = Boat.active.where(id: boat_ids)
+                            .includes(:manufacturer, :model, :country, :currency, :primary_image).to_a
+      end
     elsif cookies[:recently_viewed_boat_ids]
       boat_ids = cookies[:recently_viewed_boat_ids].split(',')
-      @recent_boats = Boat.active.where(id: boat_ids).includes(:currency, :manufacturer, :model, :country, :primary_image)
+      @recent_boats = Boat.active.where(id: boat_ids)
+                          .includes(:currency, :manufacturer, :model, :country, :primary_image).to_a
     end
   end
 
@@ -87,15 +96,6 @@ class HomeController < ApplicationController
 
   def set_visited
     cookies[:visited] = 1 if @site_visited
-  end
-
-  def fill_recent_views_for_new_user
-    if current_user.user_activities.empty?
-      boat_ids = cookies[:recently_viewed_boat_ids]&.split(',') || []
-      boat_ids.each do |boat_id|
-        UserActivity.create_boat_visit(boat_id: boat_id, user: current_user)
-      end
-    end
   end
 
 end

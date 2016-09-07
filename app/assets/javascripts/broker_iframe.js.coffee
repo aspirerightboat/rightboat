@@ -22,7 +22,6 @@
 #  require photoswipe.min
 #  require photoswipe-ui-default.min
 #  require validetta
-#  require cocoon
 #  require_tree ./common
 #= require common/utils
 #= require application/selects

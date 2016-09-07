@@ -8,10 +8,6 @@ class StaffMailerPreview < ActionMailer::Preview
     StaffMailer.new_private_user(User.last.id)
   end
 
-  def new_sell_request
-    StaffMailer.new_sell_request(Boat.last.id, Boat::SELL_REQUEST_TYPES.sample)
-  end
-
   def new_berth_enquiry
     StaffMailer.new_berth_enquiry(BerthEnquiry.last.id)
   end

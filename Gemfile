@@ -66,7 +66,6 @@ gem 'bson_ext'
 
 gem 'premailer-rails'
 #gem 'remotipart' # to upload file via ajax
-gem 'cocoon'
 
 gem 'redis-rails'
 

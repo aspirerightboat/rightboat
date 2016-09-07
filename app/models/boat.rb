@@ -1,12 +1,9 @@
 class Boat < ActiveRecord::Base
   enum status: [:active, :inactive]
-  SELL_REQUEST_TYPES = ['Valuation Request', 'Sell my own Boat', 'Pre-Sale Survey Enquiry']
   OFFER_STATUSES = %w(available under_offer sold)
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)
   SPEED_UNITS = %w(knots mph rpm)
-
-  attr_accessor :tax_paid, :sell_request_type, :accept_toc, :agree_privacy_policy, :custom_model
 
   searchable do
     text :ref_no,               boost: 5
@@ -53,7 +50,7 @@ class Boat < ActiveRecord::Base
     time :created_at
   end
 
-  before_validation :change_status, :assign_custom_model, :ensure_offer_status
+  before_validation :change_status, :ensure_offer_status
   before_destroy :remove_activities, :decrease_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
@@ -95,7 +92,6 @@ class Boat < ActiveRecord::Base
   validate :valid_manufacturer_model
   validate :valid_price
   validate :valid_featured
-  validate :valid_terms
 
   include BoatOverridableFields
 
@@ -265,16 +261,6 @@ class Boat < ActiveRecord::Base
     activities.destroy_all
   end
 
-  def valid_terms
-    if accept_toc && accept_toc != '1'
-      errors.add :base, 'You should accept Rightboat terms and conditions.'
-    end
-
-    if agree_privacy_policy && agree_privacy_policy != '1'
-      errors.add :base, 'You should agree Rightboat private advert pricing policy.'
-    end
-  end
-
   def update_leads_price
     if poa_changed? || price_changed? || length_m_changed? || length_f_changed? || currency_id_changed?
       leads.not_deleted.not_invoiced.includes(boat: {user: :deal}).each do |lead|
@@ -327,13 +313,6 @@ class Boat < ActiveRecord::Base
 
   def assign_slug
     update_column(:slug, ref_no.downcase)
-  end
-
-  def assign_custom_model
-    if custom_model.present? && manufacturer.name =~ /\Acustom\z/i
-      new_model = manufacturer.models.find_or_create_by(name: custom_model)
-      self.model_id = new_model.id
-    end
   end
 
   def destroy_slave_images

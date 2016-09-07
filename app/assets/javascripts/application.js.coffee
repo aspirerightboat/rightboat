@@ -36,7 +36,6 @@
 #= require photoswipe.min
 #= require photoswipe-ui-default.min
 #= require validetta
-#= require cocoon
 #= require plugins/jquery-payment
 #= require_tree ./common
 #= require_tree ./application

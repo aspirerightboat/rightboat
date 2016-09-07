@@ -14,13 +14,6 @@ class StaffMailer < ApplicationMailer
     mail(subject: 'New private user - Rightboat')
   end
 
-  def new_sell_request(boat_id, request_type)
-    @boat = Boat.find(boat_id)
-    @user = @boat.user
-    @request_type = request_type
-    mail(subject: 'New sell my boat request - Rightboat')
-  end
-
   def new_berth_enquiry(berth_enquiry_id)
     @berth_enquiry = BerthEnquiry.find(berth_enquiry_id)
     mail(subject: 'New berth enquiry - Rightboat')

@@ -24,7 +24,6 @@ FactoryGirl.define do
     year_built 2000
     price 100_000
     length_m 10
-    secure_payment false
     offer_status "available"
     status :active
   end

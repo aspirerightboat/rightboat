@@ -5,7 +5,25 @@ ActiveAdmin.register SavedSearch do
   permit_params :user_id, :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
                 :length_unit, :manufacturer, :model, :currency, :ref_no, :alert, :q
 
-  filter :user, collection: -> { User.not_companies.order(:first_name, :last_name) }
+  filter :user_first_name_or_user_last_name_or_user_email_or_user_id_cont, as: :string, label: 'User Forename | Surname | Email | ID'
+  filter :q
+  filter :year_min
+  filter :year_max
+  filter :price_min
+  filter :price_max
+  filter :currency, collection: -> { Currency.all }
+  filter :length_min
+  filter :length_max
+  filter :length_unit, as: :select, collection: -> { ApplicationController::LENGTH_UNITS }
+  filter :ref_no
+  filter :boat_type, as: :select, collection: -> { BoatType.all }
+  filter :countries_cont, label: 'Country ID Contains'
+  filter :manufacturers_cont, label: 'Manufacturer ID Contains'
+  filter :models_cont, label: 'Model ID Contains'
+  filter :tax_status
+  filter :new_used
+  filter :alert
+  filter :created_at
 
   controller do
     def scoped_collection

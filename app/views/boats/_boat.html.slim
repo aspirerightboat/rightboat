@@ -10,7 +10,7 @@
   .boat-thumb.boat-view(data-boat-ref=boat.slug
                         data-length=boat.length_ft
                         data-price=boat.price_gbp
-                        data-boat-message-required=('required' if local_assigns[:dynamic_lead_popup] && boat.user.comment_requested?))
+                        data-boat-message-required=((boat.user.comment_requested? ? 'required' : '') if local_assigns[:dynamic_lead_popup]))
     - primary_image = boat.primary_image
     a.boat-thumb-image(class="#{boat.offer_status&.dasherize} #{'awaiting-image' unless primary_image}"
                        href="#{boat_url}" target="#{'_blank' if broker_iframe}")

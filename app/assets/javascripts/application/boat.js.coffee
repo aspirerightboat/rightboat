@@ -5,6 +5,9 @@ window.initBoatView = (el) ->
     url = '/boats/' + boat_id + '/request-details'
     $('.lead-form').attr('action', url).find('.alert').remove()
     $('#lead_popup').displayPopup()
+    message_required = $(el).data('boat-message-required')
+    if message_required != undefined
+      $('#lead_message').attr('data-validetta', message_required)
     false
 
   $('.fav-link, .remove-fav', el).click (e) ->

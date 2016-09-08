@@ -16,7 +16,7 @@
               This request is free and you are under no obligation.
         - unless current_user
           p= link_to 'If you are already a member click here to sign in', 'javascript:void(0);', class: 'checkbox-toggler', data: {toggle_class: '.ha-toggle'}
-        = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'lead-form', remote: true, data: {format: :json, boat_slug: @boat.try(:slug)} do
+        = form_tag @boat ? request_details_path(@boat.slug) : '#', class: 'lead-form', remote: true, data: {format: :json, boat_slug: @boat&.slug} do
           - unless current_user
             = hidden_field_tag :has_account
             .row.ha-toggle
@@ -53,7 +53,9 @@
           .row
             .col-xs-12
               .form-group
-                = text_area_tag :message, '', placeholder: 'Please leave a personal message for the broker.', class: 'form-control', id: 'lead_message', 'data-validetta' => ('required' if @boat && @boat.user.comment_requested?)
+                = text_area_tag :message, '', class: 'form-control', id: 'lead_message', \
+                        placeholder: 'Please leave a personal message for the broker.', \
+                        'data-validetta' => ('required' if @boat && @boat.user.comment_requested?)
           .row
             .col-sm-6.col-sm-offset-6.col-xs-12
               button.btn-flat.btn-black(type="submit")

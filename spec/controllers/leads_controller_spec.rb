@@ -132,45 +132,4 @@ RSpec.describe LeadsController do
     end
   end
 
-  context "#create_batch" do
-    let!(:boats) { create_list(:boat, 3, country: country, model: model, manufacturer: manufacturer, user: broker) }
-
-    let!(:params_1) do
-      {
-          has_account: '',
-          title: '',
-          first_name: 'aa',
-          surname: 'sd',
-          email: 'sdsd@sdsd.c',
-          password: '',
-          phone: '',
-          message: 'asdasd',
-          boats_ids: boats.map(&:id),
-          lead: {
-              title: '',
-              first_name: 'first name',
-              surname: 'last name',
-              email: 'sdsd@sdsd.c',
-              phone: '',
-              message: 'asdasd',
-              country_code: ''
-          }
-      }
-    end
-    context "user not logged in" do
-      it 'expects to get boats ids to process and returns job status as result' do
-        allow(RBConfig).to receive(:[]).with(:lead_price_coef_bound).and_return(500_000)
-        allow(RBConfig).to receive(:[]).with(:lead_low_price_coef).and_return(0.0002)
-        allow(RBConfig).to receive(:[]).with(:lead_gap_minutes).and_return(3)
-
-        allow_any_instance_of(Lead).to receive(:update_lead_price!).and_return(22)
-        xhr :post, :create_batch, params_1
-
-        expect(response).to be_success
-        expect(response.body).to include_json(id: 1, status: 'processing', url: '')
-        expect(BatchUploadJob.count).to eq 1
-        expect(Lead.batched.count).to eq 3
-      end
-    end
-  end
 end

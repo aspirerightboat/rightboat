@@ -1,12 +1,6 @@
 window.initBoatView = (el) ->
   boat_id = $(el).data('boat-ref')
 
-  $('.boat-thumb-info', el).click (event) ->
-    if $('.multiselectable.selected').length == 0
-      $target = $(event.target)
-      if !$target.is('i') && !$target.is('a')
-        window.location = $(@).closest('.boat-thumb').find('.boat-thumb-image').attr('href')
-
   $('.request-details', el).click (e) ->
     url = '/boats/' + boat_id + '/request-details'
     $('.lead-form').attr('action', url).find('.alert').remove()

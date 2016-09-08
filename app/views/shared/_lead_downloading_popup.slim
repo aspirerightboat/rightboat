@@ -4,23 +4,18 @@
       .modal-body
         button.close(aria-label="Close" data-dismiss="modal" type="button")
           span(aria-hidden="true") &times;
-        p
-          | Your download will start shortly, a copy has also been emailed to you.
+        p Your download will start shortly, a copy has also been emailed to you.
         - other_boats = Rightboat::BoatSearch.new.do_search(boat.other_options, per_page: 3).results
         - if other_boats.any?
-          p
-            | There are other #{boat.manufacturer_model} for sale:
+          p There are other #{boat.manufacturer_model} for sale:
           .content
             .row(data-layout-mode="thumbnail")
-              - other_boats.each do |b|
-                = render partial: 'boats/boat', locals: {boat: b, multiselectable: false}
+              = render partial: 'boats/boat', collection: other_boats
         - similar_boats = Rightboat::BoatSearch.new.do_search(boat.similar_options, per_page: 3).results
         - if similar_boats.any?
-          p
-            | There are other similar boats which may be of interest to you:
+          p There are other similar boats which may be of interest to you:
           .content
             .row(data-layout-mode="thumbnail")
-              - similar_boats.each do |b|
-                = render partial: 'boats/boat', locals: {boat: b, multiselectable: false}
+              = render partial: 'boats/boat', collection: similar_boats
         p.nice-buttons
           button.nice-button(type="button" data-dismiss="modal" style="min-width: 150px") Ok

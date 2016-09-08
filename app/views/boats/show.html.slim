@@ -29,9 +29,7 @@
 
 = render 'shared/search_bar'
 
-.boat-view(data-boat-ref="#{@boat.slug}"
-           data-length="#{@boat.length_m.to_f}"
-           data-price="#{@boat.poa? ? nil : Currency.convert(@boat.price, @boat.currency, Currency.default)}")
+.boat-view(data-boat-ref=@boat.slug data-length=@boat.length_ft data-price=@boat.price_gbp)
   .container
     h1= @page_title
 

@@ -1,4 +1,3 @@
-- boat_message_required = !local_assigns[:boat_message_required].nil? ? local_assigns[:boat_message_required] : boat.user.comment_requested?
 - show_social_actions = !local_assigns[:show_social_actions].nil? ? local_assigns[:show_social_actions] : true
 - broker_iframe = local_assigns[:broker_iframe]
 - favourite_thumb = local_assigns[:favourite_thumb]
@@ -8,13 +7,10 @@
   - boat_url = "#{boat_url}?iframe=#{broker_iframe.token}"
 
 .boat-thumb-container.col-md-4.col-sm-6.col-xs-12(style="#{'display: none;' if lead_thumb && lead&.hidden}")
-  .boat-thumb.boat-view(class="#{('multiselectable' if local_assigns[:multiselectable])}"
-                                  data-boat-ref="#{boat.slug}"
-                                  data-length="#{boat.length_m.to_f}"
-                                  data-price="#{boat.price_gbp}")
-    - if local_assigns[:multiselectable]
-      .tick(data-boat-id="#{boat.id}" data-boat-message-required="#{'required' if boat_message_required}")
-        span.glyphicon.glyphicon-ok-circle
+  .boat-thumb.boat-view(data-boat-ref=boat.slug
+                        data-length=boat.length_ft
+                        data-price=boat.price_gbp
+                        data-boat-message-required=('required' if local_assigns[:dynamic_lead_popup] && boat.user.comment_requested?))
     - primary_image = boat.primary_image
     a.boat-thumb-image(class="#{boat.offer_status&.dasherize} #{'awaiting-image' unless primary_image}"
                        href="#{boat_url}" target="#{'_blank' if broker_iframe}")

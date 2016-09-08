@@ -46,9 +46,7 @@
           .col-sm-2.filter-buttons
             button.nice-button(type="submit") Search
   .row.boats-view(data-layout-mode="#{@iframe.items_layout}" style="margin-top: 2em")
-    - @boats.each do |b|
-      = render partial: 'boats/boat', locals: {boat: b, multiselectable: false, boat_message_required: false, \
-              show_social_actions: false, broker_iframe: @iframe}
+    = render partial: 'boats/boat', collection: @boats, locals: {show_social_actions: false, broker_iframe: @iframe}
   .row
     .col-xs-12.no-top-pad-pagination.text-center
       = paginate @boats

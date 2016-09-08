@@ -17,9 +17,6 @@
       color: white;
     }
   }
-  .tick {
-    display: none;
-  }
 }
 .boat-thumb-image {
   display: block;
@@ -225,44 +222,6 @@
     }
     @media(min-width: @screen-xs-min) and (max-width: @screen-xs-max) {
       .boat-thumb-container:nth-child(2n+1) { clear: both; }
-    }
-  }
-}
-
-.boat-thumb.multiselectable {
-  .tick{
-    display: none;
-    color: white;
-    font-size: 40px;
-    position: absolute;
-    top: 0;
-    left: 20px;
-    z-index: 1;
-    opacity: 0.5;
-    .glyphicon{
-      text-shadow: 0px 1px 0px #aaa;
-    }
-  }
-  &.selected, &:hover {
-    border: 1px solid @rb-color-primary;
-    background: @rb-color-primary;
-    .boat-thumb-info {
-      color: #FFF;
-      .fav-link, .share-link {
-        color: white;
-      }
-    }
-    .tick {
-      display: block;
-    }
-  }
-  &.selected {
-    .tick {
-      color: @rb-color-mint;
-      opacity: 1;
-      .glyphicon {
-        text-shadow: 0px -1px 0px #aaa;
-      }
     }
   }
 }

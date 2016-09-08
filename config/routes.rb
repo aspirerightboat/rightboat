@@ -99,9 +99,7 @@ Rails.application.routes.draw do
     collection { get :load_popup }
   end
 
-  resources :batch_upload_jobs, only: [:show]
   get 'search', to: 'search#results'
-  post 'boats/request-batched-details', to: 'leads#create_batch', as: :request_batched_details
   post 'boats/:id/request-details', to: 'leads#create', as: :request_details
   post 'signup-and-view-pdf', to: 'leads#signup_and_view_pdf', as: :signup_and_view_pdf
   get 'leads/:id/stream_pdf', to: 'leads#stream_enquired_pdf', as: :stream_enquired_pdf

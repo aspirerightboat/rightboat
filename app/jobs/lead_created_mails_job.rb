@@ -1,22 +1,12 @@
 class LeadCreatedMailsJob
   include Rightboat::DelayedJobNotifyOnError
 
-  def initialize(lead_ids)
-    @lead_ids = lead_ids
+  def initialize(lead_id)
+    @lead_id = lead_id
   end
 
   def perform
-    if @lead_ids.one?
-      perform_one
-    else
-      perform_many
-    end
-  end
-
-  private
-
-  def perform_one
-    lead = Lead.find(@lead_ids.first)
+    lead = Lead.find(@lead_id.first)
     Rightboat::BoatPdfGenerator.ensure_pdf(lead.boat)
 
     LeadsMailer.lead_created_notify_buyer(lead.id).deliver_now
@@ -24,13 +14,7 @@ class LeadCreatedMailsJob
     notify_broker(lead)
   end
 
-  def perform_many
-    leads = Lead.includes(boat: :user).find(@lead_ids)
-
-    leads.each do |lead|
-      notify_broker(lead)
-    end
-  end
+  private
 
   def notify_broker(lead)
     broker = lead.boat.user

@@ -8,12 +8,10 @@
   .col-xs-12
     - if @viewed_boats.any?
       #boats-list.row(data-layout-mode="list")
-        = render partial: 'boats/boat', collection: @viewed_boats, locals: {multiselectable: true}
+        = render partial: 'boats/boat', collection: @viewed_boats
         .clearfix
       .row.text-right
         .col-xs-12
           = paginate @viewed_boats
     - else
       p.lead.text-center No boats history.
-
-= render 'shared/lead_popup_batch'

@@ -12,7 +12,7 @@
     .row
       - @leads.each do |lead|
         - if (boat = lead.boat)
-          = render partial: 'boats/boat', object: boat, locals: {lead_thumb: true, lead: lead}
+          = render partial: 'boats/boat', object: boat, locals: {lead_thumb: true, lead: lead, dynamic_lead_popup: true}
     .row.text-right
       .col-xs-12
         = paginate @leads

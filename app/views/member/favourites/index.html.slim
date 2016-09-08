@@ -9,7 +9,7 @@
   - else
     p Seen a boat you like? Favourites allow you to save them so that you can find them quickly again.
     #favourites.row
-      = render partial: 'boats/boat', collection: @favourite_boats, locals: {favourite_thumb: true}
+      = render partial: 'boats/boat', collection: @favourite_boats, locals: {favourite_thumb: true, dynamic_lead_popup: true}
     .row.text-right
       .col-xs-12
         = paginate @favourite_boats

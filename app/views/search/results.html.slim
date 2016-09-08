@@ -12,9 +12,9 @@
 #main_content.container(data-prev-url="#{@prev_url}")
   h2.top-h2.text-center Search Results: <b>#{implicit_boats_count(@boats.total_count)}</b> boats for sale
 
-  - if @boats.length > 0
+  - if @boats.any?
     #boats-list.row(data-layout-mode="#{current_layout_mode}")
-      = render @boats, multiselectable: true
+      = render partial: 'boats/boat', collection: @boats
     - if @boats.total_pages > 1
       .row
         = link_to '#search-results', class: 'scroll-top pull-right' do
@@ -24,5 +24,3 @@
           i.icon.icon-down-open
   - else
     p.lead.text-center No boats were found matching your search criteria. Please try again.
-
-= render 'shared/lead_popup_batch'

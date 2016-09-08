@@ -13,8 +13,5 @@
 
   h1= @page_title
   .row(data-layout-mode="#{current_layout_mode}")
-    - @boats.each do |b|
-      = render partial: 'boats/boat', locals: {boat: b, multiselectable: true}
+    = render partial: 'boats/boat', collection: @boats
     = paginate @boats
-
-= render 'shared/lead_popup_batch'

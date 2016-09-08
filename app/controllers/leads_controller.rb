@@ -59,47 +59,6 @@ class LeadsController < ApplicationController
     end
   end
 
-  def create_batch
-    if !request.xhr?
-      redirect_to root_path, notice: 'Javascript must be enabled' # antispam - bots usually cannot pass simple rails xhr
-      return
-    end
-
-    if params[:has_account] == 'true' && !current_user && !resolve_user
-      render json: ['Invalid email or password'], root: false, status: 403
-      return
-    end
-
-    boats = fetch_boats
-    leads = boats.map do |boat|
-      lead = Lead.new(lead_params)
-      lead.status = 'batched'
-      lead.boat = boat
-      lead.boat_currency_rate = boat.safe_currency.rate
-      lead.user_country_iso = current_user&.user_setting&.country_iso || session[:country]
-      lead.mark_if_suspicious(current_user, params[:email], request.remote_ip)
-      lead.update_lead_price
-      lead
-    end
-
-    if leads.all?(&:valid?)
-      Lead.transaction do
-        leads.each(&:save!)
-      end
-
-      if current_user
-        follow_makemodel_of_boats(boats)
-        leads.each do |lead|
-          UserActivity.create_lead_record(lead_id: lead.id, user: current_user)
-        end
-      end
-
-      render json: batch_create_response_json(leads)
-    else
-      render json: leads.map { |lead| lead.errors.full_messages }.flatten.uniq, status: 422, root: false
-    end
-  end
-
   def show
     @boat = @lead.boat
     @lead_trails = @lead.lead_trails.includes(:user).order('id DESC')
@@ -161,17 +120,6 @@ class LeadsController < ApplicationController
 
   private
 
-  def resolve_user
-    user = User.find_by(email: params[:email])
-
-    if user && user.valid_password?(params[:password])
-      sign_in(user)
-      user.remember_me! if params[:remember_me]
-    end
-    user
-  end
-
-
   def lead_params
     @lead_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
       .merge(user_id: current_user.try(:id),
@@ -182,12 +130,6 @@ class LeadsController < ApplicationController
 
   def load_lead
     @lead = Lead.find(params[:id])
-  end
-
-  def fetch_boats
-    boats_ids = params[:boats_ids]&.split(',') || []
-    Boat.where(id: boats_ids).includes(:currency, :manufacturer, :model, :country, :vat_rate, :primary_image,
-                                       user: [:broker_info, address: :country], office: :address)
   end
 
   def require_broker
@@ -203,7 +145,7 @@ class LeadsController < ApplicationController
   end
 
   def can_view_as_broker(broker_user)
-    current_user.admin? || (broker_user && broker_user.company? && @lead.boat.user == broker_user)
+    current_user.admin? || (broker_user&.company? && @lead.boat.user == broker_user)
   end
 
   def can_view_as_buyer(user)
@@ -230,30 +172,6 @@ class LeadsController < ApplicationController
 
   def follow_makemodel(manufacturer_id, model_id)
     SavedSearch.create_and_run(current_user, manufacturers: [manufacturer_id.to_s], models: [model_id.to_s])
-  end
-
-  def batch_create_response_json(leads)
-    google_conversions = ''
-
-    job = BatchUploadJob.create
-    ZipPdfDetailsJob.new(job: job, boats: fetch_boats, leads: leads).perform
-    json = job.as_json
-    if !current_user
-      json[:signup_popup] = render_to_string(partial: 'shared/leads_signup_popup')
-    end
-    json[:title] = lead_params[:title]
-    json[:first_name] = lead_params[:first_name]
-    json[:last_name] = lead_params[:surname]
-    json[:email] = lead_params[:email]
-    json[:full_phone_number] = lead_params[:country_code].to_s + lead_params[:phone].to_s
-    json[:has_account] = User.find_by(email: params[:email]).present?
-    json[:lead_ids] = leads.map(&:id)
-    leads.each do |lead|
-      google_conversions << render_to_string(partial: 'shared/google_lead_conversion',
-                                             locals: {lead_price_gbp: lead.lead_price_gbp})
-    end
-    json[:google_conversion] = google_conversions
-    json
   end
 
 end

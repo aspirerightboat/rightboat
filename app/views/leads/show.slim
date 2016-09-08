@@ -48,7 +48,7 @@
         - if @lead.status == 'quality_check'
           li Current status: #{lead_status_label @lead.status}
     .col-sm-6.col-xs-12
-      = link_to makemodel_boat_path(@boat), style: 'display: block; margin-top: 22px;', class: ('awaiting-image' unless boat.primary_image) do
+      = link_to makemodel_boat_path(@boat), style: 'display: block; margin-top: 22px;', class: ('awaiting-image' unless @boat.primary_image) do
         - if @boat.primary_image
           = image_tag @boat.primary_image.file.url(:thumb)
   .row

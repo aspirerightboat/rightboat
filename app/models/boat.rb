@@ -324,6 +324,6 @@ class Boat < ActiveRecord::Base
   end
 
   def ensure_offer_status
-    self.offer_status == OFFER_STATUSES.first if offer_status.blank?
+    self.offer_status = OFFER_STATUSES.first if offer_status.blank?
   end
 end

@@ -11,8 +11,9 @@ p
       p However, there are other #{@boat.manufacturer_model} for sale.
       table
         - @other_boats.each_with_index do |boat, i|
-          tr
-            td= render 'boats/mail_thumb', boat: boat, visible: i < 5
+          - if i < 5
+            tr
+              td= render 'boats/mail_thumb', boat: boat
       - if @other_boats.count > 5
         .clear
           = link_to 'View More >', search_url(q: @boat.manufacturer_model, exclude_ref_no: @boat.ref_no), id: 'view-more'
@@ -21,8 +22,9 @@ p
       p There are other similar listings which may be of interest to you.
       table
         - @similar_boats.each_with_index do |boat, i|
-          tr
-            td= render 'boats/mail_thumb', boat: boat, visible: i < 5
+          - if i < 5
+            tr
+              td= render 'boats/mail_thumb', boat: boat
       - if @similar_boats.count > 5
         .clear
           = link_to 'View More >', search_url(@boat.similar_options(@boat.currency)), id: 'view-more'

@@ -49,9 +49,12 @@
 }
 
 #navbar {
-  position: fixed;
-  right: 10px;
+  position: absolute;
+  right: 15px;
   top: 0;
+  @media (max-width: @screen-xs-max) {
+    position: fixed;
+  }
 }
 #navbar-links {
   color: white;
@@ -98,7 +101,7 @@
     line-height: 22px;
   }
 }
-@media(max-width: (@screen-sm-min - 1)) {
+@media(max-width: @screen-xs-max) {
   #navbar.in, #navbar.collapsing {
     background-color: @rb-color-primary;
   }

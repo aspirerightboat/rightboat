@@ -3,7 +3,7 @@ class BoatType < ActiveRecord::Base
   include BoatOwner
 
   extend FriendlyId
-  friendly_id :name, use: [:slugged]
+  friendly_id :name, use: [:slugged, :finders]
 
   GENERAL_TYPES = %w(power sail other)
 

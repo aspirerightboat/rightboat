@@ -6,6 +6,8 @@ ActiveAdmin.register Misspelling do
     belongs_to :engine_manufacturer, polymorphic: true, optional: true
     belongs_to :engine_model, polymorphic: true, optional: true
     belongs_to :vat_rate, polymorphic: true, optional: true
+    belongs_to :boat_type, polymorphic: true, optional: true
+    belongs_to :boat_category, polymorphic: true, optional: true
 
     def scoped_collection
       rel = super
@@ -44,7 +46,7 @@ ActiveAdmin.register Misspelling do
   form do |f|
     f.inputs do
       f.input :alias_string, label: 'From'
-      f.input :source_type, as: :select, label: 'Field', collection: %w(Manufacturer Model Country Specification EngineManufacturer EngineModel VatRate), include_blank: false
+      f.input :source_type, as: :select, label: 'Field', collection: %w(Manufacturer Model Country Specification EngineManufacturer EngineModel VatRate BoatType BoatCategory), include_blank: false
       f.input :source_id, as: :hidden
       f.input :source_name, as: :autocomplete, url: search_admin_manufacturers_path, label: 'To', input_html: { id_element: '#misspelling_source_id' }
     end

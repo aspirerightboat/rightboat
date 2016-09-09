@@ -10,6 +10,8 @@ $ ->
     'EngineManufacturer': 'engine_manufacturers',
     'EngineModel': 'engine_models',
     'VatRate': 'vat_rates'
+    'BoatType': 'boat_types'
+    'BoatCategory': 'boat_categories'
 
   if ($buttons = $('.merge-record')).length
     path = window.location.pathname.replace(/\/$/, '')
@@ -62,7 +64,10 @@ $ ->
       else
         togglePopup($this)
 
-  $('#misspelling_source_type').change ->
-    val = $(this).val()
+  misspellingSourceNameAutocomplete = ->
+    val = $('#misspelling_source_type').val()
     source = '/admin/' + sourceMaps[val] + '/search'
     $('#misspelling_source_name').attr('data-autocomplete', source).railsAutocomplete()
+
+  $('#misspelling_source_type').on 'change', misspellingSourceNameAutocomplete
+  misspellingSourceNameAutocomplete()

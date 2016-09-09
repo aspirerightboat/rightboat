@@ -6,7 +6,7 @@ class LeadCreatedMailsJob
   end
 
   def perform
-    lead = Lead.find(@lead_id.first)
+    lead = Lead.find(@lead_id)
     Rightboat::BoatPdfGenerator.ensure_pdf(lead.boat)
 
     LeadsMailer.lead_created_notify_buyer(lead.id).deliver_now

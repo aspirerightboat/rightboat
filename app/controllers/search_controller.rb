@@ -42,6 +42,11 @@ class SearchController < ApplicationController
     session[:boats_count] = @boats.total_count
     @prev_url = request.referrer['boats-for-sale'] if request.referer
 
+    if @boats.any? && @boats.size <= 6
+      @similar_boats = Rightboat::BoatSearch.new.do_search(@boats.first.similar_options, per_page: 6).results
+      @similar_boats -= @boats
+    end
+
     respond_to do |format|
       format.html
       format.json {

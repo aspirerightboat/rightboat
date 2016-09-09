@@ -24,3 +24,8 @@
           i.icon.icon-down-open
   - else
     p.lead.text-center No boats were found matching your search criteria. Please try again.
+
+  - if @similar_boats.present?
+    h2.top-h2.text-center Similar boats
+    .row(data-layout-mode="#{current_layout_mode}")
+      = render partial: 'boats/boat', collection: @similar_boats

@@ -14,6 +14,19 @@ ActiveAdmin.register User do
   config.sort_order = 'first_name_asc_and_last_name_asc_and_created_at_desc'
   menu priority: 20
 
+  filter :first_name_or_last_name_or_email_or_username_or_company_name_cont, as: :string, label: 'Name | Email | Username'
+  filter :role, as: :select, collection: -> { User::ROLES }
+  filter :username
+  filter :email
+  filter :first_name
+  filter :last_name
+  filter :company_name
+  filter :address_country_id, as: :select, collection: Country.order(:name)
+  filter :current_sign_in_at
+  filter :sign_in_count
+  filter :created_at
+  filter :broker_info_payment_method, collection: -> { BrokerInfo::PAYMENT_METHODS }, as: :select, label: 'Brokers payment method'
+
   before_save do |user|
     user.updated_by_admin = true
   end
@@ -28,7 +41,7 @@ ActiveAdmin.register User do
     end
 
     def scoped_collection
-      end_of_association_chain.includes(:registered_from_affiliate)
+      end_of_association_chain.includes(:registered_from_affiliate, :imports, :deal, :broker_info)
     end
   end
 
@@ -43,7 +56,47 @@ ActiveAdmin.register User do
     column :current_sign_in_at
     column :sign_in_count
     column :saved_searches_count
-    column(:active_boats) { |user| user.boats_count }
+    column(:active_boats) do |user|
+      if user.boats_count > 0
+        user.boats_count
+      else
+        content_tag(:span, user.boats_count.to_s, class: 'status_tag red')
+      end
+    end
+    column('Import') do |user|
+      if user.company?
+        import = user.imports.first
+        if import
+          para(style: 'text-align: center') { link_to("##{import.id}", admin_import_path(import)) }
+          import.active? ? status_tag('Active', :green) : status_tag('Inactive', :red)
+        else
+          status_tag('No Import', :red) if user.boats_count <= 0 # if boats_count > 0 then user most likely has an expert boats
+        end
+      end
+    end
+    column('Free Trial', sortable: 'users.company_name') do |user|
+      if user.company?
+        if user.deal&.trial_started_at && user.deal&.trial_ended_at
+          from = user.deal.trial_started_at.to_date.to_s(:db)
+          to = user.deal.trial_ended_at.to_date.to_s(:db)
+          days_left = case
+                      when Time.current < user.deal.trial_started_at then 'Not Started'
+                      when Time.current > user.deal.trial_ended_at then 'Ended'
+                      else t('x_days_left', count: ((user.deal.trial_ended_at - Time.current) / 1.day).to_i)
+                      end
+          abbr(title: "#{from} — #{to}") { days_left }
+        end
+      end
+    end
+    column('Payment Method') do |user|
+      if user.company?
+        case user.broker_info&.payment_method
+        when 'none' then status_tag('None', :red)
+        when 'dd' then status_tag('Direct Debit', :green)
+        when 'card' then status_tag('Credit Card', :green)
+        end
+      end
+    end
     column('created_at') { |user| time_ago_with_hint(user.created_at) }
     column 'Referral' do |user|
       link_to user.registered_from_affiliate.name, admin_user_path(user.registered_from_affiliate) if user.registered_from_affiliate
@@ -54,19 +107,6 @@ ActiveAdmin.register User do
       end
     end
   end
-
-  filter :first_name_or_last_name_or_email_or_username_or_company_name_cont, as: :string, label: 'Name | Email | Username'
-  filter :role, as: :select, collection: -> { User::ROLES }
-  filter :username
-  filter :email
-  filter :first_name
-  filter :last_name
-  filter :company_name
-  filter :address_country_id, as: :select, collection: Country.order(:name)
-  filter :current_sign_in_at
-  filter :sign_in_count
-  filter :created_at
-  filter :broker_info_payment_method, collection: -> { BrokerInfo::PAYMENT_METHODS }, as: :select, label: 'Brokers payment method'
 
   form do |f|
     f.inputs 'User Details' do

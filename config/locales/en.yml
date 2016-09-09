@@ -32,6 +32,10 @@ en:
     one: "page"
     many: "pages"
     other: "pages"
+  x_days_left:
+    one: '%{count} day left'
+    many: '%{count} days left'
+    other: '%{count} days left'
   search_orders:
     score_desc: "Best Match"
     created_at_desc: "Newly listed"

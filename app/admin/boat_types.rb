@@ -7,6 +7,7 @@ ActiveAdmin.register BoatType do
   permit_params :name
 
   filter :name
+  filter :name_stripped, as: :select, colleciton: BoatType::GENERAL_TYPES
 
   index do
     column :name
@@ -25,4 +26,12 @@ ActiveAdmin.register BoatType do
     end
   end
 
+  form do |f|
+    f.inputs do
+      f.input :name
+      f.input :name_stripped, as: :select, collection: BoatType::GENERAL_TYPES, include_blank: false
+    end
+
+    f.actions
+  end
 end

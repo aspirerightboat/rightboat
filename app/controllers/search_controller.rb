@@ -19,11 +19,16 @@ class SearchController < ApplicationController
   end
 
   def results
-    if params[:q].present? && (boat = find_makemodel_boat(params[:q].downcase))
-      if boat.manufacturer.name.downcase == params[:q].strip.downcase
-        redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer) and return
-      else
-        redirect_to sale_manufacturer_path(manufacturer: boat.manufacturer, models: boat.model_id) and return
+    if params[:q].present? && params[:manufacturers].blank? && params[:models].blank?
+      stripped_q = params[:q].strip.downcase
+      if (boat = find_makemodel_boat(stripped_q))
+        opts = {manufacturer: boat.manufacturer}
+        opts.merge!(models: boat.model_id) if boat.manufacturer.name.downcase != stripped_q
+        redirect_to sale_manufacturer_path(opts) and return
+      elsif (m = match_makemodel_part(stripped_q)).present?
+        params.delete(:q)
+        params[:manufacturers] = [m[:manufacturer_id]]
+        params[:models] = m[:model_ids] if m[:model_ids].any?
       end
     end
 
@@ -109,8 +114,17 @@ class SearchController < ApplicationController
         with :manufacturer_model, q
       end
     end
-
     search.results.first
+  end
+
+  def match_makemodel_part(q)
+    maker_str, model_str = q.split(/\s+/, 2)
+    if (maker = Manufacturer.find_by(name: maker_str))
+      {
+          manufacturer_id: maker.id,
+          model_ids: model_str.present? ? maker.models.where('name LIKE ?', "#{model_str}%").pluck(:id) : []
+      }
+    end
   end
 
   def save_session_settings

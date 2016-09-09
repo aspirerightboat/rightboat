@@ -19,7 +19,7 @@ module Rightboat
       read_params(search_params)
 
       @with_facets = opts[:with_facets]
-      @includes = opts[:includes] || [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country, user: [:comment_request]]
+      @includes = opts[:includes] || [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country, :user]
       @per_page = opts[:per_page] || PER_PAGE
 
       @search = Boat.retryable_solr_search!(include: includes) do

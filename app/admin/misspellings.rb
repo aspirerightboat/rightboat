@@ -6,8 +6,6 @@ ActiveAdmin.register Misspelling do
     belongs_to :engine_manufacturer, polymorphic: true, optional: true
     belongs_to :engine_model, polymorphic: true, optional: true
     belongs_to :vat_rate, polymorphic: true, optional: true
-    belongs_to :boat_type, polymorphic: true, optional: true
-    belongs_to :boat_category, polymorphic: true, optional: true
 
     def scoped_collection
       rel = super

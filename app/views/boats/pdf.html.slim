@@ -65,7 +65,12 @@ h3.heading Description
 .boat-description
   = sanitize(@boat.extra.description)
 
+h3 Owners Comment
+= sanitize(@boat.extra.owners_comment)
+
+br
 .hr
+br
 
 table.spec-table
   - @boat.boat_specifications.includes(:specification).not_url.not_blank.each_slice(2).each do |spec1, spec2|

@@ -47,24 +47,20 @@ $ ->
 
   updateSlider = ($slider, field, value, minOrMax, bEdge=false) ->
     $input = $slider.parents('form').find('input[name="' + field + '_' + minOrMax + '"]')
-    if false # bEdge
-      html = if $slider.parents('#advanced-search-wrapper').length > 0 then minOrMax.capitalize() else ''
-      $input.val('')
-    else
-      $input.val(value)
-      html = if field == 'price'
-        if value < 1000000
-          $.numberWithCommas(value)
-        else if value < 5000000
-          value / 1000000 + 'M'
-        else
-          $input.val if minOrMax == 'min' then 5000000 else ''
-          '5M+'
+    $input.val(value)
+    html = if field == 'price'
+      if value < 1000000
+        $.numberWithCommas(value)
+      else if value < 5000000
+        value / 1000000 + 'M'
       else
-        if ($slider.data('unit') == 'm' && value == 300) || ($slider.data('unit') == 'ft' && value == 1000)
-          value + '+'
-        else
-          value
+        $input.val if minOrMax == 'min' then 5000000 else ''
+        '5M+'
+    else
+      if ($slider.data('unit') == 'm' && value == 300) || ($slider.data('unit') == 'ft' && value == 1000)
+        value + '+'
+      else
+        value
 
     $slider.parent().find('.' + minOrMax + '-label').html(html)
 
@@ -174,13 +170,13 @@ $ ->
     $('#search-hub-form, #top-navbar').slideUp
       duration: 200
       complete: ->
-        $('#advanced-search').slideDown
+        $('.advanced-search').slideDown
           duration: 200
 
-  $('#advanced-search .close').click (e) ->
+  $('.advanced-search .close').click (e) ->
     e.preventDefault()
 
-    $('#advanced-search').slideUp
+    $('.advanced-search').slideUp
       duration: 200
       complete: ->
         $('#search-hub-form, #top-navbar').slideDown

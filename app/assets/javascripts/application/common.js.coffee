@@ -20,7 +20,7 @@ $ ->
       $(this).find('.icon').removeClass('icon-left-open').addClass('icon-right-open')
 
   $('.reset-adv-search').click ->
-    $advSearch = $(@).closest('#advanced-search')
+    $advSearch = $(@).closest('.advanced-search')
     $advSearch.find('h2').text('Advanced Search')
     $advSearch.find('.result-info').remove()
     $form = $advSearch.find('form')

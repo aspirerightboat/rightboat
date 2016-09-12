@@ -120,7 +120,8 @@
             = render partial: 'shared/save_search_btn', locals: {nav_link: false, btn_flat: true}
           .col-xs-8
             button.btn-flat(type="submit") Search
-      .result-info.col-sm-12.col-md-12.text-center
+    .row
+      .result-info.col-xs-12.text-center
         - if @boats
           | Results: #{@boats.total_count >= 10000 ? '10,000 plus' : @boats.total_count} boats fit your criteria
 

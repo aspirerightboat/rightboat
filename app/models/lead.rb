@@ -1,6 +1,6 @@
 class Lead < ActiveRecord::Base
 
-  STATUSES = %w(pending quality_check approved rejected invoiced suspicious batched deleted)
+  STATUSES = %w(pending quality_check approved rejected invoiced suspicious deleted)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
   attr_accessor :suspicious_title
@@ -31,7 +31,6 @@ class Lead < ActiveRecord::Base
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: 'approved') }
-  scope :batched, -> { where(status: 'batched') }
   scope :rejected, -> { where(status: 'rejected') }
   scope :invoiced, -> { where(status: 'invoiced') }
   scope :not_invoiced, -> { where(invoice_id: nil) }
@@ -94,11 +93,9 @@ class Lead < ActiveRecord::Base
         mark_suspicious("Lead from blocked country #{remote_country} – review required")
       end
     end
-    if status != 'batched'
-      last_lead = Lead.where(user ? {user: user} : {remote_ip: remote_ip}).last
-      if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
-        mark_suspicious('Multiple leads received – review required')
-      end
+    last_lead = Lead.where(user ? {user: user} : {remote_ip: remote_ip}).last
+    if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
+      mark_suspicious('Multiple leads received – review required')
     end
     if Lead.where(status: %w(rejected suspicious), email: user&.email || email.presence).exists?
       mark_suspicious('Lead from user with rejected/suspicious leads – review required')

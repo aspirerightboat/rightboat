@@ -22,7 +22,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
 
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:user, :created_from_affiliate, boat: [:manufacturer, :model, :user, :currency])
+      end_of_association_chain.includes(:user, :created_from_affiliate, :lead_price_currency, boat: [:manufacturer, :model, :user, :currency])
     end
   end
 
@@ -121,7 +121,7 @@ ActiveAdmin.register Lead, as: 'Lead' do
 
   sidebar 'Leads Total Price', only: [:index] do
     b {
-      price = Lead.ransack(params[:q]).result.sum('lead_price / lead_price_currency_rate').round
+      price = leads.sum('lead_price / lead_price_currency_rate').round
       number_to_currency(price, unit: Currency.default.symbol, precision: 0)
     }
   end

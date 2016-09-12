@@ -80,3 +80,9 @@ $ ->
     $('#login_popup').modal('show')
 
   $('.default-slider').slick()
+
+  $('#search_order').change ->
+    params = $.queryParams()
+    params.order = @value
+    delete params.page
+    window.location.search = $.param(params)

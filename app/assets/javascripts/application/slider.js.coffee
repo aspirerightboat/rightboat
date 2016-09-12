@@ -45,24 +45,24 @@ $ ->
   convertLength = (value, fromUnit, toUnit) ->
     (Number(value) * ( lengthRates[toUnit] / lengthRates[fromUnit] )).toFixed(2)
 
-  updateSlider = ($slider, field, value, minOrMax, bEdge=false) ->
+  updateSlider = ($slider, field, value, minOrMax, bEdge) ->
     $input = $slider.parents('form').find('input[name="' + field + '_' + minOrMax + '"]')
-    $input.val(value)
-    html = if field == 'price'
+    $input.val(if bEdge then '' else value)
+
+    txt = if field == 'price'
       if value < 1000000
         $.numberWithCommas(value)
       else if value < 5000000
         value / 1000000 + 'M'
       else
-        $input.val if minOrMax == 'min' then 5000000 else ''
         '5M+'
     else
-      if ($slider.data('unit') == 'm' && value == 300) || ($slider.data('unit') == 'ft' && value == 1000)
+      if $slider.data('unit') && bEdge && minOrMax == 'max'
         value + '+'
       else
         value
 
-    $slider.parent().find('.' + minOrMax + '-label').html(html)
+    $slider.parent().find('.' + minOrMax + '-label').text(txt)
 
   findNearest = (values, value, toFloor) ->
     if toFloor
@@ -120,8 +120,8 @@ $ ->
       slide: ( event, ui ) ->
         value = ui.value
         handleIndex = $(ui.handle).data('uiSliderHandleIndex')
-        bEdge = (value == 0) || (value == len - 1)
         minOrMax = if handleIndex == 0 then 'min' else 'max'
+        bEdge = minOrMax == 'min' && (value == 0) || minOrMax == 'max' && (value == len - 1)
         $slider.data('value' + handleIndex, values[value])
         updateSlider($slider, field, values[value], minOrMax, bEdge)
 

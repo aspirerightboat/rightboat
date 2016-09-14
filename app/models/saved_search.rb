@@ -1,8 +1,7 @@
 class SavedSearch < ActiveRecord::Base
 
-  include ActionView::Helpers::NumberHelper
-
   serialize :countries, Array
+  serialize :states, Array
   serialize :models, Array
   serialize :manufacturers, Array
   serialize :tax_status, Hash
@@ -26,8 +25,19 @@ class SavedSearch < ActiveRecord::Base
     Country.where(id: countries).pluck(:name).join(', ') if countries.present?
   end
 
+  def states_str
+    if states.present?
+      states_map = Rightboat::USStates.states_map
+      states.map { |key| states_map[key] }.compact.join(', ')
+    end
+  end
+
   def to_search_params
-    attributes.except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at').symbolize_keys
+    params = attributes.except('id', 'user_id', 'first_found_boat_id', 'created_at', 'alert', 'updated_at').symbolize_keys
+    [:countries, :manufacturers, :models, :states].each do |attr|
+      params[attr] = send(attr).join('-')
+    end
+    params
   end
 
   def to_succinct_search_hash
@@ -37,39 +47,80 @@ class SavedSearch < ActiveRecord::Base
     result
   end
 
-  def self.create_and_run(user, params)
-    fixed_params = {
-        year_min: params[:year_min].presence,
-        year_max: params[:year_max].presence,
-        price_min: params[:price_min].presence,
-        price_max: params[:price_max].presence,
-        length_min: params[:length_min].presence,
-        length_max: params[:length_max].presence,
-        length_unit: params[:length_unit].presence,
-        currency: params[:currency].presence,
-        ref_no: params[:ref_no].to_s,
-        q: params[:q].to_s,
-        boat_type: params[:boat_type].presence,
-        order: params[:order].to_s,
-    }
-
-    query = user.saved_searches.where(fixed_params)
-
-    [:tax_status, :new_used, :manufacturers, :models, :countries].each do |p|
-      if params[p].blank?
-        query = query.where("#{p} IS NULL")
-      else
-        fixed_params[p] = params[p]
-        query = query.where("#{p} = ?", params[p].to_yaml)
-      end
+  def safe_assign_params(params)
+    [:countries, :manufacturers, :models].each do |attr|
+      self[attr] = (params[attr].to_s.split('-').select { |id| id =~ /\A\d+\z/ }.presence if params[attr].present?)
     end
+    self.states = (params[:states].to_s.split('-').select { |id| id =~ /\A[A-Z]{2}\z/ }.presence if params[:states].present?)
 
-    if !query.exists?
-      ss = user.saved_searches.new(fixed_params)
-      search_params = ss.to_search_params.merge!(order: 'created_at_desc')
-      ss.first_found_boat_id = Rightboat::BoatSearch.new.do_search(search_params, per_page: 1).hits.first&.primary_key
+    self.year_min = (params[:year_min].to_i.clamp(Rightboat::BoatSearch::YEARS_RANGE) if params[:year_min].present?)
+    self.year_max = (params[:year_max].to_i.clamp(Rightboat::BoatSearch::YEARS_RANGE) if params[:year_max].present?)
+    self.price_min = (params[:price_min].to_i.clamp(Rightboat::BoatSearch::PRICES_RANGE) if params[:price_min].present?)
+    self.price_max = (params[:price_max].to_i.clamp(Rightboat::BoatSearch::PRICES_RANGE) if params[:price_max].present?)
+    self.currency = (((Currency.cached_by_name(params[:currency])&.name if params[:currency].present?) || Currency.default.name) if price_min || price_max)
+    self.length_unit = (params[:length_unit].presence_in(Boat::LENGTH_UNITS) || 'm' if params[:length_min].present? || params[:length_max].present?)
+    length_range = length_unit == 'm' ? Rightboat::BoatSearch::M_LENGTHS_RANGE : Rightboat::BoatSearch::FT_LENGTHS_RANGE
+    self.length_min = (params[:length_min].to_i.clamp(length_range) if params[:length_min].present?)
+    self.length_max = (params[:length_max].to_i.clamp(length_range) if params[:length_max].present?)
+    self.ref_no = (params[:ref_no].strip if params[:ref_no].present? && params[:ref_no].strip =~ /\Arb\d+\z/i)
+    self.q = params[:q].presence
+    self.boat_type = params[:boat_type].presence_in(%w(power sail))
+    self.tax_status = (params[:tax_status].slice(:paid, :unpaid) if params[:tax_status].is_a?(Hash))
+    self.new_used = (params[:new_used].slice(:new, :used) if params[:new_used].is_a?(Hash))
+
+    search_params = to_search_params.merge!(order: 'created_at_desc')
+    self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(search_params, per_page: 1).hits.first&.primary_key
+
+    # some params are from boats-for-sale page
+    if params[:manufacturer].present? && (manufacturer = Manufacturer.find_by(name: params[:manufacturer]))
+      self.manufacturers = [manufacturer.id.to_s]
+    end
+    if params[:country].present? && (country = Country.find_by(slug: params[:country]))
+      self.countries = [country.id.to_s]
+    end
+  end
+
+  def self.safe_create(user, params)
+    ss = user.saved_searches.new
+    ss.safe_assign_params(params)
+
+    if !ss.same_exists?
       ss.save!
+      ss.ensure_ss_alerts_enabled
       ss
     end
   end
+
+  def same_exists?
+    query = user.saved_searches.where(
+        year_min: year_min,
+        year_max: year_max,
+        price_min: price_min,
+        price_max: price_max,
+        length_min: length_min,
+        length_max: length_max,
+        length_unit: length_unit,
+        currency: currency,
+        ref_no: ref_no,
+        q: q,
+        boat_type: boat_type,
+        order: order
+    )
+    [:tax_status, :new_used, :manufacturers, :models, :countries, :states].each do |attr|
+      if (value = send(attr).presence)
+        query = query.where("#{attr} = ?", value.to_yaml)
+      else
+        query = query.where("#{attr} IS NULL")
+      end
+    end
+
+    query.exists?
+  end
+
+  def ensure_ss_alerts_enabled
+    if !user.user_alert.saved_searches
+      user.user_alert.update(saved_searches: true)
+    end
+  end
+
 end

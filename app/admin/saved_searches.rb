@@ -14,7 +14,7 @@ ActiveAdmin.register SavedSearch do
   filter :currency, collection: -> { Currency.all }
   filter :length_min
   filter :length_max
-  filter :length_unit, as: :select, collection: -> { ApplicationController::LENGTH_UNITS }
+  filter :length_unit, as: :select, collection: -> { Boat::LENGTH_UNITS }
   filter :ref_no
   filter :boat_type, as: :select, collection: -> { BoatType.all }
   filter :countries_cont, label: 'Country ID Contains'

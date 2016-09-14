@@ -1,7 +1,7 @@
 class Numeric
 
-  def clamp(min, max)
-    self < min ? min : (self > max ? max : self)
+  def clamp(range)
+    self < range.min ? range.min : (self > range.max ? range.max : self)
   end
 
   def ft_to_m

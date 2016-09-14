@@ -12,8 +12,6 @@ nav#search_bar
         li= render partial: 'shared/save_search_btn', locals: {nav_link: true, btn_flat: false}
       - if @boat
         li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'nav-link'
-      - if content_for?(:navbar_links)
-        = content_for(:navbar_links)
     - if @boats
       ul.flat-list.search-bar-display-options
         li

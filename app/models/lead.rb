@@ -73,7 +73,7 @@ class Lead < ActiveRecord::Base
                               else
                                 deal.lead_max_price
                               end
-                        res.clamp(deal.lead_min_price, deal.lead_max_price).round(2)
+                        res.clamp(deal.lead_min_price..deal.lead_max_price).round(2)
                       elsif deal.deal_type == 'flat_lead'
                         deal.flat_lead_price
                       elsif deal.deal_type == 'flat_month'

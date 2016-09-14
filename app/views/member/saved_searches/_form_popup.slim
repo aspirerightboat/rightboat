@@ -4,133 +4,129 @@
       .modal-header
         button.close(aria-label="Close" data-dismiss="modal" type="button")
           span(aria-hidden="true") &times;
-
       .modal-body
-        .row
+        = form_for [:member, @saved_search], html: {class: 'row'} do |f|
           .col-xs-12
-            = form_for @saved_search, url: member_saved_search_path(@saved_search), method: :put, class: 'row' do |f|
+            .form-group.row
+              .col-md-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = f.label :boat_type, 'Boat Type'
+                  .col-xs-8
+                    = radio_button_tag 'saved_search[boat_type]', '', @saved_search.boat_type.blank?, id: 'saved_search_boat_type_all'
+                    = label_tag 'saved_search_boat_type_all', 'All'
+                    = f.radio_button :boat_type, 'power'
+                    = f.label :boat_type_power, 'Power'
+                    = f.radio_button :boat_type, 'sail'
+                    = f.label :boat_type_sail, 'Sail'
 
-              .form-group.row
-                .col-md-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = f.label :boat_type, 'Boat Type'
-                    .col-xs-8
-                      = radio_button_tag 'saved_search[boat_type]', '', @saved_search.boat_type.blank?, id: 'saved_search_boat_type_all'
-                      = f.label :boat_type_all, 'All'
-                      = f.radio_button :boat_type, 'power'
-                      = f.label :boat_type_power, 'Power'
-                      = f.radio_button :boat_type, 'sail'
-                      = f.label :boat_type_sail, 'Sail'
+            .form-group.row
+              .col-md-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = label_tag :manufacturers_picker, 'Manufacturers'
+                  .col-xs-8
+                    = manufacturers_picker_field('saved_search[manufacturers]', @saved_search.manufacturers, 'ss_manufacturers_picker')
+              .col-md-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = f.label :models_picker, 'Models'
+                  .col-xs-8
+                    = models_picker_field('saved_search[models]', @saved_search.models, 'ss_models_picker')
 
-              .form-group.row
-                .col-md-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = label_tag :manufacturers_picker, 'Manufacturers'
-                    .col-xs-8
-                      = manufacturers_picker_field('saved_search[manufacturers]', @saved_search.manufacturers, 'ss_manufacturers_picker')
-                .col-md-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = f.label :models_picker, 'Models'
-                    .col-xs-8
-                      = models_picker_field('saved_search[models]', @saved_search.models, 'ss_models_picker')
-
-              .form-group.row
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-5.col-sm-4
-                      = f.label :year, 'Year'
-                    .col-xs-7.col-sm-8
-                      .row
-                        .col-xs-6
-                          = f.label :year_min, 'from'
-                          = f.text_field :year_min, class: 'form-control'
-                        .col-xs-6
-                          = f.label :year_max, 'to'
-                          = f.text_field :year_max, class: 'form-control'
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-5.col-sm-4
-                      = f.label :price
-                      = currency_select 'saved_search[currency]', @saved_search.currency, class: 'select-azure select-currency'
-                    .col-xs-7.col-sm-8
-                      .row
-                        .col-xs-6
-                          = f.label :price_min, 'from'
-                          = f.text_field :price_min, class: 'form-control'
-                        .col-xs-6
-                          = f.label :price_max, 'to'
-                          = f.text_field :price_max, class: 'form-control'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-5.col-sm-4
+                    = f.label :year, 'Year'
+                  .col-xs-7.col-sm-8
+                    .row
+                      .col-xs-6
+                        = f.label :year_min, 'from'
+                        = f.text_field :year_min, class: 'form-control'
+                      .col-xs-6
+                        = f.label :year_max, 'to'
+                        = f.text_field :year_max, class: 'form-control'
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-5.col-sm-4
+                    = f.label :price
+                    = currency_select 'saved_search[currency]', @saved_search.currency, class: 'select-azure select-currency'
+                  .col-xs-7.col-sm-8
+                    .row
+                      .col-xs-6
+                        = f.label :price_min, 'from'
+                        = f.text_field :price_min, class: 'form-control'
+                      .col-xs-6
+                        = f.label :price_max, 'to'
+                        = f.text_field :price_max, class: 'form-control'
 
 
-              .form-group.row
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-5.col-sm-4
-                      = f.label :length_unit, 'Length'
-                      = f.select :length_unit, length_unit_options, {}, { class: 'select-azure select-general' }
-                    .col-xs-7.col-sm-8
-                      .row
-                        .col-xs-6
-                          = f.label :length_min, 'from'
-                          = f.text_field :length_min, class: 'form-control'
-                        .col-xs-6
-                          = f.label :length_max, 'to'
-                          = f.text_field :length_max, class: 'form-control'
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-12
-                      = f.label :country, 'Countries'
-                      - general_options = general_facets[:countries_data].map { |id, name, count| [count ? "#{name} (#{count})" : name, id] }
-                      - selected_ids = @saved_search.countries.to_json
-                      = f.select :countries, options_for_select(general_options), {}, {class: 'select-black saved-multiple-country-select', multiple: true, data: {selected_ids: selected_ids}}
-
-
-              .form-group.row
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = f.label :q, 'Keywords'
-                    .col-xs-8
-                      = f.text_field :q, class: 'form-control', placeholder: 'e.g. 4 berths'
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = f.label :tax_status, 'Tax Status'
-                    .col-xs-8
-                      = check_box_tag 'saved_search[tax_status][paid]', true, @saved_search.tax_status['paid'], class: 'inverse'
-                      = label_tag :saved_search_tax_status_paid, 'Paid', class: 'tax-paid' do
-                        | Paid
-                        i
-                      = check_box_tag 'saved_search[tax_status][unpaid]', true, @saved_search.tax_status['unpaid'], class: 'inverse'
-                      = label_tag :saved_search_tax_status_unpaid, 'Unpaid', class: 'tax-not-paid' do
-                        | Unpaid
-                        i
-
-
-              .form-group.row
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = f.label :ref_no, 'Ref. No.'
-                    .col-xs-8
-                      = f.text_field :ref_no, class: 'form-control', placeholder: 'e.g. RB48573'
-                .col-sm-6.col-xs-12
-                  .row
-                    .col-xs-4
-                      = f.label :new_used, 'New / Used'
-                    .col-xs-8
-                      = check_box_tag 'saved_search[new_used][new]', true, @saved_search.new_used['new'], class: 'inverse'
-                      = label_tag :saved_search_new_used_new, 'new' do
-                        | New
-                        i
-                      = check_box_tag 'saved_search[new_used][used]', true, @saved_search.new_used['used'], class: 'inverse'
-                      = label_tag :saved_search_new_used_used, 'used' do
-                        | Used
-                        i
-
-              .row
-                .col-xs-12
-                  = f.submit 'Apply Changes', class: 'btn btn-flat pull-right'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-5.col-sm-4
+                    = f.label :length_unit, 'Length'
+                    - length_unit = @saved_search.length_unit || current_length_unit
+                    = f.select :length_unit, options_for_select(Boat::LENGTH_UNITS, length_unit), \
+                            {}, { class: 'select-azure select-general' }
+                  .col-xs-7.col-sm-8
+                    .row
+                      .col-xs-6
+                        = f.label :length_min, 'from'
+                        = f.text_field :length_min, class: 'form-control'
+                      .col-xs-6
+                        = f.label :length_max, 'to'
+                        = f.text_field :length_max, class: 'form-control'
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-12
+                    = label_tag 'ss_countries_picker', 'Countries'
+                    - general_options = general_facets[:countries_data].map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
+                    = text_field_tag 'saved_search[countries]', @saved_search.countries.join('-'), id: 'ss_countries_picker', \
+                                        class: 'select-black multiple-country-select select-states-if-us', \
+                                        data: {options: general_options}, \
+                                        placeholder: 'eg. United Kingdom'
+                .form-group.row(style="#{('display: none' if @saved_search.states.blank?)}")
+                  .col-xs-12
+                    = label_tag 'ss_states_picker', 'States'
+                    = text_field_tag 'saved_search[states]', @saved_search.states.join('-'), \
+                            id: 'ss_states_picker', class: 'select-black country-states-select', \
+                            data: {options: Rightboat::USStates.states_map.map { |k, v| {value: k, text: v} }}, \
+                            placeholder: 'eg. Florida'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = f.label :q, 'Keywords'
+                  .col-xs-8
+                    = f.text_field :q, class: 'form-control', placeholder: 'e.g. 4 berths'
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = f.label :tax_status, 'Tax Status'
+                  .col-xs-8
+                    = check_box_tag 'saved_search[tax_status][paid]', true, @saved_search.tax_status['paid'], class: 'inverse'
+                    = label_tag :saved_search_tax_status_paid, 'Paid', class: 'tax-paid'
+                    = check_box_tag 'saved_search[tax_status][unpaid]', true, @saved_search.tax_status['unpaid'], class: 'inverse'
+                    = label_tag :saved_search_tax_status_unpaid, 'Unpaid', class: 'tax-not-paid'
+            .form-group.row
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = f.label :ref_no, 'Ref. No.'
+                  .col-xs-8
+                    = f.text_field :ref_no, class: 'form-control', placeholder: 'e.g. RB48573'
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-4
+                    = f.label :new_used, 'New / Used'
+                  .col-xs-8
+                    = check_box_tag 'saved_search[new_used][new]', true, @saved_search.new_used['new'], class: 'inverse'
+                    = label_tag :saved_search_new_used_new, 'new'
+                    = check_box_tag 'saved_search[new_used][used]', true, @saved_search.new_used['used'], class: 'inverse'
+                    = label_tag :saved_search_new_used_used, 'used'
+            .row
+              .col-xs-12
+                - submit_title = @saved_search.new_record? ? 'Create' : 'Apply Changes'
+                = f.submit submit_title, class: 'btn btn-flat pull-right'

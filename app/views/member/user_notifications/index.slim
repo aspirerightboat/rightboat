@@ -1,4 +1,6 @@
 - @page_title = 'My Notification Settings'
+- if session.delete(:ss_created_conversion)
+  - content_for :body_scripts, render('shared/google_saved_search_conversion')
 
 .row
   .col-md-12.col-xs-12
@@ -13,40 +15,40 @@
       = form_for [:member, @user_alert] do |f|
         .form-group.toggle-saved-searches-alerts
           = f.check_box :saved_searches
-          = f.label :saved_searches, "Email me if new listings match my saved searches (these alerts can also be managed individually in the 'Saved Searches' section.)".html_safe
-          br
-          .row
+          = f.label :saved_searches, 'Email me if new listings match my saved searches (these alerts can also be managed individually in the <b>Saved Searches section</b>).'.html_safe
+          .row#saved_searches_row(style="#{'display:none' if !@user_alert.saved_searches}")
             .col-md-12
               .panel.panel-default.blue-shaded-panel.padded
-                .panel-heading
-                  | Saved Searches
+                .panel-heading Saved Searches
                 .panel-body
-                  p
-                    .alert.alert-info
-                      |
-                        We record your saved searches. You can re-run them again,
-                        amend and set email alerts for each search. To set a new saved search, simply click 'Save Search and Set Alert'
-                        when browsing search results, or go to #{link_to 'Advanced Search', '#', class: 'toggle-adv-search'}.
+                  .alert.alert-info
+                    |
+                      We record your saved searches. You can re-run them again,
+                      amend and set email alerts for each search. To set a new saved search, simply click 'Save Search'
+                      when browsing search results, or go to #{link_to 'Advanced Search', '#advanced_search', class: 'toggle-adv-search'}.
 
                   - if @saved_searches.none?
-                    .alert.alert-warning
-                      | You havent saved searches yet
+                    .alert.alert-warning You have no saved searches yet
                   - else
                     p Click on the Alert button to toggle new listings alerts on/off
                     table.rb-table
                       tr
-                        th Search Filters
-                        th.text-center.th-caption Action
+                        th Search filters
+                        th.text-center Action
                       - @saved_searches.each do |ss|
                         tr(data-ss-id="#{ss.id}")
-                          td= saved_search_title(ss)
+                          td
+                            = saved_search_title(ss)
                           td.text-center
-                            ' #{link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'}
-                            ' #{link_to 'Edit', edit_member_saved_search_path(ss), class: 'label label-info', remote: true, format: :js}
-                            ' #{link_to (ss.alert ? 'Alert On' : 'No Alert'), '#', class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}"}
-                            | #{link_to 'x', member_saved_search_path(ss), class: 'label label-danger', method: :delete, remote: true, format: :js, data: {disable_with: 'Delete...'}}
-                            = hidden_field_tag("saved_searches[#{ss.id}][alert]", ss.alert, class: "saved-search-field #{dom_id(ss)}")
-
+                            ' #{link_to '<i class="glyphicon glyphicon-pencil"></i>'.html_safe, edit_member_saved_search_path(ss), remote: true, format: :js, data: {disable: true}}
+                            | #{link_to '<i class="glyphicon glyphicon-remove"></i>'.html_safe, member_saved_search_path(ss), method: :delete, remote: true, format: :js, data: {disable: true}}
+                            div(style="white-space:nowrap")
+                              ' #{link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'}
+                              = link_to (ss.alert ? 'Alert On' : 'No Alert'), toggle_alert_member_saved_search_path(ss), \
+                                      class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}", \
+                                      remote: true, data: {method: :post, disable: true}
+                  p.text-center
+                    = link_to 'Create Saved Search', new_member_saved_search_path, class: 'label label-primary', remote: true, format: :js
         .form-group
           = f.check_box :favorites
           = f.label :favorites, 'Email me if any boat in My Favourites change status'

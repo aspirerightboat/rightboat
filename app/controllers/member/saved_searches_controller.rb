@@ -1,23 +1,37 @@
 class Member::SavedSearchesController < Member::BaseController
+  def new
+    @saved_search = SavedSearch.new
+    render :edit
+  end
+
   def edit
     @saved_search = SavedSearch.find(params[:id])
     @current_length_unit = @saved_search.length_unit
   end
 
   def update
-    @saved_search = SavedSearch.find(params[:id])
-    permitted_params = permit_saved_search_params(params.require(:saved_search))
+    saved_search = SavedSearch.find(params[:id])
+    saved_search.safe_assign_params(params.require(:saved_search))
+    saved_search.save!
+    UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
 
-    if @saved_search.update(permitted_params)
-      UserActivity.create_search_record(hash: @saved_search.to_succinct_search_hash, user: current_user)
-      redirect_to member_user_notifications_path, notice: 'Your search was saved'
+    redirect_to member_user_notifications_path, notice: 'Your saved search has been updated'
+  end
+
+  def create
+    saved_search = SavedSearch.safe_create(current_user, params.require(:saved_search))
+
+    if saved_search
+      UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
+      session[:ss_created_conversion] = 1
+      redirect_to member_user_notifications_path, notice: 'Your search has been saved'
     else
       redirect_to member_user_notifications_path, alert: 'Something went wrong'
     end
   end
 
-  def create
-    saved_search = SavedSearch.create_and_run(current_user, permit_saved_search_params(params))
+  def create_from_search
+    saved_search = SavedSearch.safe_create(current_user, params)
     if saved_search
       UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
     end
@@ -29,15 +43,13 @@ class Member::SavedSearchesController < Member::BaseController
     @saved_search.destroy
   end
 
-  private
+  def toggle_alert
+    saved_search = SavedSearch.find(params[:id])
+    saved_search.update(alert: !saved_search.alert)
 
-  def permit_saved_search_params(params)
-    params[:manufacturers] = params[:manufacturers].split('-') if params[:manufacturers]&.is_a?(String)
-    params[:models] = params[:models].split('-') if params[:models]&.is_a?(String)
+    saved_search.ensure_ss_alerts_enabled if saved_search.alert
 
-    params.permit(:year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
-                  :length_unit, :currency, :ref_no, :q, :boat_type, :order,
-                  tax_status: [:paid, :unpaid], new_used: [:new, :used],
-                  manufacturers: [], models: [], countries: [])
+    render json: {alert: saved_search.alert}
   end
+
 end

@@ -3,7 +3,8 @@ module Rightboat
     ORDER_TYPES = %w(score_desc created_at_desc price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
     YEARS_RANGE = (Date.today.year - 200)..Date.today.year
     PRICES_RANGE = 0..100_000_000
-    LENGTHS_RANGE = 0..300
+    M_LENGTHS_RANGE = 0..300
+    FT_LENGTHS_RANGE = 0..1000
     PER_PAGE = 30
 
     attr_reader :facets_data, :search
@@ -148,8 +149,8 @@ module Rightboat
           # year_min:   year_stats&.data && year_stats.min.try(:floor) || YEARS_RANGE.min,
           year_min:   boat_year_built_min || YEARS_RANGE.min,
           year_max:   year_stats&.data && year_stats.max.try(:ceil) || YEARS_RANGE.max,
-          length_min: length_stats&.data && length_stats.min.try(:floor) || LENGTHS_RANGE.min,
-          length_max: length_stats&.data && length_stats.max.try(:ceil) || LENGTHS_RANGE.max,
+          length_min: length_stats&.data && length_stats.min.try(:floor) || M_LENGTHS_RANGE.min,
+          length_max: length_stats&.data && length_stats.max.try(:ceil) || M_LENGTHS_RANGE.max,
           countries_data: countries_data
       }
     end
@@ -210,7 +211,7 @@ module Rightboat
 
     def read_year(year)
       if year.present?
-        year.to_i.clamp(YEARS_RANGE.min, Time.current.year)
+        year.to_i.clamp(YEARS_RANGE)
       end
     end
 
@@ -218,7 +219,7 @@ module Rightboat
       if len.present?
         res = len.to_f
         res = res.ft_to_m if len_unit == 'ft'
-        res.round(2).clamp(0, 1000)
+        res.round(2).clamp(M_LENGTHS_RANGE)
       end
     end
 

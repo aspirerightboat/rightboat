@@ -66,17 +66,17 @@ $ ->
     $('[data-layout-mode]').attr('data-layout-mode', @value)
     Cookies.set('layout_mode', @value)
 
-
-  $('.multiple-country-select').each ->
-    $sel = $(@)
-    $sel.selectize
-      plugins: ['remove_button'],
-      delimiter: '-',
-      maxItems: 6,
-      options: $sel.data('options')
-      render:
-        item: (data, escape) ->
-          '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>'
+  $.fn.multipleCountrySelect = ->
+    @.each ->
+      $(@).selectize
+        plugins: ['remove_button'],
+        delimiter: '-',
+        maxItems: 6,
+        options: $(@).data('options')
+        render:
+          item: (data, escape) ->
+            '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>'
+  $('.multiple-country-select').multipleCountrySelect()
 
   $.fn.countrySelect = ->
     @.selectize
@@ -108,17 +108,22 @@ $ ->
     if !$sel.val()
       $sel.val('')
 
-  $('.country-states-select').each ->
-    $(@).selectize
-      plugins: ['remove_button'],
-      delimiter: '-',
-      maxItems: 6,
-      options: $(@).data('options')
+  $.fn.countryStatesSelect = ->
+    @.each ->
+      $(@).selectize
+        plugins: ['remove_button'],
+        delimiter: '-',
+        maxItems: 6,
+        options: $(@).data('options')
+  $('.country-states-select').countryStatesSelect()
 
-  $('input.select-states-if-us').each ->
-    @.selectize.on 'change', (value) ->
-      us_selected = value == '234'
-      $('#states_picker').closest('.row').each ->
-        if us_selected then $(@).slideDown() else $(@).slideUp()
-        $('#states_picker').get(0).selectize.clear() unless us_selected
-    @.selectize.trigger('change', $(@).val())
+  $.fn.selectStatesIfUs = ->
+    @.each ->
+      @.selectize.on 'change', (value) ->
+        us_selected = value == '234'
+        $states_picker = @.$input.closest('form').find('input.country-states-select')
+        $states_picker.closest('.row').each ->
+          if us_selected then $(@).slideDown() else $(@).slideUp()
+        $states_picker.data('selectize').clear() unless us_selected
+      @.selectize.trigger('change', $(@).val())
+  $('input.select-states-if-us').selectStatesIfUs()

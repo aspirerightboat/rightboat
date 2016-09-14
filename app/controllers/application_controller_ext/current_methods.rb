@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
 
   LAYOUT_MODES = %w(gallery list thumbnail)
-  LENGTH_UNITS = %w(ft m)
   helper_method :current_currency, :current_length_unit, :current_layout_mode, :current_search_order, :current_broker
 
   def current_currency
@@ -23,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_length_unit(unit)
-    if unit.present? && LENGTH_UNITS.include?(unit)
+    if unit.present? && Boat::LENGTH_UNITS.include?(unit)
       session[:length_unit] = unit
     end
   end

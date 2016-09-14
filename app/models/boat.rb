@@ -4,6 +4,7 @@ class Boat < ActiveRecord::Base
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)
   SPEED_UNITS = %w(knots mph rpm)
+  LENGTH_UNITS = %w(ft m)
 
   searchable do
     text :ref_no,               boost: 5
@@ -32,21 +33,12 @@ class Boat < ActiveRecord::Base
     integer :drive_type_id
     integer :country_id
     integer :boat_type_id
-    integer :year do |boat|
-      boat.year_built
-    end
-    float :price do |boat|
-      # TODO: make confirm about poa price filter
-      boat.poa? ? 0 : Currency.convert(boat.price, boat.safe_currency, Currency.default)
-    end
+    integer(:year) { |boat| boat.year_built }
+    float(:price) { |boat| boat.price_gbp || 0 }
     float :length_m
     boolean :new_boat
-    boolean :tax_paid do |boat|
-      boat.tax_paid?
-    end
-    boolean :live do |boat|
-      boat.active?
-    end
+    boolean(:tax_paid) { |boat| boat.tax_paid? }
+    boolean(:live) { |boat| boat.active? }
     time :created_at
   end
 

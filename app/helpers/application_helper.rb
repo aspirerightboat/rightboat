@@ -73,7 +73,7 @@ module ApplicationHelper
   end
 
   def length_unit_options
-    options_for_select(ApplicationController::LENGTH_UNITS, current_length_unit)
+    options_for_select(Boat::LENGTH_UNITS, current_length_unit)
   end
 
   def tel_to(text)

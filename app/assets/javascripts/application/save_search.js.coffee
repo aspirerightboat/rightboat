@@ -1,15 +1,14 @@
 $ ->
-  if $('.save-search').length
-    $('.save-search')
-    .on 'ajax:before', (e, data, status, xhr) ->
+  if $('.save-search-link').length
+    $('.save-search-link')
+    .on 'ajax:before', ->
       if (form = $(@).closest('form')).length
         params = $.param(form.serializeArray())
-        href = '/my-rightboat/saved-searches?' + params
-        $(@).find('a').first().attr('href', href)
+        url = $(@).attr('href').replace(/\?.*/, '')
+        $(@).attr('href', url + '?' + params)
     .on 'ajax:success', (e, data, status, xhr) ->
-      json = xhr.responseJSON
-      $(document.body).append(json.google_conversion) if json.google_conversion
-      $(@).find('.saved-search-hint').fadeIn()
-
-    $(window).click ->
-      $('.saved-search-hint').fadeOut()
+      $(document.body).append(data.google_conversion) if data.google_conversion
+      $('.saved-search-hint').fadeIn()
+      $(window).on 'click.ss-hint', ->
+        $('.saved-search-hint').fadeOut()
+        $(@).off('click.ss-hint')

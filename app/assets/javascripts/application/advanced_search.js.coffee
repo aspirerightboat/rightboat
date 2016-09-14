@@ -5,6 +5,7 @@ $ ->
       complete: ->
         $('.advanced-search').slideDown
           duration: 200
+    $('html, body').animate({scrollTop: 0}, 400)
     false
 
   $('.advanced-search .close').click (e) ->

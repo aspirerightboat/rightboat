@@ -202,7 +202,10 @@ Rails.application.routes.draw do
     resource :user_alert, controller: :user_alert, path: 'alerts', only: [:update]
     resources :user_notifications, only: [:index]
     resources :recent_views, only: [:index]
-    resources :saved_searches, path: 'saved-searches', only: [:edit, :update, :create, :destroy]
+    resources :saved_searches, path: 'saved-searches', only: [:new, :edit, :update, :create, :destroy] do
+      post :create_from_search, on: :collection
+      post :toggle_alert, on: :member
+    end
     resources :boats, only: [:index] do
       post :pay_initial_fee, on: :collection
     end

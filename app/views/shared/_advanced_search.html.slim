@@ -54,7 +54,7 @@
               .rb-control
                 = label_tag :price
               .rb-control-group-addon.no-pads
-                = currency_select :currency, current_currency, class: "slider-currency-select #{params[:utf8] ? 'select-clear-dark' : 'select-azure'}"
+                = currency_select :currency, current_currency, class: 'slider-currency-select select-clear'
           .col-xs-7.col-lg-9
             = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
         .range-slider-wrapper.row
@@ -63,7 +63,7 @@
               .rb-control
                 = label_tag :length
               .rb-control-group-addon.no-pads
-                = select_tag :length_unit, length_unit_options, class: "slider-length-select #{params[:utf8] ? 'select-clear-dark' : 'select-azure'}"
+                = select_tag :length_unit, length_unit_options, class: 'slider-length-select select-clear'
           .col-xs-7.col-lg-9
             = slider_tag(:length, unit: current_length_unit)
       .col-sm-6.col-xs-12
@@ -81,7 +81,7 @@
                     class: 'select-black multiple-country-select select-states-if-us', \
                     data: {options: general_options}, \
                     placeholder: 'eg. United Kingdom'
-        .form-group.row(style="#{('display: none' if params[:state].blank?)}")
+        .form-group.row(style="#{('display: none' if params[:states].blank?)}")
           .col-xs-5.col-lg-3
             = label_tag :states_picker, 'States'
           .col-xs-7.col-lg-9.selectize-like-input

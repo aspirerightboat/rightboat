@@ -7,16 +7,7 @@ $(function() {
   $('.manufacturers-picker, .models-picker', $popup).makemodelPickers();
   $('.select-currency', $popup).currencySelect();
   $('.select-general', $popup).generalSelect();
-
-  $('.saved-multiple-country-select').each(function() {
-    var $sel = $(this);
-    $sel.selectize({
-      render: {item: function(data, escape) {
-        return '<div>' + escape(data.text.replace(/\s\(.*\)/, '')) + '</div>';
-      }}
-    });
-    var selected_ids = $sel.data('selected-ids') || [];
-    $.each(selected_ids, function() { $sel[0].selectize.addItem(this, true) });
-  });
-
+  $('.multiple-country-select', $popup).multipleCountrySelect();
+  $('.country-states-select', $popup).countryStatesSelect();
+  $('input.select-states-if-us', $popup).selectStatesIfUs();
 });

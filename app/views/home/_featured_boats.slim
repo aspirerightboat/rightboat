@@ -1,8 +1,9 @@
 - cache "featured_boats_in_#{session[:country]}", expires_in: 1.hour do
   - fetch_featured_boats
   - if @featured_boats.present?
-    #featured-boats
+    .featured-boats
       h3.toolbar-title Featured Boats
-    #featured-wrap.container
-      .row(data-layout-mode="gallery")
-        = render @featured_boats
+      .container
+        .row(data-layout-mode="gallery")
+          = render partial: 'boats/boat', collection: @featured_boats, locals: {container_class: 'active'}
+          = render partial: 'boats/boat', collection: @featured_boats_slider if @featured_boats_slider.present?

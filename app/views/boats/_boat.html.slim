@@ -6,7 +6,8 @@
 - if broker_iframe
   - boat_url = "#{boat_url}?iframe=#{broker_iframe.token}"
 
-.boat-thumb-container.col-md-4.col-sm-6.col-xs-12(style="#{'display: none;' if lead_thumb && lead&.hidden}")
+.boat-thumb-container.col-md-4.col-sm-6.col-xs-12(style="#{'display: none;' if lead_thumb && lead&.hidden}"
+                                                  class=local_assigns[:container_class])
   .boat-thumb.boat-view(data-boat-ref=boat.slug
                         data-length=boat.length_ft
                         data-price=boat.price_gbp

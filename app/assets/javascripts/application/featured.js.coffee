@@ -9,7 +9,7 @@ Array::shuffle = ->
   @
 
 pickRandom = ->
-  tiles = $('#featured-wrap .boat-thumb-container')
+  tiles = $('.featured-boats .boat-thumb-container')
   indexes = tiles.map((i, e) -> i).toArray().shuffle()
   for i in [0...indexes.length]
     $(tiles[i]).toggleClass('active', i < 6)

@@ -33,7 +33,7 @@ class Boat < ActiveRecord::Base
     integer :drive_type_id
     integer :country_id
     integer :boat_type_id
-    integer(:year) { |boat| boat.year_built }
+    integer(:year, as: :year_sml_int) { |boat| boat.year_built } # *_sml_int is configured in solr schema.xml with sortMissingLast="true"
     float(:price) { |boat| boat.price_gbp || 0 }
     float :length_m
     boolean :new_boat

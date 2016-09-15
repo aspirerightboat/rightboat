@@ -135,6 +135,8 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
+
+    <fieldType name="sml_int" class="solr.SortableIntField" sortMissingLast="true" omitNorms="true"/>
     <!-- Rightboat types end -->
 
   </types>
@@ -291,6 +293,7 @@
     <!-- Rightboat fields -->
     <dynamicField name="*_ngram" type="text_ngram" multiValued="false" indexed="true"/>
     <dynamicField name="*_full_ngram" type="text_full_ngram" multiValued="false" indexed="true"/>
+    <dynamicField name="*_sml_int" type="sml_int" multiValued="false" indexed="true"/>
     <!-- Rightboat fields end -->
 
     <!-- required by Solr 4 -->

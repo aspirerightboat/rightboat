@@ -7,7 +7,7 @@ module BoatsHelper
     return nil if !boat.length_m || boat.length_m <= 0
     unit ||= try(:current_length_unit) || 'm'
     length = unit == 'ft' ? boat.length_ft.round : boat.length_m.round
-    "#{length} #{unit}"
+    "#{length}&nbsp;#{unit}".html_safe
   end
 
   def converted_size(size, unit = nil)
@@ -16,7 +16,7 @@ module BoatsHelper
     return nil if size <= 0
     unit ||= try(:current_length_unit) || 'm'
     size = unit == 'ft' ? size.m_to_ft.round : size
-    "#{size} #{unit}"
+    "#{size}&nbsp;#{unit}".html_safe
   end
 
   def boat_price(boat, target_currency = nil)

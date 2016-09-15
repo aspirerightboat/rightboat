@@ -147,7 +147,7 @@ $ ->
       $('.boat-view').each ->
         if length = $(@).data('length')
           l = convertLength(Number(length), oldUnit, unit)
-          $('[data-attr-name=loa]', @).text('' + l + ' ' + unit)
+          $('[data-attr-name=loa]', @).html('' + Math.round(l) + '&nbsp;' + unit)
 
   $('.slider-length-select').sliderLengthSelect();
 

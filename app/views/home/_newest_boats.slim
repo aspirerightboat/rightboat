@@ -2,7 +2,9 @@
   - fetch_newest_boats
   #newest-boats.container
     h3.text-center Newest boats
-    - slider_opts = {autoplay: true, autoplaySpeed: 30_000, infinite: true, slidesToShow: 3, slidesToScroll: 3}.to_json
+    - slider_opts = {autoplay: true, autoplaySpeed: 30_000, infinite: true, slidesToShow: 3, slidesToScroll: 3, \
+            responsive: [{breakpoint: 768, settings: {slidesToShow: 2, slidesToScroll: 2}}, \
+            {breakpoint: 480, settings: {slidesToShow: 1, slidesToScroll: 1}}]}.to_json
     .slick-nav.default-slider(data-slick="#{slider_opts}")
       - @newest_boats.each do |boat|
         = link_to makemodel_boat_path(boat), class: 'caption text-center' do

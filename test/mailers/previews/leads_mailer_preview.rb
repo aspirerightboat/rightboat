@@ -25,6 +25,6 @@ class LeadsMailerPreview < ActionMailer::Preview
   end
 
   def lead_reviewed_notify_broker
-    LeadsMailer.lead_reviewed_notify_broker(Lead.where(status: 'rejected').last.id)
+    LeadsMailer.lead_reviewed_notify_broker(Lead.where(status: 'cancelled').last.id)
   end
 end

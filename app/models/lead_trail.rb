@@ -6,12 +6,12 @@ class LeadTrail < ActiveRecord::Base
 
   scope :pending, -> { where(new_status: 'pending') }
   scope :approved, -> { where(new_status: 'approved') }
-  scope :rejected, -> { where(new_status: 'rejected') }
+  scope :cancelled, -> { where(new_status: 'cancelled') }
   scope :invoiced, -> { where(new_status: 'invoiced') }
 
   def comments
     ret = ''
-    if new_status == 'rejected'
+    if new_status == 'cancelled'
       ret += "#{lead.bad_quality_reason.humanize}: " if lead.bad_quality_reason
       ret += lead.bad_quality_comment if lead.bad_quality_comment
     elsif new_status == 'deleted'

@@ -282,10 +282,10 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total Rejected Leads last week (Mon-Sun):'
+                text_node 'Total Cancelled Leads last week (Mon-Sun):'
               end
               td class: 'text-red' do
-                text_node Lead.rejected.where(created_at: beginning_of_last_week..beginning_of_week).count
+                text_node Lead.cancelled.where(created_at: beginning_of_last_week..beginning_of_week).count
               end
             end
             tr do
@@ -321,10 +321,10 @@ ActiveAdmin.register_page 'Dashboard' do
             end
             tr do
               td do
-                text_node 'Total Rejected Leads last month:'
+                text_node 'Total Cancelled Leads last month:'
               end
               td class: 'text-red' do
-                text_node Lead.rejected.where(created_at: beginning_of_last_month..beginning_of_month).count
+                text_node Lead.cancelled.where(created_at: beginning_of_last_month..beginning_of_month).count
               end
             end
             tr do

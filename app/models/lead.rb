@@ -1,6 +1,6 @@
 class Lead < ActiveRecord::Base
 
-  STATUSES = %w(pending quality_check approved rejected invoiced suspicious deleted)
+  STATUSES = %w(pending quality_check approved cancelled invoiced suspicious deleted)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)
 
   attr_accessor :suspicious_title
@@ -31,7 +31,7 @@ class Lead < ActiveRecord::Base
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: 'approved') }
-  scope :rejected, -> { where(status: 'rejected') }
+  scope :cancelled, -> { where(status: 'cancelled') }
   scope :invoiced, -> { where(status: 'invoiced') }
   scope :not_invoiced, -> { where(invoice_id: nil) }
   scope :created_from, ->(status, from) { send(status).where('created_at > ?', from) }
@@ -97,8 +97,8 @@ class Lead < ActiveRecord::Base
     if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
       mark_suspicious('Multiple leads received – review required')
     end
-    if Lead.where(status: %w(rejected suspicious), email: user&.email || email.presence).exists?
-      mark_suspicious('Lead from user with rejected/suspicious leads – review required')
+    if Lead.where(status: %w(cancelled suspicious), email: user&.email || email.presence).exists?
+      mark_suspicious('Lead from user with cancelled/suspicious leads – review required')
     end
   end
 
@@ -123,7 +123,7 @@ class Lead < ActiveRecord::Base
   end
 
   def admin_reviewed_email
-    if $current_user.try(:admin?) && status_changed? && status.in?(%w(approved rejected))
+    if $current_user.try(:admin?) && status_changed? && status.in?(%w(approved cancelled))
       LeadsMailer.lead_reviewed_notify_broker(id).deliver_later
     end
   end

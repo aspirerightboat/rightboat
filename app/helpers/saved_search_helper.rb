@@ -35,9 +35,6 @@ module SavedSearchHelper
       length_to = ss.length_max.presence&.to_i || not_defined
       res << %( Length:&nbsp;<b>#{h length_from}&nbsp;-&nbsp;#{h length_to}#{h ss.length_unit}</b>;)
     end
-    if ss.ref_no.present?
-      res << %( RefNo:&nbsp;<b>#{h ss.ref_no}</b>;)
-    end
     if ss.tax_status.present?
       res << %( Tax Status:&nbsp;<b>#{h ss.tax_status.keys.map { |k| k.titleize }.join(', ')}</b>;)
     end

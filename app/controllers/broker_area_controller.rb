@@ -58,7 +58,7 @@ class BrokerAreaController < ApplicationController
   def my_leads
     rel = current_broker.broker_leads.includes(boat: [:manufacturer, :model]).order('id DESC')
     @pending_leads = Lead.where(status: %w(pending quality_check)).merge(rel).page(params[:page]).per(15)
-    @history_leads = Lead.where(status: %w(approved rejected invoiced)).merge(rel).page(params[:page2]).per(15)
+    @history_leads = Lead.where(status: %w(approved cancelled invoiced)).merge(rel).page(params[:page2]).per(15)
   end
 
   def tc

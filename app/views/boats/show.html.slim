@@ -53,12 +53,12 @@
             .col-sm-3.col-md-2
               = link_to 'Request Details', '#', class: 'btn-flat btn-block btn-black request-details'
             .col-sm-8
-              h5.inline Click here for full boat specification and to contact seller
+              h5 Click here for full boat specification and to contact seller
           - else
             .col-sm-3.col-md-2
               .btn-flat.btn-block.btn-red.offer-status Under Offer
             .col-sm-8
-              h5.inline This boat is Under Offer, so you are unable to Request Details on it.
+              h5 This boat is Under Offer, so you are unable to Request Details on it.
           - if (virtual_tour = @boat.media.virtual_tour.first)
             .col-sm-3.col-md-2
               = link_to 'Virtual Tour', virtual_tour.source_url, class: 'btn-flat btn-block btn-black', target: '_blank'

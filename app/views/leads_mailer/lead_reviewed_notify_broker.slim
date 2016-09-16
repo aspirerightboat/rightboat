@@ -1,6 +1,6 @@
 p Dear #{@lead.boat.user.name}
 
-- if @lead.status == 'rejected'
+- if @lead.status == 'cancelled'
   p We have reviewed #{@lead.name}, #{link_to "##{@lead.id}", lead_url(@lead.id)} enquiry and find that this was not a genuine lead.
   p Therefore you will not be charged for this lead.
 - elsif @lead.status == 'approved'

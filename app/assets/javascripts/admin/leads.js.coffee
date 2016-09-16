@@ -23,9 +23,9 @@ $ ->
     chart = undefined
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     weeks = ['1st', '2nd', '3rd', '4th', '5th', '6th']
-    statuses = ['rejected', 'pending', 'approved', 'invoiced']
+    statuses = ['cancelled', 'pending', 'approved', 'invoiced']
     colors = 
-      'rejected':   'red'
+      'cancelled':   'red'
       'pending':    'yellow'
       'approved':   'orange'
       'invoiced':   'green'

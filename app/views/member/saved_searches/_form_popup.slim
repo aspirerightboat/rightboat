@@ -114,12 +114,6 @@
               .col-sm-6.col-xs-12
                 .row
                   .col-xs-4
-                    = f.label :ref_no, 'Ref. No.'
-                  .col-xs-8
-                    = f.text_field :ref_no, class: 'form-control', placeholder: 'e.g. RB48573'
-              .col-sm-6.col-xs-12
-                .row
-                  .col-xs-4
                     = f.label :new_used, 'New / Used'
                   .col-xs-8
                     = check_box_tag 'saved_search[new_used][new]', true, @saved_search.new_used['new'], class: 'inverse'

@@ -5,7 +5,7 @@ module LeadsHelper
                  when 'pending' then 'warning'
                  when 'quality_check' then 'info'
                  when 'approved' then 'success'
-                 when 'rejected' then 'danger'
+                 when 'cancelled' then 'danger'
                  when 'invoiced' then 'primary'
                  end
     content_tag :span, status.titleize, class: "label label-#{label_type}"

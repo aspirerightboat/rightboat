@@ -382,25 +382,25 @@
   #main_content {
     color: @rb-color-dark;
     h1 {font-size: 26px; font-weight: bold;}
+  }
+  .boat-header {
+    background-color: @rb-color-primary;
+    color: white;
+    margin-bottom: 30px;
+    padding: 6px 0;
 
-    .boat-header {
-      background-color: @rb-color-primary;
-      color: white;
-      margin-bottom: 30px;
-      padding: 6px 0;
-
-      h5.inline {
-        line-height: 28px;
-      }
+    h5 {
+      line-height: 28px;
+      margin: 0;
+      text-align: center;
+      @media (min-width: @screen-sm-min) { display: inline; }
     }
-
-    .boat-footer {
-      padding-bottom: 30px;
-    }
-
-    .truncated-description {
-      color: @rb-color-primary;
-    }
+  }
+  .boat-footer {
+    padding-bottom: 30px;
+  }
+  .truncated-description {
+    color: @rb-color-primary;
   }
 }
 

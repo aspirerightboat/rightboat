@@ -28,7 +28,7 @@ class Manufacturer < ActiveRecord::Base
   end
 
   def to_s
-    name.gsub(/&amp;/i, '&')
+    name
   end
 
   def self.solr_suggest_by_term(term)

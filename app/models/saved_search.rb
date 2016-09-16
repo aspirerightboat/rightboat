@@ -1,5 +1,4 @@
 class SavedSearch < ActiveRecord::Base
-
   serialize :countries, Array
   serialize :states, Array
   serialize :models, Array
@@ -62,7 +61,6 @@ class SavedSearch < ActiveRecord::Base
     length_range = length_unit == 'm' ? Rightboat::BoatSearch::M_LENGTHS_RANGE : Rightboat::BoatSearch::FT_LENGTHS_RANGE
     self.length_min = (params[:length_min].to_i.clamp(length_range) if params[:length_min].present?)
     self.length_max = (params[:length_max].to_i.clamp(length_range) if params[:length_max].present?)
-    self.ref_no = (params[:ref_no].strip if params[:ref_no].present? && params[:ref_no].strip =~ /\Arb\d+\z/i)
     self.q = params[:q].presence
     self.boat_type = params[:boat_type].presence_in(%w(power sail))
     self.tax_status = (params[:tax_status].slice(:paid, :unpaid) if params[:tax_status].is_a?(Hash))
@@ -101,10 +99,8 @@ class SavedSearch < ActiveRecord::Base
         length_max: length_max,
         length_unit: length_unit,
         currency: currency,
-        ref_no: ref_no,
         q: q,
         boat_type: boat_type,
-        order: order
     )
     [:tax_status, :new_used, :manufacturers, :models, :countries, :states].each do |attr|
       if (value = send(attr).presence)

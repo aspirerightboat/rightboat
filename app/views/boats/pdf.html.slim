@@ -65,12 +65,7 @@ h3.heading Description
 .boat-description
   = sanitize(@boat.extra.description)
 
-h3 Owners Comment
-= sanitize(@boat.extra.owners_comment)
-
-br
 .hr
-br
 
 table.spec-table
   - @boat.boat_specifications.includes(:specification).not_url.not_blank.each_slice(2).each do |spec1, spec2|
@@ -96,3 +91,10 @@ h3.heading
     .thumbs-row
       - slice.each do |img|
         .thumb= wicked_pdf_image_tag img.file_url(:thumb)
+
+- if @boat.extra.owners_comment
+  .page-break
+
+  h3.heading Owners Comment
+  .boat-description
+    = sanitize(@boat.extra.owners_comment)

@@ -13,12 +13,10 @@ class Rightboat::XeroInvoicer
 
     contact_by_broker = ensure_contacts(brokers)
     branding_theme = $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
-
-    tax_rates = $xero.TaxRate.all(where: 'TaxType=="OUTPUT2" OR TaxType=="ECZROUTPUTSERVICES" OR TaxType=="EXEMPTOUTPUT"')
-    tax_rate_by_currency = {
-        'GBP' => tax_rates.find { |tr| tr.tax_type == 'OUTPUT2' },
-        'EUR' => tax_rates.find { |tr| tr.tax_type == 'ECZROUTPUTSERVICES' },
-        'USD' => tax_rates.find { |tr| tr.tax_type == 'EXEMPTOUTPUT' },
+    tax_type_by_currency = {
+        'GBP' => 'OUTPUT2',
+        'EUR' => 'ECZROUTPUTSERVICES',
+        'USD' => 'EXEMPTOUTPUT',
     }
 
     Invoice.transaction do
@@ -53,7 +51,7 @@ class Rightboat::XeroInvoicer
                          quantity: 1, unit_amount: leads_price, account_code: 200,
                          discount_rate: discount_rate * 100,
                          line_amount: leads_price_discounted,
-                         tax_type: tax_rate_by_currency[broker_currency.name])
+                         tax_type: tax_type_by_currency[broker_currency.name])
 
         i.subtotal = leads_price
         i.discount_rate = discount_rate

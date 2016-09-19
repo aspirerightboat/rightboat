@@ -9,6 +9,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
   filter :country, as: :select, collection: Country.order(:name)
   filter :manufacturer_name_cont
   filter :model_name_cont
+  filter :status, as: :select, collection: Boat.statuses
   filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES
   filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
   filter :boat_type_name_stripped, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES
@@ -35,7 +36,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
     column :office, :office, sortable: 'offices.name'
     column(:location) { |boat| boat_location_column(boat) }
     actions do |boat|
-      item 'Unfavourite', admin_boat_path(boat, boat: { featured: false }), method: :put, class: 'member_link'
+      item 'Unfavourite', unfeature_admin_featured_boat_path(boat), class: 'member_link'
     end
   end
 
@@ -43,5 +44,11 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
     def scoped_collection
       end_of_association_chain.featured.includes(:manufacturer, :user, :country, :office, :primary_image, :model)
     end
+  end
+
+  member_action :unfeature, method: :get do
+    @boat = Boat.find_by(slug: params[:id])
+    @boat.update featured: false
+    redirect_to :back, notice: 'Boat removed from featured boats successfully.'
   end
 end

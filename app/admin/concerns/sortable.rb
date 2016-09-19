@@ -5,7 +5,7 @@ module Sortable
     base.config.sort_order = 'position_asc'
 
     base.send :collection_action, :sort, method: :post do
-      (params[:sorted_ids] || []).each_with_index do |id, index|
+      params[:sorted_ids].each_with_index do |id, index|
         resource_class.where(id: id).update_all(position: index + 1)
       end
 

@@ -9,6 +9,7 @@ ActiveAdmin.register Boat, as: 'Featured Boats' do
   filter :country, as: :select, collection: Country.order(:name)
   filter :manufacturer_name_cont
   filter :model_name_cont
+  filter :status, as: :select, collection: Boat.statuses
   filter :offer_status, as: :select, collection: Boat::OFFER_STATUSES
   filter :new_boat, label: 'New/Used', as: :select, collection: [['New', true], ['Used', false]]
   filter :boat_type_name_stripped, label: 'Boat Type', as: :select, collection: BoatType::GENERAL_TYPES

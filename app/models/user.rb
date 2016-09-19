@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
   has_many :saved_searches, dependent: :delete_all
   has_many :exports, dependent: :delete_all
   has_many :mail_clicks
-  has_one :user_setting
+  has_one :user_setting, dependent: :destroy
   has_many :created_manufacturers, class_name: 'Manufacturer', foreign_key: 'created_by_user_id'
   has_many :created_models, class_name: 'Model', foreign_key: 'created_by_user_id'
   has_many :deleted_boats, class_name: 'Boat', foreign_key: :deleted_by_user_id
@@ -70,6 +70,7 @@ class User < ActiveRecord::Base
   validates_url :company_weburl, allow_blank: true, if: :company?
 
   before_create { build_user_alert } # will create user_alert
+  before_create { build_user_setting }
   before_save :create_broker_info
   before_validation :ensure_username
   before_save :ensure_deal, if: ->(u) { u.new_record? || u.role_changed? }

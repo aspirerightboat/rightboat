@@ -11,7 +11,7 @@
       th.text-right Price
       th.text-right
         ' Lead cost
-        - if current_broker.country&.iso == 'GB'
+        - if current_user.country&.iso == 'GB'
           | (ex VAT)
     - @leads.each do |lead|
       tr

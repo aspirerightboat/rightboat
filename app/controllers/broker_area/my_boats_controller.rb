@@ -6,7 +6,7 @@ module BrokerArea
                                      :upload_image, :remove_image, :move_image, :toggle_published, :boat_stats]
 
     def index
-      @boats = current_broker.boats.not_deleted.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
+      @boats = current_user.boats.not_deleted.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
       @boats = @boats.where(id: Boat.id_from_ref_no(params[:ref_no])) if params[:ref_no].present?
       @boats = @boats.where(source_id: params[:source_id]) if params[:source_id].present?
       @boats = @boats.where(office_id: params[:office_id]) if params[:office_id].present?
@@ -14,14 +14,14 @@ module BrokerArea
       @boats = @boats.joins(:model).where('models.name LIKE ?', "%#{params[:model_q]}%") if params[:model_q].present?
       @boats = @boats.where(offer_status: params[:offer_status]) if params[:offer_status].present?
       @boats = @boats.where(published: case params[:published] when '1' then true when '0' then false end) if params[:published].present?
-      @offices = current_broker.offices.order(:name)
+      @offices = current_user.offices.order(:name)
     end
 
     def new
       manufacturer = Manufacturer.find_or_create_by(name: 'Unknown')
       model = Model.find_or_create_by(name: 'Unknown', manufacturer: manufacturer)
-      @boat = Boat.where(user: current_broker, manufacturer: manufacturer, model: model).first
-      @boat ||= Boat.create(user: current_broker,
+      @boat = Boat.where(user: current_user, manufacturer: manufacturer, model: model).first
+      @boat ||= Boat.create(user: current_user,
                             manufacturer: manufacturer,
                             model: model,
                             price: 0,
@@ -137,7 +137,7 @@ module BrokerArea
     end
 
     def all_boats_stats
-      render json: Rightboat::BoatStats.general_broker_stats(current_broker, 5)
+      render json: Rightboat::BoatStats.general_broker_stats(current_user, 5)
     end
 
     private
@@ -151,12 +151,12 @@ module BrokerArea
 
     def assign_boat_data
       @boat.manufacturer = if params[:manufacturer].present?
-                             Manufacturer.create_with(created_by_user: current_broker)
+                             Manufacturer.create_with(created_by_user: current_user)
                                  .where(name: params[:manufacturer]).first_or_create
 
                            end
       @boat.model = if params[:model].present? && @boat.manufacturer
-                      Model.create_with(created_by_user: current_broker)
+                      Model.create_with(created_by_user: current_user)
                           .where(name: params[:model], manufacturer: @boat.manufacturer).first_or_create
 
                     end
@@ -166,22 +166,22 @@ module BrokerArea
       @boat.currency = Currency.cached_by_name(params[:price_currency])
       @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
       @boat.fuel_type = if params[:fuel_type].present?
-                          FuelType.create_with(created_by_user: current_broker)
+                          FuelType.create_with(created_by_user: current_user)
                               .where(name: params[:fuel_type]).first_or_create
                         end
       @boat.engine_manufacturer = if params[:engine_manufacturer].present?
-                                    EngineManufacturer.create_with(created_by_user: current_broker)
+                                    EngineManufacturer.create_with(created_by_user: current_user)
                                         .where(name: params[:engine_manufacturer]).first_or_create
                                   end
       @boat.engine_model = if params[:engine_model].present? && @boat.engine_manufacturer
-                             EngineModel.create_with(created_by_user: current_broker)
+                             EngineModel.create_with(created_by_user: current_user)
                                  .where(name: params[:engine_model], engine_manufacturer: @boat.engine_manufacturer).first_or_create
                            end
       @boat.country = if params[:country].present?
                         Country.find_by(name: params[:country])
                       end
       @boat.drive_type = if params[:drive_type].present?
-                             DriveType.create_with(created_by_user: current_broker)
+                             DriveType.create_with(created_by_user: current_user)
                                  .where(name: params[:drive_type]).first_or_create
                          end
       @boat.office = if params[:office].present?

@@ -45,7 +45,7 @@
     .boat-header
       .container
         .row
-          - if @boat.user == current_user || @boat.user == current_broker
+          - if @boat.user == current_user
             .col-sm-3.col-md-2
               = link_to 'PDF Link', makemodel_boat_pdf_path(@boat), class: 'btn-flat btn-block btn-black'
             .col-sm-8
@@ -80,7 +80,7 @@
           h1 About this #{@boat.manufacturer_model}
           .truncated-description
             == @boat.extra.short_description
-    - if @boat.user != current_user && @boat.user != current_broker
+    - if @boat.user != current_user
       .boat-footer
         .container.clearfix
           .pull-right

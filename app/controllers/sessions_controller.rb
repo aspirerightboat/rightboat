@@ -74,14 +74,10 @@ class SessionsController < Devise::SessionsController
     redirect_to params[:origin] || root_path
   end
 
-  def logout_broker
-    cookies.delete(:broker_id)
-    redirect_to admin_users_path, notice: 'Stopped viewing as broker'
-  end
-
-  def logout_customer
-    cookies.delete(:customer_id)
-    redirect_to admin_users_path, notice: 'Stopped viewing as privatee'
+  def stop_viewing_as
+    user = current_user
+    session.delete(:view_as_user_id)
+    redirect_to admin_users_path, notice: "Stopped viewing as #{user&.name}"
   end
 
 end

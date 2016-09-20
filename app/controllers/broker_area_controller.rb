@@ -6,20 +6,19 @@ class BrokerAreaController < ApplicationController
   end
 
   def getting_started
-    session[:broker_id] = params[:broker_id] if current_user&.admin? && params[:broker_id].present?
   end
 
   def details
-    current_broker.build_address if !current_broker.address
-    current_broker.build_broker_info if !current_broker.broker_info
-    @offices = current_broker.offices.includes(address: :country).to_a
+    current_user.build_address if !current_user.address
+    current_user.build_broker_info if !current_user.broker_info
+    @offices = current_user.offices.includes(address: :country).to_a
   end
 
   def update_details
-    if current_broker.update(user_params)
+    if current_user.update(user_params)
       render json: {location: url_for(action: :details)}
     else
-      render json: current_broker.errors.full_messages, root: false, status: 422
+      render json: current_user.errors.full_messages, root: false, status: 422
     end
   end
 
@@ -27,7 +26,7 @@ class BrokerAreaController < ApplicationController
   end
 
   def change_password
-    @user = current_broker
+    @user = current_user
     if !@user.valid_password?(params[:old_password])
       redirect_to({action: :preferences}, alert: 'Old password is incorrect')
       return
@@ -37,7 +36,7 @@ class BrokerAreaController < ApplicationController
       sign_in @user, bypass: true
       redirect_to({action: :preferences}, notice: 'Your settings was saved')
     else
-      redirect_to({action: :preferences}, alert: current_broker.errors.full_messages.join('. '))
+      redirect_to({action: :preferences}, alert: current_user.errors.full_messages.join('. '))
     end
   end
 
@@ -49,14 +48,14 @@ class BrokerAreaController < ApplicationController
   end
 
   def boats_overview
-    @last_imported_at = Import.find_by(user: current_broker).try(:last_import_trail).try(:finished_at)
+    @last_imported_at = Import.find_by(user: current_user).try(:last_import_trail).try(:finished_at)
   end
 
   def boats_manager
   end
 
   def my_leads
-    rel = current_broker.broker_leads.includes(boat: [:manufacturer, :model]).order('id DESC')
+    rel = current_user.broker_leads.includes(boat: [:manufacturer, :model]).order('id DESC')
     @pending_leads = Lead.where(status: %w(pending quality_check)).merge(rel).page(params[:page]).per(15)
     @history_leads = Lead.where(status: %w(approved cancelled invoiced)).merge(rel).page(params[:page2]).per(15)
   end
@@ -65,8 +64,8 @@ class BrokerAreaController < ApplicationController
   end
 
   def account_history
-    @deal = current_broker.deal
-    @leads = current_broker.broker_leads.where.not(invoice_id: nil)
+    @deal = current_user.deal
+    @leads = current_user.broker_leads.where.not(invoice_id: nil)
                  .includes(:invoice, :lead_price_currency, boat: [:manufacturer, :model, :currency])
                  .order('id DESC').page(params[:page]).per(30)
   end

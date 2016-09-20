@@ -2,11 +2,11 @@ class Member::BoatsController < Member::BaseController
   before_filter :ensure_non_broker
 
   def index
-    @my_boats = current_customer.boats.not_deleted.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate)
+    @my_boats = current_user.boats.not_deleted.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate)
   end
 
   def pay_initial_fee
-    user = current_customer
+    user = current_user
 
     customer = Stripe::Customer.create(
         source: params.delete(:stripe_token),
@@ -45,7 +45,7 @@ class Member::BoatsController < Member::BaseController
   private
 
   def ensure_non_broker
-    redirect_to broker_area_my_boats_path if current_customer.company?
+    redirect_to broker_area_my_boats_path if current_user.company?
   end
 
 end

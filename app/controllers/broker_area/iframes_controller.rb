@@ -4,15 +4,15 @@ module BrokerArea
     after_action :allow_iframe, only: :iframe_content
 
     def index
-      @iframes = current_broker.broker_iframes.page(params[:page]).per(30)
+      @iframes = current_user.broker_iframes.page(params[:page]).per(30)
     end
 
     def new
-      @iframe = current_broker.broker_iframes.new
+      @iframe = current_user.broker_iframes.new
     end
 
     def create
-      @iframe = current_broker.broker_iframes.new(iframe_params)
+      @iframe = current_user.broker_iframes.new(iframe_params)
       assign_filter_params
 
       if @iframe.save
@@ -70,7 +70,7 @@ module BrokerArea
     end
 
     def load_iframe
-      @iframe = current_broker.broker_iframes.find(params[:id])
+      @iframe = current_user.broker_iframes.find(params[:id])
     end
 
     def load_iframe_from_token

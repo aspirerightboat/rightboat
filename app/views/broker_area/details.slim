@@ -2,7 +2,7 @@
   h1 Business Details
 
   script#office_template.hidden(type="text/template")= render 'office_row'
-  = form_for current_broker, url: update_details_broker_area_path, method: :post, \
+  = form_for current_user, url: update_details_broker_area_path, method: :post, \
                              remote: true, data: {format: :json}, html: {class: 'business-info-form', multipart: true} do |f|
     .row
       .col-xs-12
@@ -50,7 +50,7 @@
         = f.fields_for :broker_info do |ff|
           .form-group
             = ff.label :logo, 'Logo <b>?</b>'.html_safe, title: 'make sure you upload your logo 400x200px - this appears on each boat specification that is required. The logo ideally should be on a transparent or white background.'
-            div= image_tag(current_broker.broker_info.logo_url(:thumb), class: 'img-responsive') if current_broker.broker_info.logo?
+            div= image_tag(current_user.broker_info.logo_url(:thumb), class: 'img-responsive') if current_user.broker_info.logo?
             = ff.file_field :logo, class: 'form-control'
     .row
       .col-xs-12#offices_table_block

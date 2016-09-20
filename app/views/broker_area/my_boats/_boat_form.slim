@@ -224,7 +224,7 @@
             = f.text_field :source_id, class: 'form-control', style: 'display: inline-block;'
           .field-item
             = label_tag :office, 'Listing office'
-            = select_tag :office, options_for_select(current_broker.offices.pluck(:name, :id), @boat.office_id), \
+            = select_tag :office, options_for_select(current_user.offices.pluck(:name, :id), @boat.office_id), \
                     include_blank: 'Head Office', class: 'select-general select-dark inline-select', style: 'width: 200px'
           .field-item
             = f.label :offer_status, 'Marketing status'

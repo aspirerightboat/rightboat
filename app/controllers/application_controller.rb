@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_broker_user
-    if !current_broker.try(:company?)
+    if !current_user&.company?
       redirect_to root_path, alert: 'broker user required'
     end
   end

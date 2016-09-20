@@ -57,10 +57,12 @@ ActiveAdmin.register User do
     column :sign_in_count
     column :saved_searches_count
     column(:active_boats) do |user|
-      if user.boats_count > 0
-        user.boats_count
-      else
-        content_tag(:span, user.boats_count.to_s, class: 'status_tag red')
+      if user.company?
+        if user.boats_count > 0
+          user.boats_count
+        else
+          content_tag(:span, user.boats_count.to_s, class: 'status_tag red')
+        end
       end
     end
     column('Import') do |user|
@@ -102,9 +104,9 @@ ActiveAdmin.register User do
       link_to user.registered_from_affiliate.name, admin_user_path(user.registered_from_affiliate) if user.registered_from_affiliate
     end
     actions do |user|
-      item 'My Rightboat', member_root_path(customer_id: user.id), target: '_blank', class: 'member_link'
+      item 'My Rightboat'.html_safe, {action: :view_as_user, user_id: user.id, redirect_to: member_root_path}, method: 'post', class: 'member_link'
       if user.company?
-        item 'Broker area', getting_started_broker_area_path(broker_id: user.id), target: '_blank', class: 'member_link'
+        item 'Broker area'.html_safe, {action: :view_as_user, user_id: user.id, redirect_to: getting_started_broker_area_path}, method: 'post', class: 'member_link'
       end
     end
   end
@@ -267,18 +269,16 @@ ActiveAdmin.register User do
   sidebar 'User Boats', only: [:show, :edit] do
     boats_count = user.boats.active.count
     inactive_count = user.boats.inactive.count
-    s = "<p><b>#{boats_count} active</b>, <b>#{inactive_count} inactive</b></p>"
+    para { "<b>#{boats_count}</b> active, <b>#{inactive_count}</b> inactive".html_safe }
     if boats_count > 0 || inactive_count > 0
-      s << '<p>'
-      # s << link_to('Delete all permanently', {action: :activate_boats, id: user, do: :delete_perm}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
-      # s << link_to('Delete all', {action: :activate_boats, id: user, do: :delete}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
-      s << link_to('Deactivate all', {action: :activate_boats, id: user, do: :mark_deleted}, method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
-      s << link_to('Activate all', {action: :activate_boats, id: user, do: :unmark_deleted}, method: :post, class: 'button', data: {disable_with: 'working...'}) if inactive_count > 0
-      s << '</p><p>'
-      s << link_to('View all', admin_boats_path(q: {user_id_eq: user.id}, commit: 'Filter', order: 'id_desc'))
-      s << '</p>'
+      para {
+        a(href: url_for(action: :activate_boats, id: user, do: :mark_deleted),
+               class: 'button', data: {method: 'post', disable_with: 'working...'}) { 'Deactivate all' } if boats_count > 0
+        a(href: url_for(action: :activate_boats, id: user, do: :unmark_deleted),
+          class: 'button', data: {method: 'post', disable_with: 'working...'}) { 'Activate all' } if inactive_count > 0
+      }
+      para { link_to('View all', admin_boats_path(q: {user_id_eq: user.id}, commit: 'Filter', order: 'id_desc')) }
     end
-    s.html_safe
   end
 
   member_action :activate_boats, method: :post do
@@ -290,6 +290,11 @@ ActiveAdmin.register User do
     end
 
     redirect_to (request.referer || {action: :index}), notice: "For all boats of #{resource.name} action was taken #{params[:do]}d"
+  end
+
+  collection_action :view_as_user, method: :post do
+    session[:view_as_user_id] = params[:user_id]
+    redirect_to params[:redirect_to]
   end
 
 end

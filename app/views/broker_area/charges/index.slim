@@ -16,7 +16,7 @@
         - when 'dd'
           ' Direct Debit details have been recoded securely
           | <i class="glyphicon glyphicon-ok-sign"></i>
-  - if @payment_method != 'dd' && current_broker.country&.iso == 'GB'
+  - if @payment_method != 'dd' && current_user.country&.iso == 'GB'
     p If you prefer <b>Direct Debit</b>, please call us.
   p
 

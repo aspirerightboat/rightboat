@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
 
   LAYOUT_MODES = %w(gallery list thumbnail)
   helper_method :current_currency, :current_length_unit, :current_layout_mode, :current_search_order,
-                :current_broker, :current_customer
+                :current_user, :current_admin
 
   def current_currency
     @current_currency ||= begin
@@ -57,19 +57,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def current_broker
-    if current_user&.admin? && session[:broker_id]
-      @current_broker ||= User.find_by(id: session[:broker_id])
-    else
-      @current_broker ||= current_user
-    end
+  alias_method :devise_current_user, :current_user
+  def current_user
+    @current_user ||= if session[:view_as_user_id] && !request.path.start_with?('/admin/') && current_admin
+                        User.find_by(id: session[:view_as_user_id])
+                      else
+                        devise_current_user
+                      end
   end
 
-  def current_customer
-    if current_user&.admin? && session[:customer_id]
-      @current_customer ||= User.find_by(id: session[:customer_id])
-    else
-      @current_customer ||= current_user
+  def current_admin
+    @current_admin ||= begin
+      user = warden.authenticate(scope: :user)
+      user if user&.admin?
     end
   end
 

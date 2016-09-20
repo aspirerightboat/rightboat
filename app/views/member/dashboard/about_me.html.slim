@@ -4,14 +4,14 @@
   h1= @page_title
   hr
   - if user_signed_in?
-    = form_for current_user, url: user_profile_path, remote: true, data: {format: :json}, \
+    = form_for current_customer, url: user_profile_path, remote: true, data: {format: :json}, \
                              method: :put, html: {class: 'simple-ajax-form', multipart: true} do |f|
       .row
         .col-xs-12
           h4 This is what we know about you so far, you can add, edit and change your personal information whenever you like.
           .row
             .col-sm-4.col-xs-12.field-wrap
-              = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title enq-req-title simple-select-dark'
+              = select_tag :title, options_for_select(User::TITLES, current_customer.try(:title)), prompt: 'Title', class: 'select-title enq-req-title simple-select-dark'
             .col-sm-4.col-xs-12.field-wrap
               = f.text_field :first_name, placeholder: 'First Name', class: 'form-control', 'data-validetta' => 'required'
             .col-sm-4.col-xs-12.field-wrap

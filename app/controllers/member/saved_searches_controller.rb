@@ -13,16 +13,16 @@ class Member::SavedSearchesController < Member::BaseController
     saved_search = SavedSearch.find(params[:id])
     saved_search.safe_assign_params(params.require(:saved_search))
     saved_search.save!
-    UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
+    UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_customer)
 
     redirect_to member_user_notifications_path, notice: 'Your saved search has been updated'
   end
 
   def create
-    saved_search = SavedSearch.safe_create(current_user, params.require(:saved_search))
+    saved_search = SavedSearch.safe_create(current_customer, params.require(:saved_search))
 
     if saved_search
-      UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
+      UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_customer)
       session[:ss_created_conversion] = 1
       redirect_to member_user_notifications_path, notice: 'Your search has been saved'
     else
@@ -31,9 +31,9 @@ class Member::SavedSearchesController < Member::BaseController
   end
 
   def create_from_search
-    saved_search = SavedSearch.safe_create(current_user, params)
+    saved_search = SavedSearch.safe_create(current_customer, params)
     if saved_search
-      UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_user)
+      UserActivity.create_search_record(hash: saved_search.to_succinct_search_hash, user: current_customer)
     end
     render json: {google_conversion: render_to_string(partial: 'shared/google_saved_search_conversion')}
   end

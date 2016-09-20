@@ -4,12 +4,12 @@
     .row
       .col-sm-6.col-xs-12
         = label_tag :manufacturer
-        - manufacturer_name = (@boat.manufacturer.name if @boat.manufacturer.name != 'Unknown')
+        - manufacturer_name = (@boat.manufacturer&.name if @boat.manufacturer&.name != 'Unknown')
         = text_field_tag :manufacturer, manufacturer_name, id: 'manufacturer_picker', class: 'select-dark', \
                 data: {collection: 'manufacturers'}, placeholder: 'e.g. Beneteau'
       .col-sm-6.col-xs-12
         = label_tag :model
-        - model_name = (@boat.model.name if @boat.model.name != 'Unknown')
+        - model_name = (@boat.model&.name if @boat.model&.name != 'Unknown')
         = text_field_tag :model, model_name, id: 'model_picker', class: 'select-dark', \
                 data: {collection: 'models'}, placeholder: 'e.g. Oceanis 34'
   #makemodel_wait

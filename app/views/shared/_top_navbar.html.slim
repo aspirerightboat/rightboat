@@ -27,7 +27,11 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
             = link_to 'My Rightboat', member_root_path
           - if current_user.company?
             li= link_to 'Broker Area', broker_area_path
-
+          - if current_user.admin?
+            - if session[:broker_id]
+              li= link_to 'Stop viewing as Broker', logout_broker_path, method: :delete
+            - if session[:customer_id]
+              li= link_to 'Stop viewing as Privatee', logout_customer_path, method: :delete
         - else
           li= link_to 'Sign in or Join for free', '#', class: 'open-login-popup login-button'
           li= link_to 'Broker', welcome_broker_path

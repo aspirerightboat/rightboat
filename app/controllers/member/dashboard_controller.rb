@@ -3,7 +3,7 @@ module Member
     skip_before_filter :authenticate_user!, only: [:index]
 
     def index
-      cookies[:customer_id] = params[:customer_id] if current_user&.admin? && params[:customer_id].present?
+      session[:customer_id] = params[:customer_id] if current_user&.admin? && params[:customer_id].present?
     end
 
     def about_me

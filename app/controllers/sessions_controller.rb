@@ -1,6 +1,7 @@
 class SessionsController < Devise::SessionsController
   skip_before_action :require_confirmed_email, only: [:destroy]
-  after_filter :clean_up_settings_cookies, :only => :destroy
+  after_action :clean_up_settings_cookies, only: :destroy
+  before_action :authenticate_admin_user!, only: [:logout_broker, :logout_customer]
   clear_respond_to
   respond_to :json
 
@@ -71,6 +72,16 @@ class SessionsController < Devise::SessionsController
 
   def facebook_failure
     redirect_to params[:origin] || root_path
+  end
+
+  def logout_broker
+    cookies.delete(:broker_id)
+    redirect_to admin_users_path, notice: 'Stopped viewing as broker'
+  end
+
+  def logout_customer
+    cookies.delete(:customer_id)
+    redirect_to admin_users_path, notice: 'Stopped viewing as privatee'
   end
 
 end

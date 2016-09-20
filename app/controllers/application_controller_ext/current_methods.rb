@@ -58,16 +58,16 @@ class ApplicationController < ActionController::Base
   end
 
   def current_broker
-    if current_user.try(:admin?)
-      @current_broker ||= User.find_by(id: cookies[:broker_id])
+    if current_user&.admin? && session[:broker_id]
+      @current_broker ||= User.find_by(id: session[:broker_id])
     else
       @current_broker ||= current_user
     end
   end
 
   def current_customer
-    if current_user.try(:admin?)
-      @current_customer ||= User.find_by(id: cookies[:customer_id])
+    if current_user&.admin? && session[:customer_id]
+      @current_customer ||= User.find_by(id: session[:customer_id])
     else
       @current_customer ||= current_user
     end

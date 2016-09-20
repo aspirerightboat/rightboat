@@ -57,12 +57,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  alias_method :devise_current_user, :current_user
   def current_user
     @current_user ||= if session[:view_as_user_id] && !request.path.start_with?('/admin/') && current_admin
                         User.find_by(id: session[:view_as_user_id])
                       else
-                        devise_current_user
+                        warden.authenticate(scope: :user)
                       end
   end
 

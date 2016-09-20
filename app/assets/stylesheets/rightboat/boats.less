@@ -80,15 +80,19 @@
 }
 .boat-thumb-specs {
   overflow: hidden;
+  position: relative;
+
   h4, h5 {
     line-height: 1.2em;
     margin: 0;
+    vertical-align: middle;
   }
   h5 {
     margin-bottom: 8px;
-    height: 19px;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
   }
   .small { font-size: 12px; }
   .tax-status { font-size: 14px; margin-left: 1ex; }
@@ -156,6 +160,9 @@
     h4 { margin-right: 8px; }
   }
   @media(max-width: @screen-xs-max) {
+    .boat-thumb-info {
+      max-width: ~"calc(100% - 160px)";
+    }
     .boat-thumb-image {
       width: 160px;
       min-height: 120px;

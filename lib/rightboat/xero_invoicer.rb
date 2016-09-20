@@ -29,7 +29,6 @@ class Rightboat::XeroInvoicer
 
         i = Invoice.new
         xi = $xero.Invoice.build(type: 'ACCREC', status: 'DRAFT')
-        xi.line_amount_types = 'NoTax'
         xi.date = Time.current.to_date
         xi.due_date = xi.date
         xi.branding_theme_id = branding_theme.branding_theme_id if branding_theme

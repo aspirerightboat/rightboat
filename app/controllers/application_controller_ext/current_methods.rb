@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
 
   LAYOUT_MODES = %w(gallery list thumbnail)
-  helper_method :current_currency, :current_length_unit, :current_layout_mode, :current_search_order, :current_broker
+  helper_method :current_currency, :current_length_unit, :current_layout_mode, :current_search_order,
+                :current_broker, :current_customer
 
   def current_currency
     @current_currency ||= begin
@@ -61,6 +62,14 @@ class ApplicationController < ActionController::Base
       @current_broker ||= User.find_by(id: cookies[:broker_id])
     else
       @current_broker ||= current_user
+    end
+  end
+
+  def current_customer
+    if current_user.try(:admin?)
+      @current_customer ||= User.find_by(id: cookies[:customer_id])
+    else
+      @current_customer ||= current_user
     end
   end
 

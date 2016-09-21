@@ -2,7 +2,9 @@ module Member
   class LeadsController < BaseController
     def index
       @leads = current_user.leads.order('id DESC')
-                   .includes(boat: [:boat_type, :currency, :primary_image, :manufacturer, :model, :country, :vat_rate, user: [:broker_info, :comment_request]])
+                   .includes(boat: [:boat_type, :currency, :primary_image, :manufacturer, :model,
+                                    :country, :vat_rate, :office,
+                                    user: [:broker_info, :comment_request]])
                    .page(params[:page]).per(15)
     end
 

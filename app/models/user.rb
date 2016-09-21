@@ -172,6 +172,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def main_phone
+    phone.presence || mobile.presence
+  end
+
   private
 
   def slug_candidates

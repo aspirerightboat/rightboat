@@ -67,16 +67,6 @@
   @media(max-width: @screen-sm-max) {
     padding: 6px;
   }
-  .broker-detail {
-    font-size: 13px;
-    margin-top: 4px;
-  }
-  .broker-logo {
-    background-color: white;
-    margin-right: 5px;
-    text-align: center;
-    width: 80px;
-  }
 }
 .boat-thumb-specs {
   overflow: hidden;
@@ -119,6 +109,27 @@
   margin-left: 1ex;
   text-align: right;
 }
+
+.boat-thumb-broker {
+  @media(min-width: @screen-sm-min) {
+    margin-left: 1ex;
+    text-align: right;
+    float: right;
+    width: 50%;
+  }
+}
+.boat-thumb-broker-logo {
+  float: left;
+  background-color: white;
+  margin: 0 1ex 6px 0;
+  text-align: center;
+}
+.boat-thumb-broker-details {
+  clear: both;
+  font-size: 13px;
+  margin: 6px 0;
+}
+
 
 [data-layout-mode="gallery"] {
   // col-md-4 col-sm-6 col-xs-12

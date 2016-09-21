@@ -22,20 +22,28 @@
           .boat-thumb-corner-links
             = link_to '&times;'.html_safe, '#', class: 'remove-fav', 'data-boat-id' => boat.id
         - elsif lead_thumb
-          .boat-thumb-corner-links
-            .clearfix
-              - logo_url = boat.user.broker_info.logo? ? boat.user.broker_info.logo_url(:thumb) : boat.user.avatar_url(:thumb)
-              - if logo_url
-                .broker-logo.pull-left
-                  = image_tag logo_url, alt: boat.user.name, class: 'img-responsive'
-              .pull-right
-                = link_to 'Hide', member_lead_path(lead), method: :delete, remote: true, class: 'hide-lead btn-flat btn-white'
-                .broker-detail
-                  = boat.user.full_name
-                  - if (phone_number = (boat.user.phone || boat.user.mobile)).present?
-                    | <br>#{phone_number}
-                  | <br>#{boat.user.email}
-            div Request sent: #{lead.created_at.strftime('%d %b %Y')}
+          .boat-thumb-broker
+            - logo_present = boat.user.broker_info.logo_before_type_cast.present?
+            - if logo_present || boat.user.avatar_before_type_cast.present?
+              - logo_url = logo_present ? boat.user.broker_info.logo_url(:thumb) : boat.user.avatar_url(:thumb)
+              - size = logo_present ? '100x50' : '50x50'
+              - broker_name = boat.user.name
+              = image_tag logo_url, alt: broker_name, title: broker_name, class: 'boat-thumb-broker-logo', size: size
+            = link_to 'Hide', member_lead_path(lead), method: :delete, remote: true, class: 'hide-lead btn-flat btn-white pull-right'
+            .boat-thumb-broker-details
+              b= boat.user.name
+              - if (phone_number = boat.user.main_phone)
+                | <br><b>#{phone_number}</b>
+              | <br><b>#{boat.user.email}</b>
+              - if (office = boat.office)
+                == "<br>Office Name: <b>#{h office.name}</b>" if office.name.present?
+                == "<br>Contact Name: <b>#{h office.contact_name}</b>" if office.contact_name.present?
+                == "<br>Daytime Phone: <b>#{h office.daytime_phone}</b>" if office.daytime_phone.present?
+                == "<br>Evening Phone: <b>#{h office.evening_phone}</b>" if office.evening_phone.present?
+                == "<br>Mobile: <b>#{h office.mobile}</b>" if office.mobile.present?
+                == "<br>Fax: <b>#{h office.fax}</b>" if office.fax.present?
+                == "<br>Email: <b>#{h office.email}</b>" if office.email.present?
+              | <br>Request sent: <b>#{smart_date lead.created_at}</b>
         h4.text-uppercase= boat.manufacturer
         h5= boat.model
         - if !favourite_thumb && !lead_thumb

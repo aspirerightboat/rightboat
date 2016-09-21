@@ -88,10 +88,10 @@ class BoatsController < ApplicationController
   end
 
   def show
-    @boat = Boat.active.find_by(slug: params[:boat]) if params[:boat].present?
+    @boat = Boat.find_by(slug: params[:boat]) if params[:boat].present?
     @boat = OldSlug.boats.find_by(slug: params[:boat])&.boat if !@boat
 
-    if !@boat
+    if !@boat || !@boat.active? && @boat.user != current_user
       return if !load_makemodel
       redirect_to({action: :index}, alert: I18n.t('messages.boat_not_exist')) and return
     end

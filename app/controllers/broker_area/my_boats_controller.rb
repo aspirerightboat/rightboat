@@ -46,7 +46,11 @@ module BrokerArea
       if @boat.save
         assign_specs
         flash[:notice] = 'Boat updated successfully.'
-        redirect_to({action: :show})
+        if params[:save_and_preview]
+          redirect_to makemodel_boat_path(@boat)
+        else
+          redirect_to({action: :show})
+        end
       else
         flash.now.alert = @boat.errors.full_messages.join(', ')
         @specs_hash = params[:boat_specs]

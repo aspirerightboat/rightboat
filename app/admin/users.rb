@@ -272,10 +272,11 @@ ActiveAdmin.register User do
     para { "<b>#{boats_count}</b> active, <b>#{inactive_count}</b> inactive".html_safe }
     if boats_count > 0 || inactive_count > 0
       para {
-        a(href: url_for(action: :activate_boats, id: user, do: :mark_deleted),
-               class: 'button', data: {method: 'post', disable_with: 'working...'}) { 'Deactivate all' } if boats_count > 0
-        a(href: url_for(action: :activate_boats, id: user, do: :unmark_deleted),
-          class: 'button', data: {method: 'post', disable_with: 'working...'}) { 'Activate all' } if inactive_count > 0
+        s = String.new.html_safe
+        s << link_to('Deactivate all', {action: :activate_boats, id: user, do: :mark_deleted},
+                     method: :post, class: 'button', data: {disable_with: 'working...'}) if boats_count > 0
+        s << link_to('Activate all', {action: :activate_boats, id: user, do: :unmark_deleted},
+                     method: :post, class: 'button', data: {disable_with: 'working...'}) if inactive_count > 0
       }
       para { link_to('View all', admin_boats_path(q: {user_id_eq: user.id}, commit: 'Filter', order: 'id_desc')) }
     end

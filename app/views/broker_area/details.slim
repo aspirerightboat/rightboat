@@ -3,7 +3,7 @@
 
   script#office_template.hidden(type="text/template")= render 'office_row'
   = form_for current_user, url: update_details_broker_area_path, method: :post, \
-                             remote: true, data: {format: :json}, html: {class: 'business-info-form', multipart: true} do |f|
+                             html: {class: 'business-info-form', multipart: true} do |f|
     .row
       .col-xs-12
         .form-group

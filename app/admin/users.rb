@@ -104,9 +104,9 @@ ActiveAdmin.register User do
       link_to user.registered_from_affiliate.name, admin_user_path(user.registered_from_affiliate) if user.registered_from_affiliate
     end
     actions do |user|
-      item 'My Rightboat'.html_safe, {action: :view_as_user, user_id: user.id, redirect_to: member_root_path}, method: 'post', class: 'member_link'
+      item 'My Rightboat'.html_safe, {action: :view_as_user, user_id: user.id, redirect_to: member_root_path}, method: 'post', class: 'member_link', target: '_blank'
       if user.company?
-        item 'Broker area'.html_safe, {action: :view_as_user, user_id: user.id, redirect_to: getting_started_broker_area_path}, method: 'post', class: 'member_link'
+        item 'Broker area'.html_safe, {action: :view_as_user, user_id: user.id, redirect_to: getting_started_broker_area_path}, method: 'post', class: 'member_link', target: '_blank'
       end
     end
   end

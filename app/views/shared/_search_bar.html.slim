@@ -1,24 +1,24 @@
-nav#search_bar
+nav.search-bar
   .container
     ul.flat-list
-      li: a.nav-link(href="/") New Search
+      li: a.search-bar-btn(href="/") New Search
     - if @back_url
       ul.flat-list
-        li= link_to '< Back to Results', @back_url, class: 'nav-link'
+        li= link_to '< Back to Results', @back_url, class: 'search-bar-btn'
     ul.flat-list
       - if controller_name == 'search' || @back_url
-        li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search nav-link'
+        li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search search-bar-btn'
       - if controller_name == 'search'
-        li= render partial: 'shared/save_search_btn', locals: {nav_link: true, btn_flat: false}
+        li= render partial: 'shared/save_search_btn', locals: {link_class: 'search-bar-btn'}
       - if @boat
-        li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'nav-link'
+        li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'search-bar-btn'
     - if @boats
       ul.flat-list.search-bar-display-options
         li
-          label Sort by
+          label.hidden-sm Sort by
           = select_tag :sort, search_order_options, id: 'search_order', \
                   class: 'select-dark select-general boat-sorting-select selectize-hide-input'
         li
-          label View
+          label.hidden-sm View
           = select_tag :sort, layout_mode_options, id: 'layout_mode', \
                   class: 'select-dark notranslate layout-mode-select selectize-hide-input'

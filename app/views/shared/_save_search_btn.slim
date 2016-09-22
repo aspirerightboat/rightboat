@@ -1,7 +1,6 @@
 .save-search
   - classes = %w(simple-ajax-link save-search-link)
-  - classes << 'nav-link' if nav_link
-  - classes << 'btn-flat' if btn_flat
+  - classes << local_assigns[:link_class] if local_assigns[:link_class]
   - classes << 'open-login-popup' unless user_signed_in?
   - opts = {method: :post, remote: true, class: classes}
   - opts[:data] = {'login-title' => 'Please sign in or join as a member to save your search.'} unless user_signed_in?

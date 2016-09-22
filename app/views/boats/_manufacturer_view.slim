@@ -15,7 +15,7 @@
               .filter-tag(data-filter-slug="countries" data-id="country_#{country_id}") #{country_name} <span class="esc">×</span>
           .clear-filters-btn
             | Clear filters
-          = render partial: 'shared/save_search_btn', locals: {nav_link: false, btn_flat: false}
+          = render partial: 'shared/save_search_btn'
 
       .filter-tabs
         ul.filter-tabs-nav

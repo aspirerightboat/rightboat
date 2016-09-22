@@ -1,6 +1,4 @@
 class BoatsController < ApplicationController
-  before_filter :set_back_link, only: [:show]
-
   def index
   end
 
@@ -96,6 +94,12 @@ class BoatsController < ApplicationController
       redirect_to({action: :index}, alert: I18n.t('messages.boat_not_exist')) and return
     end
 
+    @came_from = case request.referer
+                 when %r{/search\?} then :search
+                 when %r{/boats-for-sale/} then :boats_for_sale
+                 end
+    @back_url = request.referer if @came_from
+
     UserActivity.create_boat_visit(boat_id: @boat.id, user: current_user)
     store_recent
   end
@@ -119,14 +123,6 @@ class BoatsController < ApplicationController
     file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)
 
     send_data File.read(file_path), filename: File.basename(file_path), type: 'application/pdf'
-  end
-
-  private
-
-  def set_back_link
-    if request.referer =~ /^([^\?]+)?\/search(\?.*)?$/
-      @back_url = request.referer.to_s
-    end
   end
 
   def store_recent

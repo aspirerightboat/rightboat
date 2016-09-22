@@ -12,7 +12,7 @@
   meta(name="robots" content="index, nofollow")
 
 - content_for :header_text do
-  - if session[:boats_count] && @back_url
+  - if session[:boats_count] && @came_from == :search
     .navbar-h Boats <strong>For Sale</strong>
     h3
       ' Search Results:
@@ -23,11 +23,11 @@
       span.hidden-sm Find your <strong>Rightboat</strong>
 
 - content_for :header do
-  - if @back_url
+  - if @came_from == :search
     = render 'shared/advanced_search'
   = render partial: 'shared/top_navbar', locals: {include_header: true}
 
-= render 'shared/search_bar'
+= render partial: 'shared/search_bar', locals: {advanced_search_btn: @came_from == :search}
 
 .boat-view(data-boat-ref=@boat.slug data-length=@boat.length_ft data-price=@boat.price_gbp)
   .container

@@ -6,9 +6,9 @@ nav.search-bar
       ul.flat-list
         li= link_to '< Back to Results', @back_url, class: 'search-bar-btn'
     ul.flat-list
-      - if controller_name == 'search' || @back_url
+      - if local_assigns[:advanced_search_btn]
         li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search search-bar-btn'
-      - if controller_name == 'search'
+      - if local_assigns[:save_search_btn]
         li= render partial: 'shared/save_search_btn', locals: {link_class: 'search-bar-btn'}
       - if @boat
         li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'search-bar-btn'

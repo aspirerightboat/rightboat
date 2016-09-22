@@ -16,9 +16,11 @@ class BrokerAreaController < ApplicationController
 
   def update_details
     if current_user.update(user_params)
-      render json: {location: url_for(action: :details)}
+      redirect_to :back
+      # render json: {location: url_for(action: :details)}
     else
-      render json: current_user.errors.full_messages, root: false, status: 422
+      render :details, alert: current_user.errors.full_messages.join(' ')
+      # render json: current_user.errors.full_messages, root: false, status: 422
     end
   end
 

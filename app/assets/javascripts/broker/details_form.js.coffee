@@ -27,10 +27,6 @@ updateNoDataText = () ->
 $ ->
   updateNoDataText()
 
-  $('.business-info-form').simpleAjaxForm ($form) ->
-    $('.alert', $form).remove()
-    $('<div class="alert alert-info">Settings were saved</div>').prependTo($form).hide().show(200)
-
   $('.add-office-btn').click ->
     openOfficePopup(null)
   $(document).on 'click', '.edt-office-btn', -> openOfficePopup($(@).closest('.office-item'))

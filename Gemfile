@@ -18,7 +18,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'slim-rails'
 gem 'activeadmin', github: 'activeadmin'
 gem 'devise'
-gem 'cancan'
 gem 'active_model_serializers'
 gem 'open_uri_redirections'
 gem 'kaminari'

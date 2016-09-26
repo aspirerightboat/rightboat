@@ -19,18 +19,7 @@ class SearchController < ApplicationController
   end
 
   def results
-    if params[:q].present? && params[:manufacturers].blank? && params[:models].blank?
-      stripped_q = params[:q].strip.downcase
-      if (boat = find_makemodel_boat(stripped_q))
-        opts = {manufacturer: boat.manufacturer}
-        opts.merge!(models: boat.model_id) if boat.manufacturer.name.downcase != stripped_q
-        redirect_to sale_manufacturer_path(opts) and return
-      elsif (m = match_makemodel_part(stripped_q)).present?
-        params.delete(:q)
-        params[:manufacturers] = [m[:manufacturer_id]]
-        params[:models] = m[:model_ids] if m[:model_ids].any?
-      end
-    end
+    return if show_catalog_if_q_manufacturer
 
     params.delete(:page) unless request.xhr?
     set_current_search_order(params[:q].present? ? 'score_desc' : 'price_desc') if params[:order].blank?
@@ -110,25 +99,12 @@ class SearchController < ApplicationController
         .pluck('DISTINCT value').map { |v| {name: v} }
   end
 
-  def find_makemodel_boat(q)
-    search = Boat.retryable_solr_search! do
-      with :live, true
-      paginate page: 1, per_page: 1
-      any_of do
-        with :manufacturer, q
-        with :manufacturer_model, q
-      end
-    end
-    search.results.first
-  end
-
-  def match_makemodel_part(q)
-    maker_str, model_str = q.split(/\s+/, 2)
-    if (maker = Manufacturer.find_by(name: maker_str))
-      {
-          manufacturer_id: maker.id,
-          model_ids: model_str.present? ? maker.models.where('name LIKE ?', "#{model_str}%").pluck(:id) : []
-      }
+  def show_catalog_if_q_manufacturer
+    if params[:q].present? &&
+        params[:manufacturers].blank? &&
+        params[:models].blank? &&
+        (m = Manufacturer.find_by(name: params[:q].strip.downcase))
+      redirect_to sale_manufacturer_path(m)
     end
   end
 

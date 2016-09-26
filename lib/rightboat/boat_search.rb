@@ -25,6 +25,7 @@ module Rightboat
 
       @search = Boat.retryable_solr_search!(include: includes) do
         if q
+          exact_q_search_if_makemodel
           fulltext q do
             minimum_match 1
           end
@@ -157,7 +158,7 @@ module Rightboat
 
     def read_params(params)
       @q = read_str(params[:q])
-      @manufacturer_model = read_str(params[:manufacturer_model]&.downcase)
+      @manufacturer_model = read_str(params[:manufacturer_model])
       @manufacturer_ids = read_tags(params[:manufacturers])
       @model_ids = read_tags(params[:models])
       @manufacturer_id = params[:manufacturer_id] if params[:manufacturer_id].present?
@@ -166,14 +167,14 @@ module Rightboat
       @boat_type_id = params[:boat_type_id] if params[:boat_type_id].present?
       # @category = read_tags(params[:category])
       @country_ids = read_tags(params[:countries])
-      @boat_type = read_str(params[:boat_type]&.downcase)
+      @boat_type = read_str(params[:boat_type])
       @year_min = read_year(params[:year_min])
       @year_max = read_year(params[:year_max])
       @price_min = read_price(params[:price_min], params[:currency])
       @price_max = read_price(params[:price_max], params[:currency])
       @length_min = read_length(params[:length_min], params[:length_unit])
       @length_max = read_length(params[:length_max], params[:length_unit])
-      @ref_no = read_str(params[:ref_no]&.downcase)
+      @ref_no = read_str(params[:ref_no])
       @new_used = read_hash(params[:new_used], 'new', 'used')
       @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
       @page = [params[:page].to_i, 1].max
@@ -181,14 +182,14 @@ module Rightboat
         @order_col, @order_dir = self.class.read_order(params[:order])
         @order = params[:order] if @order_col
       end
-      @exclude_ref_no = read_str(params[:exclude_ref_no]&.downcase)
+      @exclude_ref_no = read_str(params[:exclude_ref_no])
       if params[:states].present?
         @states = read_tags(params[:states])&.select { |s| Rightboat::USStates.states_map[s] }&.map(&:downcase)
       end
     end
 
     def read_str(str)
-      str.strip if str.present?
+      str.downcase.strip if str.present?
     end
 
     def read_tags(tags)
@@ -234,5 +235,23 @@ module Rightboat
         Boat.where('year_built > 1000').order(year_built: :asc).first.year_built
       end
     end
+
+    def exact_q_search_if_makemodel
+      if !manufacturer_ids && !model_ids && is_makemodel_or_model_str(q)
+        @q = %("#{q}")
+      end
+    end
+
+    def is_makemodel_or_model_str(q)
+      Boat.retryable_solr_search! {
+        with :live, true
+        paginate page: 1, per_page: 1
+        any_of do
+          with :manufacturer_model, q
+          with :model, q
+        end
+      }.hits.any?
+    end
+    
   end
 end

@@ -1,11 +1,8 @@
 module Rightboat
   class BoatSearch
     ORDER_TYPES = %w(score_desc created_at_desc price_desc price_asc year_asc year_desc length_m_desc length_m_asc)
-    YEARS_RANGE = (Date.today.year - 200)..Date.today.year
-    PRICES_RANGE = 0..100_000_000
-    M_LENGTHS_RANGE = 0..300
-    FT_LENGTHS_RANGE = 0..1000
     PER_PAGE = 30
+    include ParamsReader
 
     attr_reader :facets_data, :search
 
@@ -145,89 +142,48 @@ module Rightboat
       end
 
       @facets_data = {
-          price_min:  price_stats&.data && price_stats.min.try(:floor) || PRICES_RANGE.min,
-          price_max:  price_stats&.data && price_stats.max.try(:ceil) || PRICES_RANGE.max,
-          # year_min:   year_stats&.data && year_stats.min.try(:floor) || YEARS_RANGE.min,
-          year_min:   boat_year_built_min || YEARS_RANGE.min,
-          year_max:   year_stats&.data && year_stats.max.try(:ceil) || YEARS_RANGE.max,
-          length_min: length_stats&.data && length_stats.min.try(:floor) || M_LENGTHS_RANGE.min,
-          length_max: length_stats&.data && length_stats.max.try(:ceil) || M_LENGTHS_RANGE.max,
+          price_min:  price_stats&.data && price_stats.min.try(:floor) || Boat::PRICES_RANGE.min,
+          price_max:  price_stats&.data && price_stats.max.try(:ceil) || Boat::PRICES_RANGE.max,
+          # year_min:   year_stats&.data && year_stats.min.try(:floor) || Boat::YEARS_RANGE.min,
+          year_min:   boat_year_built_min || Boat::YEARS_RANGE.min,
+          year_max:   year_stats&.data && year_stats.max.try(:ceil) || Boat::YEARS_RANGE.max,
+          length_min: length_stats&.data && length_stats.min.try(:floor) || Boat::M_LENGTHS_RANGE.min,
+          length_max: length_stats&.data && length_stats.max.try(:ceil) || Boat::M_LENGTHS_RANGE.max,
           countries_data: countries_data
       }
     end
 
     def read_params(params)
-      @q = read_str(params[:q])
-      @manufacturer_model = read_str(params[:manufacturer_model])
-      @manufacturer_ids = read_tags(params[:manufacturers])
-      @model_ids = read_tags(params[:models])
-      @manufacturer_id = params[:manufacturer_id] if params[:manufacturer_id].present?
-      @model_id = params[:model_id] if params[:model_id].present?
-      @country_id = params[:country_id] if params[:country_id].present?
-      @boat_type_id = params[:boat_type_id] if params[:boat_type_id].present?
-      # @category = read_tags(params[:category])
-      @country_ids = read_tags(params[:countries])
-      @boat_type = read_str(params[:boat_type])
-      @year_min = read_year(params[:year_min])
-      @year_max = read_year(params[:year_max])
-      @price_min = read_price(params[:price_min], params[:currency])
-      @price_max = read_price(params[:price_max], params[:currency])
-      @length_min = read_length(params[:length_min], params[:length_unit])
-      @length_max = read_length(params[:length_max], params[:length_unit])
-      @ref_no = read_str(params[:ref_no])
-      @new_used = read_hash(params[:new_used], 'new', 'used')
-      @tax_status = read_hash(params[:tax_status], 'paid', 'unpaid')
-      @page = [params[:page].to_i, 1].max
+      @q = read_downcase_str(params[:q])
+      @manufacturer_model = read_downcase_str(params[:manufacturer_model])
+      @manufacturer_ids = read_ids(params[:manufacturers])
+      @model_ids = read_ids(params[:models])
+      @manufacturer_id = read_id(params[:manufacturer_id])
+      @model_id = read_id(params[:model_id])
+      @country_id = read_id(params[:country_id])
+      @boat_type_id = read_id(params[:boat_type_id])
+      @country_ids = read_ids(params[:countries])
+      @boat_type = read_downcase_str(params[:boat_type])
+      @year_min = read_boat_year(params[:year_min])
+      @year_max = read_boat_year(params[:year_max])
+      if (currency = read_currency(params[:currency]))
+        @price_min = read_boat_price_gbp(params[:price_min], currency)
+        @price_max = read_boat_price_gbp(params[:price_max], currency)
+      end
+      if (length_unit = read_length_unit(params[:length_unit]))
+        @length_min = read_boat_length_m(params[:length_min], length_unit)
+        @length_max = read_boat_length_m(params[:length_max], length_unit)
+      end
+      @ref_no = read_downcase_str(params[:ref_no])
+      @new_used = read_new_used_hash(params[:new_used])
+      @tax_status = read_tax_status_hash(params[:tax_status])
+      @page = read_page(params[:page])
       if params[:order]
         @order_col, @order_dir = self.class.read_order(params[:order])
         @order = params[:order] if @order_col
       end
-      @exclude_ref_no = read_str(params[:exclude_ref_no])
-      if params[:states].present?
-        @states = read_tags(params[:states])&.select { |s| Rightboat::USStates.states_map[s] }&.map(&:downcase)
-      end
-    end
-
-    def read_str(str)
-      str.downcase.strip if str.present?
-    end
-
-    def read_tags(tags)
-      if tags.present?
-        arr = if tags.is_a?(String)
-                tags.split('-')
-              elsif tags.is_a?(Array)
-                tags
-              end
-        arr&.select { |tag| tag.is_a?(Numeric) || tag.is_a?(String) && tag =~ /\A\d+\z/ }
-      end
-    end
-
-    def read_price(price, currency)
-      if price.present?
-        c = Currency.cached_by_name(currency) || Currency.default
-        Currency.convert(price.to_i, c, Currency.default)
-      end
-    end
-
-    def read_year(year)
-      if year.present?
-        year.to_i.clamp(YEARS_RANGE)
-      end
-    end
-
-    def read_length(len, len_unit)
-      if len.present?
-        res = len.to_f
-        res = res.ft_to_m if len_unit == 'ft'
-        res.round(2).clamp(M_LENGTHS_RANGE)
-      end
-    end
-
-    def read_hash(hash, *possible_keys)
-      if hash.present? && hash.is_a?(Hash)
-        hash.with_indifferent_access.slice(*possible_keys)
-      end
+      @exclude_ref_no = read_downcase_str(params[:exclude_ref_no])
+      @states = read_state_codes(params[:states])&.map(&:downcase)
     end
 
     def boat_year_built_min

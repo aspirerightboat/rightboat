@@ -171,7 +171,7 @@ class LeadsController < ApplicationController
   end
 
   def follow_makemodel(manufacturer_id, model_id)
-    SavedSearch.safe_create(current_user, manufacturers: [manufacturer_id.to_s], models: [model_id.to_s])
+    SavedSearch.safe_create(current_user, manufacturers: [manufacturer_id], models: [model_id])
   end
 
 end

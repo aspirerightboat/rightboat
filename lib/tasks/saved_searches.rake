@@ -6,7 +6,7 @@ namespace :saved_searches do
     Lead.where.not(user: nil).where(status: %w(pending cancelled invoiced)).find_each do |lead|
       boat = lead.boat
       user = lead.user
-      res = SavedSearch.safe_create(user, manufacturers: [boat.manufacturer_id.to_s], models: [boat.model_id.to_s])
+      res = SavedSearch.safe_create(user, manufacturers: [boat.manufacturer_id], models: [boat.model_id])
       searches_created += 1 if res
     end
 

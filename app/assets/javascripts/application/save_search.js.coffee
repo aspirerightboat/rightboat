@@ -8,7 +8,8 @@ $ ->
         $(@).attr('href', url + '?' + params)
     .on 'ajax:success', (e, data, status, xhr) ->
       $(document.body).append(data.google_conversion) if data.google_conversion
-      $('.saved-search-hint').fadeIn()
+      $hint = $(@).closest('.save-search').find('.saved-search-hint')
+      $hint.fadeIn()
       $(window).on 'click.ss-hint', ->
-        $('.saved-search-hint').fadeOut()
+        $hint.fadeOut()
         $(@).off('click.ss-hint')

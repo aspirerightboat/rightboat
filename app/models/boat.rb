@@ -5,6 +5,10 @@ class Boat < ActiveRecord::Base
   WEIGHT_UNITS = %w(kgs lbs tonnes)
   SPEED_UNITS = %w(knots mph rpm)
   LENGTH_UNITS = %w(ft m)
+  YEARS_RANGE = (Date.today.year - 200)..Date.today.year
+  PRICES_RANGE = 0..100_000_000
+  M_LENGTHS_RANGE = 0..300
+  FT_LENGTHS_RANGE = 0..1000
 
   searchable do
     text :ref_no,               boost: 5

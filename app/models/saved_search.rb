@@ -6,6 +6,8 @@ class SavedSearch < ActiveRecord::Base
   serialize :tax_status, Hash
   serialize :new_used, Hash
 
+  include Rightboat::ParamsReader
+
   belongs_to :user, counter_cache: true
 
   def currency_sym
@@ -47,34 +49,36 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def safe_assign_params(params)
-    [:countries, :manufacturers, :models].each do |attr|
-      self[attr] = (params[attr].to_s.split('-').select { |id| id =~ /\A\d+\z/ }.presence if params[attr].present?)
+    self.countries = read_ids(params[:countries])
+    self.manufacturers = read_ids(params[:manufacturers])
+    self.models = read_ids(params[:models])
+    self.states = read_ids(params[:states])
+    self.year_min = read_boat_year(params[:year_min])
+    self.year_max = read_boat_year(params[:year_max])
+    if (currency = read_currency(params[:currency]))
+      self.price_min = read_boat_price(params[:price_min])
+      self.price_max = read_boat_price(params[:price_max])
+      self.currency = (currency.name if price_min || price_max)
     end
-    self.states = (params[:states].to_s.split('-').select { |id| id =~ /\A[A-Z]{2}\z/ }.presence if params[:states].present?)
-
-    self.year_min = (params[:year_min].to_i.clamp(Rightboat::BoatSearch::YEARS_RANGE) if params[:year_min].present?)
-    self.year_max = (params[:year_max].to_i.clamp(Rightboat::BoatSearch::YEARS_RANGE) if params[:year_max].present?)
-    self.price_min = (params[:price_min].to_i.clamp(Rightboat::BoatSearch::PRICES_RANGE) if params[:price_min].present?)
-    self.price_max = (params[:price_max].to_i.clamp(Rightboat::BoatSearch::PRICES_RANGE) if params[:price_max].present?)
-    self.currency = (((Currency.cached_by_name(params[:currency])&.name if params[:currency].present?) || Currency.default.name) if price_min || price_max)
-    self.length_unit = (params[:length_unit].presence_in(Boat::LENGTH_UNITS) || 'm' if params[:length_min].present? || params[:length_max].present?)
-    length_range = length_unit == 'm' ? Rightboat::BoatSearch::M_LENGTHS_RANGE : Rightboat::BoatSearch::FT_LENGTHS_RANGE
-    self.length_min = (params[:length_min].to_i.clamp(length_range) if params[:length_min].present?)
-    self.length_max = (params[:length_max].to_i.clamp(length_range) if params[:length_max].present?)
-    self.q = params[:q].presence
+    if (length_unit = read_length_unit(params[:length_unit]))
+      self.length_min = read_boat_length(params[:length_min], length_unit)
+      self.length_max = read_boat_length(params[:length_max], length_unit)
+      self.length_unit = (length_unit if length_min || length_max)
+    end
+    self.q = read_str(params[:q])
     self.boat_type = params[:boat_type].presence_in(%w(power sail))
-    self.tax_status = (params[:tax_status].slice(:paid, :unpaid) if params[:tax_status].is_a?(Hash))
-    self.new_used = (params[:new_used].slice(:new, :used) if params[:new_used].is_a?(Hash))
+    self.tax_status = read_tax_status_hash(params[:tax_status])
+    self.new_used = read_new_used_hash(params[:new_used])
 
     search_params = to_search_params.merge!(order: 'created_at_desc')
     self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(search_params, per_page: 1).hits.first&.primary_key
 
     # some params are from boats-for-sale page
     if params[:manufacturer].present? && (manufacturer = Manufacturer.find_by(name: params[:manufacturer]))
-      self.manufacturers = [manufacturer.id.to_s]
+      self.manufacturers = [manufacturer.id]
     end
     if params[:country].present? && (country = Country.find_by(slug: params[:country]))
-      self.countries = [country.id.to_s]
+      self.countries = [country.id]
     end
   end
 

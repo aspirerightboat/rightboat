@@ -152,12 +152,14 @@ module Rightboat
             rows.each do |row|
               tds = row.element_children
               location = tds[9].text
-              next if location == 'Sold'
+              # next if location == 'Sold'
 
               job = {}
               job[:length_m] = read_length(tds[3].text)
               if location == 'Sale Pending'
                 job[:offer_status] = 'under_offer'
+              elsif location == 'Sold'
+                job[:offer_status] = 'sold'
               else
                 job[:location] = location
               end

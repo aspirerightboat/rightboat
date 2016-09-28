@@ -2,5 +2,5 @@
   - t('testimonials').each do |testimonial|
     .testimonial
       blockquote
-        p= testimonial[:content]
+        p “#{testimonial[:content]}”
         footer.text-right= testimonial[:author]

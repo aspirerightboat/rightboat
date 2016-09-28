@@ -76,6 +76,8 @@
         li
           | Whatever your market, our system matches your boats with our private member database.
 
+= render 'testimonials'
+
 #broker_registered_popup.modal.fade
   .modal-dialog
     .modal-content
@@ -92,14 +94,3 @@
 
         p.nice-buttons
           button.nice-button(type="button" aria-label="Close" data-dismiss="modal" style="min-width: 100px;") Ok
-
-javascript:
-  $('#rb-advantages').slick({
-    autoplay: true,
-    autoplaySpeed: 3000,
-    dots: true,
-    infinite: true,
-    speed: 500,
-    fade: true,
-    cssEase: 'linear'
-  });

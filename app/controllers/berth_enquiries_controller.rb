@@ -1,6 +1,7 @@
 class BerthEnquiriesController < ApplicationController
 
   def load_popup
+    render json: {show_popup: render_to_string(partial: 'berth_enquiries/berths_popup', formats: [:html])}
   end
 
   def create
@@ -8,7 +9,7 @@ class BerthEnquiriesController < ApplicationController
 
     if @berth_enquiry.save
       StaffMailer.new_berth_enquiry(@berth_enquiry.id).deliver_later
-      render json: {alert: 'Thank you, your request have been sent to us'}, status: 200
+      render json: {show_popup: render_to_string(partial: 'berth_enquiries/berths_result_popup', formats: [:html])}
     else
       render json: @berth_enquiry.errors.full_messages, root: false, status: 422
     end

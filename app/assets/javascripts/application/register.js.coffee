@@ -5,9 +5,6 @@ $ ->
     $('#login_popup').displayPopup() unless $('#login_popup').is(':visible')
     false
 
-  $('.simple-ajax-form').each ->
-    $(@).simpleAjaxForm()
-
   $('.reset-password-form').simpleAjaxForm ($form) ->
     $('.alert', $form).remove()
     $('#reset-password-result-popup').displayPopup()

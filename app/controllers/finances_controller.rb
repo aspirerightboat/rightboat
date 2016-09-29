@@ -1,6 +1,7 @@
 class FinancesController < ApplicationController
 
   def load_popup
+    render json: {show_popup: render_to_string(partial: 'finances/finance_popup', formats: [:html])}
   end
 
   def create
@@ -8,7 +9,7 @@ class FinancesController < ApplicationController
 
     if @finance.save
       StaffMailer.new_finance(@finance.id).deliver_later
-      render json: {}, status: 200
+      render json: {show_popup: render_to_string(partial: 'finances/finance_result_popup', formats: [:html])}
     else
       render json: @finance.errors.full_messages, root: false, status: 422
     end
@@ -17,7 +18,8 @@ class FinancesController < ApplicationController
   private
 
   def finance_params
-    params.fetch(:finance, {})
-      .permit(:manufacturer_id, :model_id, :age_of_vessel, :country_id, :price, :price_currency, :loan_amount, :loan_amount_currency)
+    params.require(:finance).permit(:manufacturer_id, :model_id, :age_of_vessel, :country_id,
+                                    :price, :price_currency, :loan_amount, :loan_amount_currency)
   end
+
 end

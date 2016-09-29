@@ -1,5 +1,3 @@
-- current_year = Date.today.year
-
 #finance_popup.modal.fade
   .modal-dialog
     .modal-content
@@ -23,7 +21,7 @@
           .form-group.row
             .col-md-5.col-xs-12 3. Age of Vessel
             .col-md-5.col-xs-12
-              = f.select :age_of_vessel, ((current_year - 30)..current_year).to_a.reverse, {prompt: 'Please select'}, class: 'select-general'
+              = f.select :age_of_vessel, Date.today.year.downto(Date.today.year - 30).to_a, {prompt: 'Please select'}, class: 'select-general'
           .form-group.row
             .col-md-5.col-xs-12 4. Location
             .col-md-5.col-xs-12
@@ -49,15 +47,3 @@
               = f.submit 'Submit a Request', class: 'btn-flat'
             .col-md-9.col-xs-12
               | We will send your enquiry to Rightboat selected partners to assist in your search.
-
-#finance_result_popup.modal.fade
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(aria-label="Close" data-dismiss="modal" type="button")
-          span(aria-hidden="true") &times;
-        .h Message Sent
-      .modal-body
-        h1.text-center Thank you for your enquiry
-        h4.text-center
-          | Your details have been forwarded to select Boat Finance Specialists and they will be in touch in due course.

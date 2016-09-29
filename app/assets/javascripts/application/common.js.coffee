@@ -9,6 +9,16 @@ window.scrollToTarget = (target) ->
     scrollTop: $(target).offset().top
   , 500
 
+$.fn.simpleAjaxLink = ->
+  @
+  .on 'ajax:beforeSend', -> $(@).addClass('inline-loading')
+  .on 'ajax:complete', -> $(@).removeClass('inline-loading')
+
+curPopup = null
+$.fn.displayPopup = ->
+  curPopup.modal('hide') if curPopup
+  curPopup = @.modal('show')
+
 $ ->
   $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle="popover"]').popover({html: true})
@@ -63,18 +73,10 @@ $ ->
       scrollToTarget($target)
       false
 
-  curPopup = null
-  $.fn.displayPopup = ->
-    curPopup.modal('hide') if curPopup
-    curPopup = @.modal('show')
-
   $('.hide-parent').click ->
     $(@).closest($(@).data('hide-parent')).hide(200)
-
-  $('.simple-ajax-link').each ->
-    $(@)
-    .on 'ajax:beforeSend', (e) -> $(@).addClass('inline-loading')
-    .on 'ajax:complete', (e) -> $(@).removeClass('inline-loading')
+  
+  $('.simple-ajax-link').each -> $(@).simpleAjaxLink()
 
   $('#trigger_login_popup').each ->
     $('#login_popup').modal('show')

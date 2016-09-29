@@ -13,9 +13,18 @@ nav#footer
             li= link_to 'News', articles_path
           ul.col-xs-6.col-sm-3
             li= link_to 'Sell my boat', current_user ? member_boats_path : sell_my_boats_home_path
-            li= link_to 'Berths', '#', class: "load-popup#{' open-login-popup' unless user_signed_in?}", data: {load_popup_id: 'berths_popup', load_popup_url: load_popup_berth_enquiries_path, 'login-title' => 'Please sign in or join as a member to make a berth request.'}
-            li= link_to 'Finance', '#', class: "load-popup#{' open-login-popup' unless user_signed_in?}", data: {load_popup_id: 'finance_popup', load_popup_url: load_popup_finances_path, 'login-title' => 'Please sign in or join as a member to get a financial quotation.'}
-            li= link_to 'Insurance', '#', class: "load-popup#{' open-login-popup' unless user_signed_in?}", data: {load_popup_id: 'insurance_popup', load_popup_url: load_popup_insurances_path, 'login-title' => 'Please sign in or join as a member to get an insurance quote.'}
+            li
+              - opts = current_user ? {class: 'berths-popup-link', 'data-remote' => 'true', 'data-url' => load_popup_berth_enquiries_path} \
+                                    : {class: 'open-login-popup', 'data-title' => 'Please sign in or join as a member to make a berth request.'}
+              button.btn-like-link *opts Berths
+            li
+              - opts = current_user ? {class: 'finance-popup-link', 'data-remote' => 'true', 'data-url' => load_popup_finances_path} \
+                                    : {class: 'open-login-popup', 'data-title' => 'Please sign in or join as a member to get a financial quotation.'}
+              button.btn-like-link *opts Finance
+            li
+              - opts = current_user ? {class: 'insurance-popup-link', 'data-remote' => 'true', 'data-url' => load_popup_insurances_path} \
+                                    : {class: 'open-login-popup', 'data-title' => 'Please sign in or join as a member to get an insurance quote.'}
+              button.btn-like-link *opts Insurance
           ul.col-xs-6.col-sm-3
             li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link', rel: 'nofollow', target: '_blank'
             li= link_to '@rightboat', 'https://twitter.com/rightboat', class: 'tw-link', rel: 'nofollow', target: '_blank'

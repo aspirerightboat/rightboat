@@ -1,7 +1,7 @@
 $ ->
   $('.insurance-popup-link').each ->
     $(@).simpleAjaxLink().loadPopupOnce()
-    .on 'ajax:success', (data) ->
+    .on 'ajax:success', ->
       $form = $('#insurance_form')
       $('.select-general', $form).generalSelect()
       $('.select-currency', $form).currencySelect()

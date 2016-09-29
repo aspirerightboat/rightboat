@@ -96,6 +96,7 @@ group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'haml2slim'
+  gem 'active_record_query_trace'
 end
 
 group :test do

@@ -1,7 +1,7 @@
 $ ->
   $('.berths-popup-link').each ->
     $(@).simpleAjaxLink().loadPopupOnce()
-    .on 'ajax:success', (data) ->
+    .on 'ajax:success', ->
       $.getScript('https://maps.google.com/maps/api/js?sensor=false')
       map = null
       marker = null

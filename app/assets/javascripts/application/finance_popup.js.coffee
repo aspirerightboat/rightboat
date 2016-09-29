@@ -1,7 +1,10 @@
 $ ->
   $('.finance-popup-link').each ->
     $(@).simpleAjaxLink().loadPopupOnce()
-    .on 'ajax:success', (data) ->
+    .on 'ajax:success', (e, data) ->
+      if data.redirect_to
+        window.location = data.redirect_to
+        return
       $form = $('#finance_form')
       $('.select-general', $form).generalSelect()
       $('.select-currency', $form).currencySelect()

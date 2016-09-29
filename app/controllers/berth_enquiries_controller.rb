@@ -1,4 +1,5 @@
 class BerthEnquiriesController < ApplicationController
+  before_action :authenticate_user!
 
   def load_popup
     render json: {show_popup: render_to_string(partial: 'berth_enquiries/berths_popup', formats: [:html])}

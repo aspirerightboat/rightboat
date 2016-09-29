@@ -4,23 +4,20 @@ module ActiveAdmin::UsersHelper
   end
 
   def user_activity_to_sentence(activity)
-    if activity.kind == 'boat_view'
-      content_tag :p, class: activity.kind do
-        concat content_tag(:span, activity.created_at.to_s(:time), class: 'status_tag')
-        concat " User has viewed a boat: "
-        concat link_to "#{activity.boat.manufacturer.to_s} - #{activity.boat.model.to_s}", admin_boat_path(activity.boat_id)
-      end
-    elsif activity.kind == 'lead'
-      content_tag :p, class: activity.kind do
-        concat content_tag(:span, activity.created_at.to_s(:time), class: 'status_tag')
-        concat " User has made a lead: "
-        concat link_to "#{activity.lead.boat.manufacturer.to_s} - #{activity.lead.boat.model.to_s}", admin_lead_path(activity.lead_id)
-      end
-    elsif activity.kind == 'search'
-      content_tag :p, class: activity.kind do
-        concat content_tag(:span, activity.created_at.to_s(:time), class: 'status_tag')
-        concat " User has saved a search: "
+    content_tag :p, class: activity.kind do
+      concat content_tag(:span, activity.created_at.to_s(:time), class: 'status_tag')
+      case activity.kind
+      when 'boat_view'
+        concat ' User has viewed a boat: '
+        concat link_to activity.boat.manufacturer_model, admin_boat_path(activity.boat)
+      when 'lead'
+        concat ' User has made a lead: '
+        concat link_to activity.lead.boat.manufacturer_model, admin_lead_path(activity.lead)
+      when 'search'
+        concat ' User has saved a search: '
         concat content_tag(:i, query_to_readable_string(activity))
+      when 'forwarded_to_pegasus'
+        concat ' User was redirected to pegasus'
       end
     end
   end

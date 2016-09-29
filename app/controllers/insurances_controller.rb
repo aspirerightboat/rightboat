@@ -1,4 +1,5 @@
 class InsurancesController < ApplicationController
+  before_action :authenticate_user!
 
   def load_popup
     render json: {show_popup: render_to_string(partial: 'insurances/insurance_popup', formats: [:html])}

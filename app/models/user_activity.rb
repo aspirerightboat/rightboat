@@ -1,4 +1,6 @@
 class UserActivity < ActiveRecord::Base
+  KINDS = %w(boat_view lead search forwarded_to_pegasus)
+
   belongs_to :user
   belongs_to :boat
   belongs_to :lead
@@ -35,6 +37,10 @@ class UserActivity < ActiveRecord::Base
       user_id: user&.id,
       user_email: user&.email
     )
+  end
+
+  def self.create_forwarded_to_pegasus(user)
+    create!(user: user, user_email: user.email, kind: 'forwarded_to_pegasus')
   end
 
   def self.favourite_boat_types_for(user)

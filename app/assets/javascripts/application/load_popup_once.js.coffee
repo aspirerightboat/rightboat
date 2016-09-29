@@ -6,5 +6,6 @@ $.fn.loadPopupOnce = ->
         popup.displayPopup()
         false
     .on 'ajax:success', (e, data) ->
-      $popup = $(data.show_popup).appendTo(document.body).displayPopup()
-      $(@).data('loaded-popup', $popup)
+      if data.show_popup
+        $popup = $(data.show_popup).appendTo(document.body).displayPopup()
+        $(@).data('loaded-popup', $popup)

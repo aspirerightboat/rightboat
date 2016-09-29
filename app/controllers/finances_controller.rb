@@ -1,7 +1,13 @@
 class FinancesController < ApplicationController
+  before_action :authenticate_user!
 
   def load_popup
-    render json: {show_popup: render_to_string(partial: 'finances/finance_popup', formats: [:html])}
+    if session[:country] == 'GB' || session[:country].in?(Country::EUROPEAN_ISO_CODES)
+      UserActivity.create_forwarded_to_pegasus(current_user)
+      render json: {redirect_to: 'https://www.pegasusmarinefinance.co.uk/rightboat/?introducer_contact_id=4890'}
+    else
+      render json: {show_popup: render_to_string(partial: 'finances/finance_popup', formats: [:html])}
+    end
   end
 
   def create

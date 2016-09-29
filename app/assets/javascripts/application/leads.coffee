@@ -4,20 +4,19 @@ $ ->
     $form
     .on 'ajax:before', (e) ->
       $('#has_account').val $('.lead-form #password').is(':visible')
-    .on 'ajax:success', (e, data, status, xhr) ->
-      json = xhr.responseJSON
-      $(document.body).append(json.google_conversion)
-      $('#download_iframe').attr('src', json.boat_pdf_url)
+    .on 'ajax:success', (e, data) ->
+      $(document.body).append(data.google_conversion)
+      $('#download_iframe').attr('src', data.boat_pdf_url)
       $('#lead_message').val('')
-      if json.signup_popup
+      if data.signup_popup
         $('#lead_signup_popup').remove()
-        $(document.body).append(json.signup_popup)
-        $('#signup_lead_id').val json.lead_id
+        $(document.body).append(data.signup_popup)
+        $('#signup_lead_id').val data.lead_id
         $('#lead_signup_form').leadSignupForm()
         $('#lead_signup_popup').displayPopup()
-      if json.downloading_popup
+      if data.downloading_popup
         $('#lead_downloading_popup').remove()
-        $(document.body).append(json.downloading_popup)
+        $(document.body).append(data.downloading_popup)
         $('#lead_downloading_popup').displayPopup()
 
     $.fn.leadSignupForm = ->
@@ -29,18 +28,17 @@ $ ->
         $('#signup_last_name').val($('#lead_last_name').val())
         $('#signup_phone').val($('#lead_country_code').val() + ' ' + $('#lead_phone').val())
         $('#signup_boat').val($form.data('boat-slug'))
-      .on 'ajax:success', (e, data, status, xhr) ->
-        json = xhr.responseJSON
-        $(document.body).append(json.google_conversion) if json.google_conversion
+      .on 'ajax:success', (e, data) ->
+        $(document.body).append(data.google_conversion) if data.google_conversion
 
       $('.open-features-popup').click ->
         $('#features_popup').modal('show')
         false
 
-  $('.hide-lead').on 'ajax:success', (e, data, status, xhr) ->
+  $('.hide-lead').on 'ajax:success', ->
     $(@).closest('.boat-thumb-container').fadeOut()
 
-  $('.unhide-leads').on 'ajax:success', (e, data, status, xhr) ->
+  $('.unhide-leads').on 'ajax:success', ->
     $('.boat-thumb-container').fadeIn()
 
   $('#request_qc_button').each ->

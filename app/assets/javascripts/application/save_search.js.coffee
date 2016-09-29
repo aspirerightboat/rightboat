@@ -6,7 +6,7 @@ $ ->
         params = $.param(form.serializeArray())
         url = $(@).attr('href').replace(/\?.*/, '')
         $(@).attr('href', url + '?' + params)
-    .on 'ajax:success', (e, data, status, xhr) ->
+    .on 'ajax:success', (e, data) ->
       $(document.body).append(data.google_conversion) if data.google_conversion
       $hint = $(@).closest('.save-search').find('.saved-search-hint')
       $hint.fadeIn()

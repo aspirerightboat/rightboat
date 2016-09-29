@@ -1,1 +1,3 @@
-ActiveRecordQueryTrace.enabled = false
+if defined? ActiveRecordQueryTrace
+  ActiveRecordQueryTrace.enabled = false
+end

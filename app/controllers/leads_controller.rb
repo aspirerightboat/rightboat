@@ -16,10 +16,8 @@ class LeadsController < ApplicationController
       user = User.find_by(email: params[:email])
 
       if user && user.valid_password?(params[:password])
-        registered_from_affiliate = session[:iframe_broker_id]
         sign_in(user)
         user.remember_me! if params[:remember_me]
-        session[:iframe_broker_id] = registered_from_affiliate if registered_from_affiliate
       else
         render json: ['Invalid email or password'], root: false, status: 403 and return
       end
@@ -31,7 +29,7 @@ class LeadsController < ApplicationController
     lead.user_country_iso = current_user&.user_setting&.country_iso || session[:country]
     lead.mark_if_suspicious(current_user, params[:email], request.remote_ip)
     lead.created_from_affiliate = current_user&.registered_from_affiliate ||
-        (User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id])
+        (User.find_by(id: cookies[:iframe_broker_id]) if cookies[:iframe_broker_id])
     lead.update_lead_price
 
     if lead.save
@@ -90,7 +88,7 @@ class LeadsController < ApplicationController
       user.role = 'PRIVATE'
       user.email_confirmed = true
       user.assign_phone_from_leads
-      user.registered_from_affiliate = User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
+      user.registered_from_affiliate = User.find_by(id: cookies[:iframe_broker_id]) if cookies[:iframe_broker_id]
 
       if !user.save
         render json: user.errors.full_messages, root: false, status: :unprocessable_entity

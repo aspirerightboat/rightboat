@@ -60,7 +60,7 @@ class SessionsController < Devise::SessionsController
     user.password = SecureRandom.hex(10) if user.encrypted_password.blank?
     user.email_confirmed = true if fb_info.email.present?
     user.assign_phone_from_leads
-    user.registered_from_affiliate = User.find_by(id: session[:iframe_broker_id]) if session[:iframe_broker_id]
+    user.registered_from_affiliate = User.find_by(id: cookies[:iframe_broker_id]) if cookies[:iframe_broker_id]
 
     if user.save && fb_info.save
       sign_in(:user, user)

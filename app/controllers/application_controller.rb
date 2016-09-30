@@ -123,7 +123,7 @@ class ApplicationController < ActionController::Base
 
   def remember_broker_from_iframe
     if params[:iframe] && (iframe = BrokerIframe.find_by(token: params[:iframe]))
-      session[:iframe_broker_id] = iframe.user_id
+      cookies[:iframe_broker_id] = {value: iframe.user_id, expires: 1.day.from_now}
 
       url = url_for(params.except(:iframe).merge(only_path: true))
       IframeClick.create(broker_iframe: iframe, ip: request.remote_ip, url: url)

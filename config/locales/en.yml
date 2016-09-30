@@ -64,3 +64,6 @@ en:
         however just three days after the enquiry the vessel was sold. The pay-per-lead system which RightBoat 
         offer is the way forward. Many thanks to Nicky and the team for the great service.
       author: Graham Vey, Managing Director, Coast Yachts
+  user_notifications:
+    index:
+      title: "Saved Searches and Alert Settings"

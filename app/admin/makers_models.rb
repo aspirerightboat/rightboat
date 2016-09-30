@@ -44,7 +44,7 @@ ActiveAdmin.register_page 'Makers Models' do
       res = resource.update(name: new_name)
 
       if !res
-        if (same_name_resource = resource.where(name: new_name).where.not(id: resource.id).first)
+        if (same_name_resource = resource_class.where(name: new_name).where.not(id: resource.id).first)
           resource.merge_and_destroy!(same_name_resource)
           render json: 'Merged with other', replaced_with_other: true
           return

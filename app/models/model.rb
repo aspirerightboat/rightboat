@@ -61,20 +61,12 @@ class Model < ActiveRecord::Base
   end
 
   def self.solr_suggest_by_term(term, manufacturer_ids = nil)
-    if term.blank? && manufacturer_ids&.one?
-      maker_id = manufacturer_ids.first
-      models = Rails.cache.fetch "top-500-#{maker_id}-model-infos", expires_in: 1.day do
-        Model.where(manufacturer_id: maker_id).order(:name).limit(500).pluck('id, name')
-      end
-      return models.sort_by(&:second).map { |id, m_name| {id: id, name: m_name} }
-    end
-
     search = retryable_solr_search! do
       fulltext term if term.present?
       with :live, true
       any_of { manufacturer_ids.each { |m_id| with :manufacturer_id, m_id } } if manufacturer_ids.present?
       order_by :name, :asc
-      paginate page: 1, per_page: 100
+      paginate per_page: 500
     end
 
     search.hits.map { |h| {id: h.primary_key, name: h.stored(:name)} }

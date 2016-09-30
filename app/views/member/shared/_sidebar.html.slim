@@ -12,7 +12,7 @@
       li(class="#{nav_class_for('member/recent_views#index')}")
         = link_to 'My Recently Viewed', member_recent_views_path
       li(class="#{nav_class_for('member/user_notifications#index')}")
-        = link_to 'My Notifications', member_user_notifications_path
+        = link_to 'Saved Searches and Alert Settings', member_user_notifications_path
       - if current_user&.company?
         li(class="#{nav_class_for('member/boats#index')}")
           = link_to 'Sell My Boat', member_boats_path

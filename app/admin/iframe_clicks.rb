@@ -22,6 +22,7 @@ ActiveAdmin.register IframeClick do
     end
     column :ip
     column :url
+    column :referer_url
     column :created_at
 
     actions

@@ -36,13 +36,13 @@
                 | <br><b>#{phone_number}</b>
               | <br><b>#{boat.user.email}</b>
               - if (office = boat.office)
-                == "<br>Office Name: <b>#{h office.name}</b>" if office.name.present?
+                == "<br>Office Name: <b>#{h office.name}</b>" if office.name.present? && office.name != boat.user.name
                 == "<br>Contact Name: <b>#{h office.contact_name}</b>" if office.contact_name.present?
-                == "<br>Daytime Phone: <b>#{h office.daytime_phone}</b>" if office.daytime_phone.present?
+                == "<br>Daytime Phone: <b>#{h office.daytime_phone}</b>" if office.daytime_phone.present? && office.daytime_phone != office.mobile && office.daytime_phone != boat.user.main_phone
                 == "<br>Evening Phone: <b>#{h office.evening_phone}</b>" if office.evening_phone.present?
                 == "<br>Mobile: <b>#{h office.mobile}</b>" if office.mobile.present?
                 == "<br>Fax: <b>#{h office.fax}</b>" if office.fax.present?
-                == "<br>Email: <b>#{h office.email}</b>" if office.email.present?
+                == "<br>Email: <b>#{h office.email}</b>" if office.email.present? && office.email != boat.user.email
               | <br>Request sent: <b>#{smart_date lead.created_at}</b>
         h4.text-uppercase= boat.manufacturer
         h5= boat.model

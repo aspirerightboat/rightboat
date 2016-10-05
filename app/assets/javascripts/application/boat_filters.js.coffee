@@ -29,15 +29,30 @@ $ ->
       show_loading_overlay(true)
       location.href = url
 
+    clear_other_filter = (id) ->
+      switch id
+        when 'boat_type' then $('#filters_boat_type_all').prop('checked', true)
+        when 'year', 'price', 'length'
+          $slider = $('#other_filters .'+id+'-slider')
+          $slider.data('value0', '')
+          $slider.data('value1', '')
+          reinitSlider($slider)
+        when 'q', 'ref_no' then $('#other_filters_form')[0][id].value = ''
+        when 'new_used' then $('#filters_new_used_new, #filters_new_used_used').prop('checked', false)
+        when 'tax_status' then $('#filters_tax_status_paid, #filters_tax_status_unpaid').prop('checked', false)
+
     $('.filter-tag .esc').click ->
       $filter_tag = $(@).closest('.filter-tag')
       $('#' + $filter_tag.data('id')).prop('checked', false)
+      clear_other_filter($filter_tag.data('id'))
       $filter_tag.remove()
       apply_filter()
 
     $('.clear-filters-btn').click ->
       $('.filter-tags .filter-tag').remove()
       $('.array-filter-box .filter-checkbox').prop('checked', false)
+      for id in ['boat_type', 'year', 'price', 'length', 'q', 'ref_no', 'new_used', 'tax_status']
+        clear_other_filter(id)
       apply_filter()
 
     $('.array-filter-box .group-h').click ->

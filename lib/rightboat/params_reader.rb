@@ -57,12 +57,6 @@ module Rightboat
       end
     end
 
-    def read_boat_price_gbp(price_str, currency)
-      if (price_raw = read_boat_price(price_str))
-        Currency.convert(price_raw, currency, Currency.default)
-      end
-    end
-
     def read_boat_year(year)
       if year.present?
         year.to_i.clamp(Boat::YEARS_RANGE)
@@ -77,13 +71,6 @@ module Rightboat
       if len.present?
         length_range = len_unit == 'm' ? Boat::M_LENGTHS_RANGE : Boat::FT_LENGTHS_RANGE
         len.to_f.round(2).clamp(length_range)
-      end
-    end
-
-    def read_boat_length_m(len, len_unit)
-      if (len = read_boat_length(len, len_unit))
-        len = len.ft_to_m if len_unit == 'ft'
-        len.round(2).clamp(Boat::M_LENGTHS_RANGE)
       end
     end
 

@@ -6,7 +6,7 @@ module Rightboat
                 :model_id, :model_ids, :country, :country_id, :country_ids, :states,
                 :year_min, :year_max, :price_min, :price_max, :length_min, :length_max,
                 :boat_type, :boat_type_id, :new_used, :tax_status, :ref_no, :exclude_ref_no,
-                :page, :order, :order_col, :order_dir
+                :page, :order, :order_col, :order_dir, :currency, :length_unit
 
     def initialize(params)
       @params = params
@@ -27,13 +27,13 @@ module Rightboat
       @boat_type = read_boat_type(@params[:boat_type])
       @year_min = read_boat_year(@params[:year_min])
       @year_max = read_boat_year(@params[:year_max])
-      if (currency = read_currency(@params[:currency]))
-        @price_min = read_boat_price_gbp(@params[:price_min], currency)
-        @price_max = read_boat_price_gbp(@params[:price_max], currency)
+      if (@currency = read_currency(@params[:currency]))
+        @price_min = read_boat_price(@params[:price_min])
+        @price_max = read_boat_price(@params[:price_max])
       end
-      if (length_unit = read_length_unit(@params[:length_unit]))
-        @length_min = read_boat_length_m(@params[:length_min], length_unit)
-        @length_max = read_boat_length_m(@params[:length_max], length_unit)
+      if (@length_unit = read_length_unit(@params[:length_unit]))
+        @length_min = read_boat_length(@params[:length_min], @length_unit)
+        @length_max = read_boat_length(@params[:length_max], @length_unit)
       end
       @ref_no = read_downcase_str(@params[:ref_no])
       @new_used = read_new_used_hash(@params[:new_used])

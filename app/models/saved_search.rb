@@ -57,16 +57,12 @@ class SavedSearch < ActiveRecord::Base
     self.states = read_ids(params[:states])
     self.year_min = sp.year_min
     self.year_max = sp.year_max
-    if (currency = read_currency(params[:currency]))
-      self.price_min = read_boat_price(params[:price_min])
-      self.price_max = read_boat_price(params[:price_max])
-      self.currency = (currency.name if price_min || price_max)
-    end
-    if (length_unit = read_length_unit(params[:length_unit]))
-      self.length_min = read_boat_length(params[:length_min], length_unit)
-      self.length_max = read_boat_length(params[:length_max], length_unit)
-      self.length_unit = (length_unit if length_min || length_max)
-    end
+    self.price_min = sp.price_min
+    self.price_max = sp.price_max
+    self.currency = sp.currency&.name
+    self.length_min = sp.length_min
+    self.length_max = sp.length_max
+    self.length_unit = sp.length_unit
     self.q = sp.q
     self.boat_type = sp.boat_type
     self.tax_status = sp.tax_status

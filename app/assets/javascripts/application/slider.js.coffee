@@ -125,8 +125,8 @@ $ ->
     $slider.data('unit', unit)
     initSlider($slider, oldUnit)
 
-  $( '.slider' ).each ->
-    initSlider($(this))
+  $('.slider').each ->
+    initSlider($(@))
 
   $.fn.sliderLengthSelect = ->
     @.generalSelect().change ->

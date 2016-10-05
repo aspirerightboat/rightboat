@@ -25,9 +25,7 @@ class BoatsController < ApplicationController
     @total_count = @boats.total_count
 
     @filters_data = Rightboat::SearchFiltersData.new(@manufacturer, boat_search).fetch
-
-    @model_filter_tags = Model.where(id: boat_search.sp.model_ids).order(:name).pluck(:id, :name) if boat_search.sp.model_ids
-    @country_filter_tags = Country.where(id: boat_search.sp.country_ids).order(:name).pluck(:id, :name) if boat_search.sp.country_ids
+    @filter_tags = Rightboat::FilterTagsData.new(boat_search.sp).fetch
   end
 
   def manufacturers_by_letter

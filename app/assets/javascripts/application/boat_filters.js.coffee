@@ -4,9 +4,14 @@ $ ->
 
     apply_filter = ->
       if $('.boats-view .loading-overlay').is(':visible')
-        return
+        return false
 
-      params = {}
+      params = $('#other_filters_form').serializeObject()
+      for k, v of params
+        delete params[k] if !v || k == 'utf8' || k == 'authenticity_token'
+      delete params.currency if !params.price_min && !params.price_max
+      delete params.length if !params.length_min && !params.length_max
+
       $('.array-filter-box').each (i, e) ->
         name = $(e).data('filter-slug')
         ids = $('.filter-checkbox:checked', e).map((ii, ee) -> $(ee).data('id')).get().join('-')

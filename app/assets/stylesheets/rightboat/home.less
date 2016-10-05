@@ -63,9 +63,10 @@
   background: rgba(255,255,255,0.75);
   border-radius: 0 0 175px 175px;
 
-  #boat-types label {
-    margin: 0 6px;
-    &:last-child { margin-right: 0; }
+  .radio-buttons {
+    text-align: right;
+    margin-top: 6px;
+    label { margin: 0 0 0 12px; }
   }
   #search-input {
     padding: 6px 14px;
@@ -74,7 +75,6 @@
     box-shadow: none;
     background-color: white;
     color: #13022c;
-    margin-top: 8px;
   }
   .icon-home {
     font-size: 35px;
@@ -256,16 +256,6 @@
       color: @rb-color-dark;
       text-decoration: underline;
     }
-  }
-}
-
-.enquiry_types, .member-content {
-  input[type="radio"]:not(:checked) + label:before, input[type="radio"]:checked + label:before {
-    border-color: @rb-color-primary !important;
-  }
-
-  input[type="radio"]:not(:checked) + label:after, input[type="radio"]:checked + label:after {
-    background: @rb-color-primary;
   }
 }
 

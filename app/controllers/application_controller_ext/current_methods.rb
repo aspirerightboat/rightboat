@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_search_order(order)
-    if order.present? && Rightboat::BoatSearch::ORDER_TYPES.include?(order)
+    if order.present? && Rightboat::SearchParams::ORDER_TYPES.include?(order)
       cookies[:search_order] = order
     end
   end

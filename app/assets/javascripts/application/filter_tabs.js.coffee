@@ -17,7 +17,7 @@ $ ->
           $(@).toggleClass('active', @ == li)
 
         target_tab = $($(e.target).attr('href')).get(0)
-        $tabs_content.children('.filter-tab-content').each ->
+        $tabs_content.find('.filter-tab-content').each ->
           $(@).toggleClass('hidden', @ != target_tab)
 
         collapse_content(false)

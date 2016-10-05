@@ -9,38 +9,28 @@
         .row
           .col-sm-10
             .row
-              .col-sm-6
-                .radio-buttons.text-center.field-row-height
-                  = radio_button_tag :boat_type, '', nil, id: 'boat_type_all', checked: true
-                  = label_tag :boat_type_all, 'All', for: 'boat_type_all'
-                  = radio_button_tag :boat_type, 'power', nil, id: 'boat_type_power'
-                  = label_tag :boat_type_power, 'Power', for: 'boat_type_power'
-                  = radio_button_tag :boat_type, 'sail', nil, id: 'boat_type_sail'
-                  = label_tag :boat_type_sail, 'Sail', for: 'boat_type_sail'
+              .col-sm-6.text-center.field-row-height
+                = boat_type_radio_buttons(nil, id_prefix: 'iframe')
               .col-sm-6.field-row-height
                 = text_field_tag :q, nil, class: 'form-control', placeholder: 'Keyword search'
               .col-sm-6.field-row-height
                 .row.range-slider-wrapper
-                  = hidden_field_tag :price_min
-                  = hidden_field_tag :price_max
                   .col-xs-3.col-sm-3
                     = label_tag :price
                   .col-xs-9.col-sm-9(style="padding-left: 0")
                     .rb-control-group
                       .rb-control
-                        = slider_tag(:price, unit: current_currency.try(:name) || 'GBP', class: 'grey-base')
+                        = price_slider_tag(class: 'grey-base')
                       .rb-control-group-addon.no-pads
                         = currency_select :currency, current_currency, class: 'select-dark slider-currency-select'
               .col-sm-6.field-row-height
                 .row.range-slider-wrapper
-                  = hidden_field_tag :length_min
-                  = hidden_field_tag :length_max
                   .col-xs-3.col-sm-3
                     = label_tag :length
                   .col-xs-9.col-sm-9(style="padding-left: 0")
                     .rb-control-group
                       .rb-control
-                        = slider_tag(:length, unit: current_length_unit, class: 'grey-base')
+                        = length_slider_tag(class: 'grey-base')
                       .rb-control-group-addon.no-pads
                         = select_tag :length_unit, length_unit_options, class: 'select-dark slider-length-select'
           .col-sm-2.filter-buttons

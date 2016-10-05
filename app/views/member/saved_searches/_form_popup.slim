@@ -13,13 +13,8 @@
                   .col-xs-4
                     = f.label :boat_type, 'Boat Type'
                   .col-xs-8
-                    = radio_button_tag 'saved_search[boat_type]', '', @saved_search.boat_type.blank?, id: 'saved_search_boat_type_all'
-                    = label_tag 'saved_search_boat_type_all', 'All'
-                    = f.radio_button :boat_type, 'power'
-                    = f.label :boat_type_power, 'Power'
-                    = f.radio_button :boat_type, 'sail'
-                    = f.label :boat_type_sail, 'Sail'
-
+                    = boat_type_radio_buttons(@saved_search.boat_type, id_prefix: 'ss', \
+                            name_prefix: 'saved_search', class_name: 'light-radio-buttons')
             .form-group.row
               .col-md-6.col-xs-12
                 .row
@@ -82,7 +77,7 @@
                 .row
                   .col-xs-12
                     = label_tag 'ss_countries_picker', 'Countries'
-                    - general_options = general_facets[:countries_data].map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
+                    - general_options = general_boat_stats.country_infos.map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
                     = text_field_tag 'saved_search[countries]', @saved_search.countries.join('-'), id: 'ss_countries_picker', \
                                         class: 'select-black multiple-country-select select-states-if-us', \
                                         data: {options: general_options}, \
@@ -106,20 +101,16 @@
                   .col-xs-4
                     = f.label :tax_status, 'Tax Status'
                   .col-xs-8
-                    = check_box_tag 'saved_search[tax_status][paid]', true, @saved_search.tax_status['paid'], class: 'inverse'
-                    = label_tag :saved_search_tax_status_paid, 'Paid', class: 'tax-paid'
-                    = check_box_tag 'saved_search[tax_status][unpaid]', true, @saved_search.tax_status['unpaid'], class: 'inverse'
-                    = label_tag :saved_search_tax_status_unpaid, 'Unpaid', class: 'tax-not-paid'
+                    = tax_status_checkboxes(@saved_search.tax_status, id_prefix: 'ss', \
+                            name_prefix: 'saved_search', class_name: 'light-checkboxes')
             .form-group.row
               .col-sm-6.col-xs-12
                 .row
                   .col-xs-4
                     = f.label :new_used, 'New / Used'
                   .col-xs-8
-                    = check_box_tag 'saved_search[new_used][new]', true, @saved_search.new_used['new'], class: 'inverse'
-                    = label_tag :saved_search_new_used_new, 'new'
-                    = check_box_tag 'saved_search[new_used][used]', true, @saved_search.new_used['used'], class: 'inverse'
-                    = label_tag :saved_search_new_used_used, 'used'
+                    = new_used_checkboxes(@saved_search.new_used, id_prefix: 'ss', \
+                            name_prefix: 'saved_search', class_name: 'light-checkboxes')
             .row
               .col-xs-12
                 - submit_title = @saved_search.new_record? ? 'Create' : 'Apply Changes'

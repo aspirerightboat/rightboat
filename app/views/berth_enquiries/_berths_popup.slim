@@ -7,35 +7,33 @@
         .h My Right Berths
       .modal-body
         = form_for BerthEnquiry.new, remote: true, data: {format: :json}, html: {id: 'berths_form'} do |f|
-          = hidden_field_tag :length_min
-          = hidden_field_tag :length_max
           = f.hidden_field :location
           = f.hidden_field :latitude
           = f.hidden_field :longitude
           .form-group.row
             .col-md-6.col-xs-12 1. I am looking to buy a berth
-            .col-md-6.col-xs-12
+            .col-md-6.col-xs-12.radio-buttons.light-radio-buttons
               = f.radio_button :buy, 'true'
               = f.label :buy_true, 'Y'
               = f.radio_button :buy, 'false'
               = f.label :buy_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 2. I am looking to rent a berth
-            .col-md-6.col-xs-12
+            .col-md-6.col-xs-12.radio-buttons.light-radio-buttons
               = f.radio_button :rent, 'true'
               = f.label :rent_true, 'Y'
               = f.radio_button :rent, 'false'
               = f.label :rent_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 3. I am looking for a home berth
-            .col-md-6.col-xs-12
+            .col-md-6.col-xs-12.radio-buttons.light-radio-buttons
               = f.radio_button :home, 'true'
               = f.label :home_true, 'Y'
               = f.radio_button :home, 'false'
               = f.label :home_false, 'N'
           .form-group.row
             .col-md-6.col-xs-12 4. I am looking for a short term berth
-            .col-md-6.col-xs-12
+            .col-md-6.col-xs-12.radio-buttons.light-radio-buttons
               = f.radio_button :short_term, 'true'
               = f.label :short_term_true, 'Y'
               = f.radio_button :short_term, 'false'

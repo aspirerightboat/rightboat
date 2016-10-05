@@ -23,45 +23,109 @@
             a(href="#model_filters") Models
           li
             a(href="#location_filters") Locations
+          li
+            a(href="#other_filters") Other
         .filter-tabs-content.search-boat-filters.collapsed
           .overlay
+          = form_tag sale_manufacturer_path(@manufacturer), method: :get do
+            #model_filters.filter-tab-content.filters-box.array-filter-box(data-filter-slug="models")
+              ul.flex-six-columns
+                - @filters_data.model_infos_grouped.each do |group|
+                  - grouped = group.many?
+                  li(class="#{'grouped' if grouped}")
+                    - if grouped
+                      .group-h Check/uncheck all #{Rightboat::ModelGroup.make_group_name(group.first[2])}
+                    - group.each do |model_id, model_slug, model_name|
+                      .checkbox-container
+                        - model_checkbox_id = "model_#{model_id}"
+                        input.filter-checkbox(type="checkbox" id="#{model_checkbox_id}"
+                                              data-id="#{model_id}"
+                                              checked=(true if @filters_data.sp.model_ids&.include?(model_id)))
+                        label(for="#{model_checkbox_id}")
+                          span.filter-item
+                            | #{link_to model_name, sale_model_path(manufacturer: @manufacturer.slug, model: model_slug)}
+                            - cnt = @filters_data.model_counts[model_id] || 0
+                            - if cnt > 0
+                              | <small> (#{cnt})</small>
+              button.apply-filter-btn Apply Filter
 
-          #model_filters.filter-tab-content.filters-box.array-filter-box(data-filter-slug="models")
-            ul.flex-six-columns
-              - @filters_data[:model_infos_grouped].each do |group|
-                - grouped = group.many?
-                li(class="#{'grouped' if grouped}")
-                  - if grouped
-                    .group-h Check/uncheck all #{Model.model_group_from_name(group.first[2])}
-                  - group.each do |model_id, model_slug, model_name|
-                    .checkbox-container
-                      - model_checkbox_id = "model_#{model_id}"
-                      input.filter-checkbox(type="checkbox" id="#{model_checkbox_id}"
-                                            data-id="#{model_id}"
-                                            checked=(true if @model_ids&.include?(model_id.to_s)))
-                      label(for="#{model_checkbox_id}")
-                        span.filter-item
-                          | #{link_to model_name, sale_model_path(manufacturer: @manufacturer.slug, model: model_slug)}
-                          - cnt = @model_counts[model_id] || 0
-                          - if cnt > 0
-                            | <small> (#{cnt})</small>
-            button.apply-filter-btn Apply Filter
+            #location_filters.filter-tab-content.filters-box.array-filter-box.hidden(data-filter-slug="countries")
+              ul.flex-six-columns
+                - @filters_data.country_infos.each do |country_id, country_slug, country_name|
+                  li.checkbox-container
+                    - country_checkbox_id = "country_#{country_id}"
+                    input.filter-checkbox(type="checkbox" id="#{country_checkbox_id}"
+                                          data-id="#{country_id}"
+                                          checked=(true if @filters_data.sp.country_ids&.include?(country_id)))
+                    label(for="#{country_checkbox_id}")
+                      span.filter-item
+                        | #{link_to country_name, sale_manufacturer_path(manufacturer: @manufacturer.slug, country: country_slug)}
+                        - cnt = @filters_data.country_counts[country_id] || 0
+                        - if cnt > 0
+                          | <small> (#{cnt})</small>
+              /.form-group.row(style="#{('display: none' if params[:states].blank?)}")
+              /  .col-xs-5.col-lg-3
+              /    = label_tag :states_picker, 'States'
+              /  .col-xs-7.col-lg-9.selectize-like-input
+              /    = text_field_tag :states, params[:states], \
+              /            id: 'states_picker', class: 'select-black country-states-select', \
+              /            data: {options: Rightboat::USStates.states_map.map { |k, v| {value: k, text: v} }}, \
+              /            placeholder: 'eg. Florida'
+              button.apply-filter-btn Apply Filter
 
-          #location_filters.filter-tab-content.filters-box.array-filter-box.hidden(data-filter-slug="countries")
-            ul.flex-six-columns
-              - @filters_data[:country_infos].each do |country_id, country_slug, country_name|
-                li.checkbox-container
-                  - country_checkbox_id = "country_#{country_id}"
-                  input.filter-checkbox(type="checkbox" id="#{country_checkbox_id}"
-                                        data-id="#{country_id}"
-                                        checked=(true if @country_ids&.include?(country_id.to_s)))
-                  label(for="#{country_checkbox_id}")
-                    span.filter-item
-                      | #{link_to country_name, sale_manufacturer_path(manufacturer: @manufacturer.slug, country: country_slug)}
-                      - cnt = @country_counts[country_id] || 0
-                      - if cnt > 0
-                        | <small> (#{cnt})</small>
-            button.apply-filter-btn Apply Filter
+            #other_filters.filter-tab-content.filters-box.array-filter-box.hidden(data-filter-slug="other")
+              .row
+                .col-xs-12.col-sm-6
+                  .form-group.row
+                    .col-xs-5.col-lg-3
+                      = label_tag :boat_type
+                    .col-xs-7.col-lg-9
+                      = boat_type_radio_buttons(@filters_data.sp.boat_type, id_prefix: 'filters', class_name: 'dark-radio-buttons')
+                  .range-slider-wrapper.row
+                    .col-xs-5.col-lg-3
+                      = label_tag :year
+                    .col-xs-7.col-lg-9
+                      = slider_tag(:year)
+                  .range-slider-wrapper.row
+                    .col-xs-5.col-lg-3
+                      .rb-control-group
+                        .rb-control
+                          = label_tag :price
+                        .rb-control-group-addon.no-pads
+                          = currency_select :currency, current_currency, class: 'slider-currency-select select-clear'
+                    .col-xs-7.col-lg-9
+                      = price_slider_tag
+                  .range-slider-wrapper.row
+                    .col-xs-5.col-lg-3
+                      .rb-control-group
+                        .rb-control
+                          = label_tag :length
+                        .rb-control-group-addon.no-pads
+                          = select_tag :length_unit, length_unit_options, class: 'slider-length-select select-clear'
+                    .col-xs-7.col-lg-9
+                      = length_slider_tag
+                .col-sm-6.col-xs-12
+                  .form-group.row
+                    .col-xs-5.col-lg-3
+                      = label_tag :keywords, 'Keywords'
+                    .col-xs-7.col-lg-9
+                      = text_field_tag :q, @filters_data.sp.q, class: 'form-control', placeholder: 'e.g. 4 berths'
+                  .form-group.row
+                    .col-xs-5.col-lg-3
+                      = label_tag :ref_no, 'Ref No.'
+                    .col-xs-7.col-lg-9
+                      = text_field_tag :ref_no, @filters_data.sp.ref_no, placeholder: 'e.g. RB48573', class: 'form-control'
+                  .form-group.row
+                    .col-xs-5.col-lg-3
+                      = label_tag :new_used, 'New / Used', class: 'without-top-pad'
+                    .col-xs-7.col-lg-9
+                      = new_used_checkboxes(@filters_data.sp.new_used, id_prefix: 'filters')
+                  .form-group.row
+                    .col-xs-5.col-lg-3
+                      = label_tag :tax_status, nil, class: 'without-top-pad'
+                    .col-xs-7.col-lg-9
+                      = tax_status_checkboxes(@filters_data.sp.tax_status, id_prefix: 'filters')
+              button.apply-filter-btn Apply Filter
 
         a.toggle-collapse(href="#" data-collapse-text="↑ Collapse Filters") ↓ Expand Filters
 

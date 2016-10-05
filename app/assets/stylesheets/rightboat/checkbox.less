@@ -1,7 +1,5 @@
-@checkbox-color-normal: @rb-color-dark;
-@checkbox-color-inverse: #FFF;
 
-[type="checkbox"] {
+[type=checkbox] {
   position: absolute;
   visibility: hidden;
 
@@ -19,7 +17,7 @@
         position: absolute;
         left: 0; top: 0;
         width: 14px; height: 14px;
-        border: 1px solid @checkbox-color-normal;
+        border: 1px solid @rb-color-dark;
         background: transparent;
       }
       &::after {
@@ -28,7 +26,7 @@
         top: 1px; left: 3px;
         font-size: 13px;
         font-weight: normal;
-        color: @checkbox-color-normal;
+        color: @rb-color-dark;
       }
     }
   }
@@ -54,15 +52,20 @@
   &:not(:checked):focus + label::before {
     border-width: 2px
   }
+}
 
-  &.inverse {
+.light-checkboxes {
+  [type=checkbox] {
     &:not(:checked),
     &:checked {
-      & + label:before {
-        border-color: @checkbox-color-inverse;
-      }
-      & + label:after {
-        color: @checkbox-color-inverse;
+      & + label {
+
+        &::before {
+          border-color: #fff;
+        }
+        &::after {
+          color: #fff;
+        }
       }
     }
   }

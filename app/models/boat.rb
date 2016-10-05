@@ -121,7 +121,7 @@ class Boat < ActiveRecord::Base
 
     if !poa?
       required_price = required_currency ? Currency.convert(price, safe_currency, required_currency) : price
-      options[:currency] = currency.try(:name)
+      options[:currency] = currency&.name
       options[:price_min] = (required_price * 0.8).to_i
       options[:price_max] = (required_price * 1.2).to_i
     end

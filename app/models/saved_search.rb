@@ -49,37 +49,27 @@ class SavedSearch < ActiveRecord::Base
   end
 
   def safe_assign_params(params)
-    self.countries = read_ids(params[:countries])
-    self.manufacturers = read_ids(params[:manufacturers])
-    self.models = read_ids(params[:models])
+    sp = Rightboat::SearchParams.new(params).read
+
+    self.countries = sp.country_ids
+    self.manufacturers = sp.manufacturer_ids
+    self.models = sp.model_ids
     self.states = read_ids(params[:states])
-    self.year_min = read_boat_year(params[:year_min])
-    self.year_max = read_boat_year(params[:year_max])
-    if (currency = read_currency(params[:currency]))
-      self.price_min = read_boat_price(params[:price_min])
-      self.price_max = read_boat_price(params[:price_max])
-      self.currency = (currency.name if price_min || price_max)
-    end
-    if (length_unit = read_length_unit(params[:length_unit]))
-      self.length_min = read_boat_length(params[:length_min], length_unit)
-      self.length_max = read_boat_length(params[:length_max], length_unit)
-      self.length_unit = (length_unit if length_min || length_max)
-    end
-    self.q = read_str(params[:q])
-    self.boat_type = params[:boat_type].presence_in(%w(power sail))
-    self.tax_status = read_tax_status_hash(params[:tax_status])
-    self.new_used = read_new_used_hash(params[:new_used])
+    self.year_min = sp.year_min
+    self.year_max = sp.year_max
+    self.price_min = sp.price_min
+    self.price_max = sp.price_max
+    self.currency = sp.currency&.name
+    self.length_min = sp.length_min
+    self.length_max = sp.length_max
+    self.length_unit = sp.length_unit
+    self.q = sp.q
+    self.boat_type = sp.boat_type
+    self.tax_status = sp.tax_status
+    self.new_used = sp.new_used
 
-    search_params = to_search_params.merge!(order: 'created_at_desc')
-    self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(search_params, per_page: 1).hits.first&.primary_key
-
-    # some params are from boats-for-sale page
-    if params[:manufacturer].present? && (manufacturer = Manufacturer.find_by(name: params[:manufacturer]))
-      self.manufacturers = [manufacturer.id]
-    end
-    if params[:country].present? && (country = Country.find_by(slug: params[:country]))
-      self.countries = [country.id]
-    end
+    fixed_params = to_search_params.merge!(order: 'created_at_desc', per_page: 1)
+    self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params: fixed_params).hits.first&.primary_key
   end
 
   def self.safe_create(user, params)

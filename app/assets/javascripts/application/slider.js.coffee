@@ -1,11 +1,3 @@
-String.prototype.capitalize = ->
-  this.charAt(0).toUpperCase() + this.slice(1)
-
-getLocation = (href) ->
-  loc = document.createElement('a')
-  loc.href = href
-  return loc
-
 getYearsArray = ->
   $yearSlider = $('.year-slider')
   if $yearSlider.length > 0
@@ -62,7 +54,7 @@ $ ->
       else
         value
 
-    $slider.parent().find('.' + minOrMax + '-label').text(txt)
+    $slider.parent().find('.slider-label-' + minOrMax).text(txt)
 
   findNearest = (values, value, toFloor) ->
     if toFloor
@@ -133,8 +125,8 @@ $ ->
     $slider.data('unit', unit)
     initSlider($slider, oldUnit)
 
-  $( '.slider' ).each ->
-    initSlider($(this))
+  $('.slider').each ->
+    initSlider($(@))
 
   $.fn.sliderLengthSelect = ->
     @.generalSelect().change ->

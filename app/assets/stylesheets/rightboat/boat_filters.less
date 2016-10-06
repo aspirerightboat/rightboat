@@ -2,7 +2,8 @@
   position: relative;
 }
 .loading-overlay {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #fff;
+  opacity: 0.5;
   position: absolute;
   left: 0;
   top: 0;
@@ -44,6 +45,7 @@
   display: inline-block;
   padding: 3px 6px;
   color: white;
+  margin-bottom: 4px;
 
   .esc {
     cursor: pointer;
@@ -53,6 +55,9 @@
   }
   &[data-filter-slug=countries] {
     background-color: #cd4a7c;
+  }
+  &[data-filter-slug=other] {
+    background-color: #2072cf;
   }
 }
 

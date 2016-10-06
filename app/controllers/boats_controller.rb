@@ -19,45 +19,13 @@ class BoatsController < ApplicationController
 
     redirect_to(action: :index) and return if !@manufacturer
 
-    page = params[:page] || 1
-    set_current_search_order(params[:order]) if params[:order]
-    order_col, order_dir = Rightboat::BoatSearch.read_order(current_search_order)
-    model_ids = (params[:models].split('-').presence if params[:models])
-    if params[:country]
-      country = Country.find_by(slug: params[:country])
-      country_ids = ([country.id.to_s] if country)
-    elsif params[:countries]
-      country_ids = params[:countries].split('-').presence
-    end
-    boat_includes = [:currency, :manufacturer, :model, :primary_image, :vat_rate, :country]
-    manufacturer_id = @manufacturer.id
-
-    search = Boat.retryable_solr_search!(include: boat_includes) do
-      with :live, true
-      with :manufacturer_id, manufacturer_id
-      order_by order_col, order_dir if order_col
-      paginate page: page, per_page: Rightboat::BoatSearch::PER_PAGE
-
-      model_ids_filter = (any_of { model_ids.each { |model_id| with :model_id, model_id } } if model_ids)
-      country_ids_filter = (any_of { country_ids.each { |country_id| with :country_id, country_id } } if country_ids)
-
-      facet :country_id, exclude: country_ids_filter
-      facet :model_id, exclude: model_ids_filter
-    end
-
-    @boats = search.results
+    params[:order] ? set_current_search_order(params[:order]) : params[:order] = current_search_order
+    boat_search = Rightboat::BoatSearch.new.do_search(params: params, with_facets: true)
+    @boats = boat_search.results
     @total_count = @boats.total_count
 
-    @filters_data = fetch_maker_filters_data
-
-    @model_counts = search.facet(:model_id).rows.map { |row| [row.value, row.count] }.to_h
-    @country_counts = search.facet(:country_id).rows.map { |row| [row.value, row.count] }.to_h
-
-    @model_filter_tags = Model.where(id: model_ids).order(:name).pluck(:id, :name) if model_ids
-    @country_filter_tags = Country.where(id: country_ids).order(:name).pluck(:id, :name) if country_ids
-
-    @model_ids = model_ids
-    @country_ids = country_ids
+    @filters_data = Rightboat::SearchFiltersData.new(@manufacturer, boat_search).fetch
+    @filter_tags = Rightboat::FilterTagsData.new(boat_search.sp).fetch
   end
 
   def manufacturers_by_letter
@@ -74,15 +42,12 @@ class BoatsController < ApplicationController
   def model
     return if !load_makemodel
 
-    search_params = {
+    fixed_params = {
         model_id: @model.id,
-        page: params[:page] || 1
+        page: params[:page],
+        order: params[:order]
     }
-
-    search_params[:order] = params[:order] if params[:order].present?
-    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
-
-    @manufacturer = @model.manufacturer
+    @boats = Rightboat::BoatSearch.new.do_search(params: fixed_params).results
   end
 
   def show
@@ -155,34 +120,4 @@ class BoatsController < ApplicationController
     true
   end
 
-  def fetch_maker_filters_data
-    Rails.cache.fetch "manufacturer_#{@manufacturer.id}_filters_data", expires_in: 30.minutes do
-      model_infos = Model.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
-                        .group('models.id, models.slug, models.name')
-                        .having('COUNT(*) > 0').order('models.name')
-                        .pluck('models.id, models.slug, models.name')
-
-      last_model_group = nil
-      model_infos_grouped = model_infos.each_with_object([]) do |model_info, arr|
-        model_name = model_info[2]
-        model_group = Model.model_group_from_name(model_name)
-        if last_model_group && model_group.casecmp(last_model_group) == 0
-          arr.last << model_info
-        else
-          arr << [model_info]
-        end
-        last_model_group = model_group
-      end
-
-      country_infos = Country.joins(:boats).where(boats: {status: 'active', manufacturer_id: @manufacturer.id})
-                          .group('countries.id, countries.slug, countries.name')
-                          .having('COUNT(*) > 0').order('countries.name')
-                          .pluck('countries.id, countries.slug, countries.name')
-
-      {
-          model_infos_grouped: model_infos_grouped,
-          country_infos: country_infos,
-      }
-    end
-  end
 end

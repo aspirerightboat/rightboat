@@ -57,12 +57,6 @@ module Rightboat
       end
     end
 
-    def read_boat_price_gbp(price_str, currency)
-      if (price_raw = read_boat_price(price_str))
-        Currency.convert(price_raw, currency, Currency.default)
-      end
-    end
-
     def read_boat_year(year)
       if year.present?
         year.to_i.clamp(Boat::YEARS_RANGE)
@@ -80,13 +74,6 @@ module Rightboat
       end
     end
 
-    def read_boat_length_m(len, len_unit)
-      if (len = read_boat_length(len, len_unit))
-        len = len.ft_to_m if len_unit == 'ft'
-        len.round(2).clamp(Boat::M_LENGTHS_RANGE)
-      end
-    end
-
     def read_hash(hash, possible_keys)
       if hash.present? && hash.is_a?(Hash)
         hash.with_indifferent_access.slice(*possible_keys)
@@ -99,6 +86,25 @@ module Rightboat
 
     def read_new_used_hash(hash)
       read_hash(hash, %w(new used))
+    end
+
+    def read_boat_type(str)
+      read_downcase_str(str).presence_in(BoatType::GENERAL_TYPES)
+    end
+
+    def read_country(slug)
+      Country.find_by(slug: slug) if slug.present?
+    end
+
+    def read_manufacturer(slug)
+      Manufacturer.find_by(slug: slug) if slug.present?
+    end
+
+    def read_search_order(target_order)
+      if target_order.present? && SearchParams::ORDER_TYPES.include?(target_order)
+        m = target_order.match(/\A(.*)_(asc|desc)\z/)
+        [m[1].to_sym, m[2].to_sym]
+      end
     end
 
   end

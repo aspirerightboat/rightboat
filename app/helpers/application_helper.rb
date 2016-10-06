@@ -10,55 +10,13 @@ module ApplicationHelper
     end
   end
 
-  # Options
-  def slider_tag(field, options = {})
-    key_min = :"#{field}_min"
-    key_max = :"#{field}_max"
-    min = options[:min] || convert_to_current_unit(field, general_facets[key_min])
-    max = options[:max] || convert_to_current_unit(field, general_facets[key_max])
-    v0 = params[key_min].presence# || convert_to_current_unit(field, @search_facets.try(:[], key_min))
-    v1 = params[key_max].presence# || convert_to_current_unit(field, @search_facets.try(:[], key_max))
-
-    html_options = {
-      'data-input' => field,
-      'data-min' => min,
-      'data-max' => max,
-      'data-value0' => v0,
-      'data-value1' => v1,
-      'data-unit' => options[:unit],
-      class: "slider #{field}-slider #{options[:class]}".strip
-    }
-
-    ret = content_tag(:div, '', html_options)
-    label_tag = content_tag(:div, '', class: 'slider-label') do
-      content_tag(:span, 'From ') +
-      content_tag(:span, '', class: 'min-label') +
-      content_tag(:span, ' to ') +
-      content_tag(:span, '', class: 'max-label')
-    end
-    ret << label_tag
-
-    ret.html_safe
-  end
-
-  def convert_to_current_unit(field, value)
-    return if !value
-    if field == :length
-      value.to_f.m_to_ft if current_length_unit == 'ft'
-    elsif field == :price
-      Currency.convert(value, Currency.default, current_currency)
-    else
-      value
-    end
-  end
-
   def currency_select(name, selected, options = {})
     selected = selected.is_a?(Currency) ? selected.name : selected
     select_tag name, options_for_select(Currency.pluck(:symbol, :name), selected), options
   end
 
   def search_order_options
-    opts = Rightboat::BoatSearch::ORDER_TYPES.map { |type| [t("search_orders.#{type}"), type] }
+    opts = Rightboat::SearchParams::ORDER_TYPES.map { |type| [t("search_orders.#{type}"), type] }
     options_for_select(opts, params[:order] || current_search_order)
   end
 
@@ -100,8 +58,8 @@ module ApplicationHelper
     select_tag(name, options_for_select(Country.country_options, selected), options)
   end
 
-  def general_facets
-    @general_facets ||= Rightboat::BoatSearch.general_facets_cached
+  def general_boat_stats
+    @general_boat_stats ||= Rightboat::GeneralBoatStats.fetch
   end
 
   def home_image_url(current_user = nil)

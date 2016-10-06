@@ -12,12 +12,6 @@
         | Advanced Search
 
     = form_tag search_path, method: :get, class: 'row' do
-      = hidden_field_tag :year_min
-      = hidden_field_tag :year_max
-      = hidden_field_tag :price_min
-      = hidden_field_tag :price_max
-      = hidden_field_tag :length_min
-      = hidden_field_tag :length_max
       = hidden_field_tag :order, params[:order]
 
       .col-xs-12
@@ -27,12 +21,7 @@
               .col-xs-5.col-lg-3
                 = label_tag :boat_type
               .col-xs-7.col-lg-9
-                = radio_button_tag :boat_type, '', params[:boat_type].blank?, id: 'adv_boat_type_all'
-                = label_tag :boat_type_all, 'All', for: 'adv_boat_type_all'
-                = radio_button_tag :boat_type, 'power', params[:boat_type] == 'power', id: 'adv_boat_type_power'
-                = label_tag :boat_type_power, 'Power', for: 'adv_boat_type_power'
-                = radio_button_tag :boat_type, 'sail', params[:boat_type] == 'sail', id: 'adv_boat_type_sail'
-                = label_tag :boat_type_sail, 'Sail', for: 'adv_boat_type_sail'
+                = boat_type_radio_buttons(params[:boat_type], id_prefix: 'adv_search', class_name: 'light-radio-buttons')
       .col-xs-12.col-sm-6
         .row
           .col-xs-5.col-lg-3.form-group
@@ -47,7 +36,7 @@
           .col-xs-5.col-lg-3
             = label_tag :year
           .col-xs-7.col-lg-9
-            = slider_tag(:year, @facets_data ? { min: @facets_data[:year_min], max: @facets_data[:year_max] } : {})
+            = slider_tag :year
         .range-slider-wrapper.row
           .col-xs-5.col-lg-3
             .rb-control-group
@@ -56,7 +45,7 @@
               .rb-control-group-addon.no-pads
                 = currency_select :currency, current_currency, class: 'slider-currency-select select-clear'
           .col-xs-7.col-lg-9
-            = slider_tag(:price, unit: current_currency.try(:name) || 'GBP')
+            = price_slider_tag
         .range-slider-wrapper.row
           .col-xs-5.col-lg-3
             .rb-control-group
@@ -65,7 +54,7 @@
               .rb-control-group-addon.no-pads
                 = select_tag :length_unit, length_unit_options, class: 'slider-length-select select-clear'
           .col-xs-7.col-lg-9
-            = slider_tag(:length, unit: current_length_unit)
+            = length_slider_tag
       .col-sm-6.col-xs-12
         .form-group.row
           .col-xs-5.col-lg-3
@@ -76,7 +65,7 @@
           .col-xs-5.col-lg-3
             = label_tag :countries_picker, 'Countries'
           .col-xs-7.col-lg-9.selectize-like-input
-            - general_options = general_facets[:countries_data].map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
+            - general_options = general_boat_stats.country_infos.map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
             = text_field_tag :countries, params[:countries], id: 'countries_picker', \
                     class: 'select-black multiple-country-select select-states-if-us', \
                     data: {options: general_options}, \
@@ -98,10 +87,7 @@
           .col-xs-5.col-lg-3
             = label_tag :new_used, 'New / Used', class: 'without-top-pad'
           .col-xs-7.col-lg-9
-            = check_box_tag 'new_used[new]', true, (params[:new_used] || {})['new'], class: 'inverse'
-            = label_tag :new_used_new, 'New'
-            = check_box_tag 'new_used[used]', true, (params[:new_used] || {})['used'], class: 'inverse'
-            = label_tag :new_used_used, 'Used'
+            = new_used_checkboxes(params[:new_used], id_prefix: 'adv_search', class_name: 'light-checkboxes')
       .col-xs-12
         .row
           .col-sm-6.col-xs-12
@@ -109,10 +95,7 @@
               .col-xs-5.col-lg-3
                 = label_tag :tax_status, nil, class: 'without-top-pad'
               .col-xs-7.col-lg-9
-                = check_box_tag 'tax_status[paid]', true, (params[:tax_status] || {})['paid'], class: 'inverse'
-                = label_tag :tax_status_paid, 'Paid'
-                = check_box_tag 'tax_status[unpaid]', true, (params[:tax_status] || {})['unpaid'], class: 'inverse'
-                = label_tag :tax_status_unpaid, 'Unpaid'
+                = tax_status_checkboxes(params[:tax_status], id_prefix: 'adv_search', class_name: 'light-checkboxes')
           .col-sm-6.col-xs-12
             .form-group.row
               .col-xs-5.col-lg-3

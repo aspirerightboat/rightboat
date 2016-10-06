@@ -3,12 +3,11 @@ class CountriesController < ApplicationController
     @country = Country.find_by(slug: params[:id])
     redirect_to root_path and return if !@country
 
-    search_params = {
+    fixed_params = {
       country_id: @country.id,
-      page: params[:page] || 1
+      page: params[:page],
+      order: params[:order]
     }
-
-    search_params[:order] = params[:order] if params[:order].present?
-    @boats = Rightboat::BoatSearch.new.do_search(search_params).results
+    @boats = Rightboat::BoatSearch.new.do_search(params: fixed_params).results
   end
 end

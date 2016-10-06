@@ -97,4 +97,4 @@ h3.heading
 
   h3.heading Owners Comment
   .boat-description
-    = sanitize(@boat.extra.owners_comment)
+    = @boat.extra.owners_comment.html_safe

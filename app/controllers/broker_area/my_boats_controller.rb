@@ -167,6 +167,7 @@ module BrokerArea
       @boat.assign_attributes(boat_params)
       @boat.extra.description = cleanup_description(@boat.extra.description) if @boat.extra.description.present?
       @boat.extra.short_description = cleanup_short_description(@boat.extra.short_description) if @boat.extra.short_description.present?
+      @boat.extra.owners_comment = cleanup_short_description(@boat.extra.owners_comment) if @boat.extra.owners_comment.present?
       @boat.currency = Currency.cached_by_name(params[:price_currency])
       @boat.vat_rate = params[:vat_included].present? ? VatRate.tax_paid : VatRate.tax_unpaid
       @boat.fuel_type = if params[:fuel_type].present?

@@ -44,9 +44,13 @@ module Rightboat
         @order = @params[:order] if @order_col
       end
       @exclude_ref_no = read_downcase_str(@params[:exclude_ref_no])
-      @states = read_state_codes(@params[:states])&.map(&:downcase)
+      @states = read_state_codes(@params[:states])
       normalize_params
       self
+    end
+
+    def downcase_states
+      states&.map(&:downcase)
     end
 
     private

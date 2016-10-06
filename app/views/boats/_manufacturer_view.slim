@@ -11,6 +11,8 @@
             .filter-tag> data-filter-slug="models" data-id="model_#{model_id}" #{model_name} <span class="esc">×</span>
           - @filter_tags.country_infos&.each do |country_id, country_name|
             .filter-tag> data-filter-slug="countries" data-id="country_#{country_id}" #{country_name} <span class="esc">×</span>
+          - @filter_tags.state_infos&.each do |state_key, state_name|
+            .filter-tag> data-filter-slug="states" data-id="state_#{state_key.downcase}" #{state_name} <span class="esc">×</span>
           - @filter_tags.other&.each do |filter_id, filter_title|
             .filter-tag> data-filter-slug="other" data-id="#{filter_id}" #{filter_title} <span class="esc">×</span>
           .clear-filters-btn Clear filters
@@ -26,12 +28,12 @@
           .overlay
           #model_filters.filter-tab-content.filters-box.array-filter-box(data-filter-slug="models")
             ul.flex-six-columns
-              - @filters_data.model_infos_grouped.each do |group|
-                - grouped = group.many?
+              - @filters_data.model_infos_grouped.each do |group, model_infos_arr|
+                - grouped = model_infos_arr.many?
                 li(class="#{'grouped' if grouped}")
                   - if grouped
-                    .group-h Check/uncheck all #{Rightboat::ModelGroup.make_group_name(group.first[2])}
-                  - group.each do |model_id, model_slug, model_name|
+                    .group-h Check/uncheck all #{group}
+                  - model_infos_arr.each do |model_id, model_slug, model_name|
                     .checkbox-container
                       - model_checkbox_id = "model_#{model_id}"
                       input.filter-checkbox(type="checkbox" id="#{model_checkbox_id}"
@@ -40,13 +42,12 @@
                       label(for="#{model_checkbox_id}")
                         span.filter-item
                           | #{link_to model_name, sale_model_path(manufacturer: @manufacturer.slug, model: model_slug)}
-                          - cnt = @filters_data.model_counts[model_id] || 0
-                          - if cnt > 0
+                          - if (cnt = @filters_data.model_counts[model_id]) && cnt > 0
                             | <small> (#{cnt})</small>
             button.apply-filter-btn Apply Filter
 
-          #location_filters.filter-tab-content.filters-box.array-filter-box.hidden(data-filter-slug="countries")
-            ul.flex-six-columns
+          #location_filters.filter-tab-content.filters-box.hidden
+            ul.flex-six-columns.array-filter-box(data-filter-slug="countries" data-us-country-id="#{Country::US_COUNTRY_ID}")
               - @filters_data.country_infos.each do |country_id, country_slug, country_name|
                 li.checkbox-container
                   - country_checkbox_id = "country_#{country_id}"
@@ -56,17 +57,22 @@
                   label(for="#{country_checkbox_id}")
                     span.filter-item
                       | #{link_to country_name, sale_manufacturer_path(manufacturer: @manufacturer.slug, country: country_slug)}
-                      - cnt = @filters_data.country_counts[country_id] || 0
-                      - if cnt > 0
+                      - if (cnt = @filters_data.country_counts[country_id]) && cnt > 0
                         | <small> (#{cnt})</small>
-            /.form-group.row(style="#{('display: none' if params[:states].blank?)}")
-            /  .col-xs-5.col-lg-3
-            /    = label_tag :states_picker, 'States'
-            /  .col-xs-7.col-lg-9.selectize-like-input
-            /    = text_field_tag :states, params[:states], \
-            /            id: 'states_picker', class: 'select-black country-states-select', \
-            /            data: {options: Rightboat::USStates.states_map.map { |k, v| {value: k, text: v} }}, \
-            /            placeholder: 'eg. Florida'
+            #states_filters(style="#{('display: none' if !@filters_data.show_states_infos?)}")
+              h3 States
+              ul.flex-six-columns.array-filter-box(data-filter-slug="states")
+                - Rightboat::USStates.states_map.each do |state_key, state_name|
+                  li.checkbox-container
+                    - state_checkbox_id = "state_#{state_key.downcase}"
+                    input.filter-checkbox(type="checkbox" id="#{state_checkbox_id}"
+                                          data-id="#{state_key}"
+                                          checked=(true if @filters_data.sp.states&.include?(state_key)))
+                    label(for="#{state_checkbox_id}")
+                      span.filter-item
+                        | #{state_name}
+                        - if (cnt = @filters_data.state_counts[state_key]) && cnt > 0
+                          | <small> (#{cnt})</small>
             button.apply-filter-btn Apply Filter
 
           #other_filters.filter-tab-content.filters-box.hidden(data-filter-slug="other")

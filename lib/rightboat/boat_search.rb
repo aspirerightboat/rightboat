@@ -45,7 +45,9 @@ module Rightboat
         end
 
         any_of { sp.manufacturer_ids.each { |manufacturer_id| with :manufacturer_id, manufacturer_id } } if sp.manufacturer_ids
-        any_of { sp.model_ids.each { |model_id| with :model_id, model_id } } if sp.model_ids
+        model_ids_filter = (any_of { sp.model_ids.each { |model_id| with :model_id, model_id } } if sp.model_ids)
+        country_ids_filter = (any_of { sp.country_ids.each { |country_id| with :country_id, country_id } } if sp.country_ids)
+        states_filter = (any_of { sp.downcase_states.each { |state| with :state, state } } if sp.states)
 
         with(:boat_type_id, sp.boat_type_id) if sp.boat_type_id
         with :boat_type, sp.boat_type if sp.boat_type
@@ -59,15 +61,12 @@ module Rightboat
         with(:year).greater_than_or_equal_to(sp.year_min) if sp.year_min
         with(:year).less_than_or_equal_to(sp.year_max) if sp.year_max
 
-        any_of { sp.country_ids.each { |country_id| with :country_id, country_id } } if sp.country_ids
-        any_of { sp.states.each { |state| with :state, state } } if sp.states
         # any_of { category.each { |category_id| with :category_id, category_id } } if category
 
         if with_facets
-          model_ids_filter = (any_of { sp.model_ids.each { |model_id| with :model_id, model_id } } if sp.model_ids)
-          country_ids_filter = (any_of { sp.country_ids.each { |country_id| with :country_id, country_id } } if sp.country_ids)
           facet :country_id, exclude: country_ids_filter
           facet :model_id, exclude: model_ids_filter
+          facet :state, exclude: states_filter
         end
       end
 

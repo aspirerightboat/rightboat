@@ -1,7 +1,8 @@
 $ ->
   $('.toggle-saved-searches-alerts').each ->
+    $ssRow = $('#saved_searches_row')
     $('input[type=checkbox]', @).click ->
-      $('#saved_searches_row').slideToggle(@checked)
+      if @checked then $ssRow.slideDown() else $ssRow.slideUp()
 
     $(@).on 'ajax:success', '.toggle-alert', (e, data) ->
       $(e.target)

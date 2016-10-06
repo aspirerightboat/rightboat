@@ -1,6 +1,6 @@
 module Rightboat
   class FilterTagsData
-    attr_reader :model_infos, :country_infos, :other
+    attr_reader :model_infos, :country_infos, :state_infos, :other
 
     def initialize(search_params)
       @sp = search_params
@@ -9,6 +9,7 @@ module Rightboat
     def fetch
       @model_infos = Model.where(id: sp.model_ids).order(:name).pluck(:id, :name) if sp.model_ids
       @country_infos = Country.where(id: sp.country_ids).order(:name).pluck(:id, :name) if sp.country_ids
+      @state_infos = Rightboat::USStates.states_map.slice(*sp.states) if sp.states
       @other = []
       @other << ['boat_type', sp.boat_type.capitalize] if sp.boat_type
       @other << ['year', format_year_range] if sp.year_min || sp.year_max

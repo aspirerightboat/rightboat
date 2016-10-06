@@ -30,8 +30,8 @@ class SearchController < ApplicationController
     @prev_url = request.referrer['boats-for-sale'] if request.referer
 
     if @boats.any? && @boats.size <= 6
-      similar_opts = @boats.first.similar_options.merge(per_page: 6)
-      @similar_boats = Rightboat::BoatSearch.new.do_search(params: similar_opts).results
+      similar_opts = @boats.first.similar_options
+      @similar_boats = Rightboat::BoatSearch.new.do_search(params: similar_opts, per_page: 6).results
       @similar_boats -= @boats
     end
 

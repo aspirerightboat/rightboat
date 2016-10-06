@@ -51,8 +51,8 @@ class UserMailer < ApplicationMailer
     @reason = reason
     @alert_reason = alert_reason
     if @reason == 'deleted'
-      @other_boats = Rightboat::BoatSearch.new.do_search(params: @boat.other_options.merge(per_page: 6)).results
-      @similar_boats = Rightboat::BoatSearch.new.do_search(params: @boat.similar_options.merge(per_page: 6)).results
+      @other_boats = Rightboat::BoatSearch.new.do_search(params: @boat.other_options, per_page: 6).results
+      @similar_boats = Rightboat::BoatSearch.new.do_search(params: @boat.similar_options, per_page: 6).results
     end
 
     to_email = STAGING_EMAIL || @user.email

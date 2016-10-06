@@ -33,6 +33,7 @@ class Country < ActiveRecord::Base
       'CZ', # Czech Republic => CZK
       'HU', # Hungary => HUF
   ]
+  US_COUNTRY_ID = find_by(iso: 'US').id
   include FixSpelling
   include BoatOwner
 

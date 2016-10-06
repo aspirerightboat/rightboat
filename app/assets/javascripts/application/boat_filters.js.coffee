@@ -10,11 +10,11 @@ $ ->
       for k, v of params
         delete params[k] if !v || k == 'utf8' || k == 'authenticity_token'
       delete params.currency if !params.price_min && !params.price_max
-      delete params.length if !params.length_min && !params.length_max
+      delete params.length_unit if !params.length_min && !params.length_max
 
-      $('.array-filter-box').each (i, e) ->
-        name = $(e).data('filter-slug')
-        ids = $('.filter-checkbox:checked', e).map((ii, ee) -> $(ee).data('id')).get().join('-')
+      $('.array-filter-box').each ->
+        name = $(@).data('filter-slug')
+        ids = $('.filter-checkbox:checked', @).map((i, el) -> $(el).data('id')).get().join('-')
         params[name] = ids if ids
       url = location.pathname
       url += '?' + $.param(params) if !$.isEmptyObject(params)
@@ -59,3 +59,13 @@ $ ->
       $checkboxes = $(@).closest('.grouped').find('input[type=checkbox]')
       check = !$checkboxes.first().prop('checked')
       $checkboxes.prop('checked', check)
+
+    $('.array-filter-box[data-filter-slug=countries]').each ->
+      $filterBox = $(@)
+      $usCheckbox = $('#country_' + $(@).data('us-country-id'))
+      $notUsCheckboxes = $('.filter-checkbox', @).not($usCheckbox)
+      $statesFilters = $('#states_filters')
+      $filterBox.on 'change', '.filter-checkbox', ->
+        usCheckedOnly = $usCheckbox.is(':checked') && !$notUsCheckboxes.is(':checked')
+        if usCheckedOnly then $statesFilters.slideDown() else $statesFilters.slideUp()
+        $('.filter-checkbox', $statesFilters).prop('checked', false) unless usCheckedOnly

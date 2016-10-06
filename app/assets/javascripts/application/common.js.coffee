@@ -69,7 +69,7 @@ $ ->
 
   $('a[href*="#"]').click (e) ->
     $target = $($(@).attr('href').replace(/^\//, ''))
-    if $target.length && !$target.hasClass('fav-link') && !$target.hasClass('filters-box')
+    if $target.length && !$target.hasClass('fav-link')
       scrollToTarget($target)
       false
 

@@ -54,7 +54,7 @@ class SavedSearch < ActiveRecord::Base
     self.countries = sp.country_ids
     self.manufacturers = sp.manufacturer_ids
     self.models = sp.model_ids
-    self.states = read_ids(params[:states])
+    self.states = sp.states
     self.year_min = sp.year_min
     self.year_max = sp.year_max
     self.price_min = sp.price_min
@@ -68,8 +68,8 @@ class SavedSearch < ActiveRecord::Base
     self.tax_status = sp.tax_status
     self.new_used = sp.new_used
 
-    fixed_params = to_search_params.merge!(order: 'created_at_desc', per_page: 1)
-    self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params: fixed_params).hits.first&.primary_key
+    fixed_params = to_search_params.merge!(order: 'created_at_desc')
+    self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params: fixed_params, per_page: 1).hits.first&.primary_key
   end
 
   def self.safe_create(user, params)

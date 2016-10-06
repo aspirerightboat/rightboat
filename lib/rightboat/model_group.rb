@@ -13,13 +13,13 @@ module Rightboat
     def self.group_model_infos(model_infos)
       last_model_group = nil
 
-      model_infos.each_with_object([]) do |model_info, arr|
+      model_infos.each_with_object({}) do |model_info, h|
         model_name = model_info[2]
         model_group = make_group_name(model_name)
         if last_model_group && model_group.casecmp(last_model_group) == 0
-          arr.last << model_info
+          h[last_model_group] << model_info
         else
-          arr << [model_info]
+          h[model_group] = [model_info]
         end
         last_model_group = model_group
       end

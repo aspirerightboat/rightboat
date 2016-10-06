@@ -15,7 +15,6 @@ ActiveAdmin.register SavedSearch do
   filter :length_min
   filter :length_max
   filter :length_unit, as: :select, collection: -> { Boat::LENGTH_UNITS }
-  filter :ref_no
   filter :boat_type, as: :select, collection: -> { BoatType.all }
   filter :countries_cont, label: 'Country ID Contains'
   filter :manufacturers_cont, label: 'Manufacturer ID Contains'
@@ -53,7 +52,6 @@ ActiveAdmin.register SavedSearch do
     column :length_min
     column :length_max
     column :length_unit
-    column :ref_no
     column :boat_type
     column(:country) { |x| x.countries_str }
     column(:manufacturer) { |x| x.manufacturers_str }

@@ -8,11 +8,11 @@
       - if @filter_tags.any?
         .filter-tags
           - @filter_tags.model_infos&.each do |model_id, model_name|
-            .filter-tag(data-filter-slug="models" data-id="model_#{model_id}") #{model_name} <span class="esc">×</span>
+            .filter-tag> data-filter-slug="models" data-id="model_#{model_id}" #{model_name} <span class="esc">×</span>
           - @filter_tags.country_infos&.each do |country_id, country_name|
-            .filter-tag(data-filter-slug="countries" data-id="country_#{country_id}") #{country_name} <span class="esc">×</span>
+            .filter-tag> data-filter-slug="countries" data-id="country_#{country_id}" #{country_name} <span class="esc">×</span>
           - @filter_tags.other&.each do |filter_id, filter_title|
-            .filter-tag(data-filter-slug="other" data-id="#{filter_id}") #{filter_title} <span class="esc">×</span>
+            .filter-tag> data-filter-slug="other" data-id="#{filter_id}" #{filter_title} <span class="esc">×</span>
           .clear-filters-btn Clear filters
           = render partial: 'shared/save_search_btn'
 

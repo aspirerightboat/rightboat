@@ -10,18 +10,17 @@ $ ->
       $tabs_content.toggleClass('collapsed', collapse)
       $toggle.text(if collapse then expand_text else collapse_text)
 
-    $('.filter-tabs-nav').click (e) ->
-      if e.target.tagName == 'A'
-        li = e.target.parentNode
-        $(@).children().each ->
-          $(@).toggleClass('active', @ == li)
+    $('.filter-tabs-nav').on 'click', 'button', (e) ->
+      $btn = $(@)
+      $btn.parent().children('button').each ->
+        $(@).toggleClass('active', @ == e.target)
 
-        target_tab = $($(e.target).attr('href')).get(0)
-        $tabs_content.children('.filter-tab-content').each ->
-          $(@).toggleClass('hidden', @ != target_tab)
+      target_tab = $($btn.data('target')).get(0)
+      $tabs_content.children('.filter-tab-content').each ->
+        $(@).toggleClass('hidden', @ != target_tab)
 
-        collapse_content(false)
-        false
+      collapse_content(false)
+      false
 
     collapse_content($tabs_content.hasClass('collapsed'))
 

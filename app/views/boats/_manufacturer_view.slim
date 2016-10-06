@@ -17,13 +17,11 @@
           = render partial: 'shared/save_search_btn'
 
       .filter-tabs
-        ul.filter-tabs-nav
-          li.active
-            a(href="#model_filters") Models
-          li
-            a(href="#location_filters") Locations
-          li
-            a(href="#other_filters") Other
+        .filter-tabs-nav
+          .filter-tabs-nav-title.hidden-xs Filter
+          button.filter-tabs-nav-tab.active(data-target="#model_filters") By Models
+          button.filter-tabs-nav-tab(data-target="#location_filters") By Locations
+          button.filter-tabs-nav-tab(data-target="#other_filters") By Other
         .filter-tabs-content.search-boat-filters.collapsed
           .overlay
           #model_filters.filter-tab-content.filters-box.array-filter-box(data-filter-slug="models")

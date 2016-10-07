@@ -85,8 +85,10 @@
     max-width: 100%;
   }
   .small { font-size: 12px; }
-  .tax-status { font-size: 14px; margin-left: 1ex; }
 }
+.boat-thumb-specs-price { float: right; }
+.boat-thumb-specs-tax-status { font-size: 14px; margin-left: 1ex; }
+
 .boat-thumb-links {
   display: flex;
   justify-content: space-between;
@@ -181,7 +183,7 @@
       width: 160px;
       min-height: 120px;
     }
-    .tax-status { //.boat-length, .boat-year, .boat-location,
+    .boat-thumb-specs-tax-status {
       display: none;
     }
     .boat-thumb-social-links { display: none; }
@@ -217,14 +219,17 @@
       text-overflow: ellipsis;
     }
     h5 { margin-bottom: 0; }
-    .boat-price {
-      float: none !important;
-      text-align: left;
-      font-size: 0.85em;
-    }
-    .boat-length, .boat-year, .boat-location, .tax-status {
-      display: none;
-    }
+  }
+  .boat-thumb-specs-length,
+  .boat-thumb-specs-year,
+  .boat-thumb-specs-location,
+  .boat-thumb-specs-tax-status {
+    display: none;
+  }
+  .boat-thumb-specs-price {
+    float: none;
+    text-align: left;
+    font-size: 0.85em;
   }
   .boat-thumb-links { margin-top: 0; }
   .boat-thumb-social-links { display: none; }
@@ -400,8 +405,7 @@
       height: 60px;
       width: 60px;
       background-color: rgba(0, 0, 0, .4);
-      top: -webkit-calc(50% + - 10px);
-      top: calc(50% + - 10px);
+      top: ~"calc(50% - 10px)";
     }
   }
 
@@ -519,8 +523,7 @@
   padding: 8px;
   position: relative;
   width: 100%;
-  height: -webkit-calc(100% + - 100px);
-  height: calc(100% + - 100px);
+  height: ~"calc(100% - 100px)";
   top: 88px;
   opacity: 0;
   visibility: hidden;

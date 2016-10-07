@@ -47,24 +47,24 @@
         h4.text-uppercase= boat.manufacturer
         h5= boat.model
         - if !favourite_thumb && !lead_thumb
-          .boat-thumb-spec.boat-price.pull-right
+          .boat-thumb-specs-price
             span(data-attr-name="price")= boat_price(boat)
             - if boat.tax_paid?
-              span.tax-status.small Tax paid
-        .boat-thumb-spec.boat-length
+              span.boat-thumb-specs-tax-status.small Tax paid
+        .boat-thumb-specs-length
           span
             ' Length:
           span(data-attr-name="loa")= boat_length(boat)
-        .boat-thumb-spec.boat-year
+        .boat-thumb-specs-year
           span Year: #{boat.year_built}
-        .boat-thumb-spec.boat-location
+        .boat-thumb-specs-location
           span Location: #{boat.country.to_s}
       .boat-thumb-links
         - if favourite_thumb
           div
             span(data-attr-name="price")= boat_price(boat)
             - if boat.tax_paid?
-              span.tax-status.small Tax paid
+              span.boat-thumb-specs-tax-status.small Tax paid
           .boat-thumb-main-links
             - if boat.offer_available?
               = link_to 'Request Details', '#', class: 'btn-flat btn-black request-details'
@@ -72,7 +72,7 @@
           div
             span(data-attr-name='price')= boat_price(boat)
             - if boat.tax_paid?
-              span.tax-status.small Tax paid
+              span.boat-thumb-specs-tax-status.small Tax paid
           .boat-thumb-main-links
             = link_to 'View Full Specs<i></i>'.html_safe, makemodel_boat_pdf_path(boat), class: 'btn-flat btn-black pdf-link', target: '_blank'
             = link_to 'Search Similar', search_path(boat.similar_options(current_currency, current_length_unit)), class: 'btn-flat btn-black search-similar'

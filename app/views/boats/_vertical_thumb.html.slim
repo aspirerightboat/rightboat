@@ -6,9 +6,9 @@
   .boat-vertical-thumb-info
     h4= boat.manufacturer
     h5= boat.model
-    p.price(data-attr-name="price")= boat_price(boat)
+    p(data-attr-name="price")= boat_price(boat)
     - if (len = boat_length(boat))
-      p.boat-length(data-attr-name="loa")= len
+      p(data-attr-name="loa")= len
     - if boat.year_built
       p= boat.year_built
     - if boat.country

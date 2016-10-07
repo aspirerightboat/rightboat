@@ -53,6 +53,22 @@ module Rightboat
       states&.map(&:downcase)
     end
 
+    def length_m_min
+      Rightboat::Unit.convert_length(length_min, length_unit, 'm')
+    end
+
+    def length_m_max
+      Rightboat::Unit.convert_length(length_max, length_unit, 'm')
+    end
+
+    def price_gbp_min
+      Currency.convert(price_min, currency, Currency.default)
+    end
+
+    def price_gbp_max
+      Currency.convert(price_max, currency, Currency.default)
+    end
+
     private
 
     def normalize_params

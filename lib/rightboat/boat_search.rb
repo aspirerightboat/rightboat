@@ -52,11 +52,11 @@ module Rightboat
         with(:boat_type_id, sp.boat_type_id) if sp.boat_type_id
         with :boat_type, sp.boat_type if sp.boat_type
 
-        with(:price).greater_than_or_equal_to(gbp_price(sp.price_min)) if sp.price_min
-        with(:price).less_than_or_equal_to(gbp_price(sp.price_max)) if sp.price_max
+        with(:price).greater_than_or_equal_to(sp.price_gbp_min) if sp.price_min
+        with(:price).less_than_or_equal_to(sp.price_gbp_max) if sp.price_max
 
-        with(:length_m).greater_than_or_equal_to(sp.length_min) if sp.length_min
-        with(:length_m).less_than_or_equal_to(sp.length_max) if sp.length_max
+        with(:length_m).greater_than_or_equal_to(sp.length_m_min) if sp.length_min
+        with(:length_m).less_than_or_equal_to(sp.length_m_max) if sp.length_max
 
         with(:year).greater_than_or_equal_to(sp.year_min) if sp.year_min
         with(:year).less_than_or_equal_to(sp.year_max) if sp.year_max
@@ -82,10 +82,6 @@ module Rightboat
     end
 
     private
-
-    def gbp_price(price)
-      Currency.convert(price, sp.currency, Currency.default)
-    end
 
     def exact_q_search_if_makemodel(q)
       if !sp.manufacturer_ids && !sp.model_ids && is_makemodel_or_model_str(q)

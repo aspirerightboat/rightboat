@@ -86,5 +86,5 @@
           .boat-thumb-main-links
             - opts = {class: 'btn-flat btn-black view-summary'}
             - opts.merge!(target: '_blank') if broker_iframe
-            = link_to 'View Boat Summary'.html_safe, boat_url, opts
+            = link_to 'View Boat <span class="hidden-md">Summary</span>'.html_safe, boat_url, opts
       = yield if block_given?

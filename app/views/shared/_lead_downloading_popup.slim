@@ -4,7 +4,10 @@
       .modal-body
         button.close(aria-label="Close" data-dismiss="modal" type="button")
           span(aria-hidden="true") &times;
-        p Your download will start shortly, a copy has also been emailed to you.
+        p(style="margin-right: 3ex")
+          ' Your download will start shortly, a copy has also been emailed to you.
+          - pdf_url = sale_boat_pdf_path(boat.manufacturer, boat.model, boat, html_view: 1)
+          span.hidden-lg.hidden-md.hidden-sm Also you can <a href="#{pdf_url}" target="_blank">view boat summary on the site</a>.
         - other_boats = Rightboat::BoatSearch.new.do_search(params: boat.other_options, per_page: 3).results
         - if other_boats.any?
           p There are other #{boat.manufacturer_model} for sale:

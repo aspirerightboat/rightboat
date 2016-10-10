@@ -5,7 +5,11 @@
 .broker-info-block
   - if broker_info.logo? || broker.avatar?
     .broker-logo
-      = wicked_pdf_image_tag_if !@html_view, broker_info.logo? ? broker_info.logo_url : broker.avatar_url
+      - logo_url = broker_info.logo? ? broker_info.logo_url : broker.avatar_url
+      - if @html_view
+        = image_tag logo_url
+      - else
+        = wicked_pdf_image_tag logo_url
   .broker-info
     div <strong>#{broker.name}</strong>
     - if dist && dist == 'user_only'
@@ -42,7 +46,11 @@
 
 - if @boat.primary_image
   .boat-main-image
-    = wicked_pdf_image_tag_if !@html_view, @boat.primary_image.file_url
+    - url = @boat.primary_image.file_url
+    - if @html_view
+      = image_tag url
+    - else
+      = wicked_pdf_image_tag url
 
 .boat-title-block
   h1 <b>#{@boat.manufacturer}</b>
@@ -87,7 +95,12 @@ h3.heading
   - @boat.slave_images.limit(24).each_slice(2) do |slice|
     .thumbs-row
       - slice.each do |img|
-        .thumb= wicked_pdf_image_tag_if !@html_view, img.file_url(:thumb)
+        .thumb
+          - url = img.file_url(:thumb)
+          - if @html_view
+            = image_tag url
+          - else
+            = wicked_pdf_image_tag url
 
 - if @boat.extra.owners_comment
   .page-break

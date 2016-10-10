@@ -9,15 +9,17 @@
         .row
           .col-sm-10
             .row
-              .col-sm-6.text-center.field-row-height
-                = boat_type_radio_buttons(nil, id_prefix: 'iframe')
+              .col-sm-6.field-row-height
+                .row
+                  .col-xs-9.col.col-xs-offset-3(style="padding-left: 0")
+                    = boat_type_radio_buttons(nil, id_prefix: 'iframe')
               .col-sm-6.field-row-height
                 = text_field_tag :q, nil, class: 'form-control', placeholder: 'Keyword search'
               .col-sm-6.field-row-height
                 .row.range-slider-wrapper
-                  .col-xs-3.col-sm-3
+                  .col-xs-3
                     = label_tag :price
-                  .col-xs-9.col-sm-9(style="padding-left: 0")
+                  .col-xs-9(style="padding-left: 0")
                     .rb-control-group
                       .rb-control
                         = price_slider_tag(class: 'grey-base')
@@ -25,9 +27,9 @@
                         = currency_select :currency, current_currency, class: 'select-dark slider-currency-select'
               .col-sm-6.field-row-height
                 .row.range-slider-wrapper
-                  .col-xs-3.col-sm-3
+                  .col-xs-3
                     = label_tag :length
-                  .col-xs-9.col-sm-9(style="padding-left: 0")
+                  .col-xs-9(style="padding-left: 0")
                     .rb-control-group
                       .rb-control
                         = length_slider_tag(class: 'grey-base')

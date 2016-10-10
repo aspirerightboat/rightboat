@@ -2,6 +2,7 @@ class LeadsMailer < ApplicationMailer
   default bcc: 'rightboat911716@sugarondemand.com', cc: 'info@rightboat.com'
   add_template_helper BoatsHelper # for pdf
   add_template_helper QrcodeHelper # for pdf
+  add_template_helper WickedPdfHelper # for pdf
   layout 'mailer'
 
   after_action :amazon_delivery

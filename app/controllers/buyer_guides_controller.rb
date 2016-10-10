@@ -1,6 +1,6 @@
 class BuyerGuidesController < ApplicationController
 
-  before_filter :load_manufacturers
+  before_action :load_manufacturers
 
   def index
     @guides = BuyerGuide

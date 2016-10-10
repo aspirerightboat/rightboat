@@ -1,6 +1,4 @@
 class HomeController < ApplicationController
-  # TODO: after_filter :register_statistics, only: :index
-
   before_action :require_confirmed_email, only: [:index]
   before_action :load_visited, only: [:index]
   after_action :set_visited, only: [:index]

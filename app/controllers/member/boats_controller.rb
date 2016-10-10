@@ -1,5 +1,5 @@
 class Member::BoatsController < Member::BaseController
-  before_filter :ensure_non_broker
+  before_action :ensure_non_broker
 
   def index
     @my_boats = current_user.boats.not_deleted.includes(:currency, :manufacturer, :model, :country, :primary_image, :vat_rate)

@@ -8,7 +8,7 @@ ActiveAdmin.register Import do
   filter :last_ran_at
 
   controller do
-    before_filter :check_running_job, only: [:edit, :update, :destroy]
+    before_action :check_running_job, only: [:edit, :update, :destroy]
 
     def import_params
       permitted_param_names = [:import_type, :active, :user_id, :threads, :frequency_unit, :at, :tz, :use_proxy_for_images]

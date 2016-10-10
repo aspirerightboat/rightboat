@@ -1,6 +1,6 @@
 class SearchController < ApplicationController
-  before_filter :save_session_settings, only: :results
-  after_filter :log_search_terms, only: :results
+  before_action :save_session_settings, only: :results
+  after_action :log_search_terms, only: :results
 
   def manufacturers
     render json: {items: Manufacturer.solr_suggest_by_term(params[:q])}

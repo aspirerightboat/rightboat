@@ -2,7 +2,7 @@ module BrokerArea
   class MyBoatsController < CommonController
     protect_from_forgery except: :upload_image
     include Rightboat::BoatDescriptionUtils
-    before_filter :load_boat, only: [:edit, :show, :update, :destroy,
+    before_action :load_boat, only: [:edit, :show, :update, :destroy,
                                      :upload_image, :remove_image, :move_image, :toggle_published, :boat_stats]
 
     def index

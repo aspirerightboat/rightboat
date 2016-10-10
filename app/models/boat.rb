@@ -1,5 +1,5 @@
 class Boat < ActiveRecord::Base
-  enum status: [:active, :inactive]
+  enum status: {active: 0, inactive: 1}
   OFFER_STATUSES = %w(available under_offer sold)
   VOLUME_UNITS = %w(gallons litres)
   WEIGHT_UNITS = %w(kgs lbs tonnes)

@@ -239,6 +239,8 @@ module Rightboat
             target.import_assign :new_boat, target_new_boat
           when :poa
             target.import_assign :poa, value
+          when :year_built
+            target.import_assign :year_built, value&.to_i&.clamp(Boat::YEARS_RANGE)
           else
             if attr_name.to_s.in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
               target.import_assign attr_name, value

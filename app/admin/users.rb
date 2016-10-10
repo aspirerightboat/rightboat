@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   permit_params :username, :email, :password, :password_confirmation,
                 :first_name, :last_name, :company_name, :role, :title, :phone, :mobile, :fax,
-                :avatar, :avatar_cache,
+                :avatar, :avatar_cache, :account_manager_id,
                 address_attributes: [:id, :line1, :line2, :town_city, :county, :country_id, :zip, :_destroy],
                 broker_info_attributes: [:id, :contact_name, :position, :description, :discount,
                                          :payment_method, :xero_contact_id,
@@ -21,6 +21,7 @@ ActiveAdmin.register User do
   filter :first_name
   filter :last_name
   filter :company_name
+  filter :account_manager, as: :select, collection: AccountManager.order(:name)
   filter :address_country_id, as: :select, collection: Country.order(:name)
   filter :current_sign_in_at
   filter :sign_in_count
@@ -41,7 +42,7 @@ ActiveAdmin.register User do
     end
 
     def scoped_collection
-      end_of_association_chain.includes(:registered_from_affiliate, :imports, :deal, :broker_info)
+      end_of_association_chain.includes(:registered_from_affiliate, :imports, :deal, :broker_info, :account_manager)
     end
   end
 
@@ -53,6 +54,7 @@ ActiveAdmin.register User do
     column :role do |user|
       user.role_name
     end
+    column :account_manager
     column :current_sign_in_at
     column :sign_in_count
     column :saved_searches_count
@@ -126,6 +128,7 @@ ActiveAdmin.register User do
       f.input :phone
       f.input :mobile
       f.input :fax
+      f.input :account_manager, as: :select, collection: AccountManager.order(:name)
 
       f.has_many :address, allow_destroy: false, new_record: f.object.address.blank? do |ff|
         ff.input :line1
@@ -175,7 +178,12 @@ ActiveAdmin.register User do
     column :username
     column :slug
     column :company_name
-    column :role
+    column :role do |user|
+      user.role_name
+    end
+    column :account_manager do |user|
+      user.account_manager.try(:name)
+    end
     column :sign_in_count
     column :phone
     column :fax

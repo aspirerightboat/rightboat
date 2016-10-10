@@ -13,6 +13,9 @@ ul
   - unless @lead.message.blank?
     li <b>Comment:</b> #{@lead.message}
 
+p(style="color: red;")
+  b Do not reply to this email. To contact the customer please select this #{mail_to @lead.email, 'link'}.
+
 p Boat details:
 ul
   li <b>Make:</b> #{@boat.manufacturer}
@@ -29,8 +32,6 @@ ul
   li <b>Broker source ID:</b> #{@boat.source_id}
 
 p #{@lead.created_at.strftime('%d %b %Y')}
-
-p If you would like to contact the customer directly, please select this #{mail_to @lead.email, 'link'}.
 
 br
 p

@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
   has_one :deal, dependent: :destroy
   has_many :special_requests, dependent: :destroy
   has_one :comment_request, -> { comment }, class_name: 'SpecialRequest'
+  belongs_to :account_manager
 
   mount_uploader :avatar, AvatarUploader
 

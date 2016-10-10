@@ -79,4 +79,17 @@ spec_names.each do |attrs|
   spec.update_attributes(attrs)
 end
 
+account_managers = [
+  'Nicky Tucker',
+  'Chris Rumbelow',
+  'Jack Neale',
+  'Scott Kelly',
+  'Lucy Briggs'
+]
+
+account_managers.each do |name|
+  manager = AccountManager.find_or_initialize_by(name: name)
+  manager.save
+end
+
 RBConfig.repair

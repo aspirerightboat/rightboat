@@ -7,7 +7,7 @@
 - content_for :meta_tags do
   meta(property="og:type" content="product")
   meta(itemprop="name" content="#{@boat.display_name}")
-  meta(itemprop="currency" content="#{@boat.currency.try(:name)}")
+  meta(itemprop="currency" content="#{@boat.currency&.name}")
   meta(itemprop="price" content="#{@boat.price}")
   meta(name="robots" content="index, nofollow")
 

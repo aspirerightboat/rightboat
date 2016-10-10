@@ -1,5 +1,5 @@
 - boat_url = sale_boat_url(manufacturer: @boat.manufacturer, model: @boat.model, boat: @boat)
-- mail = @office.try(:email) || @boat.user.email
+- mail = @office&.email || @boat.user.email
 
 p
   | Dear #{@lead.first_name},
@@ -14,10 +14,10 @@ ul
 p We have notified the yacht broker of your interest, and they will be in touch soon. Their contact details are:
 
 ul
-  li <b>Broker Name:</b> #{@office.try(:contact_name) || @boat.user.name}
-  li <b>Tel:</b> #{@office.try(:daytime_phone) || @boat.user.phone}
+  li <b>Broker Name:</b> #{@office&.contact_name || @boat.user.name}
+  li <b>Tel:</b> #{@office&.daytime_phone || @boat.user.phone}
   li <b>Email:</b> #{mail_to mail, mail}
-  li <b>Website:</b> #{@office.try(:website) || @boat.user.broker_info.try(:website) || @boat.user.company_weburl}
+  li <b>Website:</b> #{@office&.website || @boat.user.broker_info&.website || @boat.user.company_weburl}
 
 p You will find a copy of this enquiry in your My Rightboat enquiry folder too.
 p Thank you for using Rightboat, we hope to see you back very soon.

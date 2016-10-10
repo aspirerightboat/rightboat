@@ -16,7 +16,7 @@ module Rightboat
           'description' => :description,
           'lying' => Proc.new do |boat, v|
             tmp = v.split(',')
-            boat.country = tmp.last.try(:strip)
+            boat.country = tmp.last&.strip
             boat.location = tmp[0..-2].map(&:strip).join(', ')
           end,
           'length' => :length_m,

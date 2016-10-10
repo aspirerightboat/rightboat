@@ -337,7 +337,7 @@ module Rightboat
         def prepare_description(parent_node)
           parent_node.css('strong').each do |node|
             if node.text =~ /Safeguarding|Surveyors|Transportation/
-              node.ancestors('p').first.try(:remove)
+              node.ancestors('p').first&.remove
             end
           end
           parent_node.inner_html

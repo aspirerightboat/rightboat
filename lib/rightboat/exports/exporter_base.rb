@@ -14,7 +14,7 @@ module Rightboat
         log_ex e, 'Unexpected Error'
         raise e
       ensure
-        @file.try(:close)
+        @file&.close
 
         ExpertMailer.exporting_errors(@export.id).deliver_now if @export.error_msg
 

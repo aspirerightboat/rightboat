@@ -96,7 +96,7 @@ class LeadsMailer < ApplicationMailer
       to_emails = STAGING_EMAIL
     else
       to_emails = []
-      office_email = @office.try(:email) || @broker.email
+      office_email = @office&.email || @broker.email
       dist =  @broker.broker_info.lead_email_distribution
       to_emails = broker_emails(@broker) if dist['user']
       to_emails << office_email if dist['office']

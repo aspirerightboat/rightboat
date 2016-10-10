@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
   end
 
   def broker_name
-    broker_info.try(:contact_name) || name
+    broker_info&.contact_name || name
   end
 
   def broker?

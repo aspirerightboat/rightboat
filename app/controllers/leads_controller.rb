@@ -120,7 +120,7 @@ class LeadsController < ApplicationController
 
   def lead_params
     @lead_params ||= params.permit(:title, :first_name, :surname, :email, :country_code, :phone, :message)
-      .merge(user_id: current_user.try(:id),
+      .merge(user_id: current_user&.id,
              remote_ip: request.remote_ip,
              browser: request.env['HTTP_USER_AGENT'].to_s[0..255],
              saved_searches_alert_id: @saved_searches_alert_id&.id)

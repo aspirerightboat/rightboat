@@ -8,7 +8,7 @@ class MailSubscriptionsController < ApplicationController
       notice = 'Thank you, we have added your email address to our mailing list.'
     elsif params[:commit] == 'Unsubscribe'
       subscription = MailSubscription.find_by(mail_subscription_params)
-      subscription.try(:destroy)
+      subscription&.destroy
       notice = 'Your email address has been removed. You will no longer receive marketing emails from us.'
     end
 

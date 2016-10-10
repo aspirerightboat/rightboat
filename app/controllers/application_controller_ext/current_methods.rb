@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   def current_currency
     @current_currency ||= begin
       Currency.cached_by_name(session[:currency]) ||
-      (location = safe_geocoder_location) && Country.find_by(iso: location.country_code).try(:currency) ||
+      (location = safe_geocoder_location) && Country.find_by(iso: location.country_code)&.currency ||
       Currency.default
     end
   end

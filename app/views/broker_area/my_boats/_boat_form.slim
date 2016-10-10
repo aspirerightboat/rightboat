@@ -67,7 +67,7 @@
           = currency_select 'price_currency', @boat.safe_currency, \
                   id: 'price_currency', class: ' select-currency select-dark inline-select'
           '
-          = check_box_tag :vat_included, @boat.vat_rate.try(:name) == 'Inc VAT', id: 'vat_included'
+          = check_box_tag :vat_included, @boat.vat_rate&.name == 'Inc VAT', id: 'vat_included'
           = label_tag :vat_included, content_tag(:abbr, 'VAT', title: 'Value-added Tax') + ' included'
           '  - Or - &nbsp;
           = f.check_box :poa, id: 'boat_poa'

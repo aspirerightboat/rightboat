@@ -22,17 +22,17 @@
             .row.ha-toggle
               .col-sm-2.col-xs-3
                 .form-group
-                  = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title', id: 'lead_title'
+                  = select_tag :title, options_for_select(User::TITLES, current_user&.title), prompt: 'Title', class: 'select-title', id: 'lead_title'
               .col-sm-4.col-xs-9
                 .form-group
-                  = text_field_tag :first_name, current_user.try(:first_name), placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required', id: 'lead_first_name'
+                  = text_field_tag :first_name, current_user&.first_name, placeholder: 'First name', class: 'form-control', 'data-validetta' => 'required', id: 'lead_first_name'
               .col-sm-6.col-xs-12
                 .form-group
-                  = text_field_tag :surname, current_user.try(:last_name), placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required', id: 'lead_last_name'
+                  = text_field_tag :surname, current_user&.last_name, placeholder: 'Last name', class: 'form-control', 'data-validetta' => 'required', id: 'lead_last_name'
             .row
               .col-sm-6.col-xs-12
                 .form-group
-                  = email_field_tag :email, current_user.try(:email), placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email', id: 'lead_email'
+                  = email_field_tag :email, current_user&.email, placeholder: 'Email', class: 'form-control', 'data-validetta' => 'required,email', id: 'lead_email'
               .col-sm-6.col-xs-12.ha-toggle.hidden
                 .form-group
                   = password_field_tag :password, '', placeholder: 'Password', class: 'form-control'
@@ -43,7 +43,7 @@
                       = select_tag :country_code, options_for_country_code, prompt: 'Country Code', placeholder: 'Country Code', \
                               class: 'select-azure country-code-select', id: 'lead_country_code'
                     .rb-control
-                      = text_field_tag :phone, current_user.try(:phone) || current_user.try(:mobile), \
+                      = text_field_tag :phone, current_user&.phone || current_user&.mobile, \
                               placeholder: 'Phone', class: 'form-control', id: 'lead_phone'
             .row.ha-toggle.hidden
               .col-xs-12

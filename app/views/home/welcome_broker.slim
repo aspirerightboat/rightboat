@@ -42,7 +42,7 @@
             .row
               .col-sm-2.col-xs-12
                 .form-group
-                  = select_tag :title, options_for_select(User::TITLES, current_user.try(:title)), prompt: 'Title', class: 'select-title simple-select-dark'
+                  = select_tag :title, options_for_select(User::TITLES, current_user&.title), prompt: 'Title', class: 'select-title simple-select-dark'
               .col-sm-4.col-xs-12
                 .form-group
                   = text_field_tag :first_name, nil, placeholder: 'First Name', id: 'first_name', class: 'form-control', 'data-validetta' => 'required'

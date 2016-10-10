@@ -71,10 +71,10 @@ module Rightboat
               }
               @x.advert_features {
                 @x.boat_type boat.boat_type&.name_stripped&.capitalize
-                @x.boat_category boat.category.try(:name)
+                @x.boat_category boat.category&.name
                 @x.new_or_used case boat.new_boat when true then 'New' when false then 'Used' end
-                @x.vessel_lying boat.location, country: boat.country.try(:iso)
-                @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency.try(:name), vat_included: boat.vat_rate.try(:tax_paid?)
+                @x.vessel_lying boat.location, country: boat.country&.iso
+                @x.asking_price boat.price.to_i, poa: boat.poa, currency: boat.currency&.name, vat_included: boat.vat_rate.try(:tax_paid?)
                 @x.marketing_descs {
                   @x.marketing_desc(language: 'en') { @x.cdata! boat.extra.description.to_s }
                 }
@@ -136,12 +136,12 @@ module Rightboat
                 @x.engine {
                   spec_item specs.delete(:stern_thruster), 'stern_thruster', with_description: true
                   spec_item specs.delete(:bow_thruster), 'bow_thruster', with_description: true
-                  spec_item boat.fuel_type.try(:name), 'fuel'
+                  spec_item boat.fuel_type&.name, 'fuel'
                   spec_item specs.delete(:engine_hours), 'hours'
                   spec_unit_item specs.delete(:cruising_speed), 'cruising_speed'
                   spec_item specs.delete(:max_speed_knots), 'max_speed', unit: 'knots'
                   spec_item specs.delete(:engine_horse_power), 'horse_power' # TODO: check importers - should be HP of a single engine
-                  spec_item boat.engine_manufacturer.try(:name), 'engine_manufacturer'
+                  spec_item boat.engine_manufacturer&.name, 'engine_manufacturer'
                   spec_item specs.delete(:engine_count), 'engine_quantity'
                   spec_unit_item specs.delete(:engine_tankage), 'tankage'
                   spec_item specs.delete(:gallons_per_hour), 'gallons_per_hour'
@@ -151,7 +151,7 @@ module Rightboat
                   spec_item specs.delete(:cylinders_count), 'cylinders'
                   spec_item specs.delete(:propeller_type), 'propeller_type'
                   spec_item specs.delete(:starting_type), 'starting_type'
-                  spec_item boat.drive_type.try(:name), 'drive_type'
+                  spec_item boat.drive_type&.name, 'drive_type'
                   spec_item specs.delete(:cooling_system), 'cooling_system', type: specs.delete(:cooling_system_type), with_description: true
                 }
                 @x.navigation {

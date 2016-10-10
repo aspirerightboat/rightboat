@@ -21,21 +21,21 @@
         div #{link_to broker.broker_info.website, broker.broker_info.website}
     - else
       - office = @boat.office
-      = render partial: 'shared/address', locals: { address: office.try(:address) || broker.address }
-      - if office.try(:daytime_phone).present?
+      = render partial: 'shared/address', locals: { address: office&.address || broker.address }
+      - if office&.daytime_phone.present?
         div <b>Tel:</b> #{office.daytime_phone}
       - elsif broker.phone.present?
         div <b>Tel:</b> #{broker.phone}
-      - if office.try(:mobile).present?
+      - if office&.mobile.present?
         div <b>Mobile:</b> #{office.mobile}
       - elsif broker.mobile.present?
         div <b>Mobile:</b> #{broker.mobile}
-      - if office.try(:fax).present?
+      - if office&.fax.present?
         div <b>Fax:</b> #{office.fax}
       - elsif broker.fax.present?
         div <b>Fax:</b> #{broker.fax}
-      div <b>Email:</b> #{mail_to office.try(:email) || broker.email}
-      - if office.try(:website).present?
+      div <b>Email:</b> #{mail_to office&.email || broker.email}
+      - if office&.website.present?
         div #{link_to office.website, office.website}
       - elsif broker.broker_info && broker.broker_info.website.present?
         div #{link_to broker.broker_info.website, broker.broker_info.website}

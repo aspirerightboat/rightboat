@@ -193,7 +193,7 @@ class Rightboat::XeroInvoicer
                           postal_code: address.zip,
                           country: address.country&.iso)
     end
-    country_code = address.country.try(:country_code)
+    country_code = address.country&.country_code
     contact.add_phone(type: 'DEFAULT', area_code: country_code, number: broker.phone) if broker.phone.present?
     contact.add_phone(type: 'MOBILE', area_code: country_code, number: broker.mobile) if broker.mobile.present?
     contact

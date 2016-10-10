@@ -16,6 +16,6 @@
             th= key
             th
               - if key == 'country'
-                | #{value} (#{Country.find_by(iso: value).try(:name)})
+                | #{value} (#{Country.find_by(iso: value)&.name})
               - else
                 | #{value}

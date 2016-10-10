@@ -156,7 +156,7 @@ module Rightboat
             country_name = clean_text(nodes['country'] || nodes['counrty']) # counrty misspelling is here: http://81.143.47.18/boat/boats-xml/p/2/b/6/k/b987de2d33b17e6ca8aa874d58e51a6c/pk/c93422dd21571cc120a928c6ab047768
             country = (Country.query_with_aliases(country_name).first if country_name)
             log "Country not found: #{country_name}" if !country
-            address.country_id = country.try(:id)
+            address.country_id = country&.id
             address.zip = clean_text(nodes['postcode'])
 
             user_offices << office if office.new_record?
@@ -198,7 +198,7 @@ module Rightboat
             url = URI.parse(@url).merge(url).to_s if url !~ /^https?:/
 
             item = {url: url}
-            caption = node['caption'].try(:strip)
+            caption = node['caption']&.strip
             item[:caption] = caption if caption.present?
             mod_time = node['rb:file_mtime']
             item[:mod_time] = DateTime.parse(mod_time) if mod_time.present?
@@ -228,7 +228,7 @@ module Rightboat
             end
           end
           if feature_nodes['other']
-            boat.source_url = feature_nodes['other'].element_children.find { |n| n['name'] == 'external_url' }.try(:text)
+            boat.source_url = feature_nodes['other'].element_children.find { |n| n['name'] == 'external_url' }&.text
           end
           if feature_nodes['boat_type']
             boat.boat_type = feature_nodes['boat_type'].text
@@ -240,7 +240,7 @@ module Rightboat
             boat.location = location_el.text
             boat.country = location_el['country']
           end
-          boat.new_boat = read_new_or_used(feature_nodes['new_or_used'].try(:text))
+          boat.new_boat = read_new_or_used(feature_nodes['new_or_used']&.text)
         end
 
         def handle_boat_features(boat, boat_features)
@@ -275,7 +275,7 @@ module Rightboat
         end
 
         def clean_text(node)
-          node.try(:text).try(:strip).presence
+          node&.text&.strip.presence
         end
 
         def read_poa(str)

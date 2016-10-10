@@ -170,7 +170,7 @@ class Boat < ActiveRecord::Base
   end
 
   def full_location
-    [location, country.try(:name)].reject(&:blank?).join(', ')
+    [location, country&.name].reject(&:blank?).join(', ')
   end
 
   def length_ft

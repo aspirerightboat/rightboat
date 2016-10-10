@@ -73,7 +73,7 @@ class BoatsController < ApplicationController
     @boat = Boat.active.find_by(slug: params[:boat])
 
     can_view_lead = current_user&.admin? || current_user&.broker? ||
-        Lead.where(boat_id: @boat.id).where('remote_ip = ? OR user_id = ?', request.remote_ip, current_user.try(:id) || 0).exists?
+        Lead.where(boat_id: @boat.id).where('remote_ip = ? OR user_id = ?', request.remote_ip, current_user&.id || 0).exists?
 
     if !can_view_lead
       redirect_to("#{makemodel_boat_path(@boat)}#lead_popup", alert: I18n.t('messages.not_authorized')) and return

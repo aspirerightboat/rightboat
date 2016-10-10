@@ -182,7 +182,7 @@ ActiveAdmin.register User do
       user.role_name
     end
     column :account_manager do |user|
-      user.account_manager.try(:name)
+      user.account_manager&.name
     end
     column :sign_in_count
     column :phone

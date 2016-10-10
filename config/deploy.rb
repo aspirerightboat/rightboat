@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.4.0'
+lock '3.6.1'
 
 set :application, 'rightboat_v2'
 set :repo_url, 'git@github.com:OxygenCapitalLimited/rightboat.git'

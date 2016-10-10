@@ -85,7 +85,7 @@ class BoatsController < ApplicationController
       redirect_to({action: :index}, alert: I18n.t('messages.boat_not_exist')) and return
     end
 
-    if params[:html_view]
+    if (@html_view = params[:html_view])
       render layout: 'pdf'
     else
       file_path = Rightboat::BoatPdfGenerator.ensure_pdf(@boat)

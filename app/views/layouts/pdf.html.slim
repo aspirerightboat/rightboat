@@ -2,7 +2,7 @@ doctype 5
 html
   head
     meta(charset="utf-8")
-    - if params[:html_view]
+    - if @html_view
       = stylesheet_link_tag 'pdf'
     - else
       = wicked_pdf_stylesheet_link_tag 'pdf'

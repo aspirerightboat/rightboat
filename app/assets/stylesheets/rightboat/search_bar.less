@@ -4,7 +4,10 @@
 
   .flat-list {
     margin: 3px 0 3px auto;
-    &:not(:first-child) { padding-left: 1ex; }
+
+    @media(min-width: @screen-sm-min) {
+      &:not(:first-child) { padding-left: 1ex; }
+    }
   }
 
   @media(min-width: @screen-sm-min) {

@@ -37,12 +37,24 @@ module Rightboat
 
     def self.broker_leads_monthly(broker, months_count)
       leads = Lead.joins(:boat).where(boats: {user_id: broker.id})
-                  .where(leads: {status: %w(approved invoiced)})
+                  .where(leads: {status: %w(pending approved invoiced)})
                   .where('leads.created_at > ?', months_count.months.ago.to_date)
-                  .group('custom_date')
-                  .pluck("DATE_FORMAT(leads.created_at, '%Y-%m') custom_date, COUNT(*)").to_h
+                  .group('custom_date, leads.status')
+                  .pluck("DATE_FORMAT(leads.created_at, '%Y-%m') custom_date, leads.status, COUNT(*)")
+      leads_by_date = leads.group_by(&:first)
 
-      monthly_performance_chart(%w(Date Leads), leads, months_count)
+      res = [%w(Date Invoiced Approved Pending)]
+
+      months_count.downto(0).each do |i|
+        date = i.months.ago.strftime('%Y-%m')
+        arr_by_status = leads_by_date[date]&.index_by(&:second)
+        res << [date,
+                arr_by_status&.dig('invoiced')&.last.to_i,
+                arr_by_status&.dig('approved')&.last.to_i,
+                arr_by_status&.dig('pending')&.last.to_i]
+      end
+
+      res
     end
 
     def self.broker_inventory_monthly(broker, months_count)

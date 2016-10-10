@@ -55,9 +55,12 @@
             leadsChart.draw(leadsChartData, {
               title: 'Boat Leads',
               legend: {position: 'bottom'},
+              isStacked: true,
               vAxis: {minValue: 0},
               series: {
-                0: {color: 'goldenrod'}
+                0: {color: 'darkgoldenrod'},
+                1: {color: 'orange'},
+                2: {color: 'gold'}
               }
             });
             var inventoryChartData = google.visualization.arrayToDataTable(data.inventory_monthly);

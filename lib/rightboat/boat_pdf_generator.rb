@@ -8,31 +8,12 @@ module Rightboat
       if !File.exist?(pdf_file_path)
         FileUtils.mkdir_p(File.dirname(pdf_file_path))
 
-        view = ActionView::Base.new(Rails.root.join('app/views'))
-        view.class_eval do
-          include BoatsHelper
-          include QrcodeHelper
-          include WickedPdfHelper
-          include Rails.application.routes.url_helpers
-          self.default_url_options = Rails.application.config.action_controller.default_url_options
-        end
+        pdf_html = BoatsController.render template: 'boats/pdf', layout: 'layouts/pdf', assigns: {boat: boat}
+        footer_html = BoatsController.render template: 'shared/_pdf_footer', layout: 'layouts/pdf'
 
-        pdf = view.render(
-            pdf: 'pdf',
-            locals: {:@boat => boat},
-            template: 'boats/pdf.html.slim',
-            layout: 'layouts/pdf.html.slim'
-        )
-
-        pdf = WickedPdf.new.pdf_from_string(pdf,
+        pdf = WickedPdf.new.pdf_from_string(pdf_html,
             margin: { bottom: 20 },
-            # header: { right: '[page] of [topage]' },
-            footer: {
-              content: view.render({
-                template:  'shared/_pdf_footer.html.slim',
-                layout:    'layouts/pdf.html.slim'
-              })
-            }
+            footer: {content: footer_html}
         )
 
         File.open(pdf_file_path, 'wb') { |file| file << pdf }

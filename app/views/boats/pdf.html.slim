@@ -89,7 +89,7 @@ h3.heading
       - slice.each do |img|
         .thumb= wicked_pdf_image_tag_if !@html_view, img.file_url(:thumb)
 
-- if @boat.extra.owners_comment
+- if @boat.extra.owners_comment.present?
   .page-break
 
   h3.heading Owners Comment

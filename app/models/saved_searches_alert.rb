@@ -1,4 +1,4 @@
-class SavedSearchesAlert < ActiveRecord::Base
+class SavedSearchesAlert < ApplicationRecord
   serialize :saved_search_ids, Array # temporary
   serialize :saved_search_infos, Array
   belongs_to :user

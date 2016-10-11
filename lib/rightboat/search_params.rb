@@ -69,6 +69,47 @@ module Rightboat
       Currency.convert(price_max, currency, Currency.default)
     end
 
+    def to_h
+      h = {}
+      try_add_key = ->(attr) { value = send(attr); h[attr] = value if value }
+      try_add_key.(:q)
+      try_add_key.(:manufacturer_model)
+      unless try_add_key.(:manufacturer_ids)
+        unless try_add_key.(:manufacturer)
+          try_add_key.(:manufacturer_id)
+        end
+      end
+      unless try_add_key.(:model_ids)
+        try_add_key.(:model_id)
+      end
+      unless try_add_key.(:country_ids)
+        unless try_add_key.(:country)
+          try_add_key.(:country_id)
+        end
+      end
+      unless try_add_key.(:boat_type)
+        try_add_key.(:boat_type_id)
+      end
+      try_add_key.(:states)
+      try_add_key.(:year_min)
+      try_add_key.(:year_max)
+      try_add_key.(:price_min)
+      try_add_key.(:price_max)
+      try_add_key.(:length_min)
+      try_add_key.(:length_max)
+      try_add_key.(:new_used)
+      try_add_key.(:tax_status)
+      try_add_key.(:ref_no)
+      try_add_key.(:exclude_ref_no)
+      try_add_key.(:page)
+      try_add_key.(:order)
+      try_add_key.(:order_col)
+      try_add_key.(:order_dir)
+      try_add_key.(:currency)
+      try_add_key.(:length_unit)
+      h
+    end
+
     private
 
     def normalize_params

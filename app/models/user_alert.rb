@@ -1,3 +1,3 @@
-class UserAlert < ActiveRecord::Base
+class UserAlert < ApplicationRecord
   belongs_to :user
 end

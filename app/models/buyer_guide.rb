@@ -1,4 +1,4 @@
-class BuyerGuide < ActiveRecord::Base
+class BuyerGuide < ApplicationRecord
 
   extend FriendlyId
   friendly_id :manufacturer_model, use: [:slugged, :finders]

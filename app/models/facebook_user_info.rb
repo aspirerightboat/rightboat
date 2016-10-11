@@ -1,3 +1,3 @@
-class FacebookUserInfo < ActiveRecord::Base
+class FacebookUserInfo < ApplicationRecord
   belongs_to :user
 end

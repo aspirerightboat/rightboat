@@ -1,4 +1,4 @@
-class Export < ActiveRecord::Base
+class Export < ApplicationRecord
   belongs_to :user
 
   EXPORT_TYPES = %w(openmarine)

@@ -1,4 +1,4 @@
-class ArticleAuthor < ActiveRecord::Base
+class ArticleAuthor < ApplicationRecord
 
   extend FriendlyId
   friendly_id :name, use: [:slugged, :finders]

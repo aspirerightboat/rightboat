@@ -165,7 +165,7 @@ module Rightboat
         RELATION_ATTRIBUTES.each do |attr_name|
           klass = Boat.reflections[attr_name.to_s].klass
           value = instance_variable_get("@#{attr_name}".to_sym)
-          unless value.is_a?(ActiveRecord::Base)
+          unless value.is_a?(ApplicationRecord)
             if value&.is_a?(String) && value =~ /&/
               value = CGI.unescapeHTML(CGI.unescapeHTML(value)) # eg. Yacht &amp;amp; Motor
             end

@@ -1,4 +1,4 @@
-class Office < ActiveRecord::Base
+class Office < ApplicationRecord
   include BoatOwner
 
   belongs_to :user

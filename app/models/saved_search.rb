@@ -1,4 +1,4 @@
-class SavedSearch < ActiveRecord::Base
+class SavedSearch < ApplicationRecord
   serialize :countries, Array
   serialize :states, Array
   serialize :models, Array

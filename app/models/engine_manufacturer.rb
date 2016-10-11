@@ -1,4 +1,4 @@
-class EngineManufacturer < ActiveRecord::Base
+class EngineManufacturer < ApplicationRecord
   include FixSpelling
   include BoatOwner
 

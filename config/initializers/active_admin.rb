@@ -241,8 +241,8 @@ ActiveAdmin.setup do |config|
   #
   # config.filters = true
 
-  config.skip_before_action :load_visited
-  config.skip_after_action :set_visited
+  # config.skip_before_action :load_visited
+  # config.skip_after_action :set_visited
 end
 
 module ActiveAdmin::ViewHelpers

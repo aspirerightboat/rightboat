@@ -1,4 +1,4 @@
-class ImportSub < ActiveRecord::Base # Import Substitution
+class ImportSub < ApplicationRecord # Import Substitution
   belongs_to :import
 
   def fixed_from

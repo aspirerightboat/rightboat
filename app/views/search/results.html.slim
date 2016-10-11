@@ -8,7 +8,7 @@
   = render 'shared/advanced_search'
   = render partial: 'shared/top_navbar', locals: {include_header: true}
 
-= render partial: 'shared/search_bar', locals: {advanced_search_btn: true, save_search_btn: true}
+= render partial: 'shared/search_bar', locals: {advanced_search_btn: true, save_search_btn: true, search_params: @search_params}
 #main_content.container(data-prev-url="#{@prev_url}")
   h2.top-h2.text-center Search Results: <b>#{implicit_boats_count(@boats.total_count)}</b> boats for sale
 

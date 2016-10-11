@@ -1,3 +1,4 @@
+- search_params = @search_params || Rightboat::SearchParams.new(params).read
 .advanced-search(class="#{'refine-search' if controller_name.in? %w(search manufacturers)}")
   .container
     button.close(aria-label="Close" type="button")
@@ -12,7 +13,7 @@
         | Advanced Search
 
     = form_tag search_path, method: :get, class: 'row' do
-      = hidden_field_tag :order, params[:order]
+      = hidden_field_tag :order, search_params.order
 
       .col-xs-12
         .row
@@ -21,17 +22,17 @@
               .col-xs-5.col-lg-3
                 = label_tag :boat_type
               .col-xs-7.col-lg-9
-                = boat_type_radio_buttons(params[:boat_type], id_prefix: 'adv_search', class_name: 'light-radio-buttons')
+                = boat_type_radio_buttons(search_params.boat_type, id_prefix: 'adv_search', class_name: 'light-radio-buttons')
       .col-xs-12.col-sm-6
         .row
           .col-xs-5.col-lg-3.form-group
             = label_tag :manufacturers_picker, 'Manufacturers'
           .col-xs-7.col-lg-9.form-group.selectize-like-input
-            = manufacturers_picker_field(:manufacturers, params[:manufacturers])
+            = manufacturers_picker_field(:manufacturers, search_params.manufacturer_ids)
           .col-xs-5.col-lg-3.form-group
             = label_tag :models_picker, 'Models'
           .col-xs-7.col-lg-9.form-group.selectize-like-input
-            = models_picker_field(:models, params[:models])
+            = models_picker_field(:models, search_params.model_ids)
         .range-slider-wrapper.row
           .col-xs-5.col-lg-3
             = label_tag :year
@@ -60,21 +61,21 @@
           .col-xs-5.col-lg-3
             = label_tag :keywords, 'Keywords'
           .col-xs-7.col-lg-9
-            = text_field_tag :q, params[:q], class: 'form-control', placeholder: 'e.g. 4 berths'
+            = text_field_tag :q, search_params.q, class: 'form-control', placeholder: 'e.g. 4 berths'
         .form-group.row
           .col-xs-5.col-lg-3
             = label_tag :countries_picker, 'Countries'
           .col-xs-7.col-lg-9.selectize-like-input
             - general_options = general_boat_stats.country_infos.map { |id, name, count| {value: id, text: count ? "#{name} (#{count})" : name} }.to_json
-            = text_field_tag :countries, params[:countries], id: 'countries_picker', \
+            = text_field_tag :countries, search_params.country_ids, id: 'countries_picker', \
                     class: 'select-black multiple-country-select select-states-if-us', \
                     data: {options: general_options}, \
                     placeholder: 'eg. United Kingdom'
-        .form-group.row(style="#{('display: none' if params[:states].blank?)}")
+        .form-group.row(style="#{('display: none' unless search_params.states)}")
           .col-xs-5.col-lg-3
             = label_tag :states_picker, 'States'
           .col-xs-7.col-lg-9.selectize-like-input
-            = text_field_tag :states, params[:states], \
+            = text_field_tag :states, search_params.states, \
                     id: 'states_picker', class: 'select-black country-states-select', \
                     data: {options: Rightboat::USStates.states_map.map { |k, v| {value: k, text: v} }}, \
                     placeholder: 'eg. Florida'
@@ -87,7 +88,7 @@
           .col-xs-5.col-lg-3
             = label_tag :new_used, 'New / Used', class: 'without-top-pad'
           .col-xs-7.col-lg-9
-            = new_used_checkboxes(params[:new_used], id_prefix: 'adv_search', class_name: 'light-checkboxes')
+            = new_used_checkboxes(search_params.new_used, id_prefix: 'adv_search', class_name: 'light-checkboxes')
       .col-xs-12
         .row
           .col-sm-6.col-xs-12
@@ -95,11 +96,11 @@
               .col-xs-5.col-lg-3
                 = label_tag :tax_status, nil, class: 'without-top-pad'
               .col-xs-7.col-lg-9
-                = tax_status_checkboxes(params[:tax_status], id_prefix: 'adv_search', class_name: 'light-checkboxes')
+                = tax_status_checkboxes(search_params.tax_status, id_prefix: 'adv_search', class_name: 'light-checkboxes')
           .col-sm-6.col-xs-12
             .form-group.row
               .col-xs-5.col-lg-3
-                = render partial: 'shared/save_search_btn', locals: {link_class: 'btn-flat'}
+                = render partial: 'shared/save_search_btn', locals: {link_class: 'btn-flat', search_params: search_params}
               .col-xs-7.col-lg-9
                 button.btn-flat(type="submit") Search
     .row

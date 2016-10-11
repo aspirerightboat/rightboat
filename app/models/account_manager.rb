@@ -1,4 +1,4 @@
-class AccountManager < ActiveRecord::Base
+class AccountManager < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 50 }
 end

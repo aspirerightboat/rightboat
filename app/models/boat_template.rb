@@ -1,4 +1,4 @@
-class BoatTemplate < ActiveRecord::Base
+class BoatTemplate < ApplicationRecord
   serialize :from_boats, Array
   serialize :specs
 

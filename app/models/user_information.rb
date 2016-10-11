@@ -1,4 +1,4 @@
-class UserInformation < ActiveRecord::Base
+class UserInformation < ApplicationRecord
 
   GENDERS = %w(male female)
 

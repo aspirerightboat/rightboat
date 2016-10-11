@@ -1,4 +1,4 @@
-class UserActivity < ActiveRecord::Base
+class UserActivity < ApplicationRecord
   KINDS = %w(boat_view lead search forwarded_to_pegasus)
 
   belongs_to :user

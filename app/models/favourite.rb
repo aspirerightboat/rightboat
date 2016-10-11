@@ -1,4 +1,4 @@
-class Favourite < ActiveRecord::Base
+class Favourite < ApplicationRecord
   belongs_to :boat
   belongs_to :user
 end

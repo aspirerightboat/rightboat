@@ -1,4 +1,4 @@
-class Currency < ActiveRecord::Base
+class Currency < ApplicationRecord
   include BoatOwner
 
   has_many :countries, inverse_of: :currency, dependent: :restrict_with_error

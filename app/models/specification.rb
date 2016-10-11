@@ -1,4 +1,4 @@
-class Specification < ActiveRecord::Base
+class Specification < ApplicationRecord
   include FixSpelling
 
   has_many :boat_specifications, inverse_of: :specification, dependent: :restrict_with_error

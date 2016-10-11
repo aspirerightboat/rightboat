@@ -2,21 +2,22 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'rails', '4.2.6'
+gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
 gem 'mysql2'
 gem 'less-rails'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.1.0'
+gem 'uglifier'
+gem 'coffee-rails'
 gem 'therubyracer', platforms: :ruby
 gem 'less-rails-bootstrap'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 # gem 'turbolinks'
-gem 'jbuilder', '~> 2.0'
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'jbuilder'
+gem 'sprockets', '3.6.3'
 
 gem 'slim-rails'
 gem 'activeadmin', github: 'activeadmin'
+gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'devise'
 gem 'active_model_serializers'
 gem 'open_uri_redirections'
@@ -49,7 +50,6 @@ gem 'geocoder'
 
 # background processing & scheduling
 gem 'delayed_job_active_record'
-gem 'delayed_job_web'
 
 # pdf generating
 gem 'wicked_pdf' # you need install wkhtmltopdf binary manually to have the latest version. see: http://wkhtmltopdf.org/downloads.html
@@ -59,16 +59,14 @@ gem 'rqrcode'
 gem 'mechanize', require: false
 
 # for statistics
-gem 'mongo'
-gem 'mongoid'
-gem 'bson_ext'
+gem 'mongoid', '~> 6.0.0'
 
 gem 'premailer-rails'
 #gem 'remotipart' # to upload file via ajax
 
 gem 'redis-rails'
 
-gem 'xeroizer'
+gem 'xeroizer', github: 'waynerobinson/xeroizer'
 gem 'xxhash' # calc simple hash 10x faster than Digest::SHA1.hexdigest
 gem 'ruby-filemagic' # determine mime-type by file content. requires "brew install libmagic" on OS X and "apt-get install libmagic-dev" on Ubuntu
 
@@ -89,8 +87,7 @@ group :development, :test do
   gem 'airbrussh', require: false
   gem 'pry-rails'
   gem 'letter_opener'
-  gem 'quiet_assets'
-  gem 'bullet'
+  # gem 'bullet'
   gem 'pry-byebug'
   gem 'wkhtmltopdf-binary'
   gem 'better_errors'

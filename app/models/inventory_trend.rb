@@ -1,4 +1,4 @@
-class InventoryTrend < ActiveRecord::Base
+class InventoryTrend < ApplicationRecord
 
   validates_presence_of :total_boats, :power_boats, :sail_boats, :not_power_or_sail
   validates_numericality_of :total_boats, :power_boats, :sail_boats, :not_power_or_sail, 

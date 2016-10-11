@@ -8,8 +8,6 @@ class ApplicationController < ActionController::Base
   before_action :set_user_specific_settings
   before_action :remember_broker_from_iframe
 
-  serialization_scope :view_context
-
   Dir["#{Rails.root}/app/controllers/application_controller_ext/*"].each { |file| Rails.env.development? ? load(file) : require(file) }
 
   private

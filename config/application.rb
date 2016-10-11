@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 
 require 'rails/all'
 
@@ -31,7 +31,7 @@ module Rightboat
 
     config.cache_store = :redis_store
 
-    config.logger = Logger.new(config.paths['log'].first, 5, 50.megabytes)
+    # config.logger = Logger.new(config.paths['log'].first, 5, 50.megabytes)
 
     config.to_prepare do
       Devise::Mailer.layout 'mailer'

@@ -1,3 +1,4 @@
+- search_params = @search_params || Rightboat::SearchParams.new(params).read
 nav.search-bar
   .container
     ul.flat-list
@@ -9,7 +10,7 @@ nav.search-bar
       - if local_assigns[:advanced_search_btn]
         li= link_to (@boat ? 'Advanced Search' : 'Refine this Search'), '#', class: 'toggle-adv-search search-bar-btn'
       - if local_assigns[:save_search_btn]
-        li= render partial: 'shared/save_search_btn', locals: {link_class: 'search-bar-btn'}
+        li= render partial: 'shared/save_search_btn', locals: {link_class: 'search-bar-btn', search_params: search_params}
       - if @boat
         li= link_to 'Search Similar', search_path(@boat.similar_options(current_currency, current_length_unit)), class: 'search-bar-btn'
     - if @boats

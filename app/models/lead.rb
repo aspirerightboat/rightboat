@@ -1,4 +1,4 @@
-class Lead < ActiveRecord::Base
+class Lead < ApplicationRecord
 
   STATUSES = %w(pending quality_check approved cancelled invoiced suspicious deleted)
   BAD_QUALITY_REASONS = %w(bad_contact contact_details_incorrect suspected_spam enquiry_received_twice other)

@@ -1,4 +1,4 @@
-class BoatType < ActiveRecord::Base
+class BoatType < ApplicationRecord
   include FixSpelling
   include BoatOwner
 

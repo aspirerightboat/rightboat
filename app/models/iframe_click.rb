@@ -1,4 +1,4 @@
-class IframeClick < ActiveRecord::Base
+class IframeClick < ApplicationRecord
   belongs_to :broker_iframe
 
   scope :month_eq, ->(month) { where('MONTH(created_at) = ?', month.to_i) }

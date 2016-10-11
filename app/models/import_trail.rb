@@ -1,4 +1,4 @@
-class ImportTrail < ActiveRecord::Base
+class ImportTrail < ApplicationRecord
   belongs_to :import
 
   scope :with_errors,    -> { where.not(error_msg: nil) }

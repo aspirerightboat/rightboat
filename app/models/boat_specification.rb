@@ -1,4 +1,4 @@
-class BoatSpecification < ActiveRecord::Base
+class BoatSpecification < ApplicationRecord
   belongs_to :specification, inverse_of: :boat_specifications
   belongs_to :boat
 

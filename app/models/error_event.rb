@@ -1,2 +1,2 @@
-class ErrorEvent < ActiveRecord::Base
+class ErrorEvent < ApplicationRecord
 end

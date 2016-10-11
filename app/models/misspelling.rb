@@ -1,4 +1,4 @@
-class Misspelling < ActiveRecord::Base
+class Misspelling < ApplicationRecord
 
   attr_accessor :source_name
 

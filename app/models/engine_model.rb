@@ -1,4 +1,4 @@
-class EngineModel < ActiveRecord::Base
+class EngineModel < ApplicationRecord
   include FixSpelling
   include BoatOwner
 

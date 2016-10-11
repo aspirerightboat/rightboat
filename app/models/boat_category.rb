@@ -1,4 +1,4 @@
-class BoatCategory < ActiveRecord::Base
+class BoatCategory < ApplicationRecord
   include FixSpelling
 
   has_many :boats, foreign_key: :category_id, dependent: :restrict_with_error

@@ -1,6 +1,6 @@
 require 'open-uri'
 
-class BoatImage < ActiveRecord::Base
+class BoatImage < ApplicationRecord
   belongs_to :boat
 
   mount_uploader :file, BoatImageUploader

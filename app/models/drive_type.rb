@@ -1,4 +1,4 @@
-class DriveType < ActiveRecord::Base
+class DriveType < ApplicationRecord
   include FixSpelling
   include BoatOwner
 

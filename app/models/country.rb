@@ -1,4 +1,4 @@
-class Country < ActiveRecord::Base
+class Country < ApplicationRecord
   EUROPEAN_ISO_CODES = [
       'AT', # Austria => EUR
       'BE', # Belgium => EUR

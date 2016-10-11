@@ -1,4 +1,4 @@
-class Import < ActiveRecord::Base
+class Import < ApplicationRecord
   include BoatOwner
 
   FREQUENCY_UNITS = %w(day monday)

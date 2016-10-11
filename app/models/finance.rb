@@ -1,4 +1,4 @@
-class Finance < ActiveRecord::Base
+class Finance < ApplicationRecord
 
   belongs_to :user
   belongs_to :manufacturer

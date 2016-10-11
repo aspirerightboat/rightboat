@@ -1,4 +1,4 @@
-class BrokerIframe < ActiveRecord::Base
+class BrokerIframe < ApplicationRecord
   serialize :filters
 
   belongs_to :user

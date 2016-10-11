@@ -1,4 +1,4 @@
-class OldSlug < ActiveRecord::Base
+class OldSlug < ApplicationRecord
   belongs_to :sluggable, polymorphic: true
   belongs_to :boat, foreign_key: 'sluggable_id'
   belongs_to :model, foreign_key: 'sluggable_id'

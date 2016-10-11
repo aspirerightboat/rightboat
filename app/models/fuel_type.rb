@@ -1,4 +1,4 @@
-class FuelType < ActiveRecord::Base
+class FuelType < ApplicationRecord
   include FixSpelling
   include BoatOwner
 

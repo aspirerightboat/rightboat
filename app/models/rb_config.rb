@@ -1,4 +1,4 @@
-class RBConfig < ActiveRecord::Base
+class RBConfig < ApplicationRecord
 
   validates :key, uniqueness: true
 

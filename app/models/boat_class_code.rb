@@ -1,4 +1,4 @@
-class BoatClassCode < ActiveRecord::Base
+class BoatClassCode < ApplicationRecord
 
   has_many :class_groups, class_name: 'BoatClassGroup'
 

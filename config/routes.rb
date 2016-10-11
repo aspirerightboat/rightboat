@@ -24,7 +24,7 @@ Rails.application.routes.draw do
           via: :all, constraints: { subdomain: /\Aimport/ }
   end
 
-  match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
+  # match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
 
   ActiveAdmin.routes(self)
   namespace :admin do
@@ -195,7 +195,7 @@ Rails.application.routes.draw do
   get 'if/:token', to: 'broker_area/iframes#iframe_content', as: :broker_iframe
 
   namespace :member, path: 'my-rightboat' do
-    root to: 'dashboard#index' # member_root_path
+    root to: 'dashboard#index', as: :root
     get :about_me, to: 'dashboard#about_me'
     get :discounts, to: 'dashboard#discounts'
     get 'favourites', to: 'favourites#index', as: :favourites

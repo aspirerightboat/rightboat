@@ -1,4 +1,4 @@
-class RawBoat < ActiveRecord::Base
+class RawBoat < ApplicationRecord
   has_one :boat
 
   belongs_to :boat_type

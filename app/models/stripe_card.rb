@@ -1,4 +1,4 @@
-class StripeCard < ActiveRecord::Base
+class StripeCard < ApplicationRecord
   belongs_to :user
 
   def last_digits

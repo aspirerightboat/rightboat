@@ -4,7 +4,7 @@
   - classes << 'open-login-popup' unless user_signed_in?
   - opts = {method: :post, remote: true, class: classes}
   - opts[:data] = {'login-title' => 'Please sign in or join as a member to save your search.'} unless user_signed_in?
-  = link_to 'Save Search', params.merge(controller: 'member/saved_searches', action: 'create_from_search'), opts
+  = link_to 'Save Search', search_params.to_h.merge(controller: 'member/saved_searches', action: 'create_from_search'), opts
   .saved-search-hint
     |
       Your search has been saved.

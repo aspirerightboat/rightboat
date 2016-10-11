@@ -16,7 +16,7 @@
           - @filter_tags.other&.each do |filter_id, filter_title|
             .filter-tag> data-filter-slug="other" data-id="#{filter_id}" #{filter_title} <span class="esc">×</span>
           .clear-filters-btn Clear filters
-          = render partial: 'shared/save_search_btn'
+          = render partial: 'shared/save_search_btn', locals: {search_params: @filters_data.sp}
 
       .filter-tabs
         .filter-tabs-nav

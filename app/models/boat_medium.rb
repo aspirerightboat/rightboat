@@ -1,4 +1,4 @@
-class BoatMedium < ActiveRecord::Base
+class BoatMedium < ApplicationRecord
   
   belongs_to :boat
 

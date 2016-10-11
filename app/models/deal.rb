@@ -1,4 +1,4 @@
-class Deal < ActiveRecord::Base
+class Deal < ApplicationRecord
   DEAL_TYPES = %w(standard flat_lead flat_month)
 
   belongs_to :user

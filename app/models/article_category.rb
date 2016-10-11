@@ -1,4 +1,4 @@
-class ArticleCategory < ActiveRecord::Base
+class ArticleCategory < ApplicationRecord
 
   extend FriendlyId
   friendly_id :name, use: [:slugged, :finders]

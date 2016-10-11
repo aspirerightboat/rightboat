@@ -1,4 +1,4 @@
-class Boat < ActiveRecord::Base
+class Boat < ApplicationRecord
   enum status: {active: 0, inactive: 1}
   OFFER_STATUSES = %w(available under_offer sold)
   VOLUME_UNITS = %w(gallons litres)

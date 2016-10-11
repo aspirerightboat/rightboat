@@ -1,4 +1,4 @@
-class LeadTrail < ActiveRecord::Base
+class LeadTrail < ApplicationRecord
   belongs_to :lead
   belongs_to :user
 

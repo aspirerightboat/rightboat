@@ -1,4 +1,4 @@
-class VatRate < ActiveRecord::Base
+class VatRate < ApplicationRecord
   include FixSpelling
   include BoatOwner
 

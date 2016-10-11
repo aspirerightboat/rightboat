@@ -1,4 +1,4 @@
-class Insurance < ActiveRecord::Base
+class Insurance < ApplicationRecord
 
   TYPE_OF_COVERS = ['Comprehensive', 'Third Party Only']
   WHERE_KEPTS = ['marina/dry sail', 'mooring/pile']

@@ -1,4 +1,4 @@
-class MailClick < ActiveRecord::Base
+class MailClick < ApplicationRecord
   belongs_to :user
 
   validates_presence_of :user_id, :url, :action_fullname, :email_sent_at

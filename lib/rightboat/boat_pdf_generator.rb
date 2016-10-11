@@ -12,6 +12,7 @@ module Rightboat
         view.class_eval do
           include BoatsHelper
           include QrcodeHelper
+          include WickedPdfHelper
           include Rails.application.routes.url_helpers
           self.default_url_options = Rails.application.config.action_controller.default_url_options
         end

@@ -25,15 +25,15 @@ module Rightboat
 
         if sp.new_used
           any_of do
-            with :new_boat, true if sp.new_used[:new]
-            with :new_boat, false if sp.new_used[:used]
+            with :new_boat, true if sp.new_used['new']
+            with :new_boat, false if sp.new_used['used']
           end
         end
 
         if sp.tax_status
           any_of do
-            with :tax_paid, true if sp.tax_status[:paid]
-            with :tax_paid, false if sp.tax_status[:unpaid]
+            with :tax_paid, true if sp.tax_status['paid']
+            with :tax_paid, false if sp.tax_status['unpaid']
           end
         end
 

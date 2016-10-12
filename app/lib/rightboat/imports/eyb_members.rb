@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module Rightboat
   module Imports
     class EybMembers < ImporterBase

@@ -1,6 +1,5 @@
 require 'mechanize'
 require 'nokogiri'
-require 'rightboat/imports/source_boat' # fix "Circular dependency" error while running multithreaded import
 
 module Rightboat
   module Imports
@@ -50,8 +49,6 @@ module Rightboat
         @user = @import.user
         @old_source_ids = @user.boats.pluck(:source_id)
         @scraped_source_ids = []
-
-        Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
 
         log "#{@manual ? 'Manual' : 'Auto'} start params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
 

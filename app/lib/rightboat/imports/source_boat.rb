@@ -1,7 +1,4 @@
 require 'nokogiri'
-require 'rightboat/imports/utils' # fix "Circular dependency" error while running multithreaded import
-require 'rightboat/make_model_splitter'
-require 'rightboat/boat_description_utils'
 require 'xxhash'
 
 module Rightboat

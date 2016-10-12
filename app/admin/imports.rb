@@ -10,15 +10,11 @@ ActiveAdmin.register Import do
   controller do
     before_action :check_running_job, only: [:edit, :update, :destroy]
 
-    def import_params
-      permitted_param_names = [:import_type, :active, :user_id, :threads, :frequency_unit, :at, :tz, :use_proxy_for_images]
-
-      params.require(:import).permit(permitted_param_names).tap do |w|
-        w[:param] = params[:import][:param]
-      end
-    end
-
     private
+
+    def import_params
+      params.require(:import).permit!.to_h
+    end
 
     def check_running_job
       if resource.loading_or_running?

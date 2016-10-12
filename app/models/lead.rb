@@ -97,8 +97,8 @@ class Lead < ActiveRecord::Base
     if last_lead && last_lead.created_at > RBConfig[:lead_gap_minutes].minutes.ago
       mark_suspicious('Multiple leads received – review required')
     end
-    if Lead.where(status: %w(cancelled suspicious), email: user&.email || email.presence).exists?
-      mark_suspicious('Lead from user with cancelled/suspicious leads – review required')
+    if Lead.where(status: 'suspicious', email: user&.email || email.presence).exists?
+      mark_suspicious('Lead from user with suspicious leads – review required')
     end
   end
 

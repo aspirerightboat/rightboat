@@ -22,7 +22,7 @@ p
               |
                 More than 5 new boats matched your search.
                 To see a complete list of all the boats that match your search follow this link...
-                #{link_to 'View All', search_url(saved_search.to_search_params.merge(order: 'created_at_desc').merge(track_email_click_params(utm_params: @utm_params, user_id: @user.id, saved_searches_alert: @saved_searches_alert))), class: 'btn'}
+                #{link_to 'View All', search_url(saved_search.to_succinct_search_hash.merge(order: 'created_at_desc').merge(track_email_click_params(utm_params: @utm_params, user_id: @user.id, saved_searches_alert: @saved_searches_alert))), class: 'btn'}
           - else
             p
               | Please find above links for new boats that match your Saved Search on Rightboat.

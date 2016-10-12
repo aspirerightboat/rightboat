@@ -116,7 +116,7 @@ class SearchController < ApplicationController
   end
 
   def log_search_terms
-    attrs = params.except(:utf8, :controller, :action, :button)
+    attrs = params.except(:utf8, :controller, :action, :button).to_h
     return if attrs.values.all?(&:blank?)
 
     if (activity = Activity.search.where(parameters: attrs).first)

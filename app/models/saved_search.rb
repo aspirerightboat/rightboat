@@ -68,7 +68,7 @@ class SavedSearch < ApplicationRecord
     self.tax_status = sp.tax_status
     self.new_used = sp.new_used
 
-    fixed_params = to_search_params.merge!(order: 'created_at_desc')
+    fixed_params = to_succinct_search_hash.merge!(order: 'created_at_desc')
     self.first_found_boat_id = Rightboat::BoatSearch.new.do_search(params: fixed_params, per_page: 1).hits.first&.primary_key
   end
 

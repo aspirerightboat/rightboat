@@ -43,7 +43,7 @@
                             ' #{link_to '<i class="glyphicon glyphicon-pencil"></i>'.html_safe, edit_member_saved_search_path(ss), remote: true, format: :js, data: {disable: true}}
                             | #{link_to '<i class="glyphicon glyphicon-remove"></i>'.html_safe, member_saved_search_path(ss), method: :delete, remote: true, format: :js, data: {disable: true}}
                             div(style="white-space:nowrap")
-                              ' #{link_to 'Run', search_path(ss.to_search_params), class: 'label label-primary'}
+                              ' #{link_to 'Run', search_path(ss.to_succinct_search_hash), class: 'label label-primary'}
                               = link_to (ss.alert ? 'Alert On' : 'No Alert'), toggle_alert_member_saved_search_path(ss), \
                                       class: "toggle-alert label label-#{ss.alert ? 'success' : 'default'}", \
                                       remote: true, data: {method: :post, disable: true}

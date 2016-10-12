@@ -69,27 +69,33 @@ module Rightboat
       Currency.convert(price_max, currency, Currency.default)
     end
 
-    def to_h
+    def to_search_h
       h = {}
       try_add_key = ->(attr) { value = send(attr); h[attr] = value if value }
-      try_add_key.(:q)
-      try_add_key.(:manufacturer_model)
-      unless try_add_key.(:manufacturer_ids)
-        unless try_add_key.(:manufacturer)
-          try_add_key.(:manufacturer_id)
-        end
+
+      case
+      when manufacturer then h[:manufacturer] = manufacturer.slug
+      when manufacturer_ids then h[:manufacturers] = manufacturer_ids.join('-')
+      when manufacturer_id then h[:manufacturers] = manufacturer_id.to_s
       end
-      unless try_add_key.(:model_ids)
-        try_add_key.(:model_id)
+
+      case
+      when model_ids then h[:models] = model_ids.join('-')
+      when model_id then h[:models] = model_id.to_s
       end
-      unless try_add_key.(:country_ids)
-        unless try_add_key.(:country)
-          try_add_key.(:country_id)
-        end
+
+      case
+      when country then h[:country] = country.slug
+      when country_ids then h[:countries] = country_ids.join('-')
+      when country_id then h[:countries] = country_id.to_s
       end
+
       unless try_add_key.(:boat_type)
         try_add_key.(:boat_type_id)
       end
+
+      try_add_key.(:q)
+      try_add_key.(:manufacturer_model)
       try_add_key.(:states)
       try_add_key.(:year_min)
       try_add_key.(:year_max)

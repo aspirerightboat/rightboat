@@ -75,8 +75,12 @@ module Rightboat
     end
 
     def read_hash(hash, possible_keys)
-      if hash.present? && hash.is_a?(Hash)
-        hash.with_indifferent_access.slice(*possible_keys)
+      if hash.present?
+        if hash.is_a?(ActionController::Parameters)
+          hash.permit(possible_keys).to_h
+        elsif hash.is_a?(Hash)
+          hash.slice(*possible_keys)
+        end
       end
     end
 

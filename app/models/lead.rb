@@ -156,7 +156,7 @@ class Lead < ActiveRecord::Base
   end
 
   def set_name
-    self.name = user ? user.name : "#{title} #{first_name} #{surname}".strip.titleize
+    self.name = user ? user.name : [title, first_name, surname].reject(&:blank?).map(&:strip).join(' ').titleize
     self.broker = boat.user.company_name
   end
 

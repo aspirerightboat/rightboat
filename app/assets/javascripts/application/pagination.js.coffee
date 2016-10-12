@@ -1,4 +1,5 @@
 currentPage = 1
+nextPage = 2
 prevViewPage = 1
 prevPosition = 0
 
@@ -24,34 +25,24 @@ $ ->
       prevPosition = parseInt(sessionStorage.getItem('currentScrollTop'))
       sessionStorage.removeItem('currentScrollTop')
 
-    $('.view-more-link').click (e)->
-      e.preventDefault()
-      $this = $(this)
-
+    $('.view-more-link').click ->
+      $moreLink = $(@)
       return true if isLoading
       isLoading = true
 
-      $.ajax
-        url: window.location
-        method: 'GET'
-        dataType: 'JSON'
-        data: { page: currentPage + 1 }
-      .success (response)->
-        # $('.over-limit').fadeOut().remove()
-        boats = response.search
-        pagination = response.meta.pagination
-        $.each boats, ->
-          $template = $(this.template)
-          $template.appendTo($('#boats-list'))
-          initBoatView($template.find('.boat-view'))
-        currentPage += 1
+      $.getJSON window.location, {page: nextPage}, (data) ->
+        $(data.items_html).appendTo($('#boats-list')).find('.boat-view').each ->
+          initBoatView(@)
+        currentPage = data.current_page
+        nextPage = data.next_page
         sessionStorage.setItem('currentPage', currentPage)
-        unless pagination.total_pages > currentPage
-          $this.hide()
+        unless nextPage
+          $moreLink.remove()
       .always ->
         isLoading = false
         loadPrevPage()
 
+      false
     loadPrevPage()
 
 #    $(window).on 'scroll', ->

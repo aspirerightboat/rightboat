@@ -38,7 +38,11 @@ class SearchController < ApplicationController
     respond_to do |format|
       format.html
       format.json {
-        render json: @boats, serializer: PaginatedSerializer, each_serializer: BoatTemplateSerializer
+        render json: {
+            items_html: render_to_string(partial: 'boats/boat', collection: @boats, formats: [:html]),
+            current_page: @boats.current_page,
+            next_page: @boats.next_page,
+        }
       }
     end
   end

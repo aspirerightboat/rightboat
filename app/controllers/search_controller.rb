@@ -1,6 +1,5 @@
 class SearchController < ApplicationController
   before_action :save_session_settings, only: :results
-  after_action :log_search_terms, only: :results
 
   def manufacturers
     render json: {items: Manufacturer.solr_suggest_by_term(params[:q])}
@@ -115,14 +114,4 @@ class SearchController < ApplicationController
     update_user_settings
   end
 
-  def log_search_terms
-    attrs = params.except(:utf8, :controller, :action, :button).to_h
-    return if attrs.values.all?(&:blank?)
-
-    if (activity = Activity.search.where(parameters: attrs).first)
-      activity.inc(count: 1)
-    else
-      Activity.create(parameters: attrs, action: :search)
-    end
-  end
 end

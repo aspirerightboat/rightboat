@@ -47,7 +47,7 @@ class Boat < ApplicationRecord
   end
 
   before_validation :change_status, :ensure_offer_status
-  before_destroy :remove_activities, :decrease_counter_cache
+  before_destroy :decrease_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations
@@ -198,10 +198,6 @@ class Boat < ApplicationRecord
     vat_rate ? vat_rate.tax_status : 'NA'
   end
 
-  def activities
-    Activity.where(target_id: id, action: :show)
-  end
-
   def tax_paid=(status)
     self.vat_rate_id = VatRate.first.id if status && status == 'true'
   end
@@ -251,10 +247,6 @@ class Boat < ApplicationRecord
         errors.add attr_name, "can't be set. check manufacturer, model, price and images first"
       end
     end
-  end
-
-  def remove_activities
-    activities.destroy_all
   end
 
   def update_leads_price

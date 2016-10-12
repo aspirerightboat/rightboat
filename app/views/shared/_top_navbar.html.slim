@@ -28,7 +28,7 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
           - if current_user.company?
             li= link_to 'Broker Area', broker_area_path
           - if session[:view_as_user_id] && current_admin
-              li= link_to "Stop viewing as #{current_user.name}", stop_viewing_as_path, method: :delete
+              li= link_to "Stop viewing as #{current_user.name}", stop_viewing_as_admin_users_path, method: :post
         - else
           li= link_to 'Sign in or Join for free', '#', class: 'open-login-popup login-button'
           li= link_to 'Broker', welcome_broker_path

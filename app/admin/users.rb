@@ -306,4 +306,10 @@ ActiveAdmin.register User do
     redirect_to params[:redirect_to]
   end
 
+  collection_action :stop_viewing_as, method: :post do
+    user = current_user
+    session.delete(:view_as_user_id)
+    redirect_to admin_users_path, notice: "Stopped viewing as #{user&.name}"
+  end
+
 end

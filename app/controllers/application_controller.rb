@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  before_action :configure_permitted_parameters, if: :devise_controller?
 
   before_action :global_current_user
   before_action :clear_old_session
@@ -13,15 +12,10 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate_admin_user!
-    authenticate_user!
-    unless current_user.admin?
+    unless current_admin
       flash[:error] = 'You need admin privilege to continue. Please login as admin and try again.'
       redirect_to root_path
     end
-  end
-
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :remember_me) }
   end
 
   # prevent flash message in devise controller

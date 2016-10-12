@@ -1,7 +1,5 @@
 class SessionsController < Devise::SessionsController
-  skip_before_action :require_confirmed_email, only: [:destroy]
   after_action :clean_up_settings_cookies, only: :destroy
-  before_action :authenticate_admin_user!, only: [:logout_broker, :logout_customer]
   clear_respond_to
   respond_to :json
 
@@ -72,12 +70,6 @@ class SessionsController < Devise::SessionsController
 
   def facebook_failure
     redirect_to params[:origin] || root_path
-  end
-
-  def stop_viewing_as
-    user = current_user
-    session.delete(:view_as_user_id)
-    redirect_to admin_users_path, notice: "Stopped viewing as #{user&.name}"
   end
 
 end

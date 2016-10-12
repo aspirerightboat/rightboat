@@ -7,7 +7,6 @@ Rails.application.routes.draw do
     delete 'sign-out', to: 'sessions#destroy', as: :destroy_user_session
     get '/auth/:provider/callback', to: 'sessions#facebook_login'
     get '/auth/failure', to: 'sessions#facebook_failure'
-    delete '/stop-viewing-as', to: 'sessions#stop_viewing_as', as: :stop_viewing_as
     post 'sign-up', to: 'registrations#create', as: :user_registration
     put 'my-details', to: 'registrations#update', as: :user_profile
     get 'confirm-email', to: 'registrations#confirm_email', as: :confirm_email

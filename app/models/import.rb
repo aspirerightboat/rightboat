@@ -100,11 +100,10 @@ class Import < ApplicationRecord
   private
 
   def validate_import_params
-    symbolized_param = param.symbolize_keys
     importer_class.params_validators.each do |key, validators|
       validators = [validators] unless validators.is_a?(Array)
       validators.each do |validator|
-        value = symbolized_param[key.to_sym]
+        value = param[key]
         if validator == :presence
           if value.blank?
             errors.add :param, "[#{key}] can't be blank"

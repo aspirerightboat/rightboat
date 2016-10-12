@@ -32,6 +32,8 @@ module Rightboat
       end
 
       def starting(manual)
+        Rails.application.eager_load! # fix "Circular dependency error" while running with multiple threads
+
         @manual = manual
         @import_trail = ImportTrail.create(import: @import)
         init_logger

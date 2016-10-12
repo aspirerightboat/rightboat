@@ -102,7 +102,7 @@ module Rightboat
         end
 
         def enqueue_jobs
-          doc = download_feed(@import.param[:url].strip)
+          doc = download_feed(@import.param['url'].strip)
 
           if doc.root.name != 'open_marine'
             log_error 'Invalid Openmarine xml'

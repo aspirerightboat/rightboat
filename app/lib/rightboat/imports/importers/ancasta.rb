@@ -32,7 +32,7 @@ module Rightboat
           # https://ancanet.com/webfiles/DailyBoatExport/BoatExport.xml
           # doc = Nokogiri::XML(open('https://ancanet.com/webfiles/DailyBoatExport/BoatExport.xml'))
           # doc = Nokogiri::XML(open("#{Rails.root}/import_data/new_ancasta.xml"))
-          doc = download_feed(@import.param[:source_url].strip)
+          doc = download_feed(@import.param['source_url'].strip)
 
           log 'Scraping boats'
           doc.root.element_children.each do |boat_node|

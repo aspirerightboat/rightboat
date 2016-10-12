@@ -14,6 +14,7 @@ ActiveAdmin.register Boat do
   filter :country, as: :select, collection: Country.order(:name)
   filter :manufacturer_name_cont, label: 'Manufacturer Name Contains'
   filter :model_name_cont, label: 'Model Name Contains'
+  filter :import_import_type_eq, as: :select, collection: Rightboat::Imports::ImporterBase.import_types, label: 'Import Type'
   filter :status, as: :select, collection: Boat.statuses
   filter :featured
   filter :recently_reduced

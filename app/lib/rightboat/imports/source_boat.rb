@@ -187,7 +187,7 @@ module Rightboat
             end
           end
 
-          if "#{attr_name}_id".in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
+          if "#{attr_name}_id".in?(Boat::OVERRIDABLE_FIELDS)
             target.import_assign attr_name, value
           else
             target.send "#{attr_name}=", value
@@ -239,7 +239,7 @@ module Rightboat
           when :year_built
             target.import_assign :year_built, value&.to_i&.clamp(Boat::YEARS_RANGE)
           else
-            if attr_name.to_s.in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
+            if attr_name.to_s.in?(Boat::OVERRIDABLE_FIELDS)
               target.import_assign attr_name, value
             else
               target.send("#{attr_name}=", value.presence)

@@ -60,7 +60,7 @@ ActiveAdmin.register Boat do
     if boat.raw_boat
       attributes_table do
         Boat.column_names.each do |attr_name|
-          if attr_name.in?(BoatOverridableFields::OVERRIDABLE_FIELDS)
+          if attr_name.in?(Boat::OVERRIDABLE_FIELDS)
             row attr_name do
               content = String.new.html_safe
               if boat.field_overridden?(attr_name)
@@ -236,7 +236,7 @@ ActiveAdmin.register Boat do
     end
 
     def update(_options={}, &block)
-      BoatOverridableFields::OVERRIDABLE_FIELDS.each do |attr_name|
+      Boat::OVERRIDABLE_FIELDS.each do |attr_name|
         resource.override_imported_value(attr_name, params[attr_name])
       end
 

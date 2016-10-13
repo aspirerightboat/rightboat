@@ -89,7 +89,7 @@ class Boat < ApplicationRecord
   validate :valid_price
   validate :valid_featured
 
-  include BoatOverridableFields
+  include OverridableFields
 
   scope :featured, -> { where(featured: true) }
   scope :reduced, -> { where(recently_reduced: true) }

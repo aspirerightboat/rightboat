@@ -2,12 +2,13 @@ module Rightboat
   module Imports
     module Importers
       class Yachtworld < ImporterBase
-        def data_mapping
-          @data_mapping ||= {
+
+        def self.data_mappings
+          @data_mappings ||= {
               'Boat Name' => :name,
               'Hull Material' => :hull_material,
               'Year' => :year_built,
-              'Current Price' => Proc.new { |boat, data|
+              'Current Price' => ->(boat, data) {
                 if (m = data.match(/^(?:(?<currency>[A-Z$£]{1,3})\s+)?(?<price>[\d,]+)\s*(?<vat>.*)$/))
                   boat.currency = ('USD' if m[:currency] == 'US$') || m[:currency] || Currency.default
                   boat.price = m[:price].gsub(',', '') if m[:price]
@@ -34,12 +35,12 @@ module Rightboat
               'Number of heads' => :heads_count,
               'Number of single berths' => :single_berths_count,
               'Number of double berths' => :double_berths_count,
-              'Year Built' => Proc.new { |boat, data| boat.year_built = data },
+              'Year Built' => ->(boat, data) { boat.year_built = data },
               'Engine Hours' => :engine_hours,
               'Displacement' => :displacement_kgs,
               'Ballast' => :ballast_kgs,
               'Electrical Circuit' => :electrical_circuit,
-              'VehicleRemarketingEngine' => Proc.new { |boat, _|
+              'VehicleRemarketingEngine' => ->(boat, _) {
                 boat.engine_count = boat.engine_count ? boat.engine_count + 1 : 1
               },
               'Drive Type' => :drive_type,
@@ -258,7 +259,7 @@ module Rightboat
             h3_manufacturer_model = h3.text.gsub(/^\s*\d+.\s*/, '')
             get_attrs(boat, h3)
 
-            if gallery_link = doc.link_with(href: /photo_gallery/)
+            if (gallery_link = doc.link_with(href: /photo_gallery/))
               gallery_uri = doc.uri.merge(gallery_link.uri)
               doc = get(gallery_uri)
               boat.images = doc.root.css('img[src^="http://newimages.yachtworld.com"]').map do |n|
@@ -324,7 +325,7 @@ module Rightboat
 
         def assign_boat_attr(boat, attr, data)
           return if data.blank? || data == 'n/a' || data == 'No'
-          handler = data_mapping[attr]
+          handler = self.class.data_mappings[attr]
           if !handler
             boat.set_missing_attr(attr, data)
           elsif handler.is_a?(Symbol)

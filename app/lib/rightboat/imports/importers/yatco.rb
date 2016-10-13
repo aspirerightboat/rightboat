@@ -2,52 +2,55 @@ module Rightboat
   module Imports
     module Importers
       class Yatco < ImporterBase
-        DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
-          'vessel_id' => :source_id,
-          'vessel_type' => :boat_type,
-          'boatname' => :name,
-          'main_category' => :category,
-          'asking_price' => :price,
-          'currency' => :currency,
-          'cruise_speed_knots' => :cruising_speed,
-          'location_country' => :country,
-          'location_city' => :location,
-          'description_short_description' => :short_description,
-          'loa_meters' => :length_m,
-          'beam_meters' => :beam_m,
-          'lwl_meters' => :lwl_m,
-          'min_draft_meters' => :draft_m,
-          'model' => :model,
-          'builder' => :manufacturer,
-          'engine_manufacturer' => :engine_manufacturer,
-          'engine_model' => :engine_model,
-          'engine_count' => :engine_count,
-          'engine_hours1' => :engine_hours,
-          'engine_hours3' => :engine_hours3,
-          'engine_year1' => :engine_year,
-          'engine_year3' => :engine_year3,
-          'engine_horse_power1' => :engine_horse_power,
-          'engine_horse_power3' => :engine_horse_power3,
-          'engine_horse_power4' => :engine_horse_power4,
-          'engine_date_hours_registered1' => :engine_date_hours_registered1,
-          'engine_date_hours_registered2' => :engine_date_hours_registered2,
-          'engine_serial_number1' => :engine_serial_number1,
-          'fuel_type' => :fuel_type,
-          'fuel_capacity_ltr' => :fuel_tanks_capacity,
-          'holding_tank_ltr' => :holding_tanks_capacity,
-          'hull_id' => :hull_id,
-          'num_berths' => :berths_count,
-          'num_crew_berths' => :crew_berths_count,
-          'num_heads' => :heads_count,
-          'rpm_cruise_speed' => :cruise_speed_rpm,
-          'rpm_max_speed' => :max_speed_rpm,
-          'tax_paid' => :vat_rate,
-          'condition' => :new_boat,
-          'propulsion_type' => :drive_type,
-          'year_built' => :year_built,
-          'water_capacity_ltr' => :water_tanks_capacity,
-          'weight_kilos' => :dry_weight
-        )
+
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
+              'vessel_id' => :source_id,
+              'vessel_type' => :boat_type,
+              'boatname' => :name,
+              'main_category' => :category,
+              'asking_price' => :price,
+              'currency' => :currency,
+              'cruise_speed_knots' => :cruising_speed,
+              'location_country' => :country,
+              'location_city' => :location,
+              'description_short_description' => :short_description,
+              'loa_meters' => :length_m,
+              'beam_meters' => :beam_m,
+              'lwl_meters' => :lwl_m,
+              'min_draft_meters' => :draft_m,
+              'model' => :model,
+              'builder' => :manufacturer,
+              'engine_manufacturer' => :engine_manufacturer,
+              'engine_model' => :engine_model,
+              'engine_count' => :engine_count,
+              'engine_hours1' => :engine_hours,
+              'engine_hours3' => :engine_hours3,
+              'engine_year1' => :engine_year,
+              'engine_year3' => :engine_year3,
+              'engine_horse_power1' => :engine_horse_power,
+              'engine_horse_power3' => :engine_horse_power3,
+              'engine_horse_power4' => :engine_horse_power4,
+              'engine_date_hours_registered1' => :engine_date_hours_registered1,
+              'engine_date_hours_registered2' => :engine_date_hours_registered2,
+              'engine_serial_number1' => :engine_serial_number1,
+              'fuel_type' => :fuel_type,
+              'fuel_capacity_ltr' => :fuel_tanks_capacity,
+              'holding_tank_ltr' => :holding_tanks_capacity,
+              'hull_id' => :hull_id,
+              'num_berths' => :berths_count,
+              'num_crew_berths' => :crew_berths_count,
+              'num_heads' => :heads_count,
+              'rpm_cruise_speed' => :cruise_speed_rpm,
+              'rpm_max_speed' => :max_speed_rpm,
+              'tax_paid' => :vat_rate,
+              'condition' => :new_boat,
+              'propulsion_type' => :drive_type,
+              'year_built' => :year_built,
+              'water_capacity_ltr' => :water_tanks_capacity,
+              'weight_kilos' => :dry_weight
+          )
+        end
 
         def self.params_validators
           {api_key: [:presence, /[a-z\d\-]+/], company_id: [:presence, /\A\d+\z/]}
@@ -81,7 +84,7 @@ module Rightboat
             if key == 'gallery'
               boat.images = node.children.map { |g| g.search('url').first.text }.reject(&:blank?).map { |url| {url: url} }
             else
-              if (attr = DATA_MAPPINGS[key])
+              if (attr = self.class.data_mappings[key])
                 if attr.is_a?(Proc)
                   attr.call(boat, val)
                 else

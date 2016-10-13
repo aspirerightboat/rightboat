@@ -2,8 +2,9 @@ module Rightboat
   module Imports
     module Importers
       class Eyb < ImporterBase
-        def data_mapping
-          @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h}.merge(
+
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h}.merge(
               'id' => :source_id,
               'boat_price' => :price,
               'currency_code' => :currency,
@@ -370,7 +371,7 @@ module Rightboat
               val = node.text
               next if val.blank?
 
-              if (attr = data_mapping[key])
+              if (attr = self.class.data_mappings[key])
                 next if attr == ''
                 if attr.is_a?(Proc)
                   attr.call(boat, val)

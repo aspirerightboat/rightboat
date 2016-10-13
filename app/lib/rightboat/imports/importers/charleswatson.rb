@@ -2,30 +2,33 @@ module Rightboat
   module Imports
     module Importers
       class Charleswatson < ImporterBase
-        DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
-          'boat_name' => :name,
-          'boat_reference' => :source_id,
-          'build_year' => :year_built,
-          'boat_price' => Proc.new { |boat, val| boat.price = val.gsub(/,/, '').to_f; boat.currency = val[/[a-zA-Z]{3}/] },
-          'vat_status' => Proc.new { |boat, val| boat.vat_rate = true if val =~ /^paid/i },
-          'hull_construction' => :hull_type,
-          'builder' => :builder,
-          'designer' => :designer,
-          'loa' => Proc.new { |boat, val| boat.set_missing_attr(:loa_m, get_value_m(val)) },
-          'lwl' => Proc.new { |boat, val| boat.lwl_m = get_value_m(val) },
-          'beam' => Proc.new { |boat, val| boat.beam_m = get_value_m(val) },
-          'displacement' => Proc.new { |boat, val| boat.displacement_kgs = get_value_m(val) },
-          'ballast' => :ballast_kgs,
-          'engine(s)' => :engine_count,
-          'engine_horsepower' => :engine_horse_power,
-          'fuel_type' => :fuel_type,
-          'lying' => Proc.new do |boat, val|
-            if (tmp = val.split(',')).length > 0
-              boat.location = tmp[0].strip
-              boat.country = tmp[1].strip rescue nil
-            end
-          end
-        )
+
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h }.merge(
+              'boat_name' => :name,
+              'boat_reference' => :source_id,
+              'build_year' => :year_built,
+              'boat_price' => ->(boat, val) { boat.price = val.gsub(/,/, '').to_f; boat.currency = val[/[a-zA-Z]{3}/] },
+              'vat_status' => ->(boat, val) { boat.vat_rate = true if val =~ /^paid/i },
+              'hull_construction' => :hull_type,
+              'builder' => :builder,
+              'designer' => :designer,
+              'loa' => ->(boat, val) { boat.set_missing_attr(:loa_m, get_value_m(val)) },
+              'lwl' => ->(boat, val) { boat.lwl_m = get_value_m(val) },
+              'beam' => ->(boat, val) { boat.beam_m = get_value_m(val) },
+              'displacement' => ->(boat, val) { boat.displacement_kgs = get_value_m(val) },
+              'ballast' => :ballast_kgs,
+              'engine(s)' => :engine_count,
+              'engine_horsepower' => :engine_horse_power,
+              'fuel_type' => :fuel_type,
+              'lying' => Proc.new do |boat, val|
+                if (tmp = val.split(',')).length > 0
+                  boat.location = tmp[0].strip
+                  boat.country = tmp[1].strip rescue nil
+                end
+              end
+          )
+        end
 
         def host
           'www.charleswatsonmarine.co.uk'
@@ -85,7 +88,7 @@ module Rightboat
           boat.images = images.map { |img_url| {url: img_url} }
 
           fields.each do |key, val|
-            if (attr = DATA_MAPPINGS[key])
+            if (attr = self.class.data_mappings[key])
               if attr.is_a?(Proc)
                 attr.call(boat, val)
               else

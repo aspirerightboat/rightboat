@@ -21,8 +21,8 @@ module Rightboat
 
       class Openmarine < ImporterBase
 
-        def data_mapping
-          @data_mapping ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
               'url' => :source_url,
               'name' => :name,
               'boat_name' => :name,
@@ -38,7 +38,7 @@ module Rightboat
               'ballast' => :ballast_kgs,
               'displacement' => :displacement_kgs,
               'where' => :where_built,
-              'year' => Proc.new do |boat, item|
+              'year' => ->(boat, item) do
                 tmp = item.text.to_i
                 boat.year_built = tmp > 1000 ? tmp : nil
               end,
@@ -246,7 +246,7 @@ module Rightboat
         def handle_boat_features(boat, boat_features)
           boat_features.css('item, rb:item').each do |item|
             item_name = item['name']
-            attr = data_mapping[item_name]
+            attr = self.class.data_mappings[item_name]
             next if attr == :ignore!
 
             value = item.text.strip

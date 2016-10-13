@@ -2,21 +2,24 @@ module Rightboat
   module Imports
     module Importers
       class Boatcare < ImporterBase
-        DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
-          'year_of_manufacture' => :year_built,
-          'engine' => :engine_type,
-          'loa' => Proc.new { |boat, val| boat.set_missing_attr(:loa_m, get_value_m(val)) },
-          'beam' => Proc.new { |boat, val| boat.beam_m = get_value_m(val) },
-          'more_info' => Proc.new {},
-          'price' => Proc.new do |boat, val|
-            tmp = val.split('-')
-            if tmp[0]
-              boat.price = tmp[0].gsub(/[^\d\.]/, '')
-              boat.currency = tmp[0].gsub(/\d+|\,/, '').strip
-            end
-            boat.vat_rate = true if tmp[1] and tmp[1] =~ /vat paid/i
-          end
-        )
+
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h }.merge(
+              'year_of_manufacture' => :year_built,
+              'engine' => :engine_type,
+              'loa' => ->(boat, val) { boat.set_missing_attr(:loa_m, get_value_m(val)) },
+              'beam' => ->(boat, val) { boat.beam_m = get_value_m(val) },
+              'more_info' => -> {},
+              'price' => ->(boat, val) do
+                tmp = val.split('-')
+                if tmp[0]
+                  boat.price = tmp[0].gsub(/[^\d\.]/, '')
+                  boat.currency = tmp[0].gsub(/\d+|\,/, '').strip
+                end
+                boat.vat_rate = true if tmp[1] and tmp[1] =~ /vat paid/i
+              end
+          )
+        end
 
         def host
           'www.boatcareltdmalta.com'
@@ -75,7 +78,7 @@ module Rightboat
           boat.images = images
 
           fields.each do |key, val|
-            if (attr = DATA_MAPPINGS[key])
+            if (attr = self.class.data_mappings[key])
               if attr.is_a?(Proc)
                 attr.call(boat, val)
               else

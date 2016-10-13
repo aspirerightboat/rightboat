@@ -2,37 +2,40 @@ module Rightboat
   module Imports
     module Importers
       class Boatsandoutboards < ImporterBase
-        DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
-          'currency' => :currency,
-          'manufacturer' => :manufacturer,
-          'year_built' => :year_built,
-          'model' => :model,
-          'hull_type' => :hull_type,
-          'type' => :boat_type,
-          'drive_type' => :drive_type,
-          'builder' => :builder,
-          'engine_manufacturer' => :engine_manufacturer,
-          'engine_hours' => :engine_hours,
-          'mooring_country' => :country,
-          'weight_dry' => :dry_weight,
-          'no_of_engines' => :engine_count,
-          'fuel' => :fuel_type,
-          'material_hull' => :hull_material,
-          'hp' => :engine_horse_power,
-          'length' => Proc.new { |boat, val| boat.length_m = get_value_m(val) },
-          'draft' => Proc.new { |boat, val| boat.draft_m = get_value_m(val) },
-          'no_of_air_chambers' => Proc.new { |boat, val| boat.set_missing_attr(:chambers_count, val) },
-          'no_of_previous_owners' => Proc.new { |boat, val| boat.set_missing_attr(:previous_owners_count, val) },
-          'width' => Proc.new { |boat, val| boat.set_missing_attr('width', get_value_m(val)) },
-          'condition' => :new_boat
-        )
+
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h }.merge(
+              'currency' => :currency,
+              'manufacturer' => :manufacturer,
+              'year_built' => :year_built,
+              'model' => :model,
+              'hull_type' => :hull_type,
+              'type' => :boat_type,
+              'drive_type' => :drive_type,
+              'builder' => :builder,
+              'engine_manufacturer' => :engine_manufacturer,
+              'engine_hours' => :engine_hours,
+              'mooring_country' => :country,
+              'weight_dry' => :dry_weight,
+              'no_of_engines' => :engine_count,
+              'fuel' => :fuel_type,
+              'material_hull' => :hull_material,
+              'hp' => :engine_horse_power,
+              'length' => ->(boat, val) { boat.length_m = get_value_m(val) },
+              'draft' => ->(boat, val) { boat.draft_m = get_value_m(val) },
+              'no_of_air_chambers' => ->(boat, val) { boat.set_missing_attr(:chambers_count, val) },
+              'no_of_previous_owners' => ->(boat, val) { boat.set_missing_attr(:previous_owners_count, val) },
+              'width' => ->(boat, val) { boat.set_missing_attr('width', get_value_m(val)) },
+              'condition' => :new_boat
+          )
+        end
 
         def host
           'www.boatsandoutboards.co.uk'
         end
 
         def self.params_validators
-          { source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/] }
+          {source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/]}
         end
 
         def enqueue_jobs
@@ -112,7 +115,7 @@ module Rightboat
           boat.images = images
 
           fields.each do |key, val|
-            if (attr = DATA_MAPPINGS[key])
+            if (attr = self.class.data_mappings[key])
               if attr.is_a?(Proc)
                 attr.call(boat, val)
               else

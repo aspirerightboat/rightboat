@@ -2,40 +2,43 @@ module Rightboat
   module Imports
     module Importers
       class Boatshop24 < ImporterBase
-        DATA_MAPPINGS = SourceBoat::SPEC_ATTRS.inject({}) {|h, attr| h[attr.to_s] = attr; h}.merge(
-          'currency' => :currency,
-          'manufacturer' => :manufacturer,
-          'year_built' => :year_built,
-          'model' => :model,
-          'hull_type' => :hull_type,
-          'type' => :boat_type,
-          'drive_type' => :drive_type,
-          'builder' => :builder,
-          'engine_manufacturer' => :engine_manufacturer,
-          'engine_hours' => :engine_hours,
-          'mooring_country' => :country,
-          'weight_dry' => :dry_weight,
-          'no_of_engines' => :engine_count,
-          'fuel' => :fuel_type,
-          'material_hull' => :hull_material,
-          'hp' => :engine_horse_power,
-          'length' => Proc.new { |boat, val| boat.length_m = get_value_m(val) },
-          'draft' => Proc.new { |boat, val| boat.draft_m = get_value_m(val) },
-          'no_of_air_chambers' => Proc.new { |boat, val| boat.set_missing_attr(:chambers_count, val) },
-          'no_of_previous_owners' => Proc.new { |boat, val| boat.set_missing_attr(:previous_owners_count, val) },
-          'width' => Proc.new { |boat, val| boat.set_missing_attr('width', get_value_m(val)) },
-          'condition' => :new_boat
-        )
+
+        def self.data_mappings
+          @data_mappings ||= SourceBoat::SPEC_ATTRS.inject({}) { |h, attr| h[attr.to_s] = attr; h }.merge(
+              'currency' => :currency,
+              'manufacturer' => :manufacturer,
+              'year_built' => :year_built,
+              'model' => :model,
+              'hull_type' => :hull_type,
+              'type' => :boat_type,
+              'drive_type' => :drive_type,
+              'builder' => :builder,
+              'engine_manufacturer' => :engine_manufacturer,
+              'engine_hours' => :engine_hours,
+              'mooring_country' => :country,
+              'weight_dry' => :dry_weight,
+              'no_of_engines' => :engine_count,
+              'fuel' => :fuel_type,
+              'material_hull' => :hull_material,
+              'hp' => :engine_horse_power,
+              'length' => ->(boat, val) { boat.length_m = get_value_m(val) },
+              'draft' => ->(boat, val) { boat.draft_m = get_value_m(val) },
+              'no_of_air_chambers' => ->(boat, val) { boat.set_missing_attr(:chambers_count, val) },
+              'no_of_previous_owners' => ->(boat, val) { boat.set_missing_attr(:previous_owners_count, val) },
+              'width' => ->(boat, val) { boat.set_missing_attr('width', get_value_m(val)) },
+              'condition' => :new_boat
+          )
+        end
 
         def self.params_validators
-          { offices: [], source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/] }
+          {offices: [], source_id: [:presence, /\A[A-Za-z0-9]{1,7}\z/]}
         end
 
         def advert_url(url)
           "http://www.boatshop24.co.uk/#{url}"
         end
 
-        def pics_url id
+        def pics_url(id)
           "http://search.boatshop24.co.uk/brokersfullspec.asp?btsrefno=#{id}"
         end
 

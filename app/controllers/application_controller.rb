@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
   include CurrentMethods
 
   before_action :global_current_user
-  before_action :clear_old_session
   before_action :set_country_specific_units_for_non_user
   before_action :set_user_specific_settings
   before_action :remember_broker_from_iframe
@@ -99,10 +98,6 @@ class ApplicationController < ActionController::Base
     if user_signed_in? && !current_user.email_confirmed
       redirect_to confirm_email_home_path
     end
-  end
-
-  def clear_old_session
-    cookies.delete(:_rightboat_session, domain: '.rightboat.com') if cookies[:_rightboat_session]
   end
 
   def makemodel_boat_path(boat)

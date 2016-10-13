@@ -1,13 +1,15 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  include ErrorsHandling
+  include EmailsTracking
+  include CurrentMethods
+
   before_action :global_current_user
   before_action :clear_old_session
   before_action :set_country_specific_units_for_non_user
   before_action :set_user_specific_settings
   before_action :remember_broker_from_iframe
-
-  Dir["#{Rails.root}/app/controllers/application_controller_ext/*"].each { |file| Rails.env.development? ? load(file) : require(file) }
 
   private
 

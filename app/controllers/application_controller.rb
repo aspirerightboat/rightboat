@@ -119,7 +119,7 @@ class ApplicationController < ActionController::Base
     if params[:iframe] && (iframe = BrokerIframe.find_by(token: params[:iframe]))
       cookies[:iframe_broker_id] = {value: iframe.user_id, expires: 4.hours.from_now}
 
-      url = url_for(params.except(:iframe).merge(only_path: true))
+      url = request.path
       IframeClick.create(broker_iframe: iframe, ip: request.remote_ip, url: url, referer_url: request.referer)
 
       redirect_to url

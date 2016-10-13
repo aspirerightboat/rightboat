@@ -113,7 +113,9 @@ class ApplicationController < ActionController::Base
     if params[:iframe] && (iframe = BrokerIframe.find_by(token: params[:iframe]))
       cookies[:iframe_broker_id] = {value: iframe.user_id, expires: 4.hours.from_now}
 
-      url = request.path
+      query_hash = Rack::Utils.parse_query(URI.parse(request.url).query).except('iframe')
+      url = query_hash.empty? ? request.path : "#{request.path}?#{query_hash.to_query}"
+
       IframeClick.create(broker_iframe: iframe, ip: request.remote_ip, url: url, referer_url: request.referer)
 
       redirect_to url

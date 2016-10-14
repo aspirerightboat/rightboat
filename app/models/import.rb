@@ -100,18 +100,15 @@ class Import < ApplicationRecord
   private
 
   def validate_import_params
-    importer_class.params_validators.each do |key, validators|
+    importer_class.params_validators.with_indifferent_access.each do |key, validators|
       validators = [validators] unless validators.is_a?(Array)
       validators.each do |validator|
         value = param[key]
-        if validator == :presence
-          if value.blank?
-            errors.add :param, "[#{key}] can't be blank"
-          end
-        elsif validator.is_a?(Regexp)
-          if value.blank? || value !~ validator
-            errors.add :param, "[#{key}] is invalid"
-          end
+        case validator
+        when :presence
+          errors.add(:param, "[#{key}] can't be blank") if value.blank?
+        when Regexp
+          errors.add(:param, "[#{key}] is invalid") if value.blank? || value !~ validator
         else
           raise 'Invalid validate option'
         end

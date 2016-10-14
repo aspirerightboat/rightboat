@@ -120,7 +120,7 @@ module Rightboat
       end
 
       def self.import_types
-        @import_types ||= Dir["#{Rails.root}/lib/rightboat/imports/importers/*"].map { |path| File.basename(path, '.*') }
+        @import_types ||= Dir["#{Rails.root}/app/lib/rightboat/imports/importers/*"].map { |path| File.basename(path, '.*') }
       end
 
       # override to add params validators, eg. { office_id: [:presence, /\d+/] }

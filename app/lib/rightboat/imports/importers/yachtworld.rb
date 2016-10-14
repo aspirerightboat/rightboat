@@ -191,7 +191,7 @@ module Rightboat
           desc_td = doc.root.at_css('tr[align=left] td')
           description = prepare_description(desc_td)
 
-          if full_spec_link = doc.link_with(href: /pl_boat_full_detail/)
+          if (full_spec_link = doc.link_with(href: /pl_boat_full_detail/))
             full_spec_uri = doc.uri.merge(full_spec_link.uri)
             doc = get(full_spec_uri)
 
@@ -312,7 +312,7 @@ module Rightboat
           end
         end
 
-        def read_spec_len(boat, data, attr)
+        def self.read_spec_len(boat, data, attr)
           case
           when (m = data.match(/^([\d.]+) ?m/)) then boat.send "#{attr}=", m[1]
           when (m = data.match(/^(\d+) ft (\d+) in/)) then boat.send "#{attr}=", m[1].to_f.ft_to_m + m[2].to_f.inch_to_m

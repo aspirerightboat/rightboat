@@ -10,12 +10,14 @@ module ActiveAdmin::ViewsHelper
   end
 
   def prev_next_links(show_next = true)
-    page_params = params.except(:controller, :action)
-    content_tag :nav, class: 'pagination' do
-      s = String.new
-      s << content_tag(:span, content_tag(:a, '‹ Prev', href: "?#{page_params.merge(page: @page - 1).to_query}"), class: 'prev') if @page > 1
-      s << content_tag(:span, content_tag(:a, 'Next ›', href: "?#{page_params.merge(page: @page + 1).to_query}"), class: 'next') if show_next
-      s.html_safe
+    query_hash = Rack::Utils.parse_query(URI.parse(request.url).query)
+    prev_url = "#{request.path}?#{query_hash.merge(page: @page - 1).to_query}" if @page > 1
+    next_url = "#{request.path}?#{query_hash.merge(page: @page + 1).to_query}" if show_next
+    arbre do
+      nav(class: 'pagination') do
+        span(class: 'prev') { a(href: prev_url) { '‹ Prev' } } if prev_url
+        span(class: 'next') { a(href: next_url) { 'Next ›' } } if next_url
+      end
     end
   end
 

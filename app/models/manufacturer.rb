@@ -11,7 +11,7 @@ class Manufacturer < ApplicationRecord
   has_many :insurances
   belongs_to :created_by_user, class_name: 'User'
 
-  mount_uploader :logo, AvatarUploader
+  mount_uploader :logo, ManufacturerLogoUploader
 
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true

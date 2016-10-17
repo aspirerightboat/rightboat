@@ -79,6 +79,16 @@
               = link_to broker_area_my_boat_path(boat), method: 'delete', style: 'margin-left: 1ex', \
                       data: {confirm: 'Are you sure you want delete this boat?'}, title: 'Permanently Delete' do
                 i.glyphicon.glyphicon-remove
+              .share-link.is-table-action
+                span.share-platforms
+                  - cur_boat_url = RIGHTBOAT_DOMAIN_URL + sale_boat_path(manufacturer: boat.manufacturer, model: boat.model, boat: boat)
+                  - cur_boat_escaped_url = URI::escape(cur_boat_url)
+                  = link_to "https://www.facebook.com/sharer.php?u=#{cur_boat_escaped_url}", target: '_blank', title: 'Share with facebook' do
+                    i.icon.icon-facebook-squared
+                  = link_to "https://www.twitter.com/intent/tweet?url=#{cur_boat_escaped_url}", target: '_blank', title: 'Share with twitter' do
+                    i.icon.icon-twitter-squared
+                  = link_to "mailto:?subject=I want you to see this site&body=Check out this site #{cur_boat_url}", title: 'Share by email' do
+                    i.icon.icon-mail
             - if boat.published || boat.user == current_user
               = link_to sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex', \
                       title: 'View as it appears on Rightboat' do

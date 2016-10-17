@@ -1,13 +1,8 @@
 module ApplicationHelper
-  include Twitter::Autolink
 
-  def nav_class_for(condition)
-    if condition.is_a?(Regexp)
-      return 'active' if "#{controller_path}##{action_name}" =~ condition
-    else
-      controller, action = condition.to_s.split('#')
-      return 'active' if (controller_path.blank? || controller == controller_path) && (action.blank? || action == action_name)
-    end
+  def active_class_if(condition)
+    controller, action = condition.split('#')
+    'active' if controller == controller_path && action == action_name
   end
 
   def currency_select(name, selected, options = {})

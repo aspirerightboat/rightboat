@@ -146,16 +146,5 @@
       p
         | Rightboat.com - the global choice of boats for sale.
 
-  - if @recent_tweets.any?
-    .twitter-feed-slider
-      .container
-        .flexslider.default-slider(data-slick="#{ {slidesToShow: 1, arrows: true}.to_json }")
-          - @recent_tweets.each do |tweet|
-            li
-              .tweet-feed
-                p.text-center= sanitize(auto_link(tweet.text, url_class: 'tweet-source-link'), tags: %w(strong a), attributes: %w(href class))
-                p.text-center.small
-                  | -posted #{time_ago_in_words(tweet.created_at)} ago - #{auto_link("@#{Figaro.env.twitter_handle}").html_safe}
-
   - if params[:popup_login]
     #trigger_login_popup

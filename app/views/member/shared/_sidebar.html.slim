@@ -1,20 +1,20 @@
 #sidebar.col-xs-6.col-sm-3.sidebar-offcanvas.rb-sidebar(role="navigation")
   .sidebar-nav
     ul.nav.nav-pills.nav-stacked
-      li(class="#{nav_class_for('member/dashboard#index')}")
+      li(class="#{active_class_if('member/dashboard#index')}")
         = link_to 'Welcome', member_root_path
-      li(class="#{nav_class_for('member/dashboard#about_me')}")
+      li(class="#{active_class_if('member/dashboard#about_me')}")
         = link_to 'About Me', member_about_me_path
-      li(class="#{nav_class_for('member/favourites#index')}")
+      li(class="#{active_class_if('member/favourites#index')}")
         = link_to 'My Favourites', member_favourites_path
-      li(class="#{nav_class_for('member/leads#index')}")
+      li(class="#{active_class_if('member/leads#index')}")
         = link_to 'My Enquiries', member_leads_path
-      li(class="#{nav_class_for('member/recent_views#index')}")
+      li(class="#{active_class_if('member/recent_views#index')}")
         = link_to 'My Recently Viewed', member_recent_views_path
-      li(class="#{nav_class_for('member/user_notifications#index')}")
+      li(class="#{active_class_if('member/user_notifications#index')}")
         = link_to t('user_notifications.index.title'), member_user_notifications_path
       - if current_user&.company?
-        li(class="#{nav_class_for('member/boats#index')}")
+        li(class="#{active_class_if('member/boats#index')}")
           = link_to 'Sell My Boat', member_boats_path
-      li(class="#{nav_class_for('member/dashboard#discounts')}")
+      li(class="#{active_class_if('member/dashboard#discounts')}")
         = link_to 'Member Offers and Discounts', member_discounts_path

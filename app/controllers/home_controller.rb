@@ -8,7 +8,6 @@ class HomeController < ApplicationController
       redirect_to(root_path) and return
     end
 
-    @recent_tweets = [] # Rails.env.development? ? [] : Rightboat::TwitterFeed.all
     load_recent_boats
   end
 
@@ -51,14 +50,6 @@ class HomeController < ApplicationController
   end
 
   private
-
-  def register_statistics
-    unless @featured_boats.blank?
-      @featured_boats.each do |boat|
-        Statistics.record_featured_boat_view(boat)
-      end
-    end
-  end
 
   def load_recent_boats
     if current_user

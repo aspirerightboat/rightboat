@@ -13,11 +13,6 @@ class Rightboat::XeroInvoicer
 
     contact_by_broker = ensure_contacts(brokers)
     branding_theme = $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
-    tax_type_by_currency = {
-        'GBP' => 'OUTPUT2',
-        'EUR' => 'ECZROUTPUTSERVICES',
-        'USD' => 'EXEMPTOUTPUT',
-    }
 
     Invoice.transaction do
       xero_invoices = []
@@ -50,7 +45,7 @@ class Rightboat::XeroInvoicer
                          quantity: 1, unit_amount: leads_price, account_code: 200,
                          discount_rate: discount_rate * 100,
                          line_amount: leads_price_discounted,
-                         tax_type: tax_type_by_currency[broker_currency.name])
+                         tax_type: tax_type_for_broker(broker))
 
         i.subtotal = leads_price
         i.discount_rate = discount_rate
@@ -93,6 +88,20 @@ class Rightboat::XeroInvoicer
   end
 
   private
+
+  def tax_type_for_broker(broker)
+    if broker.country.iso == 'GI' # Gibraltar
+      return 'EXEMPTOUTPUT'
+    elsif broker.country.iso == 'GB' && broker.address.county.in?(%w(Jersey Guernsey))
+      return 'EXEMPTOUTPUT'
+    end
+
+    case broker.deal.currency.name
+    when 'GBP' then 'OUTPUT2'
+    when 'EUR' then 'ECZROUTPUTSERVICES'
+    when 'USD' then 'EXEMPTOUTPUT'
+    end
+  end
 
   def init_logger
     log_dir = Rails.root + 'log/invoices'

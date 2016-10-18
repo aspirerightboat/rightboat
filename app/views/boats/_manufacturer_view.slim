@@ -6,11 +6,11 @@
         small #{@total_count}&nbsp;boats&nbsp;found
 
       - if @manufacturer.logo.present? && @manufacturer.description.present?
-      .maker-overview
-        .maker-overview-logo
-          = image_tag @manufacturer.logo_url(:thumb), alt: @manufacturer.name, class: 'img-responsive'
-        .maker-overview-text
-          = simple_format @manufacturer.description
+        .maker-overview
+          .maker-overview-logo
+            = image_tag @manufacturer.logo_url(:thumb), alt: @manufacturer.name, class: 'img-responsive'
+          .maker-overview-text
+            = simple_format @manufacturer.description
 
       - if @filter_tags.any?
         .filter-tags

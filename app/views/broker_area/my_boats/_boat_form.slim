@@ -61,7 +61,7 @@
         .col-sm-12
           = f.label :price_amount, 'Asking price'
           '
-          = f.number_field :price, step: '100', class: 'form-control', id: 'price_amount', \
+          = f.number_field :price, class: 'form-control', id: 'price_amount', \
                   style: 'width: 120px; display: inline-block; text-align: right; vertical-align: top;'
           '
           = currency_select 'price_currency', @boat.safe_currency, \

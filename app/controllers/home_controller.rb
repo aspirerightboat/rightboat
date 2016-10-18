@@ -8,7 +8,7 @@ class HomeController < ApplicationController
       redirect_to(root_path) and return
     end
 
-    @featured_manufacturers = Manufacturer.where.not(logo: nil).where.not(logo: '').order(:name).limit(18).to_a
+    @featured_manufacturers = Manufacturer.where.not(logo: nil).where.not(logo: '').order(:name).limit(60).to_a
     load_recent_boats
   end
 

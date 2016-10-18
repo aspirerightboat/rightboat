@@ -27,7 +27,17 @@ SitemapGenerator::Sitemap.create do
   add '/privacy_policy'
   add '/cookies_policy'
   add '/sell_my_boats'
-  Boat.not_deleted.order('id DESC').includes(:manufacturer, :model).find_each do |boat|
-    add sale_boat_path(boat.manufacturer, boat.model, boat), lastmod: boat.updated_at
+
+  Rightboat::SitemapHelper.boats_with_makemodel_slugs.find_each do |boat|
+    add sale_boat_path(boat.manufacturer_slug, boat.model_slug, boat.slug), lastmod: boat.updated_at
   end
+
+  Rightboat::SitemapHelper.active_manufacturer_slugs.each do |maker_slug|
+    add sale_manufacturer_path(maker_slug), priority: 0.4
+  end
+
+  Rightboat::SitemapHelper.active_makemodel_slugs.each do |maker_slug, model_slug|
+    add sale_model_path(maker_slug, model_slug), priority: 0.3
+  end
+
 end

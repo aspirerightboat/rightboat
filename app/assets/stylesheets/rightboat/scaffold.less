@@ -339,12 +339,18 @@ a.inline-loading {
   color: black;
   display: none;
   font-size: 13px;
-  left: -10px;
-  padding: 10px;
+  padding: 8px;
   position: absolute;
-  top: -95px;
+  top: -88px;
+  left: 50%;
   z-index: 1000;
   width: 240px;
+  margin-left: -240px/2;
+
+  @media (min-width: @screen-sm-min) and(max-width: @screen-sm-max) {
+    left: -97px;
+    margin-left: 0;
+  }
 }
 
 .inline {

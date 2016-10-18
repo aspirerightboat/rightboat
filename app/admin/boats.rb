@@ -52,10 +52,6 @@ ActiveAdmin.register Boat do
     end
   end
 
-  index as: :grid do |boat|
-    link_to image_tag(boat.primary_image.file.url(:thumb)), admin_boat_path(boat)
-  end
-
   show do |boat|
     if boat.raw_boat
       attributes_table do

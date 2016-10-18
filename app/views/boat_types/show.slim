@@ -2,9 +2,6 @@
 - @page_description = @page_title
 - @canonical_url = boat_type_url(@boat_type.id)
 
-- content_for :meta_tags do
-  meta(name="robots" content="index, follow")
-
 = render layout: 'shared/boats_for_sale' do
   ul.breadcrumbs
     li= link_to 'Home', root_path

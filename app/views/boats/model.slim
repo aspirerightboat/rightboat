@@ -2,9 +2,6 @@
 - @page_description = "Browse various #{@manufacturer.name} #{@model.name} boats for sale, Rightboat.com offers thousands of boats for sale listed by trusted brokers from around the World"
 - @canonical_url = sale_model_url(@manufacturer, @model)
 
-- content_for :meta_tags do
-  meta(name="robots" content="index, follow")
-
 = render layout: 'shared/boats_for_sale' do
   .row
     .col-xs-12

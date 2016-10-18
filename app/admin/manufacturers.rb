@@ -7,6 +7,7 @@ ActiveAdmin.register Manufacturer do
   permit_params :name, :weburl, :logo, :logo_cache, :description
 
   filter :name
+  filter :featured
 
   index do
     column :id
@@ -20,6 +21,7 @@ ActiveAdmin.register Manufacturer do
     column '# Misspellings' do |r|
       link_to "#{r.misspellings.count} (Manage)", [:admin, r, :misspellings]
     end
+    column :featured
     column :updated_at
     actions do |record|
       item 'Merge', 'javascript:void(0)',
@@ -33,8 +35,9 @@ ActiveAdmin.register Manufacturer do
     f.inputs do
       f.input :name
       f.input :weburl
-      f.input :logo, as: :file, hint: image_tag(f.object.logo_url(:thumb))
+      f.input :logo, as: :file, hint: (image_tag(f.object.logo_url(:thumb)) if f.object.logo.present?)
       f.input :logo_cache, as: :hidden
+      f.input :featured, as: :boolean
       f.input :description
     end
     f.actions
@@ -42,11 +45,8 @@ ActiveAdmin.register Manufacturer do
 
   controller do
     def find_resource
-      if params[:action].in?(%w(fetch_name fix_name))
-        Model.where(id: params[:id]).first!
-      else
-        super
-      end
+      Manufacturer.find_by(slug: params[:id]) || Manufacturer.find(params[:id])
     end
   end
+
 end

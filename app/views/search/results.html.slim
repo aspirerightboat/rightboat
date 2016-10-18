@@ -1,9 +1,3 @@
-- content_for :meta_tags do
-  meta(name="robots" content="noindex, follow")
-
-- content_for :header_text do
-  h1.hidden-sm Find your <strong>Rightboat</strong>
-
 - content_for :header do
   = render 'shared/advanced_search'
   = render partial: 'shared/top_navbar', locals: {include_header: true}

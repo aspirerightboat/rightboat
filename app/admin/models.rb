@@ -55,11 +55,7 @@ ActiveAdmin.register Model do
     end
 
     def find_resource
-      if params[:action].in?(%w(fetch_name fix_name))
-        Model.where(id: params[:id]).first!
-      else
-        super
-      end
+      Model.find_by(slug: params[:id]) || Model.find(params[:id])
     end
   end
 

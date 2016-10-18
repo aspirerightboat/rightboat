@@ -9,8 +9,7 @@ nav#top-navbar.navbar.navbar-default.navbar-static-top
             - if content_for? :header_text
               = yield :header_text
             - else
-              h1
-                span.hidden-sm Find your <strong>Rightboat</strong>
+              .navbar-h Find your <strong>Rightboat</strong>
     button.navbar-toggle.collapsed(aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button")
       span.sr-only Toggle navigation
       span.icon-bar

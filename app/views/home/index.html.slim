@@ -12,6 +12,16 @@
     .embed-responsive.embed-responsive-home-page
 
 #main_content
+  - if @featured_manufacturers.any?
+    .featured-manufacturers
+      h3.toolbar-title Search by Manufacturer
+      .container
+        .row
+          - @featured_manufacturers.each do |manufacturer|
+            .col-xs-3.col-sm-2
+              = link_to sale_manufacturer_path(manufacturer) do
+                = image_tag(manufacturer.logo_url(:thumb), alt: manufacturer.name, class: 'img-responsive')
+
   = render 'featured_boats'
 
   - if @recent_boats.present?

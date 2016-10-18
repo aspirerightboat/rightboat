@@ -116,7 +116,7 @@ ActiveAdmin.register User do
   form do |f|
     f.inputs 'User Details' do
       f.input :role, as: :select, collection: User::ROLES, include_blank: false
-      f.input :avatar, as: :file, hint: image_tag(f.object.avatar_url(:thumb))
+      f.input :avatar, as: :file, hint: (image_tag(f.object.avatar_url(:thumb)) if f.object.avatar.present?)
       f.input :avatar_cache, as: :hidden
       f.input :username
       f.input :title, as: :select, collection: User::TITLES
@@ -147,7 +147,7 @@ ActiveAdmin.register User do
         ff.input :website
         ff.input :additional_email_raw, label: 'Additional email(seperated by comma)', input_html: {class: 'select-array'}
         ff.input :vat_number
-        ff.input :logo, as: :file, hint: image_tag(ff.object.logo_url(:thumb))
+        ff.input :logo, as: :file, hint: (image_tag(ff.object.logo_url(:thumb)) if f.object.logo.present?)
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
         ff.input :xero_contact_id
         ff.input :payment_method, as: :select, collection: BrokerInfo::PAYMENT_METHODS, include_blank: false

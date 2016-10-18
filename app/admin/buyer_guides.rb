@@ -26,9 +26,9 @@ ActiveAdmin.register BuyerGuide do
 
   form do |f|
     f.inputs 'Details' do
-      f.input :photo, as: :file, hint: image_tag(f.object.photo_url(:thumb))
+      f.input :photo, as: :file, hint: (image_tag(f.object.photo_url(:thumb)) if f.object.photo.present?)
       f.input :photo_cache, as: :hidden
-      f.input :thumbnail, as: :file, hint: image_tag(f.object.thumbnail_url(:thumb))
+      f.input :thumbnail, as: :file, hint: (image_tag(f.object.thumbnail_url(:thumb)) if f.object.thumbnail.present?)
       f.input :thumbnail_cache, as: :hidden
       f.input :author
       f.input :manufacturer, collection: Manufacturer.order('name ASC'), include_blank: false

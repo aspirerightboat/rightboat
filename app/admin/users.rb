@@ -147,7 +147,7 @@ ActiveAdmin.register User do
         ff.input :website
         ff.input :additional_email_raw, label: 'Additional email(seperated by comma)', input_html: {class: 'select-array'}
         ff.input :vat_number
-        ff.input :logo, as: :file, hint: (image_tag(ff.object.logo_url(:thumb)) if f.object.logo.present?)
+        ff.input :logo, as: :file, hint: (image_tag(ff.object.logo_url(:thumb)) if ff.object.logo.present?)
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
         ff.input :xero_contact_id
         ff.input :payment_method, as: :select, collection: BrokerInfo::PAYMENT_METHODS, include_blank: false

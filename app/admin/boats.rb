@@ -36,9 +36,9 @@ ActiveAdmin.register Boat do
     end
     column('Imgs') { |boat| boat.boat_images.not_deleted.count }
     column('Name/Makemodel') do |boat|
-      [html_escape(boat.name),
-       link_to(boat.manufacturer.name, admin_manufacturer_path(boat.manufacturer)),
-       link_to(boat.model.name, admin_model_path(boat.model))].reject(&:blank?).join('<br>').html_safe
+      div { boat.name } if boat.name.present?
+      div { link_to boat.manufacturer.name, admin_manufacturer_path(boat.manufacturer) }
+      div { link_to boat.model.name, admin_model_path(boat.model) }
     end
     column(:price) { |boat| number_to_currency(boat.price, unit: boat.safe_currency.symbol, precision: 0) }
     column(:status) { |boat| boat.inactive? ? "inactive: #{boat.inactive_reason}" : boat.status }

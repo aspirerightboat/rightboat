@@ -1,3 +1,5 @@
+- content_for :head_scripts, render('shared/init_google_charts')
+
 - content_for :sidebar do
   = form_tag broker_area_my_boats_path, method: :get, style: 'margin-top: 3em' do
     h5 RB Ref
@@ -37,24 +39,26 @@
     table.rb-table
       tr
         th Ref
-        th Source ID
         th Image
-        th Name
         th Make / Model
         th Price
         th Marketing Status
         th Rightboat Published
         th Office
         th Location
+        th Views/Leads
         th
       - @boats.each do |boat|
         tr
-          td #{boat.ref_no}
-          td #{boat.source_id}
+          td
+            - if boat.published || boat.user == current_user
+              = link_to boat.ref_no, sale_boat_path(boat.manufacturer, boat.model, boat), \
+                      style: 'margin-left: 1ex', title: 'View as it appears on Rightboat'
+            - else
+              = boat.ref_no
           td
             - if boat.primary_image
               | #{image_tag(boat.primary_image.file_url(:mini), size: '64x43', alt: '')}
-          td #{boat.name}
           td #{boat.manufacturer.name} #{boat.model.name}
           td
             - if boat.poa?
@@ -63,13 +67,15 @@
               | <abbr title="#{boat.safe_currency.name}">#{boat.safe_currency.symbol}</abbr>&nbsp;#{boat.price&.to_i} #{boat.vat_rate&.name}
           td #{boat.offer_status.humanize}
           td
-            span.published-status= boat.published? ? 'Published' : 'Not Published'
             - if boat.published? && boat.status == 'inactive'
               |  (Inactive reason: #{boat.inactive_reason})
             = form_for boat, url: toggle_published_broker_area_my_boat_path(boat), method: :post do |f|
               = f.select :published, [['Published', true], ['Not Published', false]], {}, class: 'toggle-published'
           td #{boat.office&.name}
-          td #{boat.country&.name} #{boat.location}
+          td #{boat.country&.name}
+          td
+            = link_to broker_area_my_boat_path(boat) do
+              .stats-per-boat(data-views-count="#{boat.views_count}" data-leads-count="#{boat.leads_count}")
           td
             div(style="white-space: nowrap")
               = link_to broker_area_my_boat_path(boat), style: 'margin-left: 1ex', title: 'View Details' do
@@ -89,10 +95,32 @@
                     i.icon.icon-twitter-squared
                   = link_to "mailto:?subject=I want you to see this site&body=Check out this site #{cur_boat_url}", title: 'Share by email' do
                     i.icon.icon-mail
-            - if boat.published || boat.user == current_user
-              = link_to sale_boat_path(boat.manufacturer, boat.model, boat), style: 'margin-left: 1ex', \
-                      title: 'View as it appears on Rightboat' do
-                | RB View
+
     = paginate @boats
   - else
     p.text-center You have no boats to manage so far
+
+javascript:
+  $(function() {
+    google.charts.setOnLoadCallback(function() {
+      var $charts = $('.stats-per-boat');
+      var options = {
+        height: 100,
+        vAxis: { minValue: 0, format: 'short'},
+        legend: { position: 'none' },
+        isStacked: true,
+      };
+
+      for(var i = 0; i < $charts.length; i ++) {
+        $chart = $($charts[i]);
+        var data = [
+          ['Element', 'Count', { role: 'style' }],
+          ['Views', parseInt($chart.data('views-count')), 'royalblue'],
+          ['Leads', parseInt($chart.data('leads-count')), 'goldenrod']
+        ];
+        var chartData = google.visualization.arrayToDataTable(data);
+        var chart = new google.visualization.ColumnChart($chart[0]);
+        chart.draw(chartData, options)
+      }
+    });
+  });

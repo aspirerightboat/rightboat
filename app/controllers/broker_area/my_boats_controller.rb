@@ -14,6 +14,18 @@ module BrokerArea
       @boats = @boats.joins(:model).where('models.name LIKE ?', "%#{params[:model_q]}%") if params[:model_q].present?
       @boats = @boats.where(offer_status: params[:offer_status]) if params[:offer_status].present?
       @boats = @boats.where(published: case params[:published] when '1' then true when '0' then false end) if params[:published].present?
+      @boats = @boats.
+                select('boats.*').
+                select('(
+                  SELECT count(*)
+                  FROM user_activities
+                  WHERE user_activities.boat_id = boats.id AND user_activities.kind = "boat_view")
+                  AS views_count').
+                select('(
+                  SELECT count(*)
+                  FROM leads
+                  WHERE leads.boat_id = boats.id)
+                  AS leads_count')
       @offices = current_user.offices.order(:name)
     end
 

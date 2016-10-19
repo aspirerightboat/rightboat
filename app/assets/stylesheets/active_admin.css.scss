@@ -94,6 +94,19 @@ input[disabled] {
   background-color: whitesmoke;
 }
 
+form.filter_form .filter_form_field.filter_date_range input[type=text] {
+  width: 100px;
+}
+
+#ui-datepicker-div {
+  width: auto;
+}
+
+.ui-datepicker .ui-datepicker-header {
+  height: auto;
+  width: 100%;
+}
+
 // override bootstrap lead style to fix leads#show page
 @media (min-width: 768px) {
   .lead {

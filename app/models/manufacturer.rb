@@ -13,6 +13,9 @@ class Manufacturer < ApplicationRecord
 
   mount_uploader :logo, ManufacturerLogoUploader
 
+  scope :logo_present, -> { where.not(logo: nil).where.not(logo: '') }
+  scope :featured, -> { where(featured: true) }
+
   validates_presence_of :name
   validates_uniqueness_of :name, allow_blank: true
 
@@ -61,6 +64,10 @@ class Manufacturer < ApplicationRecord
 
     reload
     destroy!
+  end
+
+  def safe_caption
+    caption.presence || "#{name} yachts for sale"
   end
 
   private

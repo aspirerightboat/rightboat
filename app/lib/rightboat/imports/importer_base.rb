@@ -51,6 +51,7 @@ module Rightboat
         @user = @import.user
         @old_source_ids = @user.boats.pluck(:source_id)
         @scraped_source_ids = []
+        @parse_error = false
 
         log "#{@manual ? 'Manual' : 'Auto'} start params=#{@import.param.inspect} threads=#{@import.threads} pid=#{@import.pid}"
 
@@ -97,7 +98,7 @@ module Rightboat
           return if @import_trail.error_msg.present?
         end
 
-        if @jobs_queue.empty? # all jobs processed
+        if @jobs_queue.empty? && !@scraped_source_ids.none? && !@parse_error # all jobs processed
           remove_old_boats
         end
 
@@ -186,6 +187,7 @@ module Rightboat
       def safe_parse_boat(job)
         @skip_thread_parsing_boat ? job : process_job(job)
       rescue StandardError => e
+        @parse_error = true
         log_ex e, 'Parse Error'
         nil
       end

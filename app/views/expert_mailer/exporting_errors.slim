@@ -1,6 +1,6 @@
 p
-  ' Export #{link_to "#{@export.import_type} ##{@export.id}", admin_export_url(@export)} was finished with errors:
-  b= link_to 'View log', admin_export_last_log_url(@export)
+  ' Export #{link_to "#{@export.export_type} ##{@export.id}", admin_export_url(@export)} was finished with errors:
+  b= link_to 'View log', last_log_admin_export_url(@export)
 
 p
   b Trail info:

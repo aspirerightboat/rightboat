@@ -23,7 +23,7 @@ module Rightboat
       end
 
       def starting
-        @export.touch(:started_at)
+        @export.update(started_at: Time.current, error_msg: nil)
         init_logger
         init_export_file
         log "Started export_file=#{@file.path}"

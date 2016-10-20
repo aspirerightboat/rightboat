@@ -12,7 +12,9 @@ class Export < ApplicationRecord
   before_create :create_prefix
 
   def self.export_types
-    @export_types ||= Dir['lib/rightboat/exports/*_exporter.rb'].map { |path| File.basename(path, '.*').chomp('_exporter') }
+    @export_types ||= Dir["#{Rails.root}/app/lib/rightboat/exports/*_exporter.rb"].map do |path|
+      File.basename(path, '.*').chomp('_exporter')
+    end
   end
 
   def run!

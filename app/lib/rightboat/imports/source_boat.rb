@@ -401,6 +401,11 @@ module Rightboat
       end
 
       def handle_office
+        if import.overwrite_broker?
+          target.import_assign :office, nil
+          return
+        end
+
         if office.present?
           importer.jobs_mutex.synchronize do
             @@user_offices ||= user.offices.includes(:address).to_a

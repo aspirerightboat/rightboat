@@ -2,6 +2,7 @@
   = f.inputs 'Import' do
     = f.input :user, as: :select, collection: User.companies, label_method: :name, value_method: :id, include_blank: false
     = f.input :import_type, collection: Rightboat::Imports::ImporterBase.import_types, include_blank: false
+    = f.input :overwrite_broker
     = f.input :threads
     = f.input :use_proxy_for_images
     = f.input :active

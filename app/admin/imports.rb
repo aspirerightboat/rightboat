@@ -6,6 +6,7 @@ ActiveAdmin.register Import do
   filter :active
   filter :import_type, as: :select, collection: -> { Rightboat::Imports::ImporterBase.import_types }
   filter :last_ran_at
+  filter :overwrite_broker
 
   controller do
     before_action :check_running_job, only: [:edit, :update, :destroy]

@@ -20,6 +20,8 @@ class Import < ApplicationRecord
   validate :validate_import_params
 
   before_destroy :stop!
+  before_destroy :delete_boats
+  before_save :delete_boats, if: ->(i) { i.active_changed? && !i.active? }
 
   scope :active, -> { where active: true }
   scope :inactive, -> { where active: false }
@@ -114,6 +116,10 @@ class Import < ApplicationRecord
         end
       end
     end
+  end
+
+  def delete_boats
+    boats.each(&:destroy)
   end
 
 end

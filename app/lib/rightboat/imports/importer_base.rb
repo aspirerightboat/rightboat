@@ -49,7 +49,7 @@ module Rightboat
         @jobs_mutex = Mutex.new
 
         @user = @import.user
-        @old_source_ids = @user.boats.pluck(:source_id)
+        @old_source_ids = @import.boats.pluck(:source_id)
         @scraped_source_ids = []
         @parse_error = false
 
@@ -229,7 +229,7 @@ module Rightboat
 
       def remove_old_boats
         delete_source_ids = (@old_source_ids - @scraped_source_ids).reject(&:blank?)
-        delete_boats = @user.boats.not_deleted.where(source_id: delete_source_ids).to_a
+        delete_boats = @import.boats.not_deleted.where(source_id: delete_source_ids).to_a
         delete_boats.each do |boat|
           log "Deleting Boat id=#{boat.id} source_id=#{boat.source_id}"
           boat.destroy

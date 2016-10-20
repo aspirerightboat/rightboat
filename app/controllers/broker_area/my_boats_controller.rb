@@ -14,6 +14,7 @@ module BrokerArea
       @boats = @boats.joins(:model).where('models.name LIKE ?', "%#{params[:model_q]}%") if params[:model_q].present?
       @boats = @boats.where(offer_status: params[:offer_status]) if params[:offer_status].present?
       @boats = @boats.where(published: case params[:published] when '1' then true when '0' then false end) if params[:published].present?
+      @boats = @boats.where(import_id: params[:import_id]) if params[:import_id].present?
       @boats = @boats.
                 select('boats.*').
                 select('(

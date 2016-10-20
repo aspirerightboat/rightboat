@@ -19,6 +19,10 @@
     h5 Published to Rightboat
     = select_tag :published, options_for_select([%w(Published 1), %w(Unpublished 0)], params[:offer_status]), \
                 prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
+    - if current_user.imports.many?
+      h5 Imports
+      = select_tag :published, options_for_select(current_user.imports.map { |i| ["Import ##{i.id}", i.id] }, params[:import_id]), \
+                  prompt: 'Any', placeholder: 'Any', class: 'select-dark select-general'
     .nice-buttons.text-center(style="margin-top: 1em")
       button.nice-button(type="submit") Filter
       button.transparent-button.clear-filters(type="button") Clear Filters

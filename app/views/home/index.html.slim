@@ -16,13 +16,12 @@
     .featured-manufacturers
       h3.toolbar-title Search by Manufacturer
       .container
-        .row(style="margin-right: 0")
+        .manufacturer-cards
           - @featured_manufacturers.each do |manufacturer|
-            .col-xs-3.col-sm-2.col-md-2.col-lg-1(style="padding-right: 0")
-              .manufacturer-card
-                = link_to sale_manufacturer_path(manufacturer) do
-                  = image_tag(manufacturer.logo_url(:thumb), alt: manufacturer.name, class: 'img-responsive')
-                .manufacturer-card-title= manufacturer.safe_caption
+            .manufacturer-card
+              = link_to sale_manufacturer_path(manufacturer), class: 'manufacturer-card-link' do
+                = image_tag(manufacturer.logo_url(:thumb), alt: manufacturer.name, class: 'img-responsive')
+              .manufacturer-card-title= manufacturer.safe_caption
 
   = render 'featured_boats'
 

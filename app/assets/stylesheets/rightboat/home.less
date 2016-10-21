@@ -252,17 +252,27 @@
   }
 }
 
+.manufacturer-cards {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -6px;
+}
 .manufacturer-card {
   transition: transform .25s ease-out;
-  margin-bottom: 10px;
+  padding: 0 6px 10px;
+  align-self: stretch;
+  @media (max-width: @screen-xs-max) { flex-basis: 100%/4; }
+  @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { flex-basis: 100%/6; }
+  @media (min-width: @screen-md-min) and (max-width: @screen-md-max) { flex-basis: 100%/8; }
+  @media (min-width: @screen-lg-min) { flex-basis: 100%/12; }
 
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
   }
-  a {
-    display: block;
-    border: 1px solid lightgray;
-  }
+}
+.manufacturer-card-link {
+  display: block;
+  border: 1px solid lightgray;
 }
 .manufacturer-card-title {
   font-size: 75%;

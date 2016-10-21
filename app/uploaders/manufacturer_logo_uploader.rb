@@ -7,4 +7,8 @@ class ManufacturerLogoUploader < ImageUploader
   version :thumb do
     process :resize_and_pad => [300, 200]
   end
+
+  version :mini do
+    process :resize_and_pad => [150, 100]
+  end
 end

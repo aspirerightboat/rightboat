@@ -1,52 +1,44 @@
-#search-wrapper.container
-  #search-hub.container
-    a(href="/")
-      = image_tag 'logo-mini.png', alt: 'Rightboat', class: 'logo-img'
-    #search-hub-form
-      h2
-        - if controller_name == 'home'
-          | The <strong>global choice</strong><br> of boats for sale
-        - else
-          | My Rightboat
-
-      = form_tag search_path, method: :get do
-        .top-border-wrapper
-          .top-border
-        .bordered-wrapper
-          .left-border-wrapper
-            .left-border
-          .bottom-border-wrapper
-          .form-group
-            = boat_type_radio_buttons(params[:boat_type], id_prefix: 'search_hub')
-          .form-group.row
-            .col-xs-12= text_field_tag :q, '', placeholder: 'Search', class: 'form-control', id: 'search-input'
-
-          .range-slider-wrapper.row
-            .col-xs-2= label_tag :price
-            .col-xs-10
-              .rb-control-group
-                .rb-control
-                  = price_slider_tag
-                .rb-control-group-addon.no-pads
-                  = currency_select :currency, current_currency, class: 'select-dark slider-currency-select'
-          .range-slider-wrapper.row
-            .col-xs-2= label_tag :length
-            .col-xs-10
-              .rb-control-group
-                .rb-control
-                  = length_slider_tag
-                .rb-control-group-addon.no-pads
-                  = select_tag :length_unit, options_for_select(%w(ft m), current_length_unit), class: 'select-dark slider-length-select'
-          .row
-            .col-xs-12.nice-buttons.last-row-pad
-              button.nice-button(type="submit") Search
-
-        .form-group.last
-          .nice-buttons(style="margin: 10px 0")
-            button.transparent-button.toggle-adv-search Advanced Search
-          h4
-            - if controller_name == 'home'
-              | Find your<br><strong>Rightboat</strong>
-            - else
-              = link_to root_path do
-                i.icon.icon-home
+.search-hub
+  .search-hub-header
+    a.search-hub-header-logo(href="/")
+      = image_tag 'logo-mini.png', alt: 'Rightboat', size: '98x117'
+    h2.search-hub-header-text
+      - if controller_name == 'home'
+        | The <strong>global choice</strong><br> of boats for sale
+      - else
+        | My Rightboat
+  = form_tag search_path, method: :get, class: 'search-hub-form' do
+    .search-hub-form-frame
+      .top-left-corner
+      .top-border
+      .left-border
+      .form-group
+        = boat_type_radio_buttons(params[:boat_type], id_prefix: 'search_hub')
+      .container
+        .form-group.row
+          .col-xs-12= text_field_tag :q, '', placeholder: 'Search', class: 'form-control search-hub-q-input'
+        .range-slider-wrapper.row
+          .col-xs-2= label_tag :price
+          .col-xs-10
+            .rb-control-group
+              .rb-control
+                = price_slider_tag
+              .rb-control-group-addon.no-pads
+                = currency_select :currency, current_currency, class: 'select-dark slider-currency-select'
+        .range-slider-wrapper.row
+          .col-xs-2= label_tag :length
+          .col-xs-10
+            .rb-control-group
+              .rb-control
+                = length_slider_tag
+              .rb-control-group-addon.no-pads
+                = select_tag :length_unit, options_for_select(%w(ft m), current_length_unit), class: 'select-dark slider-length-select'
+      .nice-buttons.last-row-pad
+        button.nice-button(type="submit") Search
+    .search-hub-footer
+      .nice-buttons
+        button.transparent-button.toggle-adv-search Advanced Search
+      - if controller_name == 'home'
+        h4 Find your<br><strong>Rightboat</strong>
+      - else
+        a(href="/"): i.icon.icon-home

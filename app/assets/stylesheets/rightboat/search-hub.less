@@ -1,0 +1,108 @@
+.search-hub {
+  text-align: center;
+  color: @rb-color-dark;
+  width: 350px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 0 0 350px/2 350px/2;
+  margin: 0;
+  padding: 0 10px;
+  @media(min-width: @screen-sm-min) { padding: 0 15px; }
+  @media(max-width: @screen-xs-max) { font-size: 14px; }
+
+  .radio-buttons {
+    text-align: right;
+    margin-top: 6px;
+    label { margin: 0 0 0 12px; }
+  }
+  form button[type="submit"] {
+    border-radius: 3px;
+    width: 125px;
+  }
+  .container {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+}
+.search-hub-header {
+  height: 90px;
+  display: flex;
+}
+.search-hub-header-logo {
+  display: block;
+  width: 98px;
+  height: 117px;
+  margin-right: 8px;
+}
+.search-hub-header-text {
+  font-size: 23px;
+  font-weight: normal;
+  text-align: center;
+  align-self: center;
+  flex-grow: 1;
+  margin: 0;
+}
+.search-hub-form-frame {
+  box-sizing: border-box;
+  padding: 5px 12px 0 12px;
+  position: relative;
+  margin-bottom: 12px;
+  border: solid @rb-color-primary;
+  border-width: 0 1px 1px 0;
+  border-radius: 12px;
+  .top-left-corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 110px;
+    height: 48px;
+    background: image-url('search-form-border.png') no-repeat;
+  }
+  .top-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: ~"calc(100% - 110px)";
+    height: 24px;
+    margin-left: 110px;
+    box-sizing: border-box;
+    border-top: 1px solid @rb-color-primary;
+    border-radius: 0 12px 0 0;
+  }
+  .left-border {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: ~"calc(100% - 48px)";
+    margin-top: 48px;
+    box-sizing: border-box;
+    border-left: 1px solid @rb-color-primary;
+    border-radius: 0 0 0 12px;
+  }
+}
+.search-hub-q-input {
+  padding: 6px 14px;
+  height: auto;
+  border: 2px solid #FFF;
+  box-shadow: none;
+  background-color: white;
+  color: #13022c;
+}
+.search-hub-footer {
+  padding-bottom: 30px;
+
+  .nice-buttons {
+    margin: 10px 0;
+  }
+  h4 {
+    margin: 0;
+  }
+  .icon-home {
+    font-size: 35px;
+    color: white;
+    background: @rb-color-dark;
+    border-radius: 50%;
+    padding: 6px 3px;
+  }
+}

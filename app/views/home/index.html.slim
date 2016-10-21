@@ -7,9 +7,10 @@
 - content_for :header do
   = render 'shared/advanced_search'
   = render 'shared/top_navbar'
-  = render 'search_hub'
-  .page-gap(style="background-image: url('#{home_image_url(current_user)}')")
-    .embed-responsive.embed-responsive-home-page
+
+.hero-image(style="background-image: url('#{home_image_url(current_user)}')")
+  .container
+    = render 'search_hub'
 
 #main_content
   - if @featured_manufacturers.any?

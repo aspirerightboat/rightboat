@@ -239,6 +239,9 @@ abbr {
 .flat-list {
   @media (min-width: @screen-sm-min) {
     display: flex;
+    display: -webkit-flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
 
     li:not(:first-child) { margin-left: 1ex; }
   }

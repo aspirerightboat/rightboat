@@ -55,7 +55,6 @@
   background-color: #2d83a8;
   color: white;
   position: relative;
-  display: block;
   padding: 2px 6px !important;
   text-decoration: none;
   line-height: 22px;
@@ -64,5 +63,12 @@
     text-decoration: none;
     background-color: #276a8e !important;
     color: white;
+  }
+
+  @media (min-width: @screen-sm-min) {
+    display: inline-block;
+  }
+  @media (max-width: @screen-xs-max) {
+    display: block;
   }
 }

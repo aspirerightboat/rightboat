@@ -213,7 +213,9 @@ abbr {
 
 .flex-container {
   @media (min-width: @screen-sm-min) {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: space-between;
     justify-content: space-between;
   }
 }
@@ -238,8 +240,8 @@ abbr {
 
 .flat-list {
   @media (min-width: @screen-sm-min) {
-    display: flex;
     display: -webkit-flex;
+    display: flex;
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
 

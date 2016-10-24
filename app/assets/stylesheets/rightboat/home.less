@@ -116,13 +116,16 @@
 }
 
 .manufacturer-cards {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   margin: 0 -6px;
 }
 .manufacturer-card {
   transition: transform .25s ease-out;
   padding: 0 6px 10px;
+  -webkit-align-self: stretch;
   align-self: stretch;
   @media (max-width: @screen-xs-max) { flex-basis: 100%/4; }
   @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { flex-basis: 100%/6; }

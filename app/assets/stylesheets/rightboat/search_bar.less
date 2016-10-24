@@ -12,9 +12,13 @@
 
   @media(min-width: @screen-sm-min) {
     .container {
+      display: -webkit-flex;
       display: flex;
+      -webkit-align-items: center;
       align-items: center;
+      -webkit-justify-content: space-between;
       justify-content: space-between;
+      -webkit-flex-wrap: wrap;
       flex-wrap: wrap;
       min-height: 42px;
       padding-top: 3px;

@@ -52,7 +52,7 @@
         th Rightboat Published
         th Office
         th Location
-        th.text-center
+        th.text-center(style="min-width: 100px")
           span.sort-by(class=('dropup' if params[:order].to_s == 'views_count' && params[:dir].to_s == 'asc') data-order='views_count')
             | Views
             span(class=('caret' if params[:order].to_s == 'views_count'))

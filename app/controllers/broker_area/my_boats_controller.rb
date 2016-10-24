@@ -6,6 +6,8 @@ module BrokerArea
                                      :upload_image, :remove_image, :move_image, :toggle_published, :boat_stats]
 
     def index
+      params[:order] ||= 'leads_count'
+      params[:dir] ||= 'asc'
       @boats = current_user.boats.not_deleted.boat_view_includes.includes(:country, :office).page(params[:page]).per(30)
       @boats = @boats.where(id: Boat.id_from_ref_no(params[:ref_no])) if params[:ref_no].present?
       @boats = @boats.where(source_id: params[:source_id]) if params[:source_id].present?
@@ -26,7 +28,8 @@ module BrokerArea
                   SELECT count(*)
                   FROM leads
                   WHERE leads.boat_id = boats.id)
-                  AS leads_count')
+                  AS leads_count').
+                order("#{params[:order]} #{params[:dir]}")
       @offices = current_user.offices.order(:name)
     end
 

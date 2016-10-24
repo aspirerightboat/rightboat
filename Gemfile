@@ -21,7 +21,7 @@ gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'devise'
 gem 'open_uri_redirections'
 gem 'kaminari'
-gem 'friendly_id'
+gem 'friendly_id', github: 'norman/friendly_id' # use 5.2.0.beta.1 to make it work with rails 5
 # rmagick requires dependencies:
 # on Mac Os run: brew install imagemagick & brew install gs
 # on Mac Os run: xcode-select --install

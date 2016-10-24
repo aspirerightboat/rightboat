@@ -28,6 +28,13 @@ GIT
       responders
 
 GIT
+  remote: git://github.com/norman/friendly_id.git
+  revision: aff0564584e84ffa505e6e278b65ca3c4ee5d698
+  specs:
+    friendly_id (5.2.0.beta.1)
+      activerecord (>= 4.0.0)
+
+GIT
   remote: git://github.com/waynerobinson/xeroizer.git
   revision: 29527969f2c18593ce4b36a192182c8bebe15fee
   specs:
@@ -311,8 +318,6 @@ GEM
     formtastic (3.1.4)
       actionpack (>= 3.2.13)
     formtastic_i18n (0.6.0)
-    friendly_id (5.1.0)
-      activerecord (>= 4.0.0)
     geocoder (1.4.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -633,7 +638,7 @@ DEPENDENCIES
   factory_girl
   figaro
   fog
-  friendly_id
+  friendly_id!
   geocoder
   haml2slim
   inherited_resources!

@@ -20,7 +20,7 @@
       input(type="hidden" name="user[offices_attributes][#{ind}][address_attributes][country_id]" value="#{office.address.country_id if defined?(office)}")
       .office-name= office.name if defined?(office)
     td.office-email= office.email if defined?(office)
-    td.office-address= office.address.display_string if defined?(office)
+    td.office-address= office.address.display_string(:html) if defined?(office)
     td.office-dphone= nice_phone(office.daytime_phone) if defined?(office)
     td
       button.icon-btn.edt-office-btn(type="button")

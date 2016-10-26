@@ -24,7 +24,6 @@ class RBConfig < ApplicationRecord
     [
         {key: 'lead_quality_check_email', value: 'boats@rightboat.com', kind: :string, description: 'When lead status changes to QualityCheck then email will be sent to this admin email'},
         {key: 'leads_approve_delay', value: '72', kind: :integer, description: 'Lead delay before approved in hours'},
-        {key: 'invoicing_report_email', value: 'boats@rightboat.com', kind: :string, description: 'Where to send report summary about generated invoices'},
         {key: 'lead_low_price_coef', value: '0.0002', kind: :float, description: 'Coefficient when price is <= £500.000. A £100.000 boat will be charged as 100.000 * 0.0002 = £20'},
         {key: 'lead_high_price_coef', value: '0.0001', kind: :float, description: 'Coefficient when price is > £500.000. A £600.000 boat will be charged as 500.000 * 0.0002 + 100.000 * 0.0001 = £110'},
         {key: 'lead_price_coef_bound', value: '500000', kind: :float, description: 'Under this price lead_low_price_coef is used and under – lead_high_price_coef'},

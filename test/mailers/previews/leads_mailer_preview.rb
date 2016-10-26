@@ -16,10 +16,6 @@ class LeadsMailerPreview < ActionMailer::Preview
     LeadsMailer.lead_created_notify_pop_yachts(Lead.last.id)
   end
 
-  def invoicing_report
-    LeadsMailer.invoicing_report(Invoice.order('id DESC').limit(3).pluck(:id))
-  end
-
   def invoice_notify_broker
     LeadsMailer.invoice_notify_broker(Invoice.last.id)
   end

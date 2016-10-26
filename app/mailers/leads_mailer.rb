@@ -51,14 +51,6 @@ class LeadsMailer < ApplicationMailer
     mail(to: to_email, subject: "#{@lead.boat.user.name} wants to review lead ##{@lead.id}")
   end
 
-  def invoicing_report(invoice_ids)
-    @invoices = Invoice.where(id: invoice_ids).includes(:leads, :user).to_a
-    @grand_total = @invoices.map(&:total_ex_vat).sum
-
-    to_email = RBConfig[:invoicing_report_email]
-    mail(to: to_email, subject: "Invoicing Report #{Time.current.to_date.to_s(:short)}")
-  end
-
   def invoice_notify_broker(invoice_id)
     @invoice = Invoice.find(invoice_id)
     @broker = @invoice.user

@@ -154,7 +154,7 @@ class Boat < ApplicationRecord
   end
 
   def display_name
-    name.blank? ? manufacturer_model : name
+    name.presence || manufacturer_model
   end
 
   def to_s
@@ -221,6 +221,14 @@ class Boat < ApplicationRecord
   def price_gbp
     return if poa?
     Currency.convert(price, currency, Currency.default).round
+  end
+
+  def price_str
+    if poa?
+      I18n.t('poa')
+    else
+      ActionController::Base.helpers.number_to_currency(price, unit: safe_currency.symbol, precision: 0)
+    end
   end
 
   private

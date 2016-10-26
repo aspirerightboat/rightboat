@@ -39,10 +39,17 @@ ActiveAdmin.register Invoice do
   end
 
   sidebar 'Tools', only: [:index, :last_log, :xero_log] do
+    para { link_to 'Generate Invoices Dry Run', {action: :generate_invoices_dry_run}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
     para { link_to 'Generate Invoices', {action: :generate_invoices}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
-    para { link_to 'Gen Invoices for user=315', {action: :generate_test_invoices}, method: :post, class: 'button', data: {disable_with: 'Working...'} }
     para { link_to 'Last Generate Invocies Log', {action: :last_log} }
     para { link_to 'Xero Log', {action: :xero_log} }
+
+    if File.exist?("#{Rails.root}/public/invoices.csv")
+      para {
+        link_to 'Invoices CSV', '/invoices.csv'
+        div { "Created at: <b>#{File.mtime("#{Rails.root}/public/invoices.csv")}</b>".html_safe }
+      }
+    end
   end
 
   controller do
@@ -53,12 +60,12 @@ ActiveAdmin.register Invoice do
 
   collection_action :generate_invoices, method: :post do
     res = Rightboat::XeroInvoicer.new.process_invoices
-    redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
+    redirect_to({action: :index}, res ? {notice: 'Invoices were generated'} : {alert: 'Error occurred, view logs'})
   end
 
-  collection_action :generate_test_invoices, method: :post do
-    res = Rightboat::XeroInvoicer.new.process_invoices(315)
-    redirect_to({action: :index}, res ? {notice: 'Invoices were generated and report email was sent'} : {alert: 'Error occurred, view logs'})
+  collection_action :generate_invoices_dry_run, method: :post do
+    res = Rightboat::XeroInvoicer.new.process_invoices(dry_run: true)
+    redirect_to({action: :index}, res ? {notice: 'invoices.csv was generated'} : {alert: 'Error occurred, view logs'})
   end
 
   collection_action :last_log

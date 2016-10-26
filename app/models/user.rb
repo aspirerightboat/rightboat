@@ -144,7 +144,11 @@ class User < ApplicationRecord
   end
 
   def payment_method_present?
-    broker_info.payment_method != 'none'
+    !broker_info.payment_method =~ /none/
+  end
+
+  def lead_emails_active?
+    broker_info.try(:payment_method) != 'none'
   end
 
   def broker_name

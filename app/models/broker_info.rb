@@ -1,6 +1,6 @@
 class BrokerInfo < ApplicationRecord
   LEAD_EMAIL_DISTRIBUTIONS = %w(user_and_office user_only office_only)
-  PAYMENT_METHODS = %w(none card dd)
+  PAYMENT_METHODS = %w(none card dd none_lead)
 
   serialize :additional_email, Array
   attr_accessor :additional_email_raw

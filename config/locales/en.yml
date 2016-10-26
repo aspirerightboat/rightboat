@@ -67,3 +67,12 @@ en:
   user_notifications:
     index:
       title: "Saved Searches and Alert Settings"
+
+  activerecord:
+    attributes:
+      broker_info:
+        payment_methods:
+          none: None - lead emails inactive
+          none_lead: None - lead emails active
+          card: Credit Card
+          dd: Direct Debit

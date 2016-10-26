@@ -26,7 +26,7 @@ ActiveAdmin.register User do
   filter :current_sign_in_at
   filter :sign_in_count
   filter :created_at
-  filter :broker_info_payment_method, collection: -> { BrokerInfo::PAYMENT_METHODS }, as: :select, label: 'Brokers payment method'
+  filter :broker_info_payment_method, collection: -> { options_for_payment_methods }, as: :select, label: 'Brokers payment method'
 
   before_save do |user|
     user.updated_by_admin = true
@@ -94,10 +94,8 @@ ActiveAdmin.register User do
     end
     column('Payment Method') do |user|
       if user.company?
-        case user.broker_info&.payment_method
-        when 'none' then status_tag('None', :red)
-        when 'dd' then status_tag('Direct Debit', :green)
-        when 'card' then status_tag('Credit Card', :green)
+        if payment_method = user.broker_info.try(:payment_method)
+          status_tag(t("activerecord.attributes.broker_info.payment_methods.#{payment_method}"), (payment_method =~ /none/ ? :red : :green))
         end
       end
     end
@@ -150,7 +148,7 @@ ActiveAdmin.register User do
         ff.input :logo, as: :file, hint: (image_tag(ff.object.logo_url(:thumb)) if ff.object.logo.present?)
         ff.input :lead_email_distribution, as: :select, collection: ff.object.distribution_options
         ff.input :xero_contact_id
-        ff.input :payment_method, as: :select, collection: BrokerInfo::PAYMENT_METHODS, include_blank: false
+        ff.input :payment_method, as: :select, collection: options_for_payment_methods, include_blank: false
       end
 
       f.has_many :deal, allow_destroy: false, new_record: f.object.deal.blank? do |ff|
@@ -200,7 +198,11 @@ ActiveAdmin.register User do
     column :active
     column :email_confirmed
     column :payment_method do |user|
-      user.broker_info.payment_method if user.company?
+      if user.company?
+        if payment_method = user.broker_info.payment_method
+          t("activerecord.attributes.broker_info.payment_methods.#{payment_method}")
+        end
+      end
     end
     column :saved_searches_count
     column(:active_boats) { |user| user.boats_count }

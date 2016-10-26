@@ -22,6 +22,10 @@ module ActiveAdmin::UsersHelper
     end
   end
 
+  def options_for_payment_methods
+    I18n.t('activerecord.attributes.broker_info.payment_methods').invert
+  end
+
   private
 
   def query_to_readable_string(activity)

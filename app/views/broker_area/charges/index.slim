@@ -5,9 +5,9 @@
   h1 Payment Details
   p
     ' Current payment status:
-    span(style="color: #{@payment_method == 'none' ? 'darkgoldenrod' : 'green'}")
+    span(style="color: #{@payment_method =~ /none/ ? 'darkgoldenrod' : 'green'}")
       - case @payment_method
-        - when 'none'
+        - when /none/
           ' No payment details have been recorded. No leads can be delivered.
           | <i class="glyphicon glyphicon-exclamation-sign"></i>
         - when 'card'

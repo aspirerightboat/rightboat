@@ -498,7 +498,7 @@ module Rightboat
           end
         end
 
-        if !target.geocoded?
+        if !target.geocoded? || target_country.blank?
           full_location = [location.to_s, state, target_country&.name || country.to_s].reject(&:blank?).join(', ').downcase
 
           if full_location.present? && (geo = Geocoder.search(full_location).first)

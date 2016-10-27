@@ -9,6 +9,8 @@ class BrokerInfo < ApplicationRecord
 
   mount_uploader :logo, BrokerLogoUploader
 
+  after_validation :remove_logo!, if: 'remove_logo == "true"'
+
   def distribution_options
     if user && user.source == 'eyb' && user.imports.active.any?
       LEAD_EMAIL_DISTRIBUTIONS + ['user_and_eyb']

@@ -106,9 +106,9 @@ module Rightboat
       end
 
       def tax_type_for_broker(broker)
-        if broker.country.iso == 'GI' # Gibraltar
+        if broker.country&.iso == 'GI' # Gibraltar
           return 'EXEMPTOUTPUT'
-        elsif broker.country.iso == 'GB' && broker.address.county.in?(%w(Jersey Guernsey))
+        elsif broker.country&.iso == 'GB' && broker.address.county.in?(%w(Jersey Guernsey))
           return 'EXEMPTOUTPUT'
         end
 

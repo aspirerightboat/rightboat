@@ -52,8 +52,8 @@ module Rightboat
                     ('Y' if payment_method['none']), # DEBTOR
                     tax_rate.name, # Tax Type
                     currency, # Currency
-                    user_address.country.name, # PO Country
-                    (user_address.county if user_address.country.iso == 'US'), # US County
+                    user_address.country&.name, # PO Country
+                    (user_address.county if user_address.country&.iso == 'US'), # US County
             ]
           end
         end

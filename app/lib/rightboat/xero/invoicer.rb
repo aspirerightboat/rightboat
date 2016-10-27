@@ -14,7 +14,7 @@ module Rightboat
         contact_by_broker = ContactsEnsurer.new(logger).run(brokers)
         invoicing_data = prepare_invoicing_data(contact_by_broker, leads_by_broker)
         logger.info('Generate invoices.csv')
-        InvoicesCsvGenerator.new(invoicing_data).run
+        InvoicesCsvGenerator.new(invoicing_data, tax_rate_by_type).run
         save_all(brokers, invoicing_data) unless dry_run
 
         logger.info('Finished')
@@ -46,7 +46,7 @@ module Rightboat
           leads_price_discounted = 0
           total_discount = 0
           tax_type = tax_type_for_broker(broker)
-          tax_rate = tax_rate_by_type[tax_type]
+          tax_rate = self.class.tax_rate_by_type[tax_type]
 
           leads.each do |lead|
             boat = lead.boat

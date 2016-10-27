@@ -10,8 +10,9 @@ module Rightboat
         @csv_fullpath ||= "#{Rails.root}/internal_data#{csv_path}"
       end
 
-      def initialize(invoicing_data)
+      def initialize(invoicing_data, tax_rate_by_type)
         @invoicing_data = invoicing_data
+        @tax_rate_by_type = tax_rate_by_type
       end
 
       def run
@@ -37,7 +38,7 @@ module Rightboat
           @invoicing_data.each do |i, xi, _leads|
             currency = i.user.deal.currency.name
             payment_method = i.user.broker_info.payment_method
-            tax_rate = tax_rate_by_type[xi.line_items.first.tax_type]
+            tax_rate = @tax_rate_by_type[xi.line_items.first.tax_type]
             user_address = i.user.address
             csv << [xi.contact.name, # Contact Name
                     xi.id, # Invoice No

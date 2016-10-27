@@ -44,10 +44,11 @@ ActiveAdmin.register Invoice do
     para { link_to 'Last Generate Invocies Log', {action: :last_log} }
     para { link_to 'Xero Log', {action: :xero_log} }
 
-    if File.exist?("#{Rails.root}/public/invoices.csv")
+    invoices_csv_path = Rightboat::Xero::InvoicesCsvGenerator.csv_file_path
+    if File.exist?(invoices_csv_path)
       para {
-        link_to 'Invoices CSV', '/invoices.csv'
-        div { "Created at: <b>#{File.mtime("#{Rails.root}/public/invoices.csv")}</b>".html_safe }
+        div { link_to 'Invoices CSV', action: :invoices_csv }
+        div { "Created at: <b>#{File.mtime(invoices_csv_path)}</b>".html_safe }
       }
     end
   end
@@ -59,13 +60,17 @@ ActiveAdmin.register Invoice do
   end
 
   collection_action :generate_invoices, method: :post do
-    res = Rightboat::XeroInvoicer.new.process_invoices
+    res = Rightboat::Xero::Invoicer.new.process_invoices
     redirect_to({action: :index}, res ? {notice: 'Invoices were generated'} : {alert: 'Error occurred, view logs'})
   end
 
   collection_action :generate_invoices_dry_run, method: :post do
-    res = Rightboat::XeroInvoicer.new.process_invoices(dry_run: true)
+    res = Rightboat::Xero::Invoicer.new.process_invoices(dry_run: true)
     redirect_to({action: :index}, res ? {notice: 'invoices.csv was generated'} : {alert: 'Error occurred, view logs'})
+  end
+
+  collection_action :invoices_csv do
+    send_file Rightboat::Xero::InvoicesCsvGenerator.csv_file_path, filename: "invoices-#{Time.current.to_date.to_s(:db)}.csv"
   end
 
   collection_action :last_log

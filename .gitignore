@@ -34,6 +34,7 @@
 /public/gdr_feed.csv
 /public/exports
 /import_data
+/internal_data
 /boat_pdfs
 
 dump.rdb

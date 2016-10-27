@@ -85,7 +85,7 @@ module Rightboat
           invoicing_data.each do |invoice, xero_invoice, leads|
             invoice.save!
             xero_invoice.reference = invoice.id
-            Lead.where(id: leads.map(&:id)).update_all(invoice_id: i.id, status: 'invoiced', updated_at: Time.current)
+            Lead.where(id: leads.map(&:id)).update_all(invoice_id: invoice.id, status: 'invoiced', updated_at: Time.current)
           end
 
           logger.info('Save invoices to Xero')
@@ -97,6 +97,10 @@ module Rightboat
               logger.error("Failed to save invoice for broker_id=#{broker.id} (#{broker.name}) errors=#{i.errors}") if i.errors.present?
             end
             raise StandardError.new('Save Invoices Error')
+          end
+
+          invoicing_data.each do |invoice, xero_invoice, _leads|
+            invoice.update(xero_invoice_id: xero_invoice.id)
           end
         end
       end

@@ -47,7 +47,10 @@ ActiveAdmin.register Invoice do
     invoices_csv_path = Rightboat::Xero::InvoicesCsvGenerator.csv_file_path
     if File.exist?(invoices_csv_path)
       para {
-        div { link_to 'Invoices CSV', action: :invoices_csv }
+        div {
+          span { link_to 'Download Invoices CSV', action: :invoices_csv }
+          span { " (#{link_to 'View', action: :view_invoices_csv})".html_safe }
+        }
         div { "Created at: <b>#{File.mtime(invoices_csv_path)}</b>".html_safe }
       }
     end
@@ -73,6 +76,9 @@ ActiveAdmin.register Invoice do
     send_file Rightboat::Xero::InvoicesCsvGenerator.csv_file_path, filename: "invoices-#{Time.current.to_date.to_s(:db)}.csv"
   end
 
+  collection_action :view_invoices_csv do
+    @page_title = 'invoices.csv'
+  end
   collection_action :last_log
   collection_action :xero_log
 

@@ -1,0 +1,11 @@
+table.index_table(border="0" cellspacing="0" cellpadding="0")
+  - first = true
+  - CSV.foreach(Rightboat::Xero::InvoicesCsvGenerator.csv_file_path) do |row|
+    tr
+      - if first
+        - first = false
+        - row.each do |value|
+          th= value
+      - else
+        - row.each do |value|
+          td(class=cycle('odd', 'even'))= value

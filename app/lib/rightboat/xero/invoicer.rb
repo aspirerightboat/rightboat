@@ -140,7 +140,7 @@ module Rightboat
       end
 
       def invoice_branding_theme
-        $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
+        @invoice_branding_theme ||= $xero.BrandingTheme.first(where: 'Name=="Lead Invoice"')
       end
     end
   end

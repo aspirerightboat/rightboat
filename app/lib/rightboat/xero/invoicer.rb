@@ -46,7 +46,7 @@ module Rightboat
           leads_price_discounted = 0
           total_discount = 0
           tax_type = tax_type_for_broker(broker)
-          tax_rate = self.class.tax_rate_by_type[tax_type]
+          tax_rate = tax_rate_by_type[tax_type]
 
           leads.each do |lead|
             boat = lead.boat

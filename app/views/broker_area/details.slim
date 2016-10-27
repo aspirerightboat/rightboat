@@ -51,7 +51,16 @@
           .form-group
             = ff.label :logo, 'Logo <b>?</b>'.html_safe, title: 'make sure you upload your logo 400x200px - this appears on each boat specification that is required. The logo ideally should be on a transparent or white background.'
             div= image_tag(current_user.broker_info.logo_url(:thumb), class: 'img-responsive') if current_user.broker_info.logo?
-            = ff.file_field :logo, class: 'form-control'
+            - filename = ff.object.logo.try(:file).try(:filename)
+            #broker-logo-upload.file-field-wrapper(class=('file-choosen' unless filename.blank?))
+              .form-control
+                span.placeholder Choose file...
+                span.filename-wrapper
+                  span.filename= filename
+                  span.destroy-file &times;
+              = ff.file_field :logo, class: 'form-control'
+              = ff.hidden_field :logo_cache
+              = ff.hidden_field :remove_logo
     .row
       .col-xs-12#offices_table_block
         h2

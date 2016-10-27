@@ -24,7 +24,14 @@ openOfficePopup = ($item) ->
 updateNoDataText = () ->
   show = $('#offices_table tr').length <= 1
   $('#offices_table_block .no-data-text').toggle(show)
+
 $ ->
+  $fileNameWrapper = $('#broker-logo-upload')
+  $fileName = $fileNameWrapper.find('.filename')
+  $removeLogo = $('#user_broker_info_attributes_remove_logo')
+  fileUploaded = $fileNameWrapper.hasClass 'file-choosen'
+  fileChanged = false
+
   updateNoDataText()
 
   $('.add-office-btn').click ->
@@ -75,3 +82,14 @@ $ ->
     $('.office-dphone', $item).text(dphone_str)
     updateNoDataText()
     $popup.modal('hide')
+
+  $('#user_broker_info_attributes_logo').change ->
+    $fileName.text $('#user_broker_info_attributes_logo')[0].files[0].name;
+    $fileNameWrapper.addClass 'file-choosen'
+    $removeLogo.val false
+    fileChanged = true
+
+  $('.destroy-file').click ->
+    $fileNameWrapper.removeClass 'file-choosen'
+    $('#user_broker_info_attributes_logo').val ''
+    $removeLogo.val true if fileUploaded && !fileChanged

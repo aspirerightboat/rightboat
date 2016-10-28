@@ -137,7 +137,7 @@ class LeadsController < ApplicationController
   end
 
   def require_broker_payment_method
-    if current_user.company? && !current_user.payment_method_present?
+    if current_user.company? && !current_user.lead_emails_active?
       render action: :define_payment_method
     end
   end

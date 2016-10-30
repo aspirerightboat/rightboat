@@ -93,7 +93,10 @@ Rails.application.routes.draw do
     collection { get :load_popup }
   end
   resources :insurances, only: [:create] do
-    collection { get :load_popup }
+    collection do
+      get :load_popup
+      get :load_login_popup
+    end
   end
   resources :finances, only: [:create] do
     collection { get :load_popup }

@@ -8,7 +8,7 @@ class Insurance < ApplicationRecord
   belongs_to :model
   belongs_to :country
 
-  validates_presence_of :user_id, :manufacturer_id, :model_id, :currency
-  validates_numericality_of :age_of_vessel, :years_no_claim, only_integer: true
+  validates_presence_of :user_id, :manufacturer_id, :model_id
+  validates_numericality_of :craft_year, only_integer: true
   validates_numericality_of :total_value, allow_blank: true
 end

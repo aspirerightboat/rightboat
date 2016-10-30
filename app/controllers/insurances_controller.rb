@@ -1,8 +1,12 @@
 class InsurancesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:load_login_popup]
 
   def load_popup
     render json: {show_popup: render_to_string(partial: 'insurances/insurance_popup', formats: [:html])}
+  end
+
+  def load_login_popup
+    render json: {show_popup: render_to_string(partial: 'insurances/login_popup', formats: [:html])}
   end
 
   def create
@@ -19,8 +23,8 @@ class InsurancesController < ApplicationController
   private
 
   def insurance_params
-    params.require(:insurance).permit(:manufacturer_id, :model_id, :type_of_cover, :age_of_vessel,
-                                      :country_id, :where_kept, :total_value, :currency, :years_no_claim)
+    params.require(:insurance).permit(:manufacturer_id, :model_id, :full_name, :contact_number, :email,
+                                      :craft_year, :renewal_date, :total_value, :currency)
   end
 
 end

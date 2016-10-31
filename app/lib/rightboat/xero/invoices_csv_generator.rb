@@ -43,11 +43,11 @@ module Rightboat
             csv << [xi.contact.name, # Contact Name
                     xi.id, # Invoice No
                     xi.date, # Invoice Date
-                    i.total_ex_vat, # Net
-                    i.vat, # VAT
-                    (i.total if currency == 'GBP'), # Total £
-                    (i.total if currency == 'EUR'), # Total €
-                    (i.total if currency == 'USD'), # Total $
+                    '%.2f' % i.total_ex_vat, # Net
+                    '%.2f' % i.vat, # VAT
+                    ('%.2f' % i.total if currency == 'GBP'), # Total £
+                    ('%.2f' % i.total if currency == 'EUR'), # Total €
+                    ('%.2f' % i.total if currency == 'USD'), # Total $
                     ('Y' if payment_method == 'card'), # STR
                     ('Y' if payment_method == 'dd'), # GC
                     ('Y' if payment_method['none']), # DEBTOR

@@ -71,7 +71,7 @@ module Rightboat
           i.discount_rate = discount_rate
           i.discount = total_discount
           i.total_ex_vat = leads_price_discounted
-          i.vat_rate = tax_rate.effective_rate
+          i.vat_rate = tax_rate.effective_rate/100
           i.vat = (i.total_ex_vat * i.vat_rate).round(2)
           i.total = i.total_ex_vat + i.vat
 

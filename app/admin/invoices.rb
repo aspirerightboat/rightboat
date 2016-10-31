@@ -88,8 +88,8 @@ ActiveAdmin.register Invoice do
       @sort_dir = params[:sort_dir].presence_in(%w(asc desc)) || 'desc'
 
       if @sort_col
-        int_sort = @csv_headers[@sort_col].in?(['Net', 'VAT', 'Total £', 'Total €', 'Total $'])
-        if int_sort
+        float_sort = @csv_headers[@sort_col].in?(['Net', 'VAT', 'Total £', 'Total €', 'Total $'])
+        if float_sort
           @csv.sort_by! { |row| row[@sort_col].to_f }
         else
           @csv.sort_by! { |row| row[@sort_col].to_s }

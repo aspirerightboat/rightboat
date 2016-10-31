@@ -1,11 +1,10 @@
 table.index_table(border="0" cellspacing="0" cellpadding="0")
-  - first = true
-  - CSV.foreach(Rightboat::Xero::InvoicesCsvGenerator.csv_file_path) do |row|
+  tr
+    - @csv_headers.each_with_index do |value, i|
+      th.sortable
+        - sort_dir = !@sort_col || @sort_col != i ? 'desc' : (@sort_dir == 'asc' ? 'desc' : 'asc')
+        = link_to value, "?sort_col=#{i}&sort_dir=#{sort_dir}"
+  - @csv.each do |row|
     tr
-      - if first
-        - first = false
-        - row.each do |value|
-          th= value
-      - else
-        - row.each do |value|
-          td(class=cycle('odd', 'even'))= value
+      - row.each do |value|
+        td(class=cycle('odd', 'even'))= value

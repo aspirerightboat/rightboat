@@ -78,7 +78,27 @@ ActiveAdmin.register Invoice do
 
   collection_action :view_invoices_csv do
     @page_title = 'invoices.csv'
+
+    @csv = CSV.read(Rightboat::Xero::InvoicesCsvGenerator.csv_file_path)
+    @csv_headers = @csv.shift
+
+
+    if params[:sort_col]
+      @sort_col = params[:sort_col].to_i.presence_in(0...@csv_headers.size)
+      @sort_dir = params[:sort_dir].presence_in(%w(asc desc)) || 'desc'
+
+      if @sort_col
+        int_sort = @csv_headers[@sort_col].in?(['Net', 'VAT', 'Total £', 'Total €', 'Total $'])
+        if int_sort
+          @csv.sort_by! { |row| row[@sort_col].to_f }
+        else
+          @csv.sort_by! { |row| row[@sort_col].to_s }
+        end
+        @csv.reverse! if @sort_dir == 'desc'
+      end
+    end
   end
+
   collection_action :last_log
   collection_action :xero_log
 

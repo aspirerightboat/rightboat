@@ -1,0 +1,26 @@
+.panel
+  h3 Regular boat images
+  .panel_contents.regular-boat-image-cards
+    - @images_by_kind['regular']&.each do |image|
+      .regular-boat-image-card
+        = image_tag image.file.url(:mini), alt: '', size: '127x85'
+
+.panel
+  h3 Layouts
+  .panel_contents
+    - @images_by_kind['layout']&.each do |image|
+      .panel
+        .panel_contents
+          = image_tag image.file.url, alt: ''
+    .files-drop-placeholder
+      | Drop Here Layout Images
+
+.panel
+  h3 Side View
+  .panel_contents
+    - if (side_view_image = @images_by_kind['side_view']&.first)
+      .panel
+        .panel_contents
+          = image_tag side_view_image.file.url, alt: ''
+    .files-drop-placeholder
+      | Drop Here Side View Image

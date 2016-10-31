@@ -2,7 +2,7 @@ ActiveAdmin.register BoatImage do
   config.batch_actions = false
   config.sort_order = 'position_asc'
 
-  permit_params :source_url, :file, :position
+  permit_params :source_url, :file, :position, :kind, :caption, :layout_image_id, :layout_mark_info
 
   menu parent: 'Boats', priority: 20
 
@@ -42,7 +42,7 @@ ActiveAdmin.register BoatImage do
     end
     column :position
     column :boat do |i|
-      link_to i.boat.id, i.boat
+      link_to i.boat.id, admin_boat_path(i.boat)
     end
     column :width
     column :height
@@ -53,8 +53,19 @@ ActiveAdmin.register BoatImage do
   form do |f|
     f.inputs do
       f.input :source_url
-      f.input :file, as: :file
+      f.input :file, as: :file, hint: (image_tag(f.object.file_url, alt: '', style: 'max-height: 150') if f.object.file.present?)
       f.input :position
+      f.input :kind, as: :select, collection: BoatImage.kinds.keys, include_blank: false
+      f.input :caption
+      f.input :layout_image_id, as: :select, collection: f.object.boat.boat_images.layout
+      f.input :layout_mark_info
+      f.input :http_last_modified
+      f.input :width
+      f.input :height
+      f.input :content_type
+      f.input :http_etag
+      f.input :downloaded_at
+      f.input :deleted_by_user_id
     end
     actions
   end

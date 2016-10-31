@@ -1,9 +1,15 @@
 require 'open-uri'
 
 class BoatImage < ApplicationRecord
+  enum kind: {regular: 0, layout: 1, side_view: 2}
+
   belongs_to :boat
 
   mount_uploader :file, BoatImageUploader
+
+  def display_name
+    caption.presence || "Boat image ##{id}"
+  end
 
   def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil, force: nil)
     return if ENV['SKIP_DOWNLOAD_IMAGES']

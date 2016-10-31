@@ -4,9 +4,9 @@
 // `app/assets/stylesheets/active_admin/mixins/_variables.css.scss` in the
 // Active Admin source.
 //
-//= require_tree ./admin
 //= require jquery-ui/autocomplete
 //= require plugins/selectize.admin
+//= require_tree ./admin
 
 // For example, to change the sidebar width:
 // $sidebar-width: 242px;

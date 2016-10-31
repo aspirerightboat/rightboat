@@ -256,8 +256,9 @@ ActiveAdmin.register Boat do
       text_node "<br>Hidden images count: <b>#{img_hidden_count}</b>".html_safe if img_hidden_count > 0
     }
 
+    para { link_to 'Manage images', admin_boat_images_manager_path(boat_id: boat.id) }
     if img_active_count > 0 || img_hidden_count > 0
-      para { link_to 'Manage images', admin_boat_images_path(q: {boat_id_equals: boat.id}) }
+      para { link_to 'Manage images (Old)', admin_boat_images_path(q: {boat_id_equals: boat.id}) }
       para { link_to 'Delete boat images', {action: :delete_images}, method: :post, class: 'button',
                      data: {confirm: 'Are you sure?', disable_with: 'Working...'} } if img_active_count > 0
     end

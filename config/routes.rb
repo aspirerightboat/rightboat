@@ -15,12 +15,12 @@ Rails.application.routes.draw do
 
   if Rails.env.production?
     match '/admin(*any)', to: redirect { |_path_params, req| "http://import.rightboat.com#{req.fullpath}" },
-          via: :all, constraints: { subdomain: /\A(?!import)/ }
+          via: :all, constraints: { subdomain: /(?!import)/ }
   end
 
   if Rails.env.production?
     match '/if/(*any)', to: redirect { |_path_params, req| "http://www.rightboat.com#{req.fullpath}" },
-          via: :all, constraints: { subdomain: /\Aimport/ }
+          via: :all, constraints: { subdomain: /import/ }
   end
 
   # match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
@@ -93,7 +93,10 @@ Rails.application.routes.draw do
     collection { get :load_popup }
   end
   resources :insurances, only: [:create] do
-    collection { get :load_popup }
+    collection do
+      get :load_popup
+      get :load_login_popup
+    end
   end
   resources :finances, only: [:create] do
     collection { get :load_popup }
@@ -233,10 +236,9 @@ Rails.application.routes.draw do
   get '/trade-membership', to: redirect('/')
   get '/sell-my-boat', to: redirect('/sell_my_boats')
   get '/marine-directory/*other', to: redirect('/')
-  get '/articles/*other', to: redirect('/')
+  get '/articles(/*other)', to: redirect('/buyer_guides')
   get '/countries/:other', to: redirect('/location/%{other}')
   get '/countries', to: redirect('/location')
-  get '/rightboat-terms-of-use.php', to: redirect('/broker-area/tc')
   get '/boats-for-sale/boat-classes/fishing', to: redirect('/boat-type/Fishing%20Boats')
   get '/boats-for-sale/boat-classes/power-cruiser', to: redirect('/boat-type/Power')
   get '/boats-for-sale/boat-classes/sport', to: redirect('/boat-type/Power')
@@ -252,5 +254,18 @@ Rails.application.routes.draw do
   get '/find_berths/*other', to: redirect('/')
   get '/marine-directory/*other', to: redirect('/')
   get '/training', to: redirect('/')
+  get '/expert', to: redirect('/sell_my_boats')
+  get '/value-my-boat', to: redirect('/sell_my_boats')
+  get '/boatsforsale/*other', to: redirect('/boats-for-sale')
+
+  get '/rightboat-terms-of-use.php', to: redirect('/broker-area/tc')
+  get '/about-right-boat.php', to: redirect('/#about')
+  get '/advert.php/*other', to: redirect('/')
+  get '/boats-for-sale.php/*other', to: redirect('/boats-for-sale')
+  get '/directory-industry.php/*other', to: redirect('/')
+  get '/news.php/*other', to: redirect('/buyer_guides')
+
+  get ':makemodel/:boat_with_id', to: 'old#boat_urls',
+                                  constraints: {makemodel: /[a-zA-Z0-9-]+/, boat_with_id: /boat-\d+/}
 
 end

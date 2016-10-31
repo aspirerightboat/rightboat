@@ -4,38 +4,38 @@
       .modal-header
         button.close(aria-label="Close" data-dismiss="modal" type="button")
           span(aria-hidden="true") &times;
-        .h My Right Insurance
+        .h 5% off Marine Insurance
       .modal-body
-        p By filling in a few simple details, we will be able to send your insurance request to Rightboat selected partners who will assist in delivering insurance quotes directly to you.
+        p Rightboat has partnered with Towergate Insurance who are a specialist insurance broker. They can get you competitive quotes AND you will be able to get a 5% discount when you mention you are a Rightboat Member. Towergate's insurance panel includes:
         = form_for Insurance.new, remote: true, data: {format: :json}, html: {id: 'insurance_form'} do |f|
           .form-group.row
-            .col-md-5.col-xs-12 1. Type of Cover
+            .col-md-5.col-xs-12 Full Name
             .col-md-5.col-xs-12
-              = f.select :type_of_cover, Insurance::TYPE_OF_COVERS, {prompt: 'Please select'}, class: 'select-general'
+              = f.text_field :full_name, value: (f.object.email || current_user.full_name), class: 'form-control'
           .form-group.row
-            .col-md-5.col-xs-12 2. Manufacturer
+            .col-md-5.col-xs-12 Contact Number
+            .col-md-5.col-xs-12
+              = f.text_field :contact_number, class: 'form-control'
+          .form-group.row
+            .col-md-5.col-xs-12 Email Address
+            .col-md-5.col-xs-12
+              = f.text_field :email, value: (f.object.email || current_user.email), class: 'form-control'
+          .form-group.row
+            .col-md-5.col-xs-12 Craft Manufacturer
             .col-md-5.col-xs-12
               = f.select :manufacturer_id, Manufacturer.order(:name).pluck(:id, :name).map { |id, name| [name, id] }, \
                       {prompt: 'Please select'}, class: 'select-general', \
                       data: {'onchange-fill-models' => '#insurances_models_select'}, id: 'insurances_makers_select'
           .form-group.row
-            .col-md-5.col-xs-12 3. Model
+            .col-md-5.col-xs-12 Craft Model
             .col-md-5.col-xs-12
               = f.select :model_id, [], {prompt: 'Please select'}, class: 'select-general', id: 'insurances_models_select'
           .form-group.row
-            .col-md-5.col-xs-12 4. Age of Vessel
+            .col-md-5.col-xs-12 Craft Year
             .col-md-5.col-xs-12
-              = f.select :age_of_vessel, Date.today.year.downto(Date.today.year - 30).to_a, {prompt: 'Please select'}, class: 'select-general'
+              = f.select :craft_year, Date.today.year.downto(Date.today.year - 30).to_a, {prompt: 'Please select'}, class: 'select-general'
           .form-group.row
-            .col-md-5.col-xs-12 5. Location
-            .col-md-5.col-xs-12
-              = country_tag('insurance[country_id]', nil, prompt: 'Please select', class: 'country-select')
-          .form-group.row
-            .col-md-5.col-xs-12 6. Where Kept
-            .col-md-5.col-xs-12
-              = f.select :where_kept, Insurance::WHERE_KEPTS, {prompt: 'Please select'}, class: 'select-general'
-          .form-group.row
-            .col-md-5.col-xs-12 7. Total Value to Insurance
+            .col-md-5.col-xs-12 Craft Value
             .col-md-5.col-xs-12
               .rb-control-group
                 .rb-control
@@ -43,9 +43,9 @@
                 .rb-control-group-addon
                   = currency_select 'insurance[currency]', current_currency, class: 'select-azure select-currency'
           .form-group.row
-            .col-md-5.col-xs-12 8. Years no Claims
+            .col-md-5.col-xs-12 Renewal Date
             .col-md-5.col-xs-12
-              = f.select :years_no_claim, (0..30), {prompt: 'Please select'}, class: 'select-general'
+              = f.text_field :renewal_date, placeholder: '2001-04-26', class: 'form-control'
 
           .form-group.row
             .col-md-3.col-xs-12

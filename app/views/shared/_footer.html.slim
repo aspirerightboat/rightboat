@@ -22,8 +22,7 @@ nav#footer
                                     : {class: 'open-login-popup', 'data-title' => 'Please sign in or join as a member to get a financial quotation.'}
               button.btn-like-link *opts Finance
             li
-              - opts = current_user ? {class: 'insurance-popup-link', 'data-remote' => 'true', 'data-url' => load_popup_insurances_path} \
-                                    : {class: 'open-login-popup', 'data-title' => 'Please sign in or join as a member to get an insurance quote.'}
+              - opts = {class: 'insurance-popup-link', 'data-remote' => 'true', 'data-url' => (current_user ? load_popup_insurances_path : load_login_popup_insurances_path)}
               button.btn-like-link *opts Insurance
           ul.col-xs-6.col-sm-3
             li= link_to '/Rightboat', 'https://www.facebook.com/Rightboat', class: 'fb-link', rel: 'nofollow', target: '_blank'

@@ -16,5 +16,7 @@
       - if current_user&.company?
         li(class="#{active_class_if('member/boats#index')}")
           = link_to 'Sell My Boat', member_boats_path
+      li
+        = link_to 'Insurance', load_popup_insurances_path, class: 'insurance-popup-link', 'data-remote' => 'true', 'data-url' => load_popup_insurances_path
       li(class="#{active_class_if('member/dashboard#discounts')}")
         = link_to 'Member Offers and Discounts', member_discounts_path

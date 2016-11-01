@@ -498,7 +498,9 @@ module Rightboat
           end
         end
 
-        geo_guess_str = [location, state, target_country&.iso || country].reject(&:blank?).join(', ')
+        state_if_us = (state if target_country&.iso == 'US')
+        country_str = target_country&.iso || country
+        geo_guess_str = [location, state_if_us, country_str].reject(&:blank?).join(', ')
 
         if target.geo_guessed_from.present? && target.geo_guessed_from == geo_guess_str
           target_geo_location = target.geo_location

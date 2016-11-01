@@ -15,12 +15,12 @@ Rails.application.routes.draw do
 
   if Rails.env.production?
     match '/admin(*any)', to: redirect { |_path_params, req| "http://import.rightboat.com#{req.fullpath}" },
-          via: :all, constraints: { subdomain: /(?!import)/ }
+          via: :all, constraints: { subdomain: /\A(?!import)/ }
   end
 
   if Rails.env.production?
     match '/if/(*any)', to: redirect { |_path_params, req| "http://www.rightboat.com#{req.fullpath}" },
-          via: :all, constraints: { subdomain: /import/ }
+          via: :all, constraints: { subdomain: /\Aimport/ }
   end
 
   # match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]

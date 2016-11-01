@@ -498,16 +498,17 @@ module Rightboat
           end
         end
 
-        # skip geocoding step if already geocoded
-        if target.geocoded? && target.location == location && target.country == target_country
+        geo_guess_str = [location, state, target_country&.iso || country].reject(&:blank?).join(', ')
+
+        if target.geo_guessed_from.present? && target.geo_guessed_from == geo_guess_str
           target_geo_location = target.geo_location
           target_country = target.country
           target_state = target.state
           target_location = target.location
         else
-          full_location = [location.to_s, state, target_country&.iso || country.to_s].reject(&:blank?).join(', ')
+          target.geo_guessed_from = geo_guess_str
 
-          if full_location.present? && (geo = Geocoder.search(full_location).first)
+          if geo_guess_str.present? && (geo = Geocoder.search(geo_guess_str).first)
             target_geo_location = geo.formatted_address
             target_country = Country.find_by(iso: geo.country_code) if geo.country
             target_state = geo.state_code
@@ -521,8 +522,8 @@ module Rightboat
         # ensure location not include broker company name
         # eg. Burton Waters Marina Limited
         if target_location.present?
-          company_name = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
-          target_location.gsub!(/\b(?:#{company_name})[\s,]*/i, '')
+          company_name = user.company_name.gsub(/Marina Limited/i, '').strip
+          target_location.gsub!(/\b#{Regexp.escape(company_name)}[\s,]*/i, '')
         end
 
         target.import_assign :country, target_country

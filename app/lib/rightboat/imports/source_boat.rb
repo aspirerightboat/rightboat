@@ -473,10 +473,10 @@ module Rightboat
           return
         end
 
-        target_country = target.country
-        target_geo_location = target.geo_location
-        target_location = target.location
-        target_state = target.state
+        target_country = nil
+        target_geo_location = nil
+        target_location = nil
+        target_state = nil
 
         if country.present?
           if country&.is_a?(String)
@@ -498,19 +498,25 @@ module Rightboat
           end
         end
 
-        if !target.geocoded? || target_country.blank?
-          full_location = [location.to_s, state, target_country&.name || country.to_s].reject(&:blank?).join(', ').downcase
+        # skip geocoding step if already geocoded
+        if target.geocoded? && target.location == location && target.country == target_country
+          target_geo_location = target.geo_location
+          target_country = target.country
+          target_state = target.state
+          target_location = target.location
+        else
+          full_location = [location.to_s, state, target_country&.iso || country.to_s].reject(&:blank?).join(', ')
 
           if full_location.present? && (geo = Geocoder.search(full_location).first)
             target_geo_location = geo.formatted_address
-            target_country = Country.find_by(iso: geo.country_code) if geo.country && target_country&.iso != geo.country_code
+            target_country = Country.find_by(iso: geo.country_code) if geo.country
             target_state = geo.state_code
             target_location = target_geo_location.rpartition(', ')[0]
           end
         end
 
         target_location ||= location
-        target_state ||= state || (Rightboat::USStates.recognize(target.location) if target.country&.iso == 'US')
+        target_state ||= state || (Rightboat::USStates.recognize(target_location) if target_country&.iso == 'US')
 
         # ensure location not include broker company name
         # eg. Burton Waters Marina Limited

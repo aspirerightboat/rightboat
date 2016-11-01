@@ -20,7 +20,6 @@ FactoryGirl.define do
     deleted_at nil
     new_boat false
     location 'United Kingdom, Chichester, West Sussex'
-    geo_location "united kingdom, chichester, west sussex"
     year_built 2000
     price 100_000
     length_m 10

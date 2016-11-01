@@ -123,7 +123,7 @@ module Rightboat
                           @boat.class_groups = []
                           @media = []
                           @medium = {}
-                          @country_id = nil
+                          @country_iso = nil
                         else
                           @boat = nil
                         end
@@ -156,14 +156,12 @@ module Rightboat
                           when 'LineOne' then addr[:line1] = chars
                           when 'LineTwo' then addr[:line2] = chars
                           when 'CityName' then addr[:town_city] = chars
-                          when 'CountryID'
-                            addr[:country_id] = @country_id_by_iso[chars] # eg. GB
-                            @country_id = chars
+                          when 'CountryID' # eg. GB
+                            addr[:country_id] = @country_id_by_iso[chars]
+                            @country_iso = chars
                           when 'Postcode' then addr[:zip] = chars
-                          when 'StateOrProvinceCountrySub-DivisionID'
-                            if @country_id != 'GB' # eg. 'E27': this should not be shown to users
-                              addr[:county] = chars
-                            end
+                          when 'StateOrProvinceCountrySub-DivisionID' # eg. E27
+                            addr[:county] = chars if @country_iso != 'GB'
                           end
                         end
                       end
@@ -185,7 +183,9 @@ module Rightboat
                         case @el
                         when 'CityName' then @location[:city_name] = chars if chars != 'Unknown' # eg. Chatham | Gwynedd, LL57 4HN | Unknown
                         when 'CountryID' then @boat.country = chars # eg. GB
-                        when 'StateOrProvinceCountrySub-DivisionID' then @boat.state = @location[:country_sub] = chars
+                        when 'StateOrProvinceCountrySub-DivisionID' # eg. E25
+                          @location[:country_sub] = chars if @boat.country != 'GB'
+                          @boat.state = chars if @boat.country == 'US'
                         # when 'Postcode'
                         end
                       end

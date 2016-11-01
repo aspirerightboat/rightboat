@@ -181,10 +181,6 @@ class Boat < ApplicationRecord
     end
   end
 
-  def geocoded?
-    geo_location && location.present? && geo_location.rpartition(', ')[0] == location
-  end
-
   def favourited_by?(user)
     return false unless user
     favourites.where(user: user).exists?

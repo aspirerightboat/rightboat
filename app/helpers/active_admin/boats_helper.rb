@@ -15,12 +15,6 @@ module ActiveAdmin::BoatsHelper
   end
 
   def boat_location_column(boat)
-    if boat.geocoded?
-      boat.geo_location
-    else
-      [boat.location,
-       boat.country&.name,
-       content_tag(:span, 'Not Geocoded', class: 'status_tag no')].reject(&:blank?).join('<br>').html_safe
-    end
+    [boat.location, boat.country&.name].reject(&:blank?).join('<br>').html_safe
   end
 end

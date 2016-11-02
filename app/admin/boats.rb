@@ -300,7 +300,7 @@ ActiveAdmin.register Boat do
     boat = Boat.find_by(slug: params[:id])
     if (activate = boat.deleted?)
       boat.revive
-      boat.user.increment(:boats_count)
+      boat.user.update_boats_count
       boat.update_column(:deleted_by_user_id, nil)
     else
       boat.update_column(:deleted_by_user_id, current_user.id)

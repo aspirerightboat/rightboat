@@ -47,7 +47,7 @@ class Boat < ApplicationRecord
   end
 
   before_validation :change_status, :ensure_offer_status
-  before_destroy :decrease_counter_cache
+  after_destroy :decrease_counter_cache
   after_save :update_leads_price
   after_save :notify_changed
   before_destroy :notify_destroyed # this callback should be before "has_many .., dependent: :destroy" associations

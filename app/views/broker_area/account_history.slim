@@ -15,7 +15,7 @@
           | (ex VAT)
     - @leads.each do |lead|
       tr
-        td #{lead.invoice.id}
+        td #{lead.invoice.display_xero_invoice_number}
         td(title="#{distance_of_time_in_words_to_now(lead.invoice.created_at)} ago") #{lead.invoice.created_at.to_date.to_s(:db)}
         td #{link_to lead.id, lead_path(lead)}
         - boat = lead.boat

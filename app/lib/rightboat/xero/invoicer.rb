@@ -14,8 +14,8 @@ module Rightboat
         contact_by_broker = ContactsEnsurer.new(logger).run(brokers)
         invoicing_data = prepare_invoicing_data(contact_by_broker, leads_by_broker)
         logger.info('Generate invoices.csv')
-        InvoicesCsvGenerator.new(invoicing_data, tax_rate_by_type).run
         save_all(brokers, invoicing_data) unless dry_run
+        InvoicesCsvGenerator.new(invoicing_data, tax_rate_by_type).run
 
         logger.info('Finished')
         true
@@ -75,6 +75,11 @@ module Rightboat
           i.vat = (i.total_ex_vat * i.vat_rate).round(2)
           i.total = i.total_ex_vat + i.vat
 
+          leads_price_calc = xi.line_items.map(&:unit_amount).join('+')
+          total_calc = "(#{leads_price_calc})*#{(1 - discount_rate)*100}%"
+          vat_calc = "#{i.total_ex_vat}*#{i.vat_rate*100}%"
+          logger.info("(#{total_calc}=#{i.total_ex_vat} total_ex_vat) + (#{vat_calc}=#{i.vat} vat) = (#{i.total} total)")
+
           [i, xi, leads]
         end
       end
@@ -100,7 +105,7 @@ module Rightboat
           end
 
           invoicing_data.each do |invoice, xero_invoice, _leads|
-            invoice.update(xero_invoice_id: xero_invoice.id)
+            invoice.update(xero_invoice_id: xero_invoice.id, xero_invoice_number: xero_invoice.invoice_number)
           end
         end
       end
@@ -136,7 +141,7 @@ module Rightboat
 
       def fetch_leads
         Lead.approved.not_deleted.not_invoiced.where('created_at < ?', Time.current.beginning_of_day)
-            .includes(boat: [:manufacturer, :model, :currency, user: [:broker_info, deal: :currency, address: :country]]).to_a
+            .includes(:lead_price_currency, boat: [:manufacturer, :model, :currency, user: [:broker_info, deal: :currency, address: :country]]).to_a
       end
 
       def invoice_branding_theme

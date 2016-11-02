@@ -181,6 +181,10 @@ class User < ApplicationRecord
     phone.presence || mobile.presence
   end
 
+  def update_boats_count
+    update_column :boats_count, boats.active.count
+  end
+
   private
 
   def slug_candidates

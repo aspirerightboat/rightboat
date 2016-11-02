@@ -1,12 +1,15 @@
 module BacktraceHelper
 
   def human_backtrace(backtrace)
-    rails_root =  "#{Rails.root}/"
+    rails_root = Rails.root.to_s
+    shared_dir = rails_root.sub(%r{releases/\d+}, 'shared')
 
-    backtrace.each do |line|
-      str = line.sub(%r{.+/gems/(.+)}) { |_| content_tag(:span, $1, style: 'color: gray') }
-      str.sub!(rails_root, '')
-      str
+    backtrace.map do |line|
+      case
+      when line[shared_dir] then content_tag(:span, line.sub(shared_dir, 'SHARED_DIR'), style: 'color: gray')
+      when line[rails_root] then line.sub(rails_root, 'RAILS_ROOT')
+      else line
+      end
     end.join('<br>').html_safe
   end
 

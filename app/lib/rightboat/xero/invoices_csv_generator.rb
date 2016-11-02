@@ -41,7 +41,7 @@ module Rightboat
             tax_rate = @tax_rate_by_type[xi.line_items.first.tax_type]
             user_address = i.user.address
             csv << [xi.contact.name, # Contact Name
-                    xi.id, # Invoice No
+                    xi.invoice_number, # Invoice No
                     xi.date, # Invoice Date
                     '%.2f' % i.total_ex_vat, # Net
                     '%.2f' % i.vat, # VAT

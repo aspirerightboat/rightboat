@@ -26,6 +26,11 @@ module ActiveAdmin::UsersHelper
     I18n.t('activerecord.attributes.broker_info.payment_methods').invert
   end
 
+  def date_format date
+    date = Date.parse(date) if date.is_a?(String)
+    date.strftime('%d %b %Y')
+  end
+
   private
 
   def query_to_readable_string(activity)

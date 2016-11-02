@@ -473,54 +473,41 @@ module Rightboat
           return
         end
 
-        target_country = target.country
-        target_geo_location = target.geo_location
-        target_location = target.location
-        target_state = target.state
+        target_country = nil
+        target_location = location
+        target_state = nil
 
-        if country.present?
-          if country&.is_a?(String)
-            target_country = Country.where('name = :name OR iso = :name OR iso3 = :name', name: country).first
-            target_country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.source
-          elsif country&.is_a?(Country)
-            target_country = country
-          end
-
-          # Remove country name from location
-          if location.present?
-            if target_country
-              aliases_str = target_country.aliases.map { |a| Regexp.escape(a) }.join('|')
-              regex = /\b(?:#{aliases_str})\b/
-              location.gsub!(regex, '')
-            elsif country.is_a?(String)
-              location.gsub!(country, '')
+        if country&.is_a?(String)
+          target_country = Country.where('name = :name OR iso = :name OR iso3 = :name', name: country).first
+          target_country ||= Misspelling.find_by(source_type: 'Country', alias_string: country)&.source
+          target_country ||= begin
+            if (country_code = Geocoder.search("#{location}, #{country}").first&.country_code)
+              guessed_country = Country.find_by(iso: country_code)
+              importer.log_warning("Guessed country: #{country} => #{guessed_country.name}") if guessed_country
+              guessed_country
             end
           end
+        elsif country&.is_a?(Country)
+          target_country = country
         end
 
-        if !target.geocoded? || target_country.blank?
-          full_location = [location.to_s, state, target_country&.name || country.to_s].reject(&:blank?).join(', ').downcase
-
-          if full_location.present? && (geo = Geocoder.search(full_location).first)
-            target_geo_location = geo.formatted_address
-            target_country = Country.find_by(iso: geo.country_code) if geo.country && target_country&.iso != geo.country_code
-            target_state = geo.state_code
-            target_location = target_geo_location.rpartition(', ')[0]
-          end
+        if target_country.present? && target_location.present?
+          # Remove country name from location
+          aliases_str = target_country.aliases.map { |a| Regexp.escape(a) }.join('|')
+          regex = /\b(?:#{aliases_str})\b/i
+          target_location.gsub!(regex, '')
         end
 
-        target_location ||= location
-        target_state ||= state || (Rightboat::USStates.recognize(target.location) if target.country&.iso == 'US')
+        if target_location.present? && user.company_name == 'Burton Waters Marina Limited'
+          target_location.gsub!(/\ABurton Waters, /, '')
+        end
 
-        # ensure location not include broker company name
-        # eg. Burton Waters Marina Limited
-        if target_location.present?
-          company_name = target.user.company_name.gsub(/(Marina Limited)/i, '').strip
-          target_location.gsub!(/\b(?:#{company_name})[\s,]*/i, '')
+        if target_country&.iso == 'US'
+          target_state = state || Rightboat::USStates.recognize(target_location)
+          target_state = target_state.upcase.presence_in(Rightboat::USStates.states_map.keys) if target_state
         end
 
         target.import_assign :country, target_country
-        target.import_assign :geo_location, target_geo_location
         target.import_assign :location, target_location
         target.import_assign :state, target_state
       end

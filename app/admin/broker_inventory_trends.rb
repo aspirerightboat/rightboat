@@ -1,33 +1,46 @@
-ActiveAdmin.register Import, as: 'BrokerInventroyTrends' do
+ActiveAdmin.register User, as: 'BrokerInventroyTrends' do
   menu parent: 'Boats', priority: 13
 
   actions :all, except: [:new, :create, :show, :edit, :update, :destroy]
 
-  filter :user_id, as: :select, collection: User.companies.order(:company_name), label: 'User'
+  filter :id, as: :select, collection: User.companies.order(:company_name), label: 'User'
   filter :created_at, label: 'Start / End date'
 
   controller do
+    def index
+      @page_title = 'Inventory Trends'
+      super
+    end
 
     protected
 
     def scoped_collection
-      start_date = (params[:q] && params[:q][:created_at_gteq_date].presence) || Date.today.beginning_of_month.to_s
-      end_date = (params[:q] && params[:q][:created_at_lteq_date].presence) || Date.today.to_s
+      params[:q] ||= {}
+      params[:q][:created_at_gteq_date] ||= 1.months.ago.to_date.to_s
+      params[:q][:created_at_lteq_date] ||= Date.today.to_s
 
-      @imports = Import.joins(:user).
-                    select('users.id AS user_id, users.company_name AS company_name').
-                    select("IFNULL((
-                            SELECT import_trails.boats_count
-                            FROM import_trails
-                            WHERE import_trails.import_id = imports.id
-                            AND DATE(import_trails.created_at) = '#{start_date}'
-                            LIMIT 1), 0) AS start_count").
-                    select("IFNULL((
-                            SELECT import_trails.boats_count
-                            FROM import_trails
-                            WHERE import_trails.import_id = imports.id
-                            AND DATE(import_trails.created_at) = '#{end_date}'
-                            LIMIT 1), 0) AS end_count")
+      User.companies.
+            select('users.id, users.company_name').
+            select(
+              "IFNULL((SELECT SUM("\
+              "IFNULL((SELECT import_trails.boats_count "\
+              "FROM import_trails "\
+              "WHERE import_trails.import_id = imports.id "\
+              "AND DATE(import_trails.created_at) = '#{params[:q][:created_at_gteq_date]}' "\
+              "ORDER BY import_trails.created_at DESC "\
+              "LIMIT 1), 0)) AS import_start_count "\
+              "FROM imports WHERE imports.user_id = users.id), 0) "\
+              "AS start_count").
+            select(
+              "IFNULL((SELECT SUM("\
+              "IFNULL((SELECT import_trails.boats_count "\
+              "FROM import_trails "\
+              "WHERE import_trails.import_id = imports.id "\
+              "AND DATE(import_trails.created_at) = '#{params[:q][:created_at_lteq_date]}' "\
+              "ORDER BY import_trails.created_at DESC "\
+              "LIMIT 1), 0)) AS import_start_count "\
+              "FROM imports WHERE imports.user_id = users.id), 0) "\
+              "AS end_count")
     end
 
     def apply_sorting(chain)
@@ -46,18 +59,36 @@ ActiveAdmin.register Import, as: 'BrokerInventroyTrends' do
   end
 
   index do
-    column :user, sortable: 'users.company_name' do |import|
-      link_to(import.company_name, admin_user_path(import.user_id))
+    h3 class: 'text-center' do
+      "#{date_format(params[:q][:created_at_gteq_date])} ~ #{date_format(params[:q][:created_at_lteq_date])}"
     end
-    column :start_count, sortable: 'start_count' do |import|
-      import.start_count
+
+    column :user, sortable: 'users.company_name' do |user|
+      link_to(user.company_name, admin_user_path(user.id))
     end
-    column :end_count, sortable: 'end_count' do |import|
-      import.end_count
+    column :start_count, sortable: 'start_count' do |user|
+      user.start_count
     end
-    column :delta, sortable: 'delta' do |import|
-      import.end_count - import.start_count
+    column :end_count, sortable: 'end_count' do |user|
+      user.end_count
+    end
+    column :delta, sortable: 'delta' do |user|
+      user.end_count - user.start_count
     end
   end
 
+  csv do
+    column :user do |user|
+      user.company_name
+    end
+    column :start_count do |user|
+      user.start_count
+    end
+    column :end_count do |user|
+      user.end_count
+    end
+    column :delta do |user|
+      user.end_count - user.start_count
+    end
+  end
 end

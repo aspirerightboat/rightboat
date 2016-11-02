@@ -182,7 +182,6 @@ ActiveAdmin.register Boat do
               'data-include-param' => '#engine_manufacturer_id',
           })
       f.input :location, override_opts.call(:location)
-      f.input :geo_location, override_opts.call(:geo_location)
       f.input :state, override_opts.call(:state)
       f.input :country, {as: :select, collection: Country.order(:name)}.merge!(override_opts.call(:country_id))
       f.input :offer_status, {as: :select, collection: Boat::OFFER_STATUSES}.merge!(override_opts.call(:offer_status))
@@ -302,7 +301,7 @@ ActiveAdmin.register Boat do
     boat = Boat.find_by(slug: params[:id])
     if (activate = boat.deleted?)
       boat.revive
-      boat.user.increment(:boats_count)
+      boat.user.update_boats_count
       boat.update_column(:deleted_by_user_id, nil)
     else
       boat.update_column(:deleted_by_user_id, current_user.id)

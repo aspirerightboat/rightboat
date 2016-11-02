@@ -90,7 +90,7 @@ module Rightboat
     end
 
     def self.item_address(boat)
-      boat.geo_location.presence || boat.full_location.presence || begin
+      boat.full_location.presence || begin
         address = boat.office&.address || boat.user.address
         address&.display_string(:raw)
       end

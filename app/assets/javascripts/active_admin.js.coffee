@@ -1,4 +1,5 @@
 #= require active_admin/base
+#= require plugins/jquery_ui/sortable_fixed
 #= require jquery-ui/autocomplete
 #= require autocomplete-rails
 #= require highcharts
@@ -17,3 +18,4 @@
 #= require admin/sortable
 #= require admin/sync_select
 #= require admin/users
+#= require admin/boat_images_manager

@@ -5,15 +5,24 @@
 }
 .regular-boat-image-card {
   margin: 6px;
+  width: 127px+2;
+  border: 1px solid gray;
+  position: relative;
 
   img {
     display: block;
   }
 }
+.regular-boat-image-card-caption {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .files-drop-placeholder {
   border-radius: 3px;
-  border: 1px dashed #444444;
-  color: #444444;
+  border: 2px dashed #666;
+  color: #666;
   font-size: 1.2em;
   font-weight: bold;
   padding: 14px 25px;
@@ -22,4 +31,15 @@
   &:not(:first-child) {
     margin-top: 1em;
   }
+  &.is-dragover {
+    border: 2px solid royalblue;
+    color: royalblue;
+  }
+  &.is-uploading {
+    @extend .inline-loading;
+  }
+}
+
+#boat_images_manager_upload_form {
+  input, button { display: none; }
 }

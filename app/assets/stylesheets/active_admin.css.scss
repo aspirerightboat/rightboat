@@ -6,7 +6,7 @@
 //
 //= require jquery-ui/autocomplete
 //= require plugins/selectize.admin
-//= require_tree ./admin
+//= require admin/bootstrap
 
 // For example, to change the sidebar width:
 // $sidebar-width: 242px;
@@ -19,107 +19,10 @@
 // For example, to change the default status-tag color:
 //
 //   .status_tag { background: #6090DB; }
-#import_scheduling {
-  ol {
-    display: table;
-    padding: 15px;
-  }
-  li { display: table-cell;}
-  input[type='number'] {
-    width: 100px;
-  }
-  input[type='text'] {
-    max-width: 140px;
-  }
-  #import_at {
-    width: 100px;
-  }
-  #import_frequency_quantity, #import_at {
-    text-align: right;
-  }
-  select {
-    text-transform: capitalize;
-    height: 28px;
-    -webkit-appearance: menulist;
-    padding: 3px;
-    background: #FFF;
-    border-radius: 2px;
-  }
-}
 
-a.job-action {
-  border-radius: 2px;
-  background: $link-color;
-  color: #FFF;
-  padding: 3px 7px;
-  text-decoration: none;
-  white-space: nowrap;
-  &:not(:last-child) { margin-right: 7px;}
-  &.job-action-danger {
-    background: $error-color;
-  }
-  &.job-action-warning {
-    background: #BB5;
-  }
-  &[disabled] {
-    color: #AAA;
-    background: #CCC;
-  }
-}
-
-.text-red {
-  color: rgb(252, 13, 27);
-  a { color: rgb(252, 13, 27); }
-}
-
-.text-green {
-  color: rgb(41, 253, 47);
-  a { color: rgb(41, 253, 47) }
-}
-
-.text-orange {
-  color: rgb(253, 152, 39);
-  a { color: rgb(253, 152, 39); }
-}
-
-p {
-  margin-bottom: 1em;
-}
-
-form fieldset > ol > li {
-  clear: both;
-}
-
-input[disabled] {
-  background-color: whitesmoke;
-}
-
-form.filter_form .filter_form_field.filter_date_range input[type=text] {
-  width: 100px;
-}
-
-#ui-datepicker-div {
-  width: auto;
-}
-
-.ui-datepicker .ui-datepicker-header {
-  height: auto;
-  width: 100%;
-}
-
-// override bootstrap lead style to fix leads#show page
-@media (min-width: 768px) {
-  .lead {
-    font-size: inherit;
-  }
-}
-.lead {
-  margin-bottom: auto;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-}
-.status_tag {
-  display: inline-block;
-  text-align: center;
-}
+@import "admin/general";
+@import "admin/leads";
+@import "admin/misspell_fixer";
+@import "admin/overridable_field";
+@import "admin/users";
+@import "admin/boat_images_manager";

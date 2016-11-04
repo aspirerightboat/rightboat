@@ -1,45 +1,91 @@
-.regular-boat-image-cards {
+.boat-image-cards {
   display: flex;
   flex-wrap: wrap;
-  margin: -6px;
+  align-items: flex-start;
 }
-.regular-boat-image-card {
+.boat-image-card {
   margin: 6px;
   width: 127px+2;
+  //height: 85px+2;
   border: 1px solid gray;
   position: relative;
+}
+.boat-image-card-logo {
+  display: block;
+  width: 127px;
+  height: 85px;
+  max-width: 100%;
+}
+.layout-row-layout {
+  position: relative;
 
-  img {
-    display: block;
+  .boat-image-card {
+    margin: 6px;
+    width: 100%;
+    //height: auto;
+  }
+  .boat-image-card-logo {
+    width: 100%;
+    height: auto;
   }
 }
-.regular-boat-image-card-caption {
+.boat-image-card-caption {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.boat-image-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
 
-.files-drop-placeholder {
+.files-drop {
   border-radius: 3px;
   border: 2px dashed #666;
-  color: #666;
   font-size: 1.2em;
   font-weight: bold;
-  padding: 14px 25px;
-  text-align: center;
+  padding: 6px 6px 20px+6 6px;
+  position: relative;
 
-  &:not(:first-child) {
-    margin-top: 1em;
-  }
   &.is-dragover {
     border: 2px solid royalblue;
     color: royalblue;
   }
-  &.is-uploading {
+  &.is-uploading .files-drop-hint {
     @extend .inline-loading;
   }
 }
-
-#boat_images_manager_upload_form {
-  input, button { display: none; }
+.files-drop-hint {
+  position: absolute;
+  bottom: 6px;
+  width: 100%;
+  text-align: center;
+  color: #666;
 }
+
+#boat_images_upload_form {
+  display: none;
+}
+
+.layout-row {
+  display: flex;
+  align-items: stretch;
+
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+.layout-row-layout {
+  width: 40%;
+  flex-grow: 1;
+}
+.layout-row-images {
+  width: 60%;
+
+  &:not(:first-child) {
+    margin-left: 2ex;
+  }
+}
+
+//.side-view-image {
+//}

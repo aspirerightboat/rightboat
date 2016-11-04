@@ -4,11 +4,40 @@ class BoatImage < ApplicationRecord
   enum kind: {regular: 0, layout: 1, side_view: 2}
 
   belongs_to :boat
+  belongs_to :layout_image, class_name: 'BoatImage'
 
   mount_uploader :file, BoatImageUploader
 
   def display_name
     caption.presence || "Boat image ##{id}"
+  end
+
+  def small_props_hash
+    {id: id, mini_url: file_url(:mini), url: file_url, caption: caption}
+  end
+
+  def move_between!(bi_prev, bi_next, images_relation)
+    return if !bi_prev && !bi_next
+
+    prev_pos = bi_prev&.position || 0
+    next_pos = bi_next&.position || 0
+
+    if bi_next
+      if prev_pos + 1 >= next_pos
+        image_ids = images_relation.pluck(:id).drop_while { |bi_id| bi_id != bi_next.id }.select { |bi_id| bi_id != id }
+        if image_ids.any?
+          diff = [prev_pos - next_pos, 0].max + 10
+          BoatImage.where(id: image_ids).update_all(['position = position + ?', diff])
+          bi_next.reload
+          next_pos = bi_next.position
+        end
+      end
+      self.position = (prev_pos + next_pos) / 2
+    else
+      self.position = prev_pos + 10
+    end
+
+    save!
   end
 
   def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil, force: nil)

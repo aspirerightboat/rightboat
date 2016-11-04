@@ -1,0 +1,9 @@
+.layout-row
+  .boat-image-cards.files-drop.layout-row-layout
+    - if layout_image
+      = render partial: 'boat_image_card', locals: {image: layout_image, image_version: :original}
+    .files-drop-hint Layout Image
+  .boat-image-cards.files-drop.layout-row-images
+    - if related_images&.any?
+      = render partial: 'boat_image_card', collection: related_images, as: :image
+    .files-drop-hint Images Related To Layout

@@ -15,11 +15,10 @@ ActiveAdmin.register_page 'Boat Images Manager' do
   end
 
   controller do
-    before_action :load_boat, only: [:index, :upload_images, :remove_image, :move_image]
+    before_action :load_boat
 
     def index
-
-      @images_by_kind = @boat.boat_images.group_by(&:kind)
+      @kind_separated_images = Rightboat::BoatImagesKindSeparated.new(@boat)
     end
 
     private
@@ -37,7 +36,7 @@ ActiveAdmin.register_page 'Boat Images Manager' do
       @boat.boat_images.create(file: file, position: (max_pos += 10))
     end
 
-    render json: {images: boat_images.map { |bi| {id: bi.id, mini_url: bi.file_url(:thumb), url: bi.file_url} }}
+    render json: {images: boat_images.map { |bi| bi.small_props_hash }}
   end
 
   page_action :remove_image, method: :post do
@@ -54,21 +53,13 @@ ActiveAdmin.register_page 'Boat Images Manager' do
     bi = @boat.boat_images.find(params[:image])
     bi_prev = (@boat.boat_images.find(params[:prev]) if params[:prev].present?)
     bi_next = (@boat.boat_images.find(params[:next]) if params[:next].present?)
+    layout_image = (@boat.boat_images.find(params[:layout_image]) if params[:layout_image])
 
-    prev_pos = bi_prev&.position || 0
-    next_pos = bi_next&.position || 0
-    bi.position = (prev_pos + next_pos) / 2
-    bi.position = prev_pos + 1 if bi.position <= prev_pos
-    bi.update_column(:position, bi.position)
+    bi.layout_image = layout_image
 
-    if bi.position >= next_pos
-      if next_pos > prev_pos
-        @boat.boat_images.where('position >= ?', next_pos).where('id <> ?', bi.id).update_all('position = position + 10')
-      else
-        image_ids = @boat.boat_images.pluck(:id).drop_while { |bi_id| bi_id != bi_next&.id }.select { |bi_id| bi_id != bi.id }
-        BoatImage.where(id: image_ids).update_all('position = position + 10') if image_ids.any?
-      end
-    end
+    rel = @boat.boat_images
+    rel = rel.where(layout_image: layout_image) if layout_image
+    bi.move_between!(bi_prev, bi_next, rel)
 
     head :ok
   end

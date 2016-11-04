@@ -1,8 +1,0 @@
-- props = ({id: image.id, mini_url: image.file_url(:mini), url: image.file_url, caption: image.caption}.to_json if image)
-.regular-boat-image-card(data-props=props)
-  img.regular-boat-image-card-logo(src="#{image&.file_url(:mini)}" alt="" width="127" height="85")
-  .regular-boat-image-card-caption= image&.caption
-  .regular-boat-image-card-actions
-    a.regular-boat-image-card-edit(href="#") edit
-    a.regular-boat-image-card-view(href="#") view
-    a.regular-boat-image-card-delete(href="#") delete

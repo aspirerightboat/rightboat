@@ -1,34 +1,30 @@
 - manager_data = {'move-url' => url_for(action: :move_image, boat_id: @boat.id), \
-                  'remove-url' => url_for(action: :remove_image, boat_id: @boat.id)}
+                  'remove-url' => url_for(action: :remove_image, boat_id: @boat.id), \
+                  }
 .boat-images-manager(data=manager_data)
   .panel
     h3 Regular boat images
     .panel_contents
-      script#regular_image_card_template(type="text/template")= render partial: 'regular_image_card', locals: {image: nil}
-      .regular-boat-image-cards
-        = render partial: 'regular_image_card', collection: @images_by_kind['regular'], as: :image
-      form#boat_images_manager_upload_form.files-drop-placeholder(action="#{url_for(action: :upload_images, boat_id: @boat.id)}" method="post")
-        div
-          input(type="file" name="files[]" multiple)
-          button Submit
-        | Drop Images Here To Upload
+      script#boat_image_card_template(type="text/template")= render partial: 'boat_image_card', locals: {image: nil}
+      .boat-image-cards.files-drop#regular_images
+        form#boat_images_upload_form(action="#{url_for(action: :upload_images, boat_id: @boat.id)}" method="post")
+          div
+            input(type="file" name="files[]" multiple)
+            button Submit
+        = render partial: 'boat_image_card', collection: @kind_separated_images.regular_images, as: :image
+        .files-drop-hint
+          | Drop Images Here To Upload
 
   .panel
     h3 Layouts
     .panel_contents
-      - @images_by_kind['layout']&.each do |image|
-        .panel
-          .panel_contents
-            = image_tag image.file.url, alt: ''
-      .files-drop-placeholder
-        | Drop Here Layout Images
+      - @kind_separated_images.images_by_layout_image.each do |layout_image, related_images|
+        = render partial: 'layout_row', locals: {layout_image: layout_image, related_images: related_images}
+      = render partial: 'layout_row', locals: {layout_image: nil, related_images: nil}
 
   .panel
     h3 Side View
     .panel_contents
-      - if (side_view_image = @images_by_kind['side_view']&.first)
-        .panel
-          .panel_contents
-            = image_tag side_view_image.file.url, alt: ''
-      .files-drop-placeholder
-        | Drop Here Side View Image
+      .boat-image-cards.files-drop.side-view-image
+        = render partial: 'boat_image_card', collection: @kind_separated_images.side_view_image, as: :image
+        .files-drop-hint Side View Image

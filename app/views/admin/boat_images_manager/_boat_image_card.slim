@@ -1,0 +1,8 @@
+.boat-image-card(data-props=image&.small_props_hash&.to_json)
+  - image_url = local_assigns[:image_version] == :original ? image&.file_url : image&.file_url(:mini)
+  img.boat-image-card-logo(src="#{image_url}" alt="" width="127" height="85")
+  .boat-image-card-caption= image&.caption
+  .boat-image-card-actions
+    a.boat-image-card-edit(href="#") edit
+    a.boat-image-card-view(href="#") view
+    a.boat-image-card-delete(href="#") delete

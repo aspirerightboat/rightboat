@@ -55,11 +55,13 @@ ActiveAdmin.register_page 'Boat Images Manager' do
     bi_next = (@boat.boat_images.find(params[:next]) if params[:next].present?)
     layout_image = (@boat.boat_images.find(params[:layout_image]) if params[:layout_image])
 
+    bi.kind = params[:kind]
     bi.layout_image = layout_image
 
     rel = @boat.boat_images
     rel = rel.where(layout_image: layout_image) if layout_image
-    bi.move_between!(bi_prev, bi_next, rel)
+    bi.move_between(bi_prev, bi_next, rel)
+    bi.save!
 
     head :ok
   end

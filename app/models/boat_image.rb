@@ -16,7 +16,7 @@ class BoatImage < ApplicationRecord
     {id: id, mini_url: file_url(:mini), url: file_url, caption: caption}
   end
 
-  def move_between!(bi_prev, bi_next, images_relation)
+  def move_between(bi_prev, bi_next, images_relation)
     return if !bi_prev && !bi_next
 
     prev_pos = bi_prev&.position || 0
@@ -36,8 +36,6 @@ class BoatImage < ApplicationRecord
     else
       self.position = prev_pos + 10
     end
-
-    save!
   end
 
   def update_image_from_source(proxy_with_auth: nil, log_error_proc: nil, force: nil)

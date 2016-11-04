@@ -23,15 +23,6 @@ $ ->
         sendDroppedFilesViaAjax()
       false
 
-    # createCardsFromDroppedFiles = ->
-    #      $.each evt.originalEvent.dataTransfer.files, (i, file) ->
-    #      img = document.createElement('img')
-    #      img.onload = ->
-    #        window.URL.revokeObjectURL(@src)
-    #      img.height = 100
-    #      img.src = window.URL.createObjectURL(file)
-    #      $someDiv.append(img)
-
     sendDroppedFilesViaAjax = ->
       if $regularImages.hasClass('is-uploading')
         return
@@ -61,26 +52,31 @@ $ ->
         .find('.boat-image-card-logo').attr('src', props.mini_url).end()
         .data('props', props)
 
-    $('.boat-image-cards').sortable
-      opacity: 0.5,
-      distance: 5,
-      tolerance: 'pointer',
-      items: '.boat-image-card',
-      revert: true,
-      scroll: false,
-      connectWith: '.boat-image-cards',
-      update: (e, ui) ->
-        if @ == ui.item.parent()[0] # fix because update is firing twice when moving between different sortables
-          updateDroppedImage(ui.item, $(@))
-      receive: (e, ui) ->
-        $sourceSortable = ui.sender
-        $sortable = $(@)
-        if (layoutRow = $sortable.closest('.layout-row'))
-          if $sortable.hasClass('layout-row-layout') || $sortable.hasClass('side-view-image')
-            cancelDropIfSortableHasMany($sourceSortable, $sortable)
-          else if $sortable.hasClass('layout-row-images')
-            cancelDropIfLayoutEmpty($sourceSortable, $sortable)
-    .disableSelection()
+    initBoatImagesSortable = ($sortableTargets) ->
+      $sortableTargets.sortable
+        opacity: 0.5,
+        distance: 5,
+        tolerance: 'pointer',
+        items: '.boat-image-card',
+        revert: true,
+        scroll: false,
+        connectWith: '.boat-image-cards',
+        update: (e, ui) ->
+          if @ == ui.item.parent()[0] # fix because update is firing twice when moving between different sortables
+            updateDroppedImage(ui.item, $(@))
+        receive: (e, ui) ->
+          $sourceSortable = ui.sender
+          $sortable = $(@)
+          if ($layoutRow = $sortable.closest('.layout-row'))
+            if $sortable.hasClass('layout-row-layout') || $sortable.hasClass('side-view-image')
+              cancelDropIfSortableHasMany($sourceSortable, $sortable)
+            else if $sortable.hasClass('layout-row-images')
+              cancelDropIfLayoutEmpty($sourceSortable, $sortable)
+            if $sortable.hasClass('layout-row-layout')
+              cloneLayoutRow($layoutRow)
+      .disableSelection()
+
+    initBoatImagesSortable($('.boat-image-cards'))
 
     cancelDropIfSortableHasMany = ($sourceSortable, $sortable) ->
       cardsCount = $('.boat-image-card', $sortable).length
@@ -91,11 +87,17 @@ $ ->
       if !$sortable.prev().find('.boat-image-card').length
         $sourceSortable.sortable('cancel')
 
+    cloneLayoutRow = (layoutRow) ->
+      $('.boat-image-cards').sortable('destroy');
+      $clone = layoutRow.clone()
+      $clone.find('.boat-image-card').remove()
+      $clone.appendTo(layoutRow.parent())
+      initBoatImagesSortable($('.boat-image-cards'))
+
     updateDroppedImage = ($image, $sortable) ->
       imgProps = $image.data('props')
       imgSrc = if $sortable.hasClass('layout-row-layout') then imgProps.url else imgProps.thumb_url
       $image.find('.boat-image-card-logo').attr('src', imgSrc)
-
       params = {}
       params.image = $image.data('props').id
       params.prev = $image.prev('.boat-image-card').data('props')?.id
@@ -103,4 +105,10 @@ $ ->
       if $sortable.hasClass('layout-row-images')
         layoutImage = $sortable.prev().find('.boat-image-card')
         params.layout_image = layoutImage.data('props').id
+      if $sortable.hasClass('layout-row-layout')
+        params.kind = 'layout'
+      else if $sortable.hasClass('side-view-image')
+        params.kind = 'side_view'
+      else
+        params.kind = 'regular'
       $.post $manager.data('move-url'), params

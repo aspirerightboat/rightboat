@@ -1,5 +1,6 @@
 - manager_data = {'move-url' => url_for(action: :move_image, boat_id: @boat.id), \
                   'remove-url' => url_for(action: :remove_image, boat_id: @boat.id), \
+                  'update-caption-url' => url_for(action: :update_caption, boat_id: @boat.id), \
                   }
 .boat-images-manager(data=manager_data)
   .panel
@@ -28,3 +29,16 @@
       .boat-image-cards.files-drop.side-view-image
         = render partial: 'boat_image_card', collection: @kind_separated_images.side_view_image, as: :image
         .files-drop-hint Side View Image
+
+  .panel
+    h3 Side View
+    .panel_contents
+
+  #edit_boat_image_popup.panel.edit-boat-image-popup(style="display:none")
+    h3 Edit Boat Image
+    .esc ×
+    .panel_content
+      label(for="boat_image_caption_input") Image Caption
+      input#boat_image_caption_input.value-input(type="text")
+      .controls-row.text-center
+        button.save-btn Save

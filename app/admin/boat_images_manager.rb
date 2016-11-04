@@ -66,4 +66,12 @@ ActiveAdmin.register_page 'Boat Images Manager' do
     head :ok
   end
 
+  page_action :update_caption, method: :post do
+    bi = @boat.boat_images.find(params[:image])
+    bi.caption = params[:caption]
+    bi.save!
+
+    head :ok
+  end
+
 end

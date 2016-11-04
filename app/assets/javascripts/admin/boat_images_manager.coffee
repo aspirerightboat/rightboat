@@ -4,6 +4,8 @@ $ ->
     droppedFiles = null
     $regularImages = $('#regular_images')
     $uploadForm = $('#boat_images_upload_form')
+    $editPopup = $('#edit_boat_image_popup')
+    $captionInput = $('#boat_image_caption_input')
 
     $regularImages.on 'drag dragstart', ->
       false
@@ -112,3 +114,33 @@ $ ->
       else
         params.kind = 'regular'
       $.post $manager.data('move-url'), params
+
+    $('.boat-image-card').click (e) ->
+      $card = $(@)
+      $el = $(e.target)
+      if $el.hasClass('boat-image-card-edit')
+        $editPopup.detach().appendTo(@)
+        $captionInput.val($card.data('props').caption)
+        $editPopup.data('card', $card)
+        setTimeout (-> $editPopup.show()), 0
+      false
+
+    $('.esc', $editPopup).click -> $editPopup.hide(); false
+    $('.save-btn', $editPopup).click ->
+      $btn = $(@).prop('disabled', true)
+      $card = $editPopup.data('card')
+      cardProps = $card.data('props')
+      newCaption = $captionInput.val()
+      params =
+        image: cardProps.id
+        caption: newCaption
+      $.post $manager.data('update-caption-url'), params, ->
+        cardProps.caption = newCaption
+        $('.boat-image-card-caption', $card).text(newCaption)
+        $editPopup.hide()
+      .always ->
+        $btn.prop('disabled', false)
+      false
+    $captionInput.keydown (e) ->
+      if e.keyCode == 13
+        $('.save-btn', $editPopup).click()

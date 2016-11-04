@@ -87,5 +87,31 @@
   }
 }
 
-//.side-view-image {
-//}
+.edit-boat-image-popup {
+  position: absolute;
+  top: 85px;
+  left: 0;
+  z-index: 10;
+  box-shadow: 0 0 20px 0 rgba(51, 46, 0, 0.2) !important;
+  cursor: default;
+  width: 300px;
+
+  .value-input {
+    width: 100%;
+  }
+  .controls-row {
+    margin-top: 8px;
+  }
+  //.secondary-btn {
+  //  @include light-button;
+  //  -webkit-user-select: none;
+  //  user-select: none;
+  //}
+  .esc {
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    cursor: pointer;
+    padding: 0 !important;;
+  }
+}

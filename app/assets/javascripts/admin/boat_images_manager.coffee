@@ -97,9 +97,7 @@ $ ->
       initBoatImagesSortable($('.boat-image-cards'))
 
     updateDroppedImage = ($image, $sortable) ->
-      imgProps = $image.data('props')
-      imgSrc = if $sortable.hasClass('layout-row-layout') then imgProps.url else imgProps.thumb_url
-      $image.find('.boat-image-card-logo').attr('src', imgSrc)
+      updateDroppedImageLook($image, $sortable)
       params = {}
       params.image = $image.data('props').id
       params.prev = $image.prev('.boat-image-card').data('props')?.id
@@ -114,6 +112,12 @@ $ ->
       else
         params.kind = 'regular'
       $.post $manager.data('move-url'), params
+
+    updateDroppedImageLook = ($image, $sortable) ->
+      imgProps = $image.data('props')
+      imgSrc = if $sortable.hasClass('layout-row-layout') then imgProps.url else imgProps.thumb_url
+      $image.find('.boat-image-card-logo').attr('src', imgSrc)
+      $image.find('.boat-image-card-mark').toggle($sortable.hasClass('layout-row-images'))
 
     $('.boat-image-card').click (e) ->
       $card = $(@)

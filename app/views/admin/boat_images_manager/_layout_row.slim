@@ -5,5 +5,5 @@
     .files-drop-hint Layout Image
   .boat-image-cards.files-drop.layout-row-images
     - if related_images&.any?
-      = render partial: 'boat_image_card', collection: related_images, as: :image
+      = render partial: 'boat_image_card', collection: related_images, as: :image, locals: {mark_action: true}
     .files-drop-hint Images Related To Layout

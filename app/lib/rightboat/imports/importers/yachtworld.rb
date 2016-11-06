@@ -35,7 +35,7 @@ module Rightboat
               'Number of heads' => :heads_count,
               'Number of single berths' => :single_berths_count,
               'Number of double berths' => :double_berths_count,
-              'Year Built' => ->(boat, data) { boat.year_built = data },
+              'Year Built' => ->(boat, data) { boat.engine_year = data },
               'Engine Hours' => :engine_hours,
               'Displacement' => :displacement_kgs,
               'Ballast' => :ballast_kgs,
@@ -165,6 +165,7 @@ module Rightboat
                 job[:location] = location
               end
               job[:codes] = fix_whitespace(tds[8].text)
+              job[:year] = tds[6].text
               job[:source_url] = doc.uri.merge(tds[4].at_css('a')['href']).to_s
 
               enqueue_job(job)
@@ -186,6 +187,7 @@ module Rightboat
           boat.length_m = job[:length_m]
           process_codes(boat, job[:codes])
           boat.location = job[:location]
+          boat.year_built = job[:year]
           boat.offer_status = job[:offer_status] if job[:offer_status]
 
           desc_td = doc.root.at_css('tr[align=left] td')

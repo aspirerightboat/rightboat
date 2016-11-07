@@ -9,12 +9,21 @@
   //height: 85px+2;
   border: 1px solid gray;
   position: relative;
+
+  &.is-while-marking {
+    border: 2px solid royalblue;
+  }
 }
 .boat-image-card-logo {
+  position: relative;
   display: block;
   width: 127px;
   height: 85px;
-  max-width: 100%;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
 }
 .layout-row-layout {
   position: relative;
@@ -78,6 +87,12 @@
 .layout-row-layout {
   width: 40%;
   flex-grow: 1;
+
+  .boat-image-card.is-while-marking {
+    .boat-image-card-logo {
+      cursor: crosshair;
+    }
+  }
 }
 .layout-row-images {
   width: 60%;
@@ -114,4 +129,10 @@
     cursor: pointer;
     padding: 0 !important;;
   }
+}
+
+.view-point-mark {
+  position: absolute;
+  margin: -15px 0 0 -15px;
+  stroke-width: 2px;
 }

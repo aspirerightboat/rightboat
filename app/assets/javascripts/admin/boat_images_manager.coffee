@@ -51,7 +51,7 @@ $ ->
         cardHtml = $('#boat_image_card_template').html()
         $card = $(cardHtml)
         $card.appendTo($regularImages)
-        .find('.boat-image-card-logo').attr('src', props.mini_url).end()
+        .find('.boat-image-card-logo img').attr('src', props.mini_url).end()
         .data('props', props)
 
     initBoatImagesSortable = ($sortableTargets) ->
@@ -116,7 +116,7 @@ $ ->
     updateDroppedImageLook = ($image, $sortable) ->
       imgProps = $image.data('props')
       imgSrc = if $sortable.hasClass('layout-row-layout') then imgProps.url else imgProps.thumb_url
-      $image.find('.boat-image-card-logo').attr('src', imgSrc)
+      $image.find('.boat-image-card-logo img').attr('src', imgSrc)
       $image.find('.boat-image-card-mark').toggle($sortable.hasClass('layout-row-images'))
 
     $('.boat-image-card').click (e) ->
@@ -127,6 +127,15 @@ $ ->
         $captionInput.val($card.data('props').caption)
         $editPopup.data('card', $card)
         setTimeout (-> $editPopup.show()), 0
+      else if $el.hasClass('boat-image-card-mark')
+        $card.siblings('.boat-image-card').removeClass('is-while-marking')
+        $layoutCard = $card.closest('.layout-row').find('.layout-row-layout .boat-image-card')
+        $layoutCard.add($card).addClass('is-while-marking')
+      else if $card.hasClass('is-while-marking') && $el.closest('boat-image-card-logo').length
+        offset = $el.offset()
+        x = e.pageX - offset.left
+        y = e.pageY - offset.top
+        console.log(x, y, $el.width(), $el.height())
       false
 
     $('.esc', $editPopup).click -> $editPopup.hide(); false

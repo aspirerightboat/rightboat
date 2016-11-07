@@ -132,8 +132,14 @@
   @media (min-width: @screen-md-min) and (max-width: @screen-md-max) { flex-basis: 100%/8; }
   @media (min-width: @screen-lg-min) { flex-basis: 100%/12; }
 
-  &:hover {
+  &:hover:not(.is-more-card) {
     transform: scale(1.15);
+  }
+  &.is-more-card {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 .manufacturer-card-link {

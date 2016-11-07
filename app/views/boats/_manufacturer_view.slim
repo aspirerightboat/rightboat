@@ -8,7 +8,7 @@
       - if @manufacturer.logo.present? && @manufacturer.description.present?
         .maker-overview
           .maker-overview-logo
-            = image_tag @manufacturer.logo_url(:thumb), alt: @manufacturer.name, class: 'img-responsive'
+            = image_tag @manufacturer.logo_url(:mini), alt: @manufacturer.name, class: 'img-responsive'
           .maker-overview-text
             = simple_format @manufacturer.description
 

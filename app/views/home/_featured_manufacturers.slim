@@ -1,0 +1,13 @@
+- fetch_featured_manufacturers
+- if @featured_manufacturers.any?
+  .featured-manufacturers
+    h3.toolbar-title Search by Manufacturer
+    .container
+      .manufacturer-cards
+        - @featured_manufacturers.each do |manufacturer|
+          .manufacturer-card
+            = link_to sale_manufacturer_path(manufacturer), class: 'manufacturer-card-link' do
+              = image_tag(manufacturer.logo_url(:mini), alt: manufacturer.name, class: 'img-responsive')
+            .manufacturer-card-title= manufacturer.safe_caption
+        .manufacturer-card.is-more-card
+          = link_to 'More Manufacturers', boats_path, class: 'btn-flat btn-black'

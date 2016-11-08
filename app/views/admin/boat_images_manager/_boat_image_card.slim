@@ -4,9 +4,13 @@
     img.boat-image-card-logo-img(src="#{image_url}" alt="" width="127" height="85")
     - if local_assigns[:marked_images]
       = render partial: 'shared/view_point_mark_svg', collection: local_assigns[:marked_images], as: :marked_image
-  .boat-image-card-caption= image&.caption
+  .boat-image-card-caption(title="#{image&.caption}")= image&.caption
   .boat-image-card-actions
-    a.boat-image-card-edit(href="#") edit
-    a.boat-image-card-view(href="#") view
-    a.boat-image-card-delete(href="#") delete
-    a.boat-image-card-mark(href="#" style=('display:none' unless local_assigns[:mark_action])) mark
+    a.boat-image-card-mark(href="#" title="Mark" style=('display:none' unless local_assigns[:mark_action]))
+      i.glyphicon.glyphicon-map-marker
+    a.boat-image-card-edit(href="#" title="Edit")
+      i.glyphicon.glyphicon-pencil
+    a.boat-image-card-view(href="#" title="View")
+      i.glyphicon.glyphicon-eye-open
+    a.boat-image-card-delete(href="#" title="Delete")
+      i.glyphicon.glyphicon-remove

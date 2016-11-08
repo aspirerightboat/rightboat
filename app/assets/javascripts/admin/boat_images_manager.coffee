@@ -86,9 +86,9 @@ $ ->
 
     initBoatImagesSortable($('.boat-image-cards'))
 
-    cancelDropIfLayoutRelatedExist = ($fromSortable, $layoutRow) ->
+    cancelDropIfLayoutRelatedExist = ($layoutSortable, $layoutRow) ->
       if $layoutRow.find('.layout-row-images .boat-image-card').length
-        $fromSortable.sortable('cancel')
+        $layoutSortable.sortable('cancel')
 
     cancelDropIfSortableHasMany = ($fromSortable, $toSortable) ->
       cardsCount = $('.boat-image-card', $toSortable).length
@@ -132,7 +132,6 @@ $ ->
     addRemoveMarkIfLayoutRelated = ($card, $fromSortable, $toSortable) ->
       if $fromSortable.hasClass('layout-row-images')
         $mark = findMarkForCard($card)
-        console.log('try delete mark', $mark, $card)
         $mark.remove()
       if $toSortable.hasClass('layout-row-images')
         $layoutLogo = $toSortable.closest('.layout-row').find('.layout-row-layout .boat-image-card-logo')
@@ -141,21 +140,44 @@ $ ->
         $mark.appendTo($layoutLogo)
         .data('image-id', $card.data('props').id)
 
-    $('.boat-image-card').click (e) ->
+    $manager.on 'click', '.boat-image-card', (e) ->
       $card = $(@)
       $target = $(e.target)
-      if $target.hasClass('boat-image-card-edit')
-        $editPopup.detach().appendTo(@)
-        $captionInput.val($card.data('props').caption)
-        $editPopup.data('card', $card)
-        setTimeout (-> $editPopup.show()), 0
-      else if $target.hasClass('boat-image-card-mark')
-        toggleMarkingForCard($card)
-      else if $target.hasClass('boat-image-card-view')
-        $('#view_image_popup').find('img').attr('src', $card.data('props').url).end().show()
+      $link = $target.closest('a')
+      if $link.length
+        if $link.hasClass('boat-image-card-edit')
+          $editPopup.detach().appendTo(@)
+          $captionInput.val($card.data('props').caption)
+          $editPopup.data('card', $card)
+          setTimeout (-> $editPopup.show(); console.log('qwe'); $captionInput.focus()), 0
+        else if $link.hasClass('boat-image-card-mark')
+          toggleMarkingForCard($card)
+        else if $link.hasClass('boat-image-card-view')
+          viewCard($card)
+        else if $link.hasClass('boat-image-card-delete')
+          deleteCard($card)
       else if $card.hasClass('is-while-marking')
         markingClick($card, e.pageX, e.pageY)
+      else if $target.closest('.boat-image-card-logo')
+        if $target.closest('.boat-image-cards').hasClass('layout-row-images')
+          toggleMarkingForCard($card)
+        else
+          viewCard($card)
       false
+
+    deleteCard = ($card) ->
+      $sortable = $card.closest('.boat-image-cards')
+      if $sortable.find('.layout-row-images .boat-image-card').length
+        alert('Cannot remove layout image while related images exist')
+      params =
+        image: $card.data('props').id
+      $.post $manager.data('remove-url'), params, ->
+        if $sortable.hasClass('layout-row-images')
+          findMarkForCard($card).remove()
+        $card.fadeOut(-> $(@).remove())
+
+    viewCard = ($card) ->
+      $('#view_image_popup').find('img').attr('src', $card.data('props').url).end().show()
 
     toggleMarkingForCard = ($card) ->
       $layoutCard = $card.closest('.layout-row').find('.layout-row-layout .boat-image-card')
@@ -211,7 +233,7 @@ $ ->
         caption: newCaption
       $.post $manager.data('update-caption-url'), params, ->
         cardProps.caption = newCaption
-        $('.boat-image-card-caption', $card).text(newCaption)
+        $('.boat-image-card-caption', $card).text(newCaption).attr('title', newCaption)
         $editPopup.hide()
       .always ->
         $btn.prop('disabled', false)

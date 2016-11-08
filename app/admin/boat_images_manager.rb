@@ -41,12 +41,8 @@ ActiveAdmin.register_page 'Boat Images Manager' do
 
   page_action :remove_image, method: :post do
     bi = @boat.boat_images.find(params[:image])
-
-    if bi.destroy
-      head :ok
-    else
-      head :bad_request
-    end
+    bi.destroy!
+    head :ok
   end
 
   page_action :move_image, method: :post do

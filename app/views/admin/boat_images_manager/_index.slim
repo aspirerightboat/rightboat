@@ -28,12 +28,8 @@
     h3 Side View
     .panel_contents
       .boat-image-cards.files-drop.side-view-image
-        = render partial: 'boat_image_card', collection: @kind_separated_images.side_view_image, as: :image
+        = render partial: 'boat_image_card', locals: {image: @kind_separated_images.side_view_image}
         .files-drop-hint Side View Image
-
-  .panel
-    h3 Side View
-    .panel_contents
 
   #edit_boat_image_popup.panel.edit-boat-image-popup(style="display:none")
     h3 Edit Boat Image

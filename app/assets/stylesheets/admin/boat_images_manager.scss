@@ -42,10 +42,19 @@
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: white;
+  padding: 0 4px;
 }
 .boat-image-card-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  background-color: white;
+  padding: 2px 4px 0;
+
+  a:not(:first-child) {
+    padding-left: 8px;
+  }
 }
 
 .files-drop {

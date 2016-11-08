@@ -3,7 +3,7 @@ module Rightboat
     attr_reader :regular_images, :images_by_layout_image, :side_view_image
 
     def initialize(boat)
-      boat_images = boat.boat_images.includes(:layout_image).to_a
+      boat_images = boat.boat_images.not_deleted.includes(:layout_image).to_a
 
       if boat_images.all?(&:regular?)
         @regular_images = boat_images

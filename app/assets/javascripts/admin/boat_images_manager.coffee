@@ -71,15 +71,17 @@ $ ->
           $toSortable = $(@)
           $card = ui.item
           if ($layoutRow = $toSortable.closest('.layout-row'))
+            cancelled = false
             if $toSortable.hasClass('layout-row-layout') || $toSortable.hasClass('side-view-image')
-              cancelDropIfSortableHasMany($fromSortable, $toSortable)
-            else if $toSortable.hasClass('layout-row-images')
-              cancelDropIfLayoutEmpty($fromSortable, $toSortable)
-            else if $fromSortable.hasClass('layout-row-layout')
-              cancelDropIfLayoutRelatedExist($fromSortable, $layoutRow)
-            if $toSortable.hasClass('layout-row-layout')
-              cloneLayoutRow($layoutRow)
-            addRemoveMarkIfLayoutRelated($card, $fromSortable, $toSortable)
+              cancelled = cancelDropIfSortableHasMany($fromSortable, $toSortable)
+            if !cancelled && $toSortable.hasClass('layout-row-images')
+              cancelled = cancelDropIfLayoutEmpty($fromSortable, $toSortable)
+            if !cancelled && $fromSortable.hasClass('layout-row-layout')
+              cancelled = cancelDropIfLayoutRelatedExist($fromSortable, $layoutRow)
+            if !cancelled
+              if $toSortable.hasClass('layout-row-layout')
+                cloneLayoutRow($layoutRow)
+              addRemoveMarkIfLayoutRelated($card, $fromSortable, $toSortable)
       .disableSelection()
 
     initBoatImagesSortable($('.boat-image-cards'))
@@ -128,7 +130,6 @@ $ ->
       $card.find('.boat-image-card-mark').toggle($sortable.hasClass('layout-row-images'))
 
     addRemoveMarkIfLayoutRelated = ($card, $fromSortable, $toSortable) ->
-      console.log('addRemoveMarkIfLayoutRelated', $card)
       if $fromSortable.hasClass('layout-row-images')
         $mark = findMarkForCard($card)
         console.log('try delete mark', $mark, $card)
@@ -142,23 +143,29 @@ $ ->
 
     $('.boat-image-card').click (e) ->
       $card = $(@)
-      $el = $(e.target)
-      if $el.hasClass('boat-image-card-edit')
+      $target = $(e.target)
+      if $target.hasClass('boat-image-card-edit')
         $editPopup.detach().appendTo(@)
         $captionInput.val($card.data('props').caption)
         $editPopup.data('card', $card)
         setTimeout (-> $editPopup.show()), 0
-      else if $el.hasClass('boat-image-card-mark')
-        $card.siblings('.boat-image-card').removeClass('is-while-marking')
-        $layoutCard = $card.closest('.layout-row').find('.layout-row-layout .boat-image-card')
-        $layoutCard.add($card).addClass('is-while-marking').data('marking-phase', 'mark')
-        $layoutCard.find('.view-point-mark.is-selected').removeClass('is-selected')
-        $layoutCard.find('boat-image-card-logo-img').off('mousemove.marking')
-        $mark = findMarkForCard($card)
-        $mark.addClass('is-selected')
+      else if $target.hasClass('boat-image-card-mark')
+        toggleMarkingForCard($card)
       else if $card.hasClass('is-while-marking')
         markingClick($card, e.pageX, e.pageY)
       false
+
+    toggleMarkingForCard = ($card) ->
+      $layoutCard = $card.closest('.layout-row').find('.layout-row-layout .boat-image-card')
+      $layoutCard.find('boat-image-card-logo').off('mousemove.marking')
+      $layoutCard.find('.view-point-mark.is-selected').removeClass('is-selected')
+      if $card.hasClass('is-while-marking')
+        $layoutCard.add($card).removeClass('is-while-marking')
+      else
+        $card.siblings('.boat-image-card').removeClass('is-while-marking')
+        $layoutCard.add($card).addClass('is-while-marking').data('marking-phase', 'mark')
+        $mark = findMarkForCard($card)
+        $mark.addClass('is-selected')
 
     findMarkForCard = ($card) ->
       imageId = $card.data('props').id

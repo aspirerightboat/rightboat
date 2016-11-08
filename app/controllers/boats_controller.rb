@@ -67,6 +67,8 @@ class BoatsController < ApplicationController
 
     UserActivity.create_boat_visit(boat_id: @boat.id, user: current_user)
     store_recent
+
+    @kind_separated_images = Rightboat::BoatImagesKindSeparated.new(@boat)
   end
 
   def pdf

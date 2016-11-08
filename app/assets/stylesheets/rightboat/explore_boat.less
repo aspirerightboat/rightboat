@@ -1,0 +1,26 @@
+.explore-boat {
+  display: flex;
+}
+.explore-boat-side-view {
+  display: flex;
+}
+.explore-boat-layout-image-wrap {
+  position: relative;
+  display: none;
+
+  &.is-active {
+    display: inline-block;
+  }
+}
+
+.view-point-mark {
+  position: absolute;
+  margin: -15px 0 0 -15px;
+  stroke-width: 2px;
+
+  &.is-selected {
+    path {
+      fill: #0057ff;
+    }
+  }
+}

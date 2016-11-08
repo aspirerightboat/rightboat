@@ -31,7 +31,7 @@
         = render partial: 'boat_image_card', locals: {image: @kind_separated_images.side_view_image}
         .files-drop-hint Side View Image
 
-  #edit_boat_image_popup.panel.edit-boat-image-popup(style="display:none")
+  .panel.edit-boat-image-popup(style="display:none")
     h3 Edit Boat Image
     .esc ×
     .panel_content
@@ -39,6 +39,7 @@
       input#boat_image_caption_input.value-input(type="text")
       .controls-row.text-center
         button.save-btn Save
+        = link_to 'Edit Page', '#', class: 'goto-edit-page', 'data-url-template' => edit_admin_boat_image_path('--id--'), target: '_blank'
 
   script#view_point_mark_template(type="text/template")
     = render 'shared/view_point_mark_svg'

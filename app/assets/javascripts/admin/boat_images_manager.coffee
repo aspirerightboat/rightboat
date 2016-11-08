@@ -4,7 +4,7 @@ $ ->
     droppedFiles = null
     $regularImages = $('#regular_images')
     $uploadForm = $('#boat_images_upload_form')
-    $editPopup = $('#edit_boat_image_popup')
+    $editPopup = $('.edit-boat-image-popup')
     $captionInput = $('#boat_image_caption_input')
 
     $regularImages.on 'drag dragstart', ->
@@ -149,6 +149,8 @@ $ ->
           $editPopup.detach().appendTo(@)
           $captionInput.val($card.data('props').caption)
           $editPopup.data('card', $card)
+          $editPopup.find('.goto-edit-page').each ->
+            $(@).attr('href', $(@).data('url-template').replace('--id--', $card.data('props').id))
           setTimeout (-> $editPopup.show(); console.log('qwe'); $captionInput.focus()), 0
         else if $link.hasClass('boat-image-card-mark')
           toggleMarkingForCard($card)
@@ -163,7 +165,8 @@ $ ->
           toggleMarkingForCard($card)
         else
           viewCard($card)
-      false
+      if !$target.closest('.edit-boat-image-popup').length
+        false
 
     deleteCard = ($card) ->
       $sortable = $card.closest('.boat-image-cards')

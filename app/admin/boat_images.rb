@@ -58,14 +58,14 @@ ActiveAdmin.register BoatImage do
       f.input :kind, as: :select, collection: BoatImage.kinds.keys, include_blank: false
       f.input :caption
       f.input :layout_image_id, as: :select, collection: f.object.boat.boat_images.layout
-      f.input :layout_mark_info
-      f.input :http_last_modified
-      f.input :width
-      f.input :height
-      f.input :content_type
-      f.input :http_etag
-      f.input :downloaded_at
-      f.input :deleted_by_user_id
+      # f.input :layout_mark_info
+      # f.input :http_last_modified
+      # f.input :width
+      # f.input :height
+      # f.input :content_type
+      # f.input :http_etag
+      # f.input :downloaded_at
+      # f.input :deleted_by_user_id
     end
     actions
   end

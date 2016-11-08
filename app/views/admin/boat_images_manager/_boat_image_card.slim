@@ -2,7 +2,8 @@
   - image_url = local_assigns[:image_version] == :original ? image&.file_url : image&.file_url(:mini)
   .boat-image-card-logo
     img.boat-image-card-logo-img(src="#{image_url}" alt="" width="127" height="85")
-    = render partial: 'shared/view_point_mark_svg', collection: local_assigns[:marked_images], as: :marked_image
+    - if local_assigns[:marked_images]
+      = render partial: 'shared/view_point_mark_svg', collection: local_assigns[:marked_images], as: :marked_image
   .boat-image-card-caption= image&.caption
   .boat-image-card-actions
     a.boat-image-card-edit(href="#") edit

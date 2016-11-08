@@ -1,4 +1,5 @@
-- mark = marked_image.layout_mark_info
+- marked_image = local_assigns[:marked_image]
+- mark = marked_image&.layout_mark_info
 - style = "left: #{mark['x'] || 0}%; top: #{mark['y'] || 0}%; transform: rotate(#{mark['rotate'] || 0}deg);" if mark
-svg.view-point-mark(data-image-id="#{marked_image.id}" width="30" height="30" style="#{style}")
+svg.view-point-mark(data-image-id="#{marked_image&.id}" width="30" height="30" style="#{style}")
   path(fill="none" stroke="#0057FF" stroke-linecap="round" stroke-linejoin="round" d="M27.465,15c0,0-7.672,7.175-11.906,7.175S7.893,18.963,7.893,15c0-3.964,3.432-7.177,7.666-7.177S27.465,15,27.465,15z")

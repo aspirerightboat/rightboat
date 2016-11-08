@@ -67,27 +67,35 @@ $ ->
           if @ == ui.item.parent()[0] # fix because update is firing twice when moving between different sortables
             updateDroppedImage(ui.item, $(@))
         receive: (e, ui) ->
-          $sourceSortable = ui.sender
-          $sortable = $(@)
-          if ($layoutRow = $sortable.closest('.layout-row'))
-            if $sortable.hasClass('layout-row-layout') || $sortable.hasClass('side-view-image')
-              cancelDropIfSortableHasMany($sourceSortable, $sortable)
-            else if $sortable.hasClass('layout-row-images')
-              cancelDropIfLayoutEmpty($sourceSortable, $sortable)
-            if $sortable.hasClass('layout-row-layout')
+          $fromSortable = ui.sender
+          $toSortable = $(@)
+          $card = ui.item
+          if ($layoutRow = $toSortable.closest('.layout-row'))
+            if $toSortable.hasClass('layout-row-layout') || $toSortable.hasClass('side-view-image')
+              cancelDropIfSortableHasMany($fromSortable, $toSortable)
+            else if $toSortable.hasClass('layout-row-images')
+              cancelDropIfLayoutEmpty($fromSortable, $toSortable)
+            else if $fromSortable.hasClass('layout-row-layout')
+              cancelDropIfLayoutRelatedExist($fromSortable, $layoutRow)
+            if $toSortable.hasClass('layout-row-layout')
               cloneLayoutRow($layoutRow)
+            addRemoveMarkIfLayoutRelated($card, $fromSortable, $toSortable)
       .disableSelection()
 
     initBoatImagesSortable($('.boat-image-cards'))
 
-    cancelDropIfSortableHasMany = ($sourceSortable, $sortable) ->
-      cardsCount = $('.boat-image-card', $sortable).length
-      if cardsCount > 1
-        $sourceSortable.sortable('cancel')
+    cancelDropIfLayoutRelatedExist = ($fromSortable, $layoutRow) ->
+      if $layoutRow.find('.layout-row-images .boat-image-card').length
+        $fromSortable.sortable('cancel')
 
-    cancelDropIfLayoutEmpty = ($sourceSortable, $sortable) ->
-      if !$sortable.prev().find('.boat-image-card').length
-        $sourceSortable.sortable('cancel')
+    cancelDropIfSortableHasMany = ($fromSortable, $toSortable) ->
+      cardsCount = $('.boat-image-card', $toSortable).length
+      if cardsCount > 1
+        $fromSortable.sortable('cancel')
+
+    cancelDropIfLayoutEmpty = ($fromSortable, $toSortable) ->
+      if !$toSortable.prev().find('.boat-image-card').length
+        $fromSortable.sortable('cancel')
 
     cloneLayoutRow = (layoutRow) ->
       $('.boat-image-cards').sortable('destroy');
@@ -96,12 +104,12 @@ $ ->
       $clone.appendTo(layoutRow.parent())
       initBoatImagesSortable($('.boat-image-cards'))
 
-    updateDroppedImage = ($image, $sortable) ->
-      updateDroppedImageLook($image, $sortable)
+    updateDroppedImage = ($card, $sortable) ->
+      updateDroppedImageLook($card, $sortable)
       params = {}
-      params.image = $image.data('props').id
-      params.prev = $image.prev('.boat-image-card').data('props')?.id
-      params.next = $image.next('.boat-image-card').data('props')?.id
+      params.image = $card.data('props').id
+      params.prev = $card.prev('.boat-image-card').data('props')?.id
+      params.next = $card.next('.boat-image-card').data('props')?.id
       if $sortable.hasClass('layout-row-images')
         layoutImage = $sortable.prev().find('.boat-image-card')
         params.layout_image = layoutImage.data('props').id
@@ -113,11 +121,24 @@ $ ->
         params.kind = 'regular'
       $.post $manager.data('move-url'), params
 
-    updateDroppedImageLook = ($image, $sortable) ->
-      imgProps = $image.data('props')
+    updateDroppedImageLook = ($card, $sortable) ->
+      imgProps = $card.data('props')
       imgSrc = if $sortable.hasClass('layout-row-layout') then imgProps.url else imgProps.thumb_url
-      $image.find('.boat-image-card-logo img').attr('src', imgSrc)
-      $image.find('.boat-image-card-mark').toggle($sortable.hasClass('layout-row-images'))
+      $card.find('.boat-image-card-logo-img').attr('src', imgSrc)
+      $card.find('.boat-image-card-mark').toggle($sortable.hasClass('layout-row-images'))
+
+    addRemoveMarkIfLayoutRelated = ($card, $fromSortable, $toSortable) ->
+      console.log('addRemoveMarkIfLayoutRelated', $card)
+      if $fromSortable.hasClass('layout-row-images')
+        $mark = findMarkForCard($card)
+        console.log('try delete mark', $mark, $card)
+        $mark.remove()
+      if $toSortable.hasClass('layout-row-images')
+        $layoutLogo = $toSortable.closest('.layout-row').find('.layout-row-layout .boat-image-card-logo')
+        markHtml = $('#view_point_mark_template').html()
+        $mark = $(markHtml)
+        $mark.appendTo($layoutLogo)
+        .data('image-id', $card.data('props').id)
 
     $('.boat-image-card').click (e) ->
       $card = $(@)
@@ -133,16 +154,19 @@ $ ->
         $layoutCard.add($card).addClass('is-while-marking').data('marking-phase', 'mark')
         $layoutCard.find('.view-point-mark.is-selected').removeClass('is-selected')
         $layoutCard.find('boat-image-card-logo-img').off('mousemove.marking')
-        imageId = $card.data('props').id
-        $mark = $layoutCard.find('.view-point-mark').filter(-> $(@).data('image-id') == imageId)
+        $mark = findMarkForCard($card)
         $mark.addClass('is-selected')
       else if $card.hasClass('is-while-marking')
         markingClick($card, e.pageX, e.pageY)
       false
 
+    findMarkForCard = ($card) ->
+      imageId = $card.data('props').id
+      $mark = $('.view-point-mark', $manager).filter(-> $(@).data('image-id') == imageId)
+
     markingClick = ($layoutCard, pageX, pageY) ->
-      $logo = $layoutCard.closest('.boat-image-card-logo')
-      $mark = $layoutCard.find('.view-point-mark.is-selected')
+      $logo = $layoutCard.find('.boat-image-card-logo')
+      $mark = $logo.find('.view-point-mark.is-selected')
       if $layoutCard.data('marking-phase') == 'mark'
         offset = $logo.offset()
         x = pageX - offset.left

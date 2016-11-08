@@ -130,13 +130,42 @@ $ ->
       else if $el.hasClass('boat-image-card-mark')
         $card.siblings('.boat-image-card').removeClass('is-while-marking')
         $layoutCard = $card.closest('.layout-row').find('.layout-row-layout .boat-image-card')
-        $layoutCard.add($card).addClass('is-while-marking')
-      else if $card.hasClass('is-while-marking') && $el.closest('boat-image-card-logo').length
-        offset = $el.offset()
-        x = e.pageX - offset.left
-        y = e.pageY - offset.top
-        console.log(x, y, $el.width(), $el.height())
+        $layoutCard.add($card).addClass('is-while-marking').data('marking-phase', 'mark')
+        $layoutCard.find('.view-point-mark.is-selected').removeClass('is-selected')
+        $layoutCard.find('boat-image-card-logo-img').off('mousemove.marking')
+        imageId = $card.data('props').id
+        $mark = $layoutCard.find('.view-point-mark').filter(-> $(@).data('image-id') == imageId)
+        $mark.addClass('is-selected')
+      else if $card.hasClass('is-while-marking')
+        markingClick($card, e.pageX, e.pageY)
       false
+
+    markingClick = ($layoutCard, pageX, pageY) ->
+      $logo = $layoutCard.closest('.boat-image-card-logo')
+      $mark = $layoutCard.find('.view-point-mark.is-selected')
+      if $layoutCard.data('marking-phase') == 'mark'
+        offset = $logo.offset()
+        x = pageX - offset.left
+        y = pageY - offset.top
+        left = Math.round(Math.abs(x / $logo.width()) * 10000) / 100
+        top = Math.round(Math.abs(y / $logo.height()) * 10000) / 100
+        $mark.css(left: left+'%', top: top+'%')
+        $layoutCard.data('mark-info', x: left, y: top)
+        $layoutCard.data('marking-phase', 'rotate')
+        $logo.on 'mousemove.marking', (e) ->
+          rotX = e.pageX - offset.left
+          rotY = e.pageY - offset.top
+          fi = Math.atan2(rotY - y, rotX - x)
+          alpha = Math.round(fi * (180/Math.PI) * 100)/100
+          $mark.css(transform: 'rotate('+alpha+'deg)')
+          $layoutCard.data('mark-info').rotate = alpha
+      else if $layoutCard.data('marking-phase') == 'rotate'
+        $layoutCard.data('marking-phase', 'mark')
+        $logo.off 'mousemove.marking'
+        params =
+          image: $mark.data('image-id')
+          mark_info: $layoutCard.data('mark-info')
+        $.post $manager.data('update-mark-url'), params
 
     $('.esc', $editPopup).click -> $editPopup.hide(); false
     $('.save-btn', $editPopup).click ->

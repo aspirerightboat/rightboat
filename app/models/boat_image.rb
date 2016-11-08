@@ -3,6 +3,8 @@ require 'open-uri'
 class BoatImage < ApplicationRecord
   enum kind: {regular: 0, layout: 1, side_view: 2}
 
+  serialize :layout_mark_info, Hash
+
   belongs_to :boat
   belongs_to :layout_image, class_name: 'BoatImage'
 

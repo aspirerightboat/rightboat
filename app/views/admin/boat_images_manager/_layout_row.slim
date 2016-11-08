@@ -1,8 +1,7 @@
 .layout-row
   .boat-image-cards.files-drop.layout-row-layout
     - if layout_image
-      = render partial: 'boat_image_card', locals: {image: layout_image, image_version: :original, \
-               mark_infos: [{x: '45%', y: '48%', rotation: '327deg'}]}
+      = render partial: 'boat_image_card', locals: {image: layout_image, image_version: :original, marked_images: related_images}
     .files-drop-hint Layout Image
   .boat-image-cards.files-drop.layout-row-images
     - if related_images&.any?

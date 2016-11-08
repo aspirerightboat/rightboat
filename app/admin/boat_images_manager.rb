@@ -74,4 +74,12 @@ ActiveAdmin.register_page 'Boat Images Manager' do
     head :ok
   end
 
+  page_action :update_mark, method: :post do
+    bi = @boat.boat_images.find(params[:image])
+    bi.layout_mark_info = params.require(:mark_info).permit(:x, :y, :rotate).to_h.to_h
+    bi.save!
+
+    head :ok
+  end
+
 end

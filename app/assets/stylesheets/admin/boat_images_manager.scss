@@ -5,10 +5,10 @@
 }
 .boat-image-card {
   margin: 6px;
-  width: 127px+2;
-  //height: 85px+2;
-  border: 1px solid gray;
+  width: 127px;
+  border: 2px solid silver;
   position: relative;
+  box-sizing: content-box;
 
   &.is-while-marking {
     border: 2px solid royalblue;
@@ -19,11 +19,11 @@
   display: block;
   width: 127px;
   height: 85px;
-
-  img {
-    width: 100%;
-    height: auto;
-  }
+}
+.boat-image-card-logo-img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 .layout-row-layout {
   position: relative;
@@ -135,4 +135,10 @@
   position: absolute;
   margin: -15px 0 0 -15px;
   stroke-width: 2px;
+
+  &.is-selected {
+    path {
+      fill: #0057ff;
+    }
+  }
 }

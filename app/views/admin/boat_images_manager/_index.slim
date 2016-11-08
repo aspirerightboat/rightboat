@@ -1,6 +1,7 @@
 - manager_data = {'move-url' => url_for(action: :move_image, boat_id: @boat.id), \
                   'remove-url' => url_for(action: :remove_image, boat_id: @boat.id), \
                   'update-caption-url' => url_for(action: :update_caption, boat_id: @boat.id), \
+                  'update-mark-url' => url_for(action: :update_mark, boat_id: @boat.id), \
                   }
 .boat-images-manager(data=manager_data)
   .panel

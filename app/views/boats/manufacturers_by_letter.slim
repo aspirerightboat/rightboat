@@ -4,10 +4,19 @@
 = render layout: 'shared/boats_for_sale' do
   .row
     .col-xs-12
-      ul.breadcrumbs
-        li= link_to 'Home', root_path
-        li= link_to 'Boats for sale', boats_path
-        li= @letter.upcase
+      ol.breadcrumbs(itemscope itemtype='http://schema.org/BreadcrumbList')
+        li(itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem')
+          = link_to root_path, itemprop: 'item' do
+            span(itemprop='name') Home
+          meta(itemprop='position' content='1')
+        li (itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem')
+          = link_to boats_path, itemprop: 'item' do
+            span(itemprop='name') Boats for Sale
+          meta(itemprop='position' content='2')
+        li (itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem')
+          = link_to manufacturers_by_letter_path(@letter), itemprop: 'item' do
+            span(itemprop='name')= @letter.upcase
+          meta(itemprop='position' content='3')
 
       h1 Manufacturers by letter #{@letter.upcase}
       = render 'shared/manufacturer_letters'

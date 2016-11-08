@@ -3,10 +3,19 @@
 - @canonical_url = country_url(@country.slug)
 
 = render layout: 'shared/boats_for_sale' do
-  ul.breadcrumbs
-    li= link_to 'Home', root_path
-    li= link_to 'Boats for sale', boats_path
-    li= @country.name
+  ol.breadcrumbs(itemscope itemtype='http://schema.org/BreadcrumbList')
+    li(itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem')
+      = link_to root_path, itemprop: 'item' do
+        span(itemprop='name') Home
+      meta(itemprop='position' content='1')
+    li (itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem')
+      = link_to boats_path, itemprop: 'item' do
+        span(itemprop='name') Boats for Sale
+      meta(itemprop='position' content='2')
+    li (itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem')
+      = link_to country_path(@country), itemprop: 'item' do
+        span(itemprop='name')= @country.name
+      meta(itemprop='position' content='3')
 
   h1= @page_title
   .row(data-layout-mode="#{current_layout_mode}")

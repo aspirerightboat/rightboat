@@ -151,6 +151,8 @@ $ ->
         setTimeout (-> $editPopup.show()), 0
       else if $target.hasClass('boat-image-card-mark')
         toggleMarkingForCard($card)
+      else if $target.hasClass('boat-image-card-view')
+        $('#view_image_popup').find('img').attr('src', $card.data('props').url).end().show()
       else if $card.hasClass('is-while-marking')
         markingClick($card, e.pageX, e.pageY)
       false
@@ -217,3 +219,6 @@ $ ->
     $captionInput.keydown (e) ->
       if e.keyCode == 13
         $('.save-btn', $editPopup).click()
+
+  $('.simple-image-preview').click ->
+    $(@).hide()

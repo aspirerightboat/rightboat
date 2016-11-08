@@ -44,5 +44,8 @@
       .controls-row.text-center
         button.save-btn Save
 
-script#view_point_mark_template(type="text/template")
-  = render 'shared/view_point_mark_svg'
+  script#view_point_mark_template(type="text/template")
+    = render 'shared/view_point_mark_svg'
+
+  #view_image_popup.simple-image-preview(style="display:none")
+    img.simple-image-preview-img(src="" alt="")

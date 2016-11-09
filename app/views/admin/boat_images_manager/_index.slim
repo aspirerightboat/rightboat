@@ -20,7 +20,7 @@
   .panel
     h3 Layouts
     .panel_contents
-      - @kind_separated_images.images_by_layout_image.each do |layout_image, related_images|
+      - @kind_separated_images.images_by_layout_image&.each do |layout_image, related_images|
         = render partial: 'layout_row', locals: {layout_image: layout_image, related_images: related_images}
       = render partial: 'layout_row', locals: {layout_image: nil, related_images: nil}
 
@@ -28,7 +28,8 @@
     h3 Side View
     .panel_contents
       .boat-image-cards.files-drop.side-view-image
-        = render partial: 'boat_image_card', locals: {image: @kind_separated_images.side_view_image}
+        - if @kind_separated_images.side_view_image
+          = render partial: 'boat_image_card', locals: {image: @kind_separated_images.side_view_image}
         .files-drop-hint Side View Image
 
   .panel.edit-boat-image-popup(style="display:none")
